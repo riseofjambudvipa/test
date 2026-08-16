@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../../app/theme.dart';
 import '../../../../../core/logger/logger_service.dart';
 import '../../../../../core/settings/settings_service.dart';
+import '../../../../../core/widgets/whisper_threads_slider.dart';
 import '../../../../../core/downloader/binary_downloader_service.dart';
 import '../../../../../core/utils/app_dirs.dart';
 import '../manual_install_banner.dart';
@@ -404,7 +405,6 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
   @override
   Widget build(BuildContext context) {
     final isCompactWidth = MediaQuery.of(context).size.width < 600;
-    final maxCores = kIsWeb ? 16 : Platform.numberOfProcessors;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -644,82 +644,19 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                         ),
                         const SizedBox(height: 20),
                       ],
-                      isCompactWidth
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text('Whisper CPU Threads', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white70)),
-                                const SizedBox(height: 4),
-                                Text(
-                                  _whisperThreads == 0
-                                      ? 'Dynamic auto-detection (recommended)'
-                                      : 'Logical cores for transcription: $_whisperThreads',
-                                  style: const TextStyle(fontSize: 11, color: Colors.white30),
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Slider(
-                                        value: _whisperThreads.clamp(0, maxCores).toDouble(),
-                                        min: 0,
-                                        max: maxCores.toDouble(),
-                                        divisions: maxCores,
-                                        activeColor: AppTheme.accentOrange,
-                                        inactiveColor: Colors.white12,
-                                        onChanged: (val) {
-                                          setState(() => _whisperThreads = val.toInt());
-                                          SettingsService.instance.setWhisperThreads(val.toInt());
-                                        },
-                                      ),
-                                    ),
-                                    Text(
-                                      _whisperThreads == 0 ? 'Auto' : '$_whisperThreads',
-                                      style: const TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          : Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text('Whisper CPU Threads', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white70)),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        _whisperThreads == 0
-                                            ? 'Dynamic auto-detection (recommended)'
-                                            : 'Logical cores for transcription: $_whisperThreads',
-                                        style: const TextStyle(fontSize: 11, color: Colors.white30),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Slider(
-                                    value: _whisperThreads.clamp(0, maxCores).toDouble(),
-                                    min: 0,
-                                    max: maxCores.toDouble(),
-                                    divisions: maxCores,
-                                    activeColor: AppTheme.accentOrange,
-                                    inactiveColor: Colors.white12,
-                                    onChanged: (val) {
-                                      setState(() => _whisperThreads = val.toInt());
-                                      SettingsService.instance.setWhisperThreads(val.toInt());
-                                    },
-                                  ),
-                                ),
-                                Text(
-                                  _whisperThreads == 0 ? 'Auto' : '$_whisperThreads',
-                                  style: const TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
+                      WhisperThreadsSlider(
+                        value: _whisperThreads,
+                        onChanged: (v) {
+                          setState(() => _whisperThreads = v);
+                          SettingsService.instance.setWhisperThreads(v);
+                        },
+                        layout: isCompactWidth
+                            ? WhisperThreadsSliderLayout.compact
+                            : WhisperThreadsSliderLayout.wide,
+                        showDescription: true,
+                        titleStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white70),
+                        descriptionStyle: const TextStyle(fontSize: 11, color: Colors.white30),
+                      ),
                     ],
                   ],
                 ),

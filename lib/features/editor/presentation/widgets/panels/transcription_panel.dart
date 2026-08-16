@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:file_picker/file_picker.dart';
 import '../../../../../app/theme.dart';
 import '../../../../../core/settings/settings_service.dart';
+import '../../../../../core/widgets/whisper_threads_slider.dart';
 import '../../../../../core/whisper/whisper_model.dart';
 import '../../../../../core/whisper/whisper_languages.dart';
 import '../../../../../core/downloader/binary_downloader_service.dart';
@@ -668,28 +669,12 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                             const Text('Detecting hardware stats...', style: TextStyle(fontSize: 10, color: Colors.white38)),
                           ],
                           const Divider(color: Colors.white10, height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Whisper CPU Threads', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
-                              Text(
-                                SettingsService.instance.whisperThreads == 0 ? 'Auto' : '${SettingsService.instance.whisperThreads}',
-                                style: const TextStyle(fontSize: 11, fontFamily: 'monospace', fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          Slider(
-                            value: SettingsService.instance.whisperThreads.clamp(0, 16).toDouble(),
-                            min: 0,
-                            max: 16,
-                            divisions: 16,
-                            activeColor: AppTheme.accentOrange,
-                            inactiveColor: Colors.white12,
-                            onChanged: (val) {
-                              setState(() {
-                                SettingsService.instance.setWhisperThreads(val.toInt());
-                              });
-                            },
+                          WhisperThreadsSlider(
+                            value: SettingsService.instance.whisperThreads,
+                            onChanged: (v) => setState(() {
+                              SettingsService.instance.setWhisperThreads(v);
+                            }),
+                            valueStyle: const TextStyle(fontSize: 11, fontFamily: 'monospace', fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           Row(

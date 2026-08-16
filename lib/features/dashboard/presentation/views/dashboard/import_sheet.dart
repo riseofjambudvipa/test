@@ -13,6 +13,7 @@ import '../../../../../core/whisper/whisper_languages.dart';
 import '../../../../../core/downloader/binary_downloader_service.dart';
 import '../../../../../core/utils/app_dirs.dart';
 import '../../../../../core/settings/settings_service.dart';
+import '../../../../../core/widgets/whisper_threads_slider.dart';
 import '../../../../../core/utils/premium_blur_dialog.dart';
 import '../../../../../core/utils/whisper_quality_selection.dart';
 import 'package:file_picker/file_picker.dart';
@@ -553,7 +554,6 @@ class _ImportVideoDialogState extends ConsumerState<ImportVideoDialog> with Whis
     final isEn = _selectedLanguage == 'en';
     final selectedModelName = isEn ? selectedQuality.modelNameEn : selectedQuality.modelName;
     final hasSelectedModelDownloaded = modelExists[selectedModelName] ?? false;
-    final maxCores = kIsWeb ? 16 : Platform.numberOfProcessors;
 
     return PremiumBlurDialog(
       maxWidth: 580,
@@ -1016,29 +1016,13 @@ class _ImportVideoDialogState extends ConsumerState<ImportVideoDialog> with Whis
                                 Text('Detecting hardware stats...', style: TextStyle(fontSize: 10, color: AppTheme.mutedText)),
                               ],
                               const Divider(color: Colors.white10, height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text('Whisper CPU Threads', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
-                                  Text(
-                                    SettingsService.instance.whisperThreads == 0 ? 'Auto' : '${SettingsService.instance.whisperThreads}',
-                                    style: const TextStyle(fontSize: 11, fontFamily: 'monospace', fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              SliderTheme(
-                                data: AppTheme.premiumSliderTheme(context),
-                                child: Slider(
-                                  value: SettingsService.instance.whisperThreads.clamp(0, maxCores).toDouble(),
-                                  min: 0,
-                                  max: maxCores.toDouble(),
-                                  divisions: maxCores,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      SettingsService.instance.setWhisperThreads(val.toInt());
-                                    });
-                                  },
-                                ),
+                              WhisperThreadsSlider(
+                                value: SettingsService.instance.whisperThreads,
+                                onChanged: (v) => setState(() {
+                                  SettingsService.instance.setWhisperThreads(v);
+                                }),
+                                usePremiumTheme: true,
+                                valueStyle: const TextStyle(fontSize: 11, fontFamily: 'monospace', fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 4),
                               Row(
