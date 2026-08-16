@@ -45,9 +45,24 @@ plus Authenticode / codesign checks where available.
 - **Supply-chain ownership**: FFmpeg binaries still come from third-party
   mirrors (gyan.dev, evermeet.cx, johnvansickle.com) and asset packs/whisper
   CLI from a personal GitHub release. None of these are owned by the app; if a
-  mirror dies, that platform loses one-click install. Bundling FFmpeg inside
-  the app packages (workstream 6) removes the mirror dependency for macOS/Linux
-  entirely.
+  mirror dies, that platform loses one-click install.
+
+## Bundled FFmpeg (platform-gaps pass)
+
+CI now bundles a checksum-verified FFmpeg into the macOS and Linux packages so
+both work out-of-the-box without Homebrew or distro installs:
+
+- **macOS**: `CapStudio.app/Contents/Resources/bin/ffmpeg` (evermeet 7.1,
+  pinned SHA-256 — same hash as the runtime downloader).
+- **Linux**: `bundle/bin/ffmpeg` inside the release bundle and deb (static
+  build, md5 verified against the same-origin companion file; the deb script
+  copies the whole bundle so it rides along).
+
+`WhisperService.ffmpegCliPath` discovery was rewritten to find these
+bundle-relative locations (via `Platform.resolvedExecutable`) plus standard
+system paths (`/opt/homebrew/bin`, `/usr/local/bin`, `/usr/bin`) — previously
+it only checked `Directory.current` paths, which fail in packaged apps. Fall
+back remains `ffmpeg` on PATH.
 
 ## Web app shell (platform-gaps pass)
 

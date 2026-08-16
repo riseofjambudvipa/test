@@ -173,6 +173,21 @@ jobs:
       - name: Build macOS
         run: flutter build macos --release
 
+      # Platform-gap fix: bundle a pinned, checksum-verified FFmpeg into the
+      # app bundle so macOS works out-of-the-box (no Homebrew/manual linking).
+      # Hash matches binary_downloader_service.dart's _macOsFfmpeg71Sha256.
+      - name: Bundle FFmpeg into macOS app
+        run: |
+          set -e
+          curl -fsSL -o /tmp/ffmpeg-7.1.zip https://evermeet.cx/ffmpeg/ffmpeg-7.1.zip
+          echo "5a1303c7babaffff3c32c141ff49c7f44bd3b3b3e7dcea992fd7d04b6558ef43  /tmp/ffmpeg-7.1.zip" | shasum -a 256 -c -
+          mkdir -p /tmp/ffmpeg-mac && cd /tmp/ffmpeg-mac && unzip -q /tmp/ffmpeg-7.1.zip
+          RES_DIR="$GITHUB_WORKSPACE/build/macos/Build/Products/Release/CapStudio.app/Contents/Resources"
+          mkdir -p "$RES_DIR/bin"
+          cp /tmp/ffmpeg-mac/ffmpeg "$RES_DIR/bin/ffmpeg"
+          chmod +x "$RES_DIR/bin/ffmpeg"
+          echo "Bundled FFmpeg 7.1 into CapStudio.app/Contents/Resources/bin/"
+
       - name: Package macOS DMG
         run: |
           hdiutil create -format UDZO -srcfolder build/macos/Build/Products/Release/CapStudio.app build/macos/Build/Products/Release/CapStudio.dmg
@@ -280,6 +295,28 @@ jobs:
 
       - name: Build Linux
         run: flutter build linux --release
+
+      # Platform-gap fix: bundle a checksum-verified static FFmpeg into the
+      # release bundle so Linux works out-of-the-box (no distro install).
+      # The .md5 companion is fetched from the same origin, matching the
+      # runtime behavior in binary_downloader_service.dart.
+      - name: Bundle FFmpeg into Linux bundle
+        run: |
+          set -e
+          curl -fsSL -o /tmp/ffmpeg.tar.xz https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+          EXPECTED=$(curl -fsSL https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz.md5 | awk '{print $1}')
+          ACTUAL=$(md5sum /tmp/ffmpeg.tar.xz | awk '{print $1}')
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "FFmpeg checksum mismatch: expected $EXPECTED got $ACTUAL"
+            exit 1
+          fi
+          mkdir -p /tmp/ffmpeg-linux && tar -xf /tmp/ffmpeg.tar.xz -C /tmp/ffmpeg-linux
+          FFMPEG_BIN=$(find /tmp/ffmpeg-linux -name ffmpeg -type f | head -1)
+          BUNDLE_BIN="$GITHUB_WORKSPACE/build/linux/x64/release/bundle/bin"
+          mkdir -p "$BUNDLE_BIN"
+          cp "$FFMPEG_BIN" "$BUNDLE_BIN/ffmpeg"
+          chmod +x "$BUNDLE_BIN/ffmpeg"
+          echo "Bundled static FFmpeg into bundle/bin/"
 
       - name: Build Debian Package
         run: |

@@ -78,14 +78,35 @@ class WhisperService {
     if (_cachedFfmpegPath != null) {
       return _cachedFfmpegPath!;
     }
-    final paths = [
-      p.join(Directory.current.path, 'assets', 'bin', Platform.isWindows ? 'ffmpeg.exe' : 'ffmpeg'),
-      p.join(Directory.current.path, 'Capstudio Flutter', 'assets', 'bin', Platform.isWindows ? 'ffmpeg.exe' : 'ffmpeg'),
-      p.join(Directory.current.path, 'data', 'flutter_assets', 'assets', 'bin', Platform.isWindows ? 'ffmpeg.exe' : 'ffmpeg'),
+
+    // FIX (platform audit): discovery previously only checked
+    // `Directory.current`-relative paths, which works in dev runs but NOT in
+    // packaged apps — the working directory of a shipped app is not the app
+    // bundle. Added bundle-relative lookups (Platform.resolvedExecutable) and
+    // standard system locations so a CI-bundled FFmpeg is actually found.
+    final exe = Platform.isWindows ? 'ffmpeg.exe' : 'ffmpeg';
+    final executableDir = p.dirname(Platform.resolvedExecutable);
+
+    final paths = <String>[
+      // Dev-mode / source-tree locations
+      p.join(Directory.current.path, 'assets', 'bin', exe),
+      p.join(Directory.current.path, 'Capstudio Flutter', 'assets', 'bin', exe),
+      p.join(Directory.current.path, 'data', 'flutter_assets', 'assets', 'bin', exe),
+      // Packaged macOS app bundle: Contents/MacOS/ffmpeg or Contents/Resources/bin/ffmpeg
+      p.join(executableDir, exe),
+      p.join(executableDir, '..', 'Resources', 'bin', exe),
+      // Packaged Linux bundle: alongside the app binary or in bundle/bin
+      p.join(executableDir, 'bin', exe),
+      // System locations (Homebrew, standard Unix paths)
+      '/opt/homebrew/bin/$exe',
+      '/usr/local/bin/$exe',
+      '/usr/bin/$exe',
     ];
+
     for (final path in paths) {
       if (File(path).existsSync()) {
         _cachedFfmpegPath = path;
+        LoggerService.instance.log(LogLevel.info, 'WhisperService', 'Discovered bundled FFmpeg at: $path');
         return path;
       }
     }
