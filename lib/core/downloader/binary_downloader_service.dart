@@ -114,6 +114,12 @@ class BinaryDownloaderService {
     'small.en': 'db8a495a91d927739e50b3fc1cc4c6b8f6c2d022',
     'small': '55356645c2b361a969dfd0ef2c5a50d530afd8d5',
     'medium': 'fd9727b6e1217c2f614f9b698455c4ffd82463b4',
+    // FIX (supply-chain audit): 'medium.en' was in the model catalog but
+    // missing from this checksum map, so its downloads silently skipped
+    // integrity verification (empty expected → verify passed). SHA-1 taken
+    // from whisper.cpp's official published model list
+    // (github.com/ggml-org/whisper.cpp README / HF model card).
+    'medium.en': '8c30f0e44ce9560643ebd10bbe50cd20eafd3723',
     'large-v3-turbo': '4af2b29d7ec73d781377bfd1758ca957a807e941',
   };
 
@@ -177,9 +183,12 @@ class BinaryDownloaderService {
       return true;
     }
     if (expectedHex.isEmpty) {
-      LoggerService.instance.log(LogLevel.warning, 'BinaryDownloaderService',
-          'No checksum configured for $filePath. Skipping integrity check.');
-      return true;
+      // FIX (supply-chain audit): this used to log a warning and PASS, so any
+      // download without a configured checksum was installed unverified.
+      // Fail closed instead: no pinned/integrity-verified binary gets installed.
+      LoggerService.instance.log(LogLevel.error, 'BinaryDownloaderService',
+          'No checksum configured for $filePath. Refusing to install an unverified download.');
+      return false;
     }
     try {
       final stream = File(filePath).openRead();
@@ -284,6 +293,48 @@ class BinaryDownloaderService {
     return 'amd64';
   }
 
+  // FIX (supply-chain audit): macOS whisper auto-install previously failed
+  // with a generic network error and no guidance — the release URL 404s
+  // because the mac-universal asset was never uploaded to the v0.0.1 GitHub
+  // release. Mirror the Linux behavior: degrade to clear manual steps so the
+  // user is told exactly what to run instead of staring at a vague failure.
+  Future<List<ManualInstallStep>> _getMacWhisperSteps() async {
+    final String targetBinPath = p.join(AppDirs.bin, 'whisper-cli');
+
+    // Homebrew has an official whisper-cpp formula; check for it first.
+    try {
+      final result = await Process.run('brew', ['--version']);
+      if (result.exitCode == 0) {
+        return [
+          const ManualInstallStep(
+            title: 'Install whisper-cpp via Homebrew',
+            command: 'brew install whisper-cpp',
+          ),
+          ManualInstallStep(
+            title: 'Link executable to CapStudio bin path',
+            command: 'ln -sf "\$(brew --prefix whisper-cpp)/bin/whisper-cli" "$targetBinPath"',
+          ),
+        ];
+      }
+    } catch (_) {}
+
+    // No Homebrew — build from source (needs Xcode Command Line Tools).
+    return [
+      const ManualInstallStep(
+        title: 'Install Xcode Command Line Tools (if missing)',
+        command: 'xcode-select --install',
+      ),
+      const ManualInstallStep(
+        title: 'Clone and build whisper.cpp',
+        command: 'git clone https://github.com/ggerganov/whisper.cpp.git && cd whisper.cpp && make',
+      ),
+      ManualInstallStep(
+        title: 'Copy compiled binary to CapStudio bin path',
+        command: 'cp whisper.cpp/main "$targetBinPath"',
+      ),
+    ];
+  }
+
 
   /// Resolve the correct download URL for a tool, auto-detecting CPU features.
   Future<String> getDownloadUrl(String toolId) async {
@@ -377,6 +428,14 @@ class BinaryDownloaderService {
                 ? _windowsWhisperCliAvxSha256
                 : _windowsWhisperCliNoAvxSha256;
           }
+          // FIX (supply-chain audit): macOS/Linux whisper-cli builds come from
+          // the CapStudio GitHub release (v0.0.1). They previously had NO
+          // checksum assigned, so — if the URL ever resolved — the download
+          // would have been installed unverified. Those URLs currently 404
+          // (the assets were never uploaded), and the download fails before
+          // this point; the graceful manual-install fallback below handles it.
+          // When real builds are published, pin their SHA-256 here so
+          // verification is mandatory.
         } else if (toolId == 'ffmpeg') {
           if (Platform.isWindows) {
             expectedChecksum = await _fetchChecksumFromUrl('$url.sha256');
@@ -589,6 +648,14 @@ class BinaryDownloaderService {
         final steps = await _getLinuxWhisperSteps();
         throw ManualInstallRequiredException(
           platform: 'Linux',
+          toolId: 'whisper',
+          steps: steps,
+        );
+      }
+      if (toolId == 'whisper' && Platform.isMacOS) {
+        final steps = await _getMacWhisperSteps();
+        throw ManualInstallRequiredException(
+          platform: 'macOS',
           toolId: 'whisper',
           steps: steps,
         );
