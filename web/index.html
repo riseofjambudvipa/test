@@ -33,15 +33,17 @@
   <link rel="manifest" href="manifest.json">
   <script src="coi-serviceworker.js"></script>
   
-  <!-- Hugging Face transformers.js for client-side Whisper (requires online connection to load scripts & model weights) -->
+  <!-- Hugging Face transformers.js for client-side Whisper. The library is
+       vendored locally (web/vendor/) so the app shell works without a CDN.
+       Model weights are still fetched on demand from HuggingFace. -->
   <script type="module">
-    import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
+    import { pipeline, env } from './vendor/transformers.min.js';
     window.pipeline = pipeline;
     window.transformersEnv = env;
   </script>
   
-  <!-- ffmpeg.wasm for client-side video rendering (requires online connection to load scripts) -->
-  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
+  <!-- ffmpeg.wasm for client-side video rendering — vendored locally so no CDN is required. -->
+  <script src="vendor/ffmpeg.min.js"></script>
   
   <!-- Local WebAssembly module scripts -->
   <script src="whisper_web.js"></script>

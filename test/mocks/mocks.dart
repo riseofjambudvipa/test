@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:mocktail/mocktail.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:http/http.dart' as http;
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:capstudio/core/database/isar_service.dart';
 import 'package:capstudio/core/whisper/whisper_service.dart';
 import 'package:capstudio/core/audio/audio_service.dart';

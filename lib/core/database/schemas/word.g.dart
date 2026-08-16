@@ -9,9 +9,9 @@ part of 'word.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-const WordSchemaSchema = Schema(
+final WordSchemaSchema = Schema(
   name: r'WordSchema',
-  id: 5439584903279313604,
+  id: int.parse('5439584903279313604'),
   properties: {
     r'className': PropertySchema(
       id: 0,
@@ -1528,9 +1528,9 @@ extension WordSchemaQueryObject
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-const EmojiConfigSchemaSchema = Schema(
+final EmojiConfigSchemaSchema = Schema(
   name: r'EmojiConfigSchema',
-  id: 4794708606781947605,
+  id: int.parse('4794708606781947605'),
   properties: {
     r'scale': PropertySchema(
       id: 0,

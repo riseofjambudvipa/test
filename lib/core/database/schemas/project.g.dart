@@ -13,9 +13,9 @@ extension GetProjectCollection on Isar {
   IsarCollection<Project> get projects => this.collection();
 }
 
-const ProjectSchema = CollectionSchema(
+final ProjectSchema = CollectionSchema(
   name: r'Project',
-  id: 3302999628838485849,
+  id: int.parse('3302999628838485849'),
   properties: {
     r'config': PropertySchema(
       id: 0,
@@ -98,7 +98,7 @@ const ProjectSchema = CollectionSchema(
   idName: r'id',
   indexes: {
     r'projectId': IndexSchema(
-      id: 3305656282123791113,
+      id: int.parse('3305656282123791113'),
       name: r'projectId',
       unique: true,
       replace: false,
@@ -124,7 +124,7 @@ const ProjectSchema = CollectionSchema(
   getId: _projectGetId,
   getLinks: _projectGetLinks,
   attach: _projectAttach,
-  version: '3.1.0+1',
+  version: '3.3.2',
 );
 
 int _projectEstimateSize(
@@ -2231,9 +2231,9 @@ extension ProjectQueryProperty
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-const ProjectConfigSchemaSchema = Schema(
+final ProjectConfigSchemaSchema = Schema(
   name: r'ProjectConfigSchema',
-  id: -6740856976698978087,
+  id: int.parse('-6740856976698978087'),
   properties: {
     r'animation': PropertySchema(
       id: 0,
@@ -3317,9 +3317,9 @@ extension ProjectConfigSchemaQueryObject on QueryBuilder<ProjectConfigSchema,
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-const StyleConfigSchemaSchema = Schema(
+final StyleConfigSchemaSchema = Schema(
   name: r'StyleConfigSchema',
-  id: 5792689272170590595,
+  id: int.parse('5792689272170590595'),
   properties: {
     r'color': PropertySchema(
       id: 0,
@@ -4333,9 +4333,9 @@ extension StyleConfigSchemaQueryObject
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-const HighlightStyleSchemaSchema = Schema(
+final HighlightStyleSchemaSchema = Schema(
   name: r'HighlightStyleSchema',
-  id: 7428994506526584903,
+  id: int.parse('7428994506526584903'),
   properties: {
     r'mainColor': PropertySchema(
       id: 0,
@@ -4836,9 +4836,9 @@ extension HighlightStyleSchemaQueryObject on QueryBuilder<HighlightStyleSchema,
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-const SubtitleConfigSchemaSchema = Schema(
+final SubtitleConfigSchemaSchema = Schema(
   name: r'SubtitleConfigSchema',
-  id: -5380182524522609790,
+  id: int.parse('-5380182524522609790'),
   properties: {
     r'chunkLineMaxLength': PropertySchema(
       id: 0,
@@ -5025,9 +5025,9 @@ extension SubtitleConfigSchemaQueryObject on QueryBuilder<SubtitleConfigSchema,
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-const VideoSegmentSchemaSchema = Schema(
+final VideoSegmentSchemaSchema = Schema(
   name: r'VideoSegmentSchema',
-  id: 2829660435382776970,
+  id: int.parse('2829660435382776970'),
   properties: {
     r'end': PropertySchema(
       id: 0,

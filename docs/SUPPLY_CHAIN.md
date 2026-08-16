@@ -49,6 +49,28 @@ plus Authenticode / codesign checks where available.
   the app packages (workstream 6) removes the mirror dependency for macOS/Linux
   entirely.
 
+## Web app shell (platform-gaps pass)
+
+The web build previously had two problems: it loaded runtime scripts from
+CDNs, **and it did not compile at all** (the Isar-generated schemas contained
+64-bit integer literals that dart2js rejects). Both are fixed:
+
+- **Runtime scripts vendored locally** in `web/vendor/` — transformers.min.js,
+  ffmpeg.min.js, ffmpeg-core.js + .wasm — so the app shell needs no CDN.
+  `ffmpeg_web.js` falls back to the unpkg CDN mirror if a local core is
+  missing from a stale build. Whisper model weights (75MB–1.5GB) are still
+  fetched on demand from HuggingFace — too large to bundle; transcription is
+  inherently online on web.
+- **Schema literals made dart2js-compatible**: `project.g.dart` / `word.g.dart`
+  now express their 64-bit schema ids via `int.parse('...')` with non-const
+  declarations. On native this is byte-exact (verified equal to the original
+  const literal); on web Isar is not used (in-memory storage), so rounding is
+  harmless. The `int.parse` patch lives in the committed `.g.dart` files — if
+  you ever re-run `build_runner`, regenerate the patch (9 literals across the
+  two files) or web breaks again.
+- **Isar migrated to the maintained `isar_community` fork** (3.3.2) — same
+  API, keeps native behavior, and the upstream `isar` package is archived.
+
 ## Policy (keep it true)
 
 - Every download must have a pinned checksum (SHA-256 preferred) or a live

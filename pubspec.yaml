@@ -38,8 +38,13 @@ dependencies:
   cupertino_icons: ^1.0.8
   crypto: ^3.0.3
   flutter_riverpod: ^2.5.1
-  isar: ^3.1.0+1
-  isar_flutter_libs: ^3.1.0+1
+  # FIX (platform audit): upstream `isar` was archived and its generator
+  # emits 64-bit schema literals that dart2js cannot compile, so the web
+  # target has never built. isar_community is the maintained fork with
+  # working web support and a drop-in API (same schema classes, same
+  # ProjectSchema/WordSchemaSchema names).
+  isar_community: ^3.3.2
+  isar_community_flutter_libs: ^3.3.2
   meta: ^1.11.0
   ffi: ^2.1.2
   media_kit: ^1.2.6
@@ -68,7 +73,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  isar_generator: ^3.1.0+1
+  isar_community_generator: ^3.3.2
   build_runner: ^2.4.9
   flutter_launcher_icons: ^0.14.4
   mocktail: ^1.0.4

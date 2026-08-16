@@ -18,11 +18,26 @@ async function exportVideoWeb(videoUrl, assContent, optionsJson, onProgressCallb
     const { createFFmpeg, fetchFile } = window.FFmpeg;
     
     if (!ffmpegInstance) {
-      // Load standard multithreaded core from unpkg CDN
+      // Load the vendored WASM core locally (web/vendor/ffmpeg-core.js) so the
+      // web app works without a CDN. If the local file is missing (e.g. a stale
+      // build), fall back to the unpkg CDN mirror at the pinned version.
       ffmpegInstance = createFFmpeg({
         log: true,
-        corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+        corePath: 'vendor/ffmpeg-core.js',
       });
+      // Verify the local core exists before load(); if not, fall back to CDN.
+      try {
+        const localCore = await fetch('vendor/ffmpeg-core.js');
+        if (!localCore.ok) {
+          throw new Error('Local ffmpeg core missing');
+        }
+      } catch (e) {
+        console.warn('Local ffmpeg core unavailable, falling back to CDN:', e);
+        ffmpegInstance = createFFmpeg({
+          log: true,
+          corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+        });
+      }
     }
     
     if (!ffmpegInstance.isLoaded()) {

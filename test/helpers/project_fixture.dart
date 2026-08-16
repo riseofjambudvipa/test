@@ -1,6 +1,6 @@
 import 'package:capstudio/core/database/schemas/project.dart';
 import 'package:capstudio/core/database/schemas/word.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 WordSchema makeWord({
   String? wordId,

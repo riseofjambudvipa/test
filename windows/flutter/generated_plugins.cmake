@@ -5,7 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   desktop_drop
   ffmpeg_kit_flutter_new
-  isar_flutter_libs
+  isar_community_flutter_libs
   just_audio_windows
   media_kit_libs_windows_video
   media_kit_video
