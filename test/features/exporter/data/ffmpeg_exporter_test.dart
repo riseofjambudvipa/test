@@ -69,7 +69,7 @@ void main() {
 
   group('FfmpegExporter ASS Script Generation', () {
     test('should generate correct ASS subtitles script with karaoke timing and style tags', () {
-      final script = FfmpegExporter.generateAssScript(project, chunks);
+      final script = generateAssScript(project, chunks);
 
       // Verify Script Info resolution configurations
       expect(script, contains('PlayResX: 1080'));
@@ -100,12 +100,12 @@ void main() {
     test('should generate correct ASS animations for bounce, kineticTilt, wordReveal, and glowPulse styles', () {
       // 1. Bounce Animation
       project.config.animation = 'bounce';
-      var script = FfmpegExporter.generateAssScript(project, chunks);
+      var script = generateAssScript(project, chunks);
       expect(script, contains('{\\t(0,0,\\fscy125\\fscx85)\\t(500,500,\\fscx100\\fscy100)}'));
 
       // 2. Kinetic Tilt Animation
       project.config.animation = 'kineticTilt';
-      script = FfmpegExporter.generateAssScript(project, chunks);
+      script = generateAssScript(project, chunks);
       // Index 0: Hello (i is even -> tiltDeg = 5)
       expect(script, contains('{\\t(0,0,\\frz5)\\t(500,500,\\frz0)}'));
       // Index 1: world (i is odd -> tiltDeg = -5)
@@ -113,12 +113,12 @@ void main() {
 
       // 3. Word Reveal Animation
       project.config.animation = 'wordReveal';
-      script = FfmpegExporter.generateAssScript(project, chunks);
+      script = generateAssScript(project, chunks);
       expect(script, contains('{\\fscy0\\t(0,250,\\fscy100)}'));
 
       // 4. Glow Pulse Animation
       project.config.animation = 'glowPulse';
-      script = FfmpegExporter.generateAssScript(project, chunks);
+      script = generateAssScript(project, chunks);
       // outlineWidth is 18.0 because stroke is 'thick' and exportScale is 3.0, expansion is 3.0 * 3.0 = 9.0 -> bord27.0
       expect(script, contains('{\\t(0,0,\\bord27.0)\\t(500,500,\\bord18.0)}'));
     });
@@ -126,31 +126,31 @@ void main() {
     test('should map alignment and vertical margin based on style.top layout positions', () {
       // Top Position (top = 10%) -> \pos(540, 226)
       project.config.style.top = 10.0;
-      var script = FfmpegExporter.generateAssScript(project, chunks);
+      var script = generateAssScript(project, chunks);
       expect(script, contains(r'\pos(540,226)'));
 
       // Bottom Position (top = 80%) -> \pos(540, 1511)
       project.config.style.top = 80.0;
-      script = FfmpegExporter.generateAssScript(project, chunks);
+      script = generateAssScript(project, chunks);
       expect(script, contains(r'\pos(540,1511)'));
 
       // Middle Position (top = 50%) -> \pos(540, 960)
       project.config.style.top = 50.0;
-      script = FfmpegExporter.generateAssScript(project, chunks);
+      script = generateAssScript(project, chunks);
       expect(script, contains(r'\pos(540,960)'));
     });
 
     test('should verify outline width is 0.0 for stroke modes other than thick', () {
       project.config.stroke = 'soft';
-      var script = FfmpegExporter.generateAssScript(project, chunks);
+      var script = generateAssScript(project, chunks);
       expect(script, contains(',0.0,6.0,5,'));
 
       project.config.stroke = 'none';
-      script = FfmpegExporter.generateAssScript(project, chunks);
+      script = generateAssScript(project, chunks);
       expect(script, contains(',0.0,6.0,5,'));
 
       project.config.stroke = 'thick';
-      script = FfmpegExporter.generateAssScript(project, chunks);
+      script = generateAssScript(project, chunks);
       expect(script, contains(',18.0,6.0,5,'));
     });
 
@@ -158,7 +158,7 @@ void main() {
       // Bold weights: 600 (SemiBold), 700 (Bold), 800 (ExtraBold), 900 (Black), 'bold'
       for (final weight in ['600', '700', '800', '900', 'bold']) {
         project.config.style.fontWeight = weight;
-        final script = FfmpegExporter.generateAssScript(project, chunks);
+        final script = generateAssScript(project, chunks);
         // The ASS Style line contains bold flag as -1 when weight is bold
         // Format: ...,fontFamily,fontSize,primary,sec,outline,back,bold,...
         // Bold field position: after back color, value -1 = bold, 0 = normal
@@ -172,7 +172,7 @@ void main() {
       // Non-bold weights: 100, 200, 300, 400, 500
       for (final weight in ['100', '200', '300', '400', '500']) {
         project.config.style.fontWeight = weight;
-        final script = FfmpegExporter.generateAssScript(project, chunks);
+        final script = generateAssScript(project, chunks);
         expect(
           script,
           contains(',0,0,0,0,100,100'),
@@ -457,7 +457,7 @@ void main() {
 
   group('FfmpegExporter Active GPU Encoder Probing', () {
     test('should parse encoders command output correctly', () async {
-      final results = await FfmpegExporter.probeAvailableEncoders('invalid/ffmpeg');
+      final results = await probeAvailableEncoders('invalid/ffmpeg');
       expect(results, isEmpty);
     });
   });
