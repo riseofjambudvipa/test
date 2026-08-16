@@ -1,0 +1,978 @@
+{
+  "1f302": {
+    "kw": [
+      "rain",
+      "umbrella"
+    ]
+  },
+  "1f307": {
+    "kw": [
+      "building",
+      "cityscape",
+      "dusk",
+      "sun"
+    ]
+  },
+  "1f30a": {
+    "kw": [
+      "nature",
+      "ocean",
+      "sea",
+      "surf"
+    ]
+  },
+  "1f319": {
+    "kw": [
+      "moon",
+      "Ramadan",
+      "space"
+    ]
+  },
+  "1f31c": {
+    "kw": [
+      "dreams",
+      "face",
+      "moon",
+      "quarter"
+    ]
+  },
+  "1f321": {
+    "kw": [
+      "temperature",
+      "weather"
+    ]
+  },
+  "1f336": {
+    "kw": [
+      "chilli",
+      "pepper"
+    ]
+  },
+  "1f34b-200d-1f7e9": {
+    "kw": [
+      "citrus",
+      "cocktail",
+      "fruit",
+      "garnish",
+      "margarita",
+      "mojito",
+      "refreshing",
+      "salsa",
+      "sour",
+      "tequila",
+      "tropical",
+      "zest"
+    ]
+  },
+  "1f34c": {
+    "kw": [
+      "fruit",
+      "potassium"
+    ]
+  },
+  "1f34d": {
+    "kw": [
+      "colada",
+      "fruit",
+      "piña",
+      "tropical"
+    ]
+  },
+  "1f35f": {
+    "kw": [
+      "chips",
+      "fast",
+      "food",
+      "fries"
+    ]
+  },
+  "1f365": {
+    "kw": [
+      "cake",
+      "fishcake",
+      "narutomaki",
+      "pastry",
+      "swirl"
+    ]
+  },
+  "1f36a": {
+    "kw": [
+      "biscuit",
+      "chip",
+      "chocolate",
+      "dessert",
+      "sweet"
+    ]
+  },
+  "1f36c": {
+    "nm": "sweet"
+  },
+  "1f36e": {
+    "nm": "egg custard"
+  },
+  "1f373": {
+    "kw": [
+      "breakfast",
+      "easy",
+      "egg",
+      "fried",
+      "fry",
+      "frying",
+      "over",
+      "pan",
+      "restaurant",
+      "side",
+      "sunny",
+      "up"
+    ]
+  },
+  "1f376": {
+    "kw": [
+      "bar",
+      "beverage",
+      "bottle",
+      "cup",
+      "drink"
+    ]
+  },
+  "1f37f": {
+    "kw": [
+      "corn",
+      "film",
+      "movie",
+      "pop"
+    ]
+  },
+  "1f38f": {
+    "kw": [
+      "celebration",
+      "Japanese",
+      "koinobori",
+      "sock",
+      "streamer",
+      "wind"
+    ]
+  },
+  "1f397": {
+    "kw": [
+      "awareness",
+      "celebration",
+      "ribbon"
+    ]
+  },
+  "1f3a1": {
+    "kw": [
+      "amusement",
+      "park",
+      "theme",
+      "wheel"
+    ]
+  },
+  "1f3a2": {
+    "kw": [
+      "amusement",
+      "coaster",
+      "park",
+      "theme"
+    ]
+  },
+  "1f3cd": {
+    "kw": [
+      "motorbike",
+      "racing"
+    ]
+  },
+  "1f3d5": {
+    "kw": [
+      "tent"
+    ]
+  },
+  "1f3d7": {
+    "kw": [
+      "construction",
+      "crane",
+      "site"
+    ]
+  },
+  "1f3db": {
+    "kw": [
+      "building",
+      "column"
+    ]
+  },
+  "1f3dc": {
+    "kw": [
+      "cactus"
+    ]
+  },
+  "1f3dd": {
+    "kw": [
+      "island",
+      "palm",
+      "tree"
+    ]
+  },
+  "1f3de": {
+    "kw": [
+      "mountain",
+      "park",
+      "river",
+      "tree"
+    ]
+  },
+  "1f3ea": {
+    "kw": [
+      "24",
+      "building",
+      "hours",
+      "shop",
+      "store"
+    ]
+  },
+  "1f3f3-200d-1f308": {
+    "kw": [
+      "bisexual",
+      "flag",
+      "gay",
+      "genderqueer",
+      "glbt",
+      "glbtq",
+      "lesbian",
+      "lgbt",
+      "lgbtq",
+      "lgbtq+",
+      "lgbtqia",
+      "pride",
+      "queer",
+      "trans",
+      "transgender"
+    ]
+  },
+  "1f455": {
+    "kw": [
+      "blue",
+      "casual",
+      "clothes",
+      "clothing",
+      "collar",
+      "dressed",
+      "green",
+      "shirt",
+      "shopping",
+      "t shirt",
+      "tshirt",
+      "weekend"
+    ]
+  },
+  "1f4ad": {
+    "kw": [
+      "balloon",
+      "bubble",
+      "cartoon",
+      "cloud",
+      "comic",
+      "daydream",
+      "decisions",
+      "dream",
+      "idea",
+      "invent",
+      "invention",
+      "realise",
+      "think",
+      "wonder"
+    ]
+  },
+  "1f4af": {
+    "kw": [
+      "100",
+      "a+",
+      "agree",
+      "clearly",
+      "definitely",
+      "faithful",
+      "fleek",
+      "full",
+      "keep",
+      "perfect",
+      "point",
+      "score",
+      "TRUE",
+      "truth",
+      "yup"
+    ]
+  },
+  "1f4b0": {
+    "kw": [
+      "bag",
+      "bank",
+      "bet",
+      "billion",
+      "cash",
+      "cost",
+      "dollar",
+      "gold",
+      "million",
+      "moneybag",
+      "paid",
+      "paying",
+      "pot",
+      "rich",
+      "win"
+    ]
+  },
+  "1f504": {
+    "kw": [
+      "again",
+      "anticlockwise",
+      "arrow",
+      "arrows",
+      "button",
+      "counterclockwise",
+      "deja",
+      "refresh",
+      "rewindershins",
+      "vu"
+    ]
+  },
+  "1f54d": {
+    "kw": [
+      "Jew",
+      "Jewish",
+      "Judaism",
+      "religion",
+      "temple"
+    ]
+  },
+  "1f556": {
+    "kw": [
+      "7",
+      "7:00",
+      "clock",
+      "o’clock",
+      "time"
+    ]
+  },
+  "1f559": {
+    "kw": [
+      "10",
+      "10:00",
+      "clock",
+      "o’clock",
+      "time"
+    ]
+  },
+  "1f55c": {
+    "kw": [
+      "1:30",
+      "1.30",
+      "clock",
+      "half",
+      "one",
+      "past"
+    ]
+  },
+  "1f55d": {
+    "kw": [
+      "2:30",
+      "2.30",
+      "clock",
+      "half",
+      "past",
+      "two"
+    ]
+  },
+  "1f55e": {
+    "kw": [
+      "3:30",
+      "3.30",
+      "clock",
+      "half",
+      "past",
+      "three"
+    ]
+  },
+  "1f55f": {
+    "kw": [
+      "4:30",
+      "4.30",
+      "clock",
+      "four",
+      "half",
+      "past"
+    ]
+  },
+  "1f560": {
+    "kw": [
+      "5:30",
+      "5.30",
+      "clock",
+      "five",
+      "half",
+      "past"
+    ]
+  },
+  "1f561": {
+    "kw": [
+      "6:30",
+      "6.30",
+      "clock",
+      "half",
+      "past",
+      "six"
+    ]
+  },
+  "1f562": {
+    "kw": [
+      "7:30",
+      "7.30",
+      "clock",
+      "half",
+      "past",
+      "seven"
+    ]
+  },
+  "1f563": {
+    "kw": [
+      "8:30",
+      "8.30",
+      "clock",
+      "eight",
+      "half",
+      "past"
+    ]
+  },
+  "1f564": {
+    "kw": [
+      "9:30",
+      "9.30",
+      "clock",
+      "half",
+      "nine",
+      "past"
+    ]
+  },
+  "1f565": {
+    "kw": [
+      "10:30",
+      "10.30",
+      "clock",
+      "half",
+      "past",
+      "ten"
+    ]
+  },
+  "1f566": {
+    "kw": [
+      "11:30",
+      "11.30",
+      "clock",
+      "eleven",
+      "half",
+      "past"
+    ]
+  },
+  "1f567": {
+    "kw": [
+      "12:30",
+      "12.30",
+      "clock",
+      "half",
+      "past",
+      "twelve"
+    ]
+  },
+  "1f680": {
+    "kw": [
+      "launch",
+      "space",
+      "travel"
+    ]
+  },
+  "1f683": {
+    "nm": "railway carriage",
+    "kw": [
+      "car",
+      "carriage",
+      "electric",
+      "train",
+      "tram",
+      "trolleybus"
+    ]
+  },
+  "1f684": {
+    "kw": [
+      "railway",
+      "shinkansen",
+      "speed",
+      "TGV",
+      "train"
+    ]
+  },
+  "1f687": {
+    "kw": [
+      "subway",
+      "travel",
+      "tube",
+      "underground"
+    ]
+  },
+  "1f68c": {
+    "kw": [
+      "coach",
+      "school",
+      "vehicle"
+    ]
+  },
+  "1f68d": {
+    "kw": [
+      "bus",
+      "cars",
+      "coach"
+    ]
+  },
+  "1f68f": {
+    "kw": [
+      "stop"
+    ]
+  },
+  "1f693": {
+    "kw": [
+      "car",
+      "cops",
+      "patrol"
+    ]
+  },
+  "1f696": {
+    "kw": [
+      "cab",
+      "cabbie",
+      "car",
+      "drive",
+      "hail",
+      "taxi",
+      "yellow"
+    ]
+  },
+  "1f698": {
+    "kw": [
+      "car",
+      "drive",
+      "vehicle"
+    ]
+  },
+  "1f699": {
+    "kw": [
+      "4x4",
+      "car",
+      "drive",
+      "off-road",
+      "recreational",
+      "suv",
+      "utility",
+      "vehicle"
+    ]
+  },
+  "1f69a": {
+    "kw": [
+      "drive",
+      "lorry",
+      "truck",
+      "vehicle"
+    ]
+  },
+  "1f69b": {
+    "kw": [
+      "drive",
+      "lorry",
+      "move",
+      "truck",
+      "vehicle"
+    ]
+  },
+  "1f69e": {
+    "kw": [
+      "car",
+      "carriage",
+      "railway",
+      "trip"
+    ]
+  },
+  "1f69f": {
+    "kw": [
+      "monorail",
+      "railway"
+    ]
+  },
+  "1f6a5": {
+    "kw": [
+      "junction",
+      "light",
+      "signal",
+      "traffic"
+    ]
+  },
+  "1f6a6": {
+    "kw": [
+      "junction",
+      "signal"
+    ]
+  },
+  "1f6ce": {
+    "kw": [
+      "bell",
+      "concierge",
+      "hotel",
+      "reception",
+      "service"
+    ]
+  },
+  "1f6dd": {
+    "kw": [
+      "park",
+      "play",
+      "slide"
+    ]
+  },
+  "1f6df": {
+    "kw": [
+      "buoy",
+      "float",
+      "life",
+      "preserver",
+      "rescue",
+      "ring",
+      "safety",
+      "save",
+      "saver"
+    ]
+  },
+  "1f6e9": {
+    "kw": [
+      "aeroplane",
+      "aircraft",
+      "light",
+      "plane"
+    ]
+  },
+  "1f6eb": {
+    "kw": [
+      "departure",
+      "plane",
+      "take-off"
+    ]
+  },
+  "1f6ec": {
+    "kw": [
+      "arrival",
+      "arriving",
+      "landing",
+      "plane"
+    ]
+  },
+  "1f6f3": {
+    "kw": [
+      "cruise",
+      "liner",
+      "ship"
+    ]
+  },
+  "1f6f6": {
+    "kw": [
+      "boat",
+      "kayak"
+    ]
+  },
+  "1f6f8": {
+    "kw": [
+      "aliens",
+      "extraterrestrial",
+      "saucer",
+      "UFO"
+    ]
+  },
+  "1f6fa": {
+    "kw": [
+      "rickshaw",
+      "tuk tuk",
+      "tuk-tuk"
+    ]
+  },
+  "1f943": {
+    "kw": [
+      "glass",
+      "scotch",
+      "shot",
+      "spirits",
+      "whiskey",
+      "whisky"
+    ]
+  },
+  "1f961": {
+    "kw": [
+      "box",
+      "Chinese",
+      "chopsticks",
+      "delivery",
+      "food",
+      "oyster",
+      "pail",
+      "takeaway"
+    ]
+  },
+  "1f964": {
+    "kw": [
+      "drink",
+      "fizzy",
+      "juice",
+      "malt",
+      "milkshake",
+      "pop",
+      "soda",
+      "soft",
+      "straw",
+      "water"
+    ]
+  },
+  "1f969": {
+    "kw": [
+      "chop",
+      "cut",
+      "lamb",
+      "meat",
+      "pork",
+      "red",
+      "steak"
+    ]
+  },
+  "1f96c": {
+    "kw": [
+      "bok",
+      "cabbage",
+      "choi",
+      "green",
+      "kale",
+      "lettuce",
+      "pak"
+    ]
+  },
+  "1f9bc": {
+    "kw": [
+      "accessibility",
+      "wheelchair"
+    ]
+  },
+  "1f9c3": {
+    "nm": "drink carton"
+  },
+  "1f9f1": {
+    "kw": [
+      "clay",
+      "mortar",
+      "wall"
+    ]
+  },
+  "1fa90": {
+    "kw": [
+      "planet",
+      "Saturn",
+      "saturnine"
+    ]
+  },
+  "1fab5": {
+    "kw": [
+      "log",
+      "lumber",
+      "stump",
+      "timber"
+    ]
+  },
+  "1fad1": {
+    "kw": [
+      "bell",
+      "capsicum",
+      "sweet",
+      "vegetable"
+    ]
+  },
+  "1fad3": {
+    "kw": [
+      "arepa",
+      "bread",
+      "food",
+      "gordita",
+      "lavash",
+      "naan",
+      "nan",
+      "pitta"
+    ]
+  },
+  "1fad6": {
+    "kw": [
+      "brew",
+      "drink",
+      "food",
+      "pot",
+      "tea"
+    ]
+  },
+  "1fada": {
+    "kw": [
+      "beer",
+      "ginger",
+      "health",
+      "herb",
+      "natural",
+      "spice"
+    ]
+  },
+  "1fadb": {
+    "kw": [
+      "beans",
+      "beanstalk",
+      "edamame",
+      "legume",
+      "pod",
+      "soya",
+      "vegetable",
+      "veggie"
+    ]
+  },
+  "231a": {
+    "kw": [
+      "clock",
+      "time",
+      "wristwatch"
+    ]
+  },
+  "25a1": {
+    "kw": [
+      "white square"
+    ]
+  },
+  "25ac": {
+    "kw": [
+      "black rectangle"
+    ]
+  },
+  "25ad": {
+    "kw": [
+      "white rectangle"
+    ]
+  },
+  "25ae": {
+    "kw": [
+      "black vertical rectangle"
+    ]
+  },
+  "25c9": {
+    "kw": [
+      "circled dot",
+      "concentric circles filled",
+      "fisheye",
+      "white circle containing black small circle"
+    ]
+  },
+  "25d0": {
+    "kw": [
+      "circle",
+      "filled",
+      "half",
+      "left"
+    ]
+  },
+  "25d1": {
+    "kw": [
+      "circle",
+      "filled",
+      "half",
+      "right"
+    ]
+  },
+  "2600": {
+    "kw": [
+      "bright",
+      "rays",
+      "space",
+      "sunny",
+      "sunshine",
+      "weather"
+    ]
+  },
+  "2601": {
+    "kw": [
+      "cloudy",
+      "weather"
+    ]
+  },
+  "2602": {
+    "kw": [
+      "open",
+      "rain"
+    ]
+  },
+  "2614": {
+    "kw": [
+      "drops",
+      "open",
+      "rain",
+      "raindrops",
+      "weather"
+    ]
+  },
+  "26c8": {
+    "kw": [
+      "lightning",
+      "rain",
+      "thunder",
+      "thunderstorm",
+      "weather"
+    ]
+  },
+  "26e9": {
+    "nm": "Shinto shrine",
+    "kw": [
+      "religion",
+      "shrine",
+      "torii"
+    ]
+  },
+  "26f1": {
+    "kw": [
+      "beach",
+      "ground",
+      "sun",
+      "sunshade"
+    ]
+  },
+  "26f5": {
+    "nm": "sailing boat",
+    "kw": [
+      "boat",
+      "resort",
+      "sea",
+      "yacht"
+    ]
+  },
+  "26fd": {
+    "kw": [
+      "diesel",
+      "petrol",
+      "pump",
+      "station"
+    ]
+  },
+  "2708": {
+    "kw": [
+      "fly",
+      "flying",
+      "jet",
+      "plane",
+      "travel"
+    ]
+  },
+  "2b50": {
+    "kw": [
+      "astronomy"
+    ]
+  }
+}

@@ -1,0 +1,957 @@
+{
+  "1f1e6-1f1eb": {
+    "nm": "bendera: Afghanistani"
+  },
+  "1f1e6-1f1ec": {
+    "nm": "bendera: Antigua na Babuda"
+  },
+  "1f1e6-1f1ee": {
+    "nm": "bendera: Anguila"
+  },
+  "1f1e6-1f1f6": {
+    "nm": "bendera: Antaktika"
+  },
+  "1f1e6-1f1ff": {
+    "nm": "bendera: Azabajani"
+  },
+  "1f1e7-1f1e7": {
+    "nm": "bendera: Babados"
+  },
+  "1f1e7-1f1ef": {
+    "nm": "bendera: Benini"
+  },
+  "1f1e7-1f1f8": {
+    "nm": "bendera: Bahamas"
+  },
+  "1f1e7-1f1f9": {
+    "nm": "bendera: Bhutani"
+  },
+  "1f1e7-1f1fe": {
+    "nm": "bendera: Belarusi"
+  },
+  "1f1e8-1f1e8": {
+    "nm": "bendera: Visiwa vya Kokos (Keeling)"
+  },
+  "1f1e8-1f1fb": {
+    "nm": "bendera: Kepuvede"
+  },
+  "1f1e8-1f1fc": {
+    "nm": "bendera: Kurakao"
+  },
+  "1f1ea-1f1e6": {
+    "nm": "bendera: Keuta na Melilla"
+  },
+  "1f1ea-1f1e8": {
+    "nm": "bendera: Ekwado"
+  },
+  "1f1ec-1f1e6": {
+    "nm": "bendera: Gaboni"
+  },
+  "1f1ec-1f1f5": {
+    "nm": "bendera: Gwadelupe"
+  },
+  "1f1ec-1f1f8": {
+    "nm": "bendera: Visiwa vya Jojia Kusini na Sandwich Kusini"
+  },
+  "1f1ec-1f1f9": {
+    "nm": "bendera: Gwatemala"
+  },
+  "1f1ec-1f1fa": {
+    "nm": "bendera: Guami"
+  },
+  "1f1ed-1f1f7": {
+    "nm": "bendera: Kroashia"
+  },
+  "1f1ef-1f1f4": {
+    "nm": "bendera: Yordani"
+  },
+  "1f1f1-1f1e6": {
+    "nm": "bendera: Laosi"
+  },
+  "1f1f1-1f1e7": {
+    "nm": "bendera: Lebanoni"
+  },
+  "1f1f1-1f1ee": {
+    "nm": "bendera: Lishenteni"
+  },
+  "1f1f1-1f1f8": {
+    "nm": "bendera: Lesotho"
+  },
+  "1f1f1-1f1fa": {
+    "nm": "bendera: Lasembagi"
+  },
+  "1f1f1-1f1fb": {
+    "nm": "bendera: Lativia"
+  },
+  "1f1f2-1f1e6": {
+    "nm": "bendera: Moroko"
+  },
+  "1f1f2-1f1e8": {
+    "nm": "bendera: Monako"
+  },
+  "1f1f2-1f1f0": {
+    "nm": "bendera: Masedonia"
+  },
+  "1f1f2-1f1f2": {
+    "nm": "bendera: Myama (Burma)"
+  },
+  "1f1f2-1f1f8": {
+    "nm": "bendera: Montserati"
+  },
+  "1f1f3-1f1e8": {
+    "nm": "bendera: Nyukaledonia"
+  },
+  "1f1f3-1f1ea": {
+    "nm": "bendera: Nijeri"
+  },
+  "1f1f3-1f1f4": {
+    "nm": "bendera: Norwe"
+  },
+  "1f1f3-1f1f5": {
+    "nm": "bendera: Nepali"
+  },
+  "1f1f4-1f1f2": {
+    "nm": "bendera: Omani"
+  },
+  "1f1f5-1f1eb": {
+    "nm": "bendera: Polinesia ya Ufaransa"
+  },
+  "1f1f5-1f1ec": {
+    "nm": "bendera: Papua Guinea Mpya"
+  },
+  "1f1f5-1f1f1": {
+    "nm": "bendera: Polandi"
+  },
+  "1f1f5-1f1f2": {
+    "nm": "bendera: St. Pierre na Miquelon"
+  },
+  "1f1f5-1f1f7": {
+    "nm": "bendera: Pwetoriko"
+  },
+  "1f1f5-1f1f8": {
+    "nm": "bendera: Himaya za Palestina"
+  },
+  "1f1f5-1f1fe": {
+    "nm": "bendera: Paragwai"
+  },
+  "1f1f6-1f1e6": {
+    "nm": "bendera: Katari"
+  },
+  "1f1f8-1f1ec": {
+    "nm": "bendera: Singapuri"
+  },
+  "1f1f8-1f1f9": {
+    "nm": "bendera: Sao Tome na Prinsipe"
+  },
+  "1f1f8-1f1fb": {
+    "nm": "bendera: Elsalvado"
+  },
+  "1f1f8-1f1fe": {
+    "nm": "bendera: Shamu"
+  },
+  "1f1f9-1f1e9": {
+    "nm": "bendera: Chadi"
+  },
+  "1f1f9-1f1ed": {
+    "nm": "bendera: Thailandi"
+  },
+  "1f1f9-1f1f2": {
+    "nm": "bendera: Turukimenstani"
+  },
+  "1f1f9-1f1fc": {
+    "nm": "bendera: Taiwani"
+  },
+  "1f1fa-1f1e6": {
+    "nm": "bendera: Ukreni"
+  },
+  "1f1fa-1f1fe": {
+    "nm": "bendera: Urugwai"
+  },
+  "1f1fb-1f1e6": {
+    "nm": "bendera: Mji wa Vatikani"
+  },
+  "1f1fb-1f1ec": {
+    "nm": "bendera: Visiwa vya Virgin vya Uingereza"
+  },
+  "1f1fb-1f1ee": {
+    "nm": "bendera: Visiwa vya Virgin vya Marekani"
+  },
+  "1f1fe-1f1f9": {
+    "nm": "bendera: Mayote"
+  },
+  "1f304": {
+    "kw": [
+      "asubuhi",
+      "hali ya hewa",
+      "jua",
+      "macheo",
+      "macheo kwenye milima",
+      "mlima"
+    ]
+  },
+  "1f30c": {
+    "kw": [
+      "anga",
+      "hali ya jewa",
+      "kilimia"
+    ]
+  },
+  "1f312": {
+    "kw": [
+      "anga",
+      "hali ya hewa",
+      "kuanza",
+      "mwezi",
+      "mwezi mwandamo"
+    ]
+  },
+  "1f318": {
+    "kw": [
+      "anga",
+      "hali ya hewa",
+      "kuisha",
+      "mwezi",
+      "mwezi kongo",
+      "mwezi mwandamo"
+    ]
+  },
+  "1f320": {
+    "kw": [
+      "anga",
+      "kimwondo",
+      "kuanguka",
+      "nyota"
+    ]
+  },
+  "1f345": {
+    "kw": [
+      "mboga",
+      "mmea",
+      "nyanya"
+    ]
+  },
+  "1f346": {
+    "kw": [
+      "biringanya",
+      "mboga",
+      "mmea"
+    ]
+  },
+  "1f35c": {
+    "nm": "bakuli lenye tambi",
+    "kw": [
+      "bakuli",
+      "bakuli lenye tambi",
+      "kupika kwa mvuke",
+      "tambi",
+      "tambi za kijapani"
+    ]
+  },
+  "1f37a": {
+    "kw": [
+      "baa",
+      "bia",
+      "kikombe",
+      "kikombe cha bia",
+      "kinywaji"
+    ]
+  },
+  "1f37b": {
+    "nm": "vikombe vya bia vinavyogonganishwa",
+    "kw": [
+      "baa",
+      "bia",
+      "gonganisha",
+      "kikombe",
+      "kinywaji",
+      "vikombe vya bia vinavyogonganishwa"
+    ]
+  },
+  "1f3cb-1f3fb-200d-2640": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamke anayebeba vyuma vizito",
+      "ngozi nyeupe",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3cb-1f3fb-200d-2642": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamume anayebeba vyuma vizito",
+      "ngozi nyeupe",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3cb-1f3fc-200d-2640": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamke anayebeba vyuma vizito",
+      "ngozi nyeupe kiasi",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3cb-1f3fc-200d-2642": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamume anayebeba vyuma vizito",
+      "ngozi nyeupe kiasi",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3cb-1f3fd-200d-2640": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamke anayebeba vyuma vizito",
+      "ngozi ya kahawia",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3cb-1f3fd-200d-2642": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamume anayebeba vyuma vizito",
+      "ngozi ya kahawia",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3cb-1f3fe-200d-2640": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamke anayebeba vyuma vizito",
+      "ngozi nyeusi kiasi",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3cb-1f3fe-200d-2642": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamume anayebeba vyuma vizito",
+      "ngozi nyeusi kiasi",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3cb-1f3ff-200d-2640": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamke anayebeba vyuma vizito",
+      "ngozi nyeusi",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3cb-1f3ff-200d-2642": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamume anayebeba vyuma vizito",
+      "ngozi nyeusi",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3cb-200d-2640": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamke anayebeba vyuma vizito",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3cb-200d-2642": {
+    "kw": [
+      "mbeba vyuma",
+      "mwanamume anayebeba vyuma vizito",
+      "uzani",
+      "uzito"
+    ]
+  },
+  "1f3f4-e0067-e0062-e0077-e006c-e0073-e007f": {
+    "nm": "bendera: Wales"
+  },
+  "1f44a": {
+    "nm": "ngumi iliyonyooshewa",
+    "kw": [
+      "konde",
+      "kunja ngumi",
+      "mkono",
+      "mwili",
+      "ngumi",
+      "ngumi iliyonyooshewa"
+    ]
+  },
+  "1f44a-1f3fb": {
+    "nm": "ngumi iliyonyooshewa: ngozi nyeupe",
+    "kw": [
+      "konde",
+      "kunja ngumi",
+      "mkono",
+      "mwili",
+      "ngozi nyeupe",
+      "ngumi",
+      "ngumi iliyonyooshewa"
+    ]
+  },
+  "1f44a-1f3fc": {
+    "nm": "ngumi iliyonyooshewa: ngozi nyeupe kiasi",
+    "kw": [
+      "konde",
+      "kunja ngumi",
+      "mkono",
+      "mwili",
+      "ngozi nyeupe kiasi",
+      "ngumi",
+      "ngumi iliyonyooshewa"
+    ]
+  },
+  "1f44a-1f3fd": {
+    "nm": "ngumi iliyonyooshewa: ngozi ya kahawia",
+    "kw": [
+      "konde",
+      "kunja ngumi",
+      "mkono",
+      "mwili",
+      "ngozi ya kahawia",
+      "ngumi",
+      "ngumi iliyonyooshewa"
+    ]
+  },
+  "1f44a-1f3fe": {
+    "nm": "ngumi iliyonyooshewa: ngozi nyeusi kiasi",
+    "kw": [
+      "konde",
+      "kunja ngumi",
+      "mkono",
+      "mwili",
+      "ngozi nyeusi kiasi",
+      "ngumi",
+      "ngumi iliyonyooshewa"
+    ]
+  },
+  "1f44a-1f3ff": {
+    "nm": "ngumi iliyonyooshewa: ngozi nyeusi",
+    "kw": [
+      "konde",
+      "kunja ngumi",
+      "mkono",
+      "mwili",
+      "ngozi nyeusi",
+      "ngumi",
+      "ngumi iliyonyooshewa"
+    ]
+  },
+  "1f453": {
+    "kw": [
+      "jicho",
+      "mavazi",
+      "miwani",
+      "miwani ya macho"
+    ]
+  },
+  "1f468-1f3fb-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi na kofia ya kufuzu",
+      "ngozi nyeupe"
+    ]
+  },
+  "1f468-1f3fc-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi na kofia ya kufuzu",
+      "ngozi nyeupe kiasi"
+    ]
+  },
+  "1f468-1f3fd-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi na kofia ya kufuzu",
+      "ngozi ya kahawia"
+    ]
+  },
+  "1f468-1f3fe-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi na kofia ya kufuzu",
+      "ngozi nyeusi kiasi"
+    ]
+  },
+  "1f468-1f3ff-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi na kofia ya kufuzu",
+      "ngozi nyeusi"
+    ]
+  },
+  "1f468-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi na kofia ya kufuzu"
+    ]
+  },
+  "1f469-1f3fb-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi wa kike na kofia ya kufuzu",
+      "ngozi nyeupe"
+    ]
+  },
+  "1f469-1f3fc-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi wa kike na kofia ya kufuzu",
+      "ngozi nyeupe kiasi"
+    ]
+  },
+  "1f469-1f3fd-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi wa kike na kofia ya kufuzu",
+      "ngozi ya kahawia"
+    ]
+  },
+  "1f469-1f3fe-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi wa kike na kofia ya kufuzu",
+      "ngozi nyeusi kiasi"
+    ]
+  },
+  "1f469-1f3ff-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi wa kike na kofia ya kufuzu",
+      "ngozi nyeusi"
+    ]
+  },
+  "1f469-200d-1f393": {
+    "kw": [
+      "fuzu",
+      "hitimu",
+      "kofia",
+      "mahafali",
+      "mwanafunzi wa kike na kofia ya kufuzu"
+    ]
+  },
+  "1f46e": {
+    "nm": "afisa wa polisi",
+    "kw": [
+      "afisa",
+      "afisa wa polisi",
+      "polisi"
+    ]
+  },
+  "1f46e-1f3fb": {
+    "nm": "afisa wa polisi: ngozi nyeupe",
+    "kw": [
+      "afisa",
+      "afisa wa polisi",
+      "ngozi nyeupe",
+      "polisi"
+    ]
+  },
+  "1f46e-1f3fc": {
+    "nm": "afisa wa polisi: ngozi nyeupe kiasi",
+    "kw": [
+      "afisa",
+      "afisa wa polisi",
+      "ngozi nyeupe kiasi",
+      "polisi"
+    ]
+  },
+  "1f46e-1f3fd": {
+    "nm": "afisa wa polisi: ngozi ya kahawia",
+    "kw": [
+      "afisa",
+      "afisa wa polisi",
+      "ngozi ya kahawia",
+      "polisi"
+    ]
+  },
+  "1f46e-1f3fe": {
+    "nm": "afisa wa polisi: ngozi nyeusi kiasi",
+    "kw": [
+      "afisa",
+      "afisa wa polisi",
+      "ngozi nyeusi kiasi",
+      "polisi"
+    ]
+  },
+  "1f46e-1f3ff": {
+    "nm": "afisa wa polisi: ngozi nyeusi",
+    "kw": [
+      "afisa",
+      "afisa wa polisi",
+      "ngozi nyeusi",
+      "polisi"
+    ]
+  },
+  "1f497": {
+    "nm": "moyo unaokua",
+    "kw": [
+      "furahia",
+      "kukua",
+      "moyo",
+      "moyo uanokua",
+      "moyo unaokua",
+      "mpaigo ya moyo",
+      "wasiwasi"
+    ]
+  },
+  "1f4b1": {
+    "nm": "ubadilishanaji wa sarafu",
+    "kw": [
+      "benki",
+      "pesa",
+      "sarafu",
+      "sarafu mbalimbali",
+      "ubadilishaji wa pesa",
+      "ubadilishanaji wa sarafu"
+    ]
+  },
+  "1f4b2": {
+    "nm": "alama nzito ya dola",
+    "kw": [
+      "alama nzito ya dola",
+      "dola",
+      "pesa",
+      "sarafu"
+    ]
+  },
+  "1f4b9": {
+    "kw": [
+      "benki",
+      "chati",
+      "chati inayopanda yenye yeni",
+      "grafu",
+      "juu",
+      "kupanda",
+      "ongezeka",
+      "pesa",
+      "sarafu",
+      "soko",
+      "uelekeo",
+      "yeni"
+    ]
+  },
+  "1f4bd": {
+    "kw": [
+      "diski",
+      "diski ndogo",
+      "kompyuta",
+      "mwangaza"
+    ]
+  },
+  "1f4bf": {
+    "nm": "diski ya kutumia mwangaza",
+    "kw": [
+      "blu-ray",
+      "cd",
+      "diski",
+      "diski ya kutumia mwangaza",
+      "dvd",
+      "kompyuta",
+      "mwangaza"
+    ]
+  },
+  "1f4c0": {
+    "kw": [
+      "blu-ray",
+      "cd",
+      "diski",
+      "diski dijitali",
+      "kompyuta",
+      "mwangaza"
+    ]
+  },
+  "1f4f5": {
+    "kw": [
+      "hapana",
+      "katazwa",
+      "marufuku",
+      "simu",
+      "simu ya mkononi",
+      "simu za mkononi haziruhusiwi",
+      "siyo",
+      "ya mkononi"
+    ]
+  },
+  "1f505": {
+    "nm": "kitufe cha kufifisha mwanga",
+    "kw": [
+      "chini",
+      "fifia",
+      "kitufe cha kufifisha mwanga",
+      "kitufe cha kufifiza mwanga",
+      "kung’aa"
+    ]
+  },
+  "1f508": {
+    "nm": "sauti ya chini ya spika"
+  },
+  "1f525": {
+    "kw": [
+      "moto",
+      "mwale",
+      "zana"
+    ]
+  },
+  "1f5e3": {
+    "nm": "kichwa kinachozungumza",
+    "kw": [
+      "kichwa",
+      "kichwa kinachozungumza",
+      "kivuli",
+      "kuzungumza",
+      "uso",
+      "zungumza"
+    ]
+  },
+  "1f60e": {
+    "kw": [
+      "hali ya hewa",
+      "inayong’aa",
+      "jua",
+      "miwani ya jua",
+      "tabasamu",
+      "uso unaotabasamu uliovaa miwani",
+      "vali la macho"
+    ]
+  },
+  "1f6a0": {
+    "kw": [
+      "gari",
+      "gari linalosafiri kwenye kamba zilizoning’inizwa hewani",
+      "gari linalosafiri milimani kwa kamba",
+      "kebo"
+    ]
+  },
+  "1f6a1": {
+    "kw": [
+      "gari",
+      "gari linalosafiri kwenye kamba zilizoning’inizwa hewani",
+      "hewani",
+      "kebo",
+      "njia ya kamba",
+      "njia ya tramu",
+      "tramu inayosafiri angani kwa kamba"
+    ]
+  },
+  "1f6d2": {
+    "nm": "kigari cha kununulia bidhaa"
+  },
+  "1f6ec": {
+    "kw": [
+      "gari",
+      "inawasili",
+      "kutua",
+      "kuwasili",
+      "ndege",
+      "ndege inayowasili"
+    ]
+  },
+  "1f926-1f3fb-200d-2640": {
+    "nm": "mwanamke anayeashiria kutoamini: ngozi nyeupe",
+    "kw": [
+      "ishara",
+      "kutoamini",
+      "mwanamke anayeashiria kutoamini",
+      "mwanamke anayueashiria kutoamini",
+      "ngozi nyeupe"
+    ]
+  },
+  "1f926-1f3fc-200d-2640": {
+    "nm": "mwanamke anayeashiria kutoamini: ngozi nyeupe kiasi",
+    "kw": [
+      "ishara",
+      "kutoamini",
+      "mwanamke anayeashiria kutoamini",
+      "mwanamke anayueashiria kutoamini",
+      "ngozi nyeupe kiasi"
+    ]
+  },
+  "1f926-1f3fd-200d-2640": {
+    "nm": "mwanamke anayeashiria kutoamini: ngozi ya kahawia",
+    "kw": [
+      "ishara",
+      "kutoamini",
+      "mwanamke anayeashiria kutoamini",
+      "mwanamke anayueashiria kutoamini",
+      "ngozi ya kahawia"
+    ]
+  },
+  "1f926-1f3fe-200d-2640": {
+    "nm": "mwanamke anayeashiria kutoamini: ngozi nyeusi kiasi",
+    "kw": [
+      "ishara",
+      "kutoamini",
+      "mwanamke anayeashiria kutoamini",
+      "mwanamke anayueashiria kutoamini",
+      "ngozi nyeusi kiasi"
+    ]
+  },
+  "1f926-1f3ff-200d-2640": {
+    "nm": "mwanamke anayeashiria kutoamini: ngozi nyeusi",
+    "kw": [
+      "ishara",
+      "kutoamini",
+      "mwanamke anayeashiria kutoamini",
+      "mwanamke anayueashiria kutoamini",
+      "ngozi nyeusi"
+    ]
+  },
+  "1f926-200d-2640": {
+    "nm": "mwanamke anayeashiria kutoamini",
+    "kw": [
+      "ishara",
+      "kutoamini",
+      "mwanamke anayeashiria kutoamini",
+      "mwanamke anayueashiria kutoamini"
+    ]
+  },
+  "1f939": {
+    "nm": "mtu anayecheza mipira mingi",
+    "kw": [
+      "mtu anayecheza mipira mingi",
+      "shughuli nyingi"
+    ]
+  },
+  "1f939-1f3fb": {
+    "nm": "mtu anayecheza mipira mingi: ngozi nyeupe",
+    "kw": [
+      "mtu anayecheza mipira mingi",
+      "ngozi nyeupe",
+      "shughuli nyingi"
+    ]
+  },
+  "1f939-1f3fc": {
+    "nm": "mtu anayecheza mipira mingi: ngozi nyeupe kiasi",
+    "kw": [
+      "mtu anayecheza mipira mingi",
+      "ngozi nyeupe kiasi",
+      "shughuli nyingi"
+    ]
+  },
+  "1f939-1f3fd": {
+    "nm": "mtu anayecheza mipira mingi: ngozi ya kahawia",
+    "kw": [
+      "mtu anayecheza mipira mingi",
+      "ngozi ya kahawia",
+      "shughuli nyingi"
+    ]
+  },
+  "1f939-1f3fe": {
+    "nm": "mtu anayecheza mipira mingi: ngozi nyeusi kiasi",
+    "kw": [
+      "mtu anayecheza mipira mingi",
+      "ngozi nyeusi kiasi",
+      "shughuli nyingi"
+    ]
+  },
+  "1f939-1f3ff": {
+    "nm": "mtu anayecheza mipira mingi: ngozi nyeusi",
+    "kw": [
+      "mtu anayecheza mipira mingi",
+      "ngozi nyeusi",
+      "shughuli nyingi"
+    ]
+  },
+  "1f999": {
+    "nm": "lama",
+    "kw": [
+      "alpaca",
+      "guanaco",
+      "lama",
+      "sufu",
+      "vicuña"
+    ]
+  },
+  "1f9e9": {
+    "nm": "kipande cha mchezo wa mafumbo"
+  },
+  "1f9ec": {
+    "kw": [
+      "dna",
+      "jenetiki",
+      "jeni",
+      "mageuko",
+      "maisha",
+      "mwanabiolojia"
+    ]
+  },
+  "1fa84": {
+    "nm": "kifimbo cha miujiza",
+    "kw": [
+      "kifimbo cha miujiza",
+      "mchawi",
+      "muujiza"
+    ]
+  },
+  "2623": {
+    "nm": "tahadhari ya kibilojia",
+    "kw": [
+      "tahadhari ya kibilojia",
+      "tahadhari ya kibiolojia"
+    ]
+  },
+  "264f": {
+    "nm": "nyota ya nge",
+    "kw": [
+      "nge",
+      "nyota ya nge",
+      "zodiaki"
+    ]
+  },
+  "2668": {
+    "kw": [
+      "chemchemi za maji moto",
+      "chemichemi",
+      "chemichemi za maji ya moto",
+      "moto",
+      "mvuke"
+    ]
+  },
+  "26f4": {
+    "nm": "feri"
+  }
+}

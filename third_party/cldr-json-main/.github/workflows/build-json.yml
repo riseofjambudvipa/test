@@ -1,0 +1,108 @@
+name: build-json
+
+permissions:
+  packages: read
+
+on:
+  workflow_dispatch:
+    inputs:
+        git-ref:
+            description: Git Ref to build (Optional)
+            required: false
+        version:
+            description: Package Version (e.g. 46.0.0 or 46.0.0-BETA2 )
+            required: true
+        cldr-repo:
+            description: CLDR (tool) repo to use
+            required: true
+            default: 'unicode-org/cldr'
+        cldr-ref:
+            description: 'CLDR (tool) ref/tag/branch to use'
+            required: true
+            default: 'main'
+        data-repo:
+            description: 'Data (staging) repo to use (if "generate", generate production data)'
+            required: true
+            default: 'generate'
+        data-ref:
+            description: 'Data (staging) ref/tag/branch to use'
+            required: false
+            default: 'main'
+        data-dir:
+            description: 'Path in Data repo'
+            required: false
+            default: 'production/'
+
+jobs:
+    build:
+        name: Build cldr-json
+        runs-on: ubuntu-latest
+        steps:
+            - name: Set up JDK
+              uses: actions/setup-java@v5
+              with:
+                java-version: 11
+                distribution: 'temurin'
+            - name: Clone cldr-json
+              uses: actions/checkout@v6
+              with:
+                ref: ${{ github.event.inputs.git-ref }}
+                path: cldr-json
+            - name: Clone cldr
+              uses: actions/checkout@v6
+              with:
+                ref: ${{ github.event.inputs.cldr-ref }}
+                lfs: false
+                repository: ${{ github.event.inputs.cldr-repo }}
+                path: cldr
+            - name: Cache local Maven repository
+              uses: actions/cache@v5
+              with:
+                  path: ~/.m2/repository
+                  key: ${{ runner.os }}-maven-${{ hashFiles('cldr/tools/**/pom.xml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-maven-
+            - name: Clone cldr-staging
+              uses: actions/checkout@v6
+              # 'generate' will generate production data in the build script
+              if: ${{ github.event.inputs.data-repo != 'generate' }}
+              with:
+                ref: ${{ github.event.inputs.data-ref }}
+                repository: ${{ github.event.inputs.data-repo }}
+                sparse-checkout: ${{ github.event.inputs.data-dir }}
+                path: cldr-staging
+            - name: Setup Config
+              working-directory: cldr-json
+              run: |
+                echo VERSION=${{ github.event.inputs.version }} > local-config.sh
+                cat local-config.sh
+                chmod a+rx local-config.sh
+                bash cldr-identify.sh | tee ../cldr-identity.txt
+            - name: Upload cldr-identity.txt
+              uses: actions/upload-artifact@v7
+              with:
+                  name: cldr-identity
+                  path: ./cldr-identity.txt
+            - name: Build JSON
+              working-directory: cldr-json
+              run: |
+                rm -rf cldr-json
+                env MVN_OPTS="-B -s ../cldr/.github/workflows/mvn-settings.xml" bash ./cldr-generate-json.sh
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Git status
+              working-directory: cldr-json
+              run: git status || true
+            - name: Create ZIP
+              working-directory: cldr-json
+              run: |
+                bash cldr-generate-zip.sh
+                cp PACKAGES.md dist/
+            - name: Upload dist
+              uses: actions/upload-artifact@v7
+              with:
+                name: cldr-json
+                path: ./cldr-json/dist
+
+
+

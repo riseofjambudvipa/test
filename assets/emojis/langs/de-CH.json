@@ -1,0 +1,2969 @@
+{
+  "1f170": {
+    "nm": "Grossbuchstabe A in rotem Quadrat",
+    "kw": [
+      "a",
+      "Blut",
+      "Blutgruppe",
+      "Grossbuchstabe",
+      "negativ",
+      "positiv"
+    ]
+  },
+  "1f171": {
+    "nm": "Grossbuchstabe B in rotem Quadrat",
+    "kw": [
+      "b",
+      "Blut",
+      "Blutgruppe",
+      "Grossbuchstabe",
+      "negativ",
+      "positiv"
+    ]
+  },
+  "1f17e": {
+    "nm": "Grossbuchstabe O in rotem Quadrat",
+    "kw": [
+      "0",
+      "Blut",
+      "Blutgruppe",
+      "Grossbuchstabe",
+      "negativ",
+      "O",
+      "positiv"
+    ]
+  },
+  "1f17f": {
+    "nm": "Grossbuchstabe P in blauem Quadrat",
+    "kw": [
+      "Grossbuchstabe",
+      "P",
+      "parken",
+      "Parkplatz",
+      "Taste"
+    ]
+  },
+  "1f18e": {
+    "nm": "Grossbuchstaben AB in rotem Quadrat",
+    "kw": [
+      "ab",
+      "Blut",
+      "Blutgruppe",
+      "Grossbuchstaben AB in rotem Quadrat",
+      "negativ",
+      "positiv"
+    ]
+  },
+  "1f191": {
+    "nm": "Grossbuchstaben CL in rotem Quadrat",
+    "kw": [
+      "CL",
+      "Grossbuchstaben CL in rotem Quadrat"
+    ]
+  },
+  "1f194": {
+    "nm": "Grossbuchstaben ID in lila Quadrat",
+    "kw": [
+      "Grossbuchstaben ID in lila Quadrat",
+      "ID"
+    ]
+  },
+  "1f196": {
+    "nm": "Grossbuchstaben NG in blauem Quadrat",
+    "kw": [
+      "Grossbuchstaben NG in blauem Quadrat",
+      "NG"
+    ]
+  },
+  "1f197": {
+    "nm": "Grossbuchstaben OK in blauem Quadrat",
+    "kw": [
+      "Grossbuchstaben",
+      "keycap",
+      "OK",
+      "okay",
+      "Taste",
+      "Tastenkappe"
+    ]
+  },
+  "1f307": {
+    "kw": [
+      "Grossstadt",
+      "Hochhäuser",
+      "Morgenrot",
+      "Sonnenaufgang",
+      "Sonnenuntergang",
+      "Sonnenuntergang in der Stadt",
+      "Wolkenkratzer"
+    ]
+  },
+  "1f30c": {
+    "nm": "Milchstrasse",
+    "kw": [
+      "Galaxie",
+      "Milchstrasse",
+      "Universum"
+    ]
+  },
+  "1f325": {
+    "nm": "Sonne hinter grosser Wolke",
+    "kw": [
+      "bewölkt",
+      "grosse Wolke",
+      "Sonne",
+      "Sonne hinter grosser Wolke",
+      "Wetter",
+      "Wolke"
+    ]
+  },
+  "1f35d": {
+    "kw": [
+      "Essse",
+      "Nudeln mit Tomatensosse",
+      "Pasta",
+      "Restaurant",
+      "Spaghetti"
+    ]
+  },
+  "1f35e": {
+    "kw": [
+      "Brot",
+      "Brotlaib",
+      "Essen",
+      "Kohlenhydrate",
+      "Laib Brot",
+      "Toast",
+      "Weissbrot",
+      "Weizen"
+    ]
+  },
+  "1f360": {
+    "nm": "geröstete Süsskartoffel",
+    "kw": [
+      "Essen",
+      "Gemüse",
+      "geröstet",
+      "Süsskartoffel"
+    ]
+  },
+  "1f361": {
+    "kw": [
+      "Dango",
+      "japanisches Gericht",
+      "Mochi-Kugeln auf einem Spiess",
+      "Restaurant"
+    ]
+  },
+  "1f367": {
+    "kw": [
+      "Eis",
+      "Sorbet",
+      "Wassereis",
+      "zerstossen"
+    ]
+  },
+  "1f369": {
+    "kw": [
+      "Donut",
+      "Doughnut",
+      "Essen",
+      "Kuchen",
+      "süss"
+    ]
+  },
+  "1f36b": {
+    "kw": [
+      "Essen",
+      "Schokolade",
+      "Schokoladentafel",
+      "Süssigkeit"
+    ]
+  },
+  "1f36c": {
+    "kw": [
+      "Bonbon",
+      "süss",
+      "Süssigkeit"
+    ]
+  },
+  "1f36d": {
+    "kw": [
+      "Lolli",
+      "Lutscher",
+      "Süssigkeit"
+    ]
+  },
+  "1f36e": {
+    "kw": [
+      "Dessert",
+      "Flan",
+      "Nachspeise",
+      "Nachtisch",
+      "Pudding",
+      "Schokolade",
+      "Sosse"
+    ]
+  },
+  "1f36f": {
+    "kw": [
+      "Honig",
+      "Honigtopf",
+      "süss"
+    ]
+  },
+  "1f37b": {
+    "kw": [
+      "anstossen",
+      "Bier",
+      "Bierkrüge",
+      "Oktoberfest",
+      "prosit",
+      "prost",
+      "Weizen"
+    ]
+  },
+  "1f3d9": {
+    "kw": [
+      "Gebäude",
+      "Grossstadt",
+      "Häuser",
+      "Hochhäuser",
+      "Skyline",
+      "Stadt",
+      "Wolkenkratzer"
+    ]
+  },
+  "1f3dc": {
+    "kw": [
+      "heiss",
+      "Wüste"
+    ]
+  },
+  "1f3f3": {
+    "nm": "weisse Flagge",
+    "kw": [
+      "Fahne",
+      "wehen",
+      "Wehende weisse Fahne",
+      "weisse Fahne",
+      "weisse Flagge"
+    ]
+  },
+  "1f3fa": {
+    "kw": [
+      "Amphore",
+      "Gefäss",
+      "kochen",
+      "Krug",
+      "Sternzeichen",
+      "Tierkreis",
+      "trinken",
+      "Vase",
+      "Wassermann"
+    ]
+  },
+  "1f41b": {
+    "kw": [
+      "gefrässig",
+      "Insekt",
+      "Raupe",
+      "Tier"
+    ]
+  },
+  "1f43b-200d-2744": {
+    "kw": [
+      "Arktis",
+      "Eisbär",
+      "Nordpol",
+      "weiss"
+    ]
+  },
+  "1f44f": {
+    "kw": [
+      "applaudieren",
+      "Applaus",
+      "Beifall",
+      "Gratulation",
+      "grossartig",
+      "gut",
+      "Hand",
+      "Hände",
+      "Klatschen",
+      "klatschend",
+      "toll"
+    ]
+  },
+  "1f44f-1f3fb": {
+    "kw": [
+      "applaudieren",
+      "Applaus",
+      "Beifall",
+      "Gratulation",
+      "grossartig",
+      "gut",
+      "Hand",
+      "Hände",
+      "helle Hautfarbe",
+      "Klatschen",
+      "klatschend",
+      "toll"
+    ]
+  },
+  "1f44f-1f3fc": {
+    "kw": [
+      "applaudieren",
+      "Applaus",
+      "Beifall",
+      "Gratulation",
+      "grossartig",
+      "gut",
+      "Hand",
+      "Hände",
+      "Klatschen",
+      "klatschend",
+      "mittelhelle Hautfarbe",
+      "toll"
+    ]
+  },
+  "1f44f-1f3fd": {
+    "kw": [
+      "applaudieren",
+      "Applaus",
+      "Beifall",
+      "Gratulation",
+      "grossartig",
+      "gut",
+      "Hand",
+      "Hände",
+      "Klatschen",
+      "klatschend",
+      "mittlere Hautfarbe",
+      "toll"
+    ]
+  },
+  "1f44f-1f3fe": {
+    "kw": [
+      "applaudieren",
+      "Applaus",
+      "Beifall",
+      "Gratulation",
+      "grossartig",
+      "gut",
+      "Hand",
+      "Hände",
+      "Klatschen",
+      "klatschend",
+      "mitteldunkle Hautfarbe",
+      "toll"
+    ]
+  },
+  "1f44f-1f3ff": {
+    "kw": [
+      "applaudieren",
+      "Applaus",
+      "Beifall",
+      "dunkle Hautfarbe",
+      "Gratulation",
+      "grossartig",
+      "gut",
+      "Hand",
+      "Hände",
+      "Klatschen",
+      "klatschend",
+      "toll"
+    ]
+  },
+  "1f463": {
+    "nm": "Fussabdrücke",
+    "kw": [
+      "Abdruck",
+      "auf dem Weg",
+      "Fuss",
+      "Fussabdruck",
+      "Fussabdrücke"
+    ]
+  },
+  "1f468-1f3fb-200d-1f9b3": {
+    "nm": "Mann: helle Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "Gesicht",
+      "helle Hautfarbe",
+      "Mann",
+      "weisses Haar"
+    ]
+  },
+  "1f468-1f3fc-200d-1f9b3": {
+    "nm": "Mann: mittelhelle Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "Gesicht",
+      "Mann",
+      "mittelhelle Hautfarbe",
+      "weisses Haar"
+    ]
+  },
+  "1f468-1f3fd-200d-1f9b3": {
+    "nm": "Mann: mittlere Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "Gesicht",
+      "Mann",
+      "mittlere Hautfarbe",
+      "weisses Haar"
+    ]
+  },
+  "1f468-1f3fe-200d-1f9b3": {
+    "nm": "Mann: mitteldunkle Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "Gesicht",
+      "Mann",
+      "mitteldunkle Hautfarbe",
+      "weisses Haar"
+    ]
+  },
+  "1f468-1f3ff-200d-1f9b3": {
+    "nm": "Mann: dunkle Hautfarbe, weisses Haar",
+    "kw": [
+      "dunkle Hautfarbe",
+      "erwachsen",
+      "Gesicht",
+      "Mann",
+      "weisses Haar"
+    ]
+  },
+  "1f468-200d-1f9b3": {
+    "nm": "Mann: weisses Haar",
+    "kw": [
+      "erwachsen",
+      "Gesicht",
+      "Mann",
+      "weisses Haar"
+    ]
+  },
+  "1f469-1f3fb-200d-1f9b3": {
+    "nm": "Frau: helle Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "Frau",
+      "Gesicht",
+      "helle Hautfarbe",
+      "weisses Haar"
+    ]
+  },
+  "1f469-1f3fc-200d-1f9b3": {
+    "nm": "Frau: mittelhelle Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "Frau",
+      "Gesicht",
+      "mittelhelle Hautfarbe",
+      "weisses Haar"
+    ]
+  },
+  "1f469-1f3fd-200d-1f9b3": {
+    "nm": "Frau: mittlere Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "Frau",
+      "Gesicht",
+      "mittlere Hautfarbe",
+      "weisses Haar"
+    ]
+  },
+  "1f469-1f3fe-200d-1f9b3": {
+    "nm": "Frau: mitteldunkle Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "Frau",
+      "Gesicht",
+      "mitteldunkle Hautfarbe",
+      "weisses Haar"
+    ]
+  },
+  "1f469-1f3ff-200d-1f9b3": {
+    "nm": "Frau: dunkle Hautfarbe, weisses Haar",
+    "kw": [
+      "dunkle Hautfarbe",
+      "erwachsen",
+      "Frau",
+      "Gesicht",
+      "weisses Haar"
+    ]
+  },
+  "1f469-200d-1f9b3": {
+    "nm": "Frau: weisses Haar",
+    "kw": [
+      "erwachsen",
+      "Frau",
+      "Gesicht",
+      "weisses Haar"
+    ]
+  },
+  "1f474": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Grosseltern",
+      "Grossvater",
+      "Mann",
+      "Mensch",
+      "Opa",
+      "Senior",
+      "weise"
+    ]
+  },
+  "1f474-1f3fb": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Grosseltern",
+      "Grossvater",
+      "helle Hautfarbe",
+      "Mann",
+      "Mensch",
+      "Opa",
+      "Senior",
+      "weise"
+    ]
+  },
+  "1f474-1f3fc": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Grosseltern",
+      "Grossvater",
+      "Mann",
+      "Mensch",
+      "mittelhelle Hautfarbe",
+      "Opa",
+      "Senior",
+      "weise"
+    ]
+  },
+  "1f474-1f3fd": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Grosseltern",
+      "Grossvater",
+      "Mann",
+      "Mensch",
+      "mittlere Hautfarbe",
+      "Opa",
+      "Senior",
+      "weise"
+    ]
+  },
+  "1f474-1f3fe": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Grosseltern",
+      "Grossvater",
+      "Mann",
+      "Mensch",
+      "mitteldunkle Hautfarbe",
+      "Opa",
+      "Senior",
+      "weise"
+    ]
+  },
+  "1f474-1f3ff": {
+    "kw": [
+      "alt",
+      "älter",
+      "dunkle Hautfarbe",
+      "erwachsen",
+      "Grosseltern",
+      "Grossvater",
+      "Mann",
+      "Mensch",
+      "Opa",
+      "Senior",
+      "weise"
+    ]
+  },
+  "1f475": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Frau",
+      "Grosseltern",
+      "Grossmutter",
+      "Mensch",
+      "Oma",
+      "Seniorin",
+      "weise"
+    ]
+  },
+  "1f475-1f3fb": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Frau",
+      "Grosseltern",
+      "Grossmutter",
+      "helle Hautfarbe",
+      "Mensch",
+      "Oma",
+      "Seniorin",
+      "weise"
+    ]
+  },
+  "1f475-1f3fc": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Frau",
+      "Grosseltern",
+      "Grossmutter",
+      "Mensch",
+      "mittelhelle Hautfarbe",
+      "Oma",
+      "Seniorin",
+      "weise"
+    ]
+  },
+  "1f475-1f3fd": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Frau",
+      "Grosseltern",
+      "Grossmutter",
+      "Mensch",
+      "mittlere Hautfarbe",
+      "Oma",
+      "Seniorin",
+      "weise"
+    ]
+  },
+  "1f475-1f3fe": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Frau",
+      "Grosseltern",
+      "Grossmutter",
+      "Mensch",
+      "mitteldunkle Hautfarbe",
+      "Oma",
+      "Seniorin",
+      "weise"
+    ]
+  },
+  "1f475-1f3ff": {
+    "kw": [
+      "alt",
+      "älter",
+      "dunkle Hautfarbe",
+      "erwachsen",
+      "Frau",
+      "Grosseltern",
+      "Grossmutter",
+      "Mensch",
+      "Oma",
+      "Seniorin",
+      "weise"
+    ]
+  },
+  "1f47d": {
+    "nm": "Ausserirdischer",
+    "kw": [
+      "Alien",
+      "All",
+      "ausserirdisch",
+      "Ausserirdische",
+      "Ausserirdischer",
+      "Fantasy",
+      "Gesicht",
+      "Märchen",
+      "Monster",
+      "UFO",
+      "Weltraum",
+      "Wesen"
+    ]
+  },
+  "1f490": {
+    "nm": "Blumenstrauss",
+    "kw": [
+      "Blumen",
+      "Blumenstrauss",
+      "Bouquet"
+    ]
+  },
+  "1f49e": {
+    "kw": [
+      "Emotion",
+      "Gefühl",
+      "Herz",
+      "Herzen",
+      "Hochzeitstag",
+      "Jahrestag",
+      "kreisen",
+      "Liebe",
+      "süss"
+    ]
+  },
+  "1f49f": {
+    "kw": [
+      "Deko",
+      "Emotion",
+      "Gefühl",
+      "Herz",
+      "Herzdekoration",
+      "Liebe",
+      "lila",
+      "violett",
+      "weiss"
+    ]
+  },
+  "1f4a5": {
+    "nm": "Zusammenstoss",
+    "kw": [
+      "Bombe",
+      "Boom",
+      "Comic",
+      "explodieren",
+      "Explosion",
+      "kollidieren",
+      "Kollision",
+      "Zusammenstoss",
+      "zusammenstossen"
+    ]
+  },
+  "1f4a6": {
+    "nm": "Schweisstropfen",
+    "kw": [
+      "Comic",
+      "feucht",
+      "nass",
+      "Schweiss",
+      "Schweisstropfen",
+      "schwitzen",
+      "trainieren",
+      "Training",
+      "Tropfen",
+      "Wasser"
+    ]
+  },
+  "1f4a7": {
+    "kw": [
+      "Schweiss",
+      "Träne",
+      "Tropfen",
+      "Wasser",
+      "Wassertropfen"
+    ]
+  },
+  "1f4c6": {
+    "nm": "Abreisskalender",
+    "kw": [
+      "Abreisskalender",
+      "Datum",
+      "Kalender",
+      "Termin"
+    ]
+  },
+  "1f4cc": {
+    "nm": "Reisszwecke",
+    "kw": [
+      "anpinnen",
+      "Reisszwecke"
+    ]
+  },
+  "1f4cd": {
+    "kw": [
+      "anpinnen",
+      "Reisszwecke",
+      "rund",
+      "runde Reisszwecke",
+      "Stecknadel"
+    ]
+  },
+  "1f50d": {
+    "kw": [
+      "Lupe nach links",
+      "Suche",
+      "Vergrösserungsglas"
+    ]
+  },
+  "1f50e": {
+    "kw": [
+      "Lupe",
+      "Lupe nach rechts",
+      "Suche",
+      "Vergrösserungsglas"
+    ]
+  },
+  "1f511": {
+    "kw": [
+      "Passwort",
+      "schliessen",
+      "Schlüssel"
+    ]
+  },
+  "1f520": {
+    "nm": "Eingabesymbol lateinische Grossbuchstaben",
+    "kw": [
+      "abcd",
+      "Buchstaben",
+      "Eingabe",
+      "Eingabesymbol",
+      "Grossbuchstaben",
+      "grossschreiben",
+      "lateinisch"
+    ]
+  },
+  "1f525": {
+    "kw": [
+      "brennen",
+      "Feuer",
+      "Flamme",
+      "heiss"
+    ]
+  },
+  "1f533": {
+    "nm": "weisse quadratische Schaltfläche",
+    "kw": [
+      "Quadrat",
+      "quadratisch",
+      "Schaltfläche",
+      "weiss",
+      "weisse quadratische Schaltfläche",
+      "Weisse quadratische Schaltfläche"
+    ]
+  },
+  "1f535": {
+    "kw": [
+      "Ball",
+      "blau",
+      "blauer Punkt",
+      "Grosser blauer Kreis",
+      "Kreis",
+      "Punkt"
+    ]
+  },
+  "1f536": {
+    "nm": "grosse orangefarbene Raute",
+    "kw": [
+      "grosse orangefarbene Raute",
+      "Grosse orangefarbene Raute",
+      "orangefarben",
+      "Raute"
+    ]
+  },
+  "1f537": {
+    "nm": "grosse blaue Raute",
+    "kw": [
+      "blau",
+      "grosse blaue Raute",
+      "Grosse blaue Raute",
+      "Raute"
+    ]
+  },
+  "1f596": {
+    "nm": "vulkanischer Gruss",
+    "kw": [
+      "Finger",
+      "Gruss",
+      "grüssen",
+      "Hand",
+      "Hände",
+      "spreizen"
+    ]
+  },
+  "1f596-1f3fb": {
+    "nm": "vulkanischer Gruss: helle Hautfarbe",
+    "kw": [
+      "Finger",
+      "Gruss",
+      "grüssen",
+      "Hand",
+      "Hände",
+      "helle Hautfarbe",
+      "spreizen"
+    ]
+  },
+  "1f596-1f3fc": {
+    "nm": "vulkanischer Gruss: mittelhelle Hautfarbe",
+    "kw": [
+      "Finger",
+      "Gruss",
+      "grüssen",
+      "Hand",
+      "Hände",
+      "mittelhelle Hautfarbe",
+      "spreizen"
+    ]
+  },
+  "1f596-1f3fd": {
+    "nm": "vulkanischer Gruss: mittlere Hautfarbe",
+    "kw": [
+      "Finger",
+      "Gruss",
+      "grüssen",
+      "Hand",
+      "Hände",
+      "mittlere Hautfarbe",
+      "spreizen"
+    ]
+  },
+  "1f596-1f3fe": {
+    "nm": "vulkanischer Gruss: mitteldunkle Hautfarbe",
+    "kw": [
+      "Finger",
+      "Gruss",
+      "grüssen",
+      "Hand",
+      "Hände",
+      "mitteldunkle Hautfarbe",
+      "spreizen"
+    ]
+  },
+  "1f596-1f3ff": {
+    "nm": "vulkanischer Gruss: dunkle Hautfarbe",
+    "kw": [
+      "dunkle Hautfarbe",
+      "Finger",
+      "Gruss",
+      "grüssen",
+      "Hand",
+      "Hände",
+      "spreizen"
+    ]
+  },
+  "1f603": {
+    "nm": "grinsendes Gesicht mit grossen Augen",
+    "kw": [
+      "Augen",
+      "fröhlich",
+      "Gesicht",
+      "glücklich",
+      "grinsen",
+      "grosse",
+      "lächeln",
+      "lachen",
+      "lol",
+      "lustig",
+      "Mund",
+      "offen",
+      "Smiley"
+    ]
+  },
+  "1f605": {
+    "nm": "grinsendes Gesicht mit Schweisstropfen",
+    "kw": [
+      "Gesicht",
+      "grinsen",
+      "lächeln",
+      "lachen",
+      "lustig",
+      "Mund",
+      "nervös",
+      "offen",
+      "Schweiss",
+      "Schweisstropfen",
+      "schwitzen",
+      "Smiley"
+    ]
+  },
+  "1f613": {
+    "nm": "bedrücktes Gesicht mit Schweiss",
+    "kw": [
+      "Angstschweiss",
+      "Augen",
+      "bedrückt",
+      "geschlossen",
+      "Gesicht",
+      "Kopfschmerzen",
+      "Schweiss",
+      "Smiley"
+    ]
+  },
+  "1f615": {
+    "kw": [
+      "Gesicht",
+      "keine Ahnung",
+      "Smiley",
+      "traurig",
+      "verwirrt",
+      "verwundert",
+      "weiss nicht"
+    ]
+  },
+  "1f625": {
+    "kw": [
+      "ängstlich",
+      "enttäuscht",
+      "erleichtert",
+      "Gesicht",
+      "knapp",
+      "Schweiss",
+      "traurig"
+    ]
+  },
+  "1f630": {
+    "nm": "besorgtes Gesicht mit Schweisstropfen",
+    "kw": [
+      "Angst",
+      "ängstlich",
+      "Angstschweiss",
+      "besorgt",
+      "Gesicht",
+      "Mund",
+      "nervös",
+      "offen",
+      "Schweiss"
+    ]
+  },
+  "1f633": {
+    "nm": "errötetes Gesicht mit grossen Augen",
+    "kw": [
+      "Augen",
+      "erröten",
+      "Gesicht",
+      "gross",
+      "peinlich",
+      "rot",
+      "Scham",
+      "schämen",
+      "Smiley",
+      "überrascht",
+      "verlegen",
+      "Wangen"
+    ]
+  },
+  "1f64f": {
+    "kw": [
+      "beten",
+      "betend",
+      "bitten",
+      "danke",
+      "danken",
+      "Gebet",
+      "gefaltet",
+      "grüssen",
+      "Handflächen",
+      "zusammengelegt"
+    ]
+  },
+  "1f64f-1f3fb": {
+    "kw": [
+      "beten",
+      "betend",
+      "bitten",
+      "danke",
+      "danken",
+      "Gebet",
+      "gefaltet",
+      "grüssen",
+      "Handflächen",
+      "helle Hautfarbe",
+      "zusammengelegt"
+    ]
+  },
+  "1f64f-1f3fc": {
+    "kw": [
+      "beten",
+      "betend",
+      "bitten",
+      "danke",
+      "danken",
+      "Gebet",
+      "gefaltet",
+      "grüssen",
+      "Handflächen",
+      "mittelhelle Hautfarbe",
+      "zusammengelegt"
+    ]
+  },
+  "1f64f-1f3fd": {
+    "kw": [
+      "beten",
+      "betend",
+      "bitten",
+      "danke",
+      "danken",
+      "Gebet",
+      "gefaltet",
+      "grüssen",
+      "Handflächen",
+      "mittlere Hautfarbe",
+      "zusammengelegt"
+    ]
+  },
+  "1f64f-1f3fe": {
+    "kw": [
+      "beten",
+      "betend",
+      "bitten",
+      "danke",
+      "danken",
+      "Gebet",
+      "gefaltet",
+      "grüssen",
+      "Handflächen",
+      "mitteldunkle Hautfarbe",
+      "zusammengelegt"
+    ]
+  },
+  "1f64f-1f3ff": {
+    "kw": [
+      "beten",
+      "betend",
+      "bitten",
+      "danke",
+      "danken",
+      "dunkle Hautfarbe",
+      "Gebet",
+      "gefaltet",
+      "grüssen",
+      "Handflächen",
+      "zusammengelegt"
+    ]
+  },
+  "1f683": {
+    "kw": [
+      "Eisenbahnwagen",
+      "Fahrzeug",
+      "Strassenbahn",
+      "Strassenbahnwagen",
+      "Tram",
+      "Wagen",
+      "Waggon",
+      "Wagon",
+      "Zug"
+    ]
+  },
+  "1f68a": {
+    "nm": "Strassenbahn",
+    "kw": [
+      "Strassenbahn",
+      "Tram",
+      "Verkehrsmittel"
+    ]
+  },
+  "1f68b": {
+    "nm": "Strassenbahnwagen",
+    "kw": [
+      "Strassenbahn",
+      "Strassenbahnwagen",
+      "Tram",
+      "Tramwagen",
+      "Transport",
+      "Verkehrsmittel",
+      "Waggon"
+    ]
+  },
+  "1f68e": {
+    "kw": [
+      "Oberleitungsbus",
+      "Strassenbahn",
+      "Trolleybus"
+    ]
+  },
+  "1f6ae": {
+    "kw": [
+      "Abfall",
+      "Müll",
+      "Mülleimer",
+      "Sauberkeit",
+      "Symbol „Papierkorb“",
+      "wegschmeissen",
+      "wegwerfen"
+    ]
+  },
+  "1f6b6": {
+    "nm": "Fussgänger(in)",
+    "kw": [
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "Person",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b6-1f3fb": {
+    "nm": "Fussgänger(in): helle Hautfarbe",
+    "kw": [
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "helle Hautfarbe",
+      "Person",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b6-1f3fb-200d-2640": {
+    "nm": "Fussgängerin: helle Hautfarbe",
+    "kw": [
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "helle Hautfarbe",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fb-200d-2640-200d-27a1": {
+    "nm": "Fussgängerin: helle Hautfarbe, nach rechts",
+    "kw": [
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "helle Hautfarbe",
+      "nach",
+      "rechts",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fb-200d-2642": {
+    "nm": "Fussgänger: helle Hautfarbe",
+    "kw": [
+      "Fussgänger",
+      "gehen",
+      "helle Hautfarbe",
+      "Mann",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fb-200d-2642-200d-27a1": {
+    "nm": "Fussgänger: helle Hautfarbe, nach rechts",
+    "kw": [
+      "Fussgänger",
+      "gehen",
+      "helle Hautfarbe",
+      "Mann",
+      "nach",
+      "rechts",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fb-200d-27a1": {
+    "nm": "Fussgänger(in): helle Hautfarbe, nach rechts",
+    "kw": [
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "helle Hautfarbe",
+      "nach",
+      "Person",
+      "rechts",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b6-1f3fc": {
+    "nm": "Fussgänger(in): mittelhelle Hautfarbe",
+    "kw": [
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "mittelhelle Hautfarbe",
+      "Person",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b6-1f3fc-200d-2640": {
+    "nm": "Fussgängerin: mittelhelle Hautfarbe",
+    "kw": [
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "mittelhelle Hautfarbe",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fc-200d-2640-200d-27a1": {
+    "nm": "Fussgängerin: mittelhelle Hautfarbe, nach rechts",
+    "kw": [
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "mittelhelle Hautfarbe",
+      "nach",
+      "rechts",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fc-200d-2642": {
+    "nm": "Fussgänger: mittelhelle Hautfarbe",
+    "kw": [
+      "Fussgänger",
+      "gehen",
+      "Mann",
+      "mittelhelle Hautfarbe",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fc-200d-2642-200d-27a1": {
+    "nm": "Fussgänger: mittelhelle Hautfarbe, nach rechts",
+    "kw": [
+      "Fussgänger",
+      "gehen",
+      "Mann",
+      "mittelhelle Hautfarbe",
+      "nach",
+      "rechts",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fc-200d-27a1": {
+    "nm": "Fussgänger(in): mittelhelle Hautfarbe, nach rechts",
+    "kw": [
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "mittelhelle Hautfarbe",
+      "nach",
+      "Person",
+      "rechts",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b6-1f3fd": {
+    "nm": "Fussgänger(in): mittlere Hautfarbe",
+    "kw": [
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "mittlere Hautfarbe",
+      "Person",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b6-1f3fd-200d-2640": {
+    "nm": "Fussgängerin: mittlere Hautfarbe",
+    "kw": [
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "mittlere Hautfarbe",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fd-200d-2640-200d-27a1": {
+    "nm": "Fussgängerin: mittlere Hautfarbe, nach rechts",
+    "kw": [
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "mittlere Hautfarbe",
+      "nach",
+      "rechts",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fd-200d-2642": {
+    "nm": "Fussgänger: mittlere Hautfarbe",
+    "kw": [
+      "Fussgänger",
+      "gehen",
+      "Mann",
+      "mittlere Hautfarbe",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fd-200d-2642-200d-27a1": {
+    "nm": "Fussgänger: mittlere Hautfarbe, nach rechts",
+    "kw": [
+      "Fussgänger",
+      "gehen",
+      "Mann",
+      "mittlere Hautfarbe",
+      "nach",
+      "rechts",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fd-200d-27a1": {
+    "nm": "Fussgänger(in): mittlere Hautfarbe, nach rechts",
+    "kw": [
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "mittlere Hautfarbe",
+      "nach",
+      "Person",
+      "rechts",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b6-1f3fe": {
+    "nm": "Fussgänger(in): mitteldunkle Hautfarbe",
+    "kw": [
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "mitteldunkle Hautfarbe",
+      "Person",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b6-1f3fe-200d-2640": {
+    "nm": "Fussgängerin: mitteldunkle Hautfarbe",
+    "kw": [
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "mitteldunkle Hautfarbe",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fe-200d-2640-200d-27a1": {
+    "nm": "Fussgängerin: mitteldunkle Hautfarbe, nach rechts",
+    "kw": [
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "mitteldunkle Hautfarbe",
+      "nach",
+      "rechts",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fe-200d-2642": {
+    "nm": "Fussgänger: mitteldunkle Hautfarbe",
+    "kw": [
+      "Fussgänger",
+      "gehen",
+      "Mann",
+      "mitteldunkle Hautfarbe",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fe-200d-2642-200d-27a1": {
+    "nm": "Fussgänger: mitteldunkle Hautfarbe, nach rechts",
+    "kw": [
+      "Fussgänger",
+      "gehen",
+      "Mann",
+      "mitteldunkle Hautfarbe",
+      "nach",
+      "rechts",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3fe-200d-27a1": {
+    "nm": "Fussgänger(in): mitteldunkle Hautfarbe, nach rechts",
+    "kw": [
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "mitteldunkle Hautfarbe",
+      "nach",
+      "Person",
+      "rechts",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b6-1f3ff": {
+    "nm": "Fussgänger(in): dunkle Hautfarbe",
+    "kw": [
+      "dunkle Hautfarbe",
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "Person",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b6-1f3ff-200d-2640": {
+    "nm": "Fussgängerin: dunkle Hautfarbe",
+    "kw": [
+      "dunkle Hautfarbe",
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3ff-200d-2640-200d-27a1": {
+    "nm": "Fussgängerin: dunkle Hautfarbe, nach rechts",
+    "kw": [
+      "dunkle Hautfarbe",
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "nach",
+      "rechts",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3ff-200d-2642": {
+    "nm": "Fussgänger: dunkle Hautfarbe",
+    "kw": [
+      "dunkle Hautfarbe",
+      "Fussgänger",
+      "gehen",
+      "Mann",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3ff-200d-2642-200d-27a1": {
+    "nm": "Fussgänger: dunkle Hautfarbe, nach rechts",
+    "kw": [
+      "dunkle Hautfarbe",
+      "Fussgänger",
+      "gehen",
+      "Mann",
+      "nach",
+      "rechts",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-1f3ff-200d-27a1": {
+    "nm": "Fussgänger(in): dunkle Hautfarbe, nach rechts",
+    "kw": [
+      "dunkle Hautfarbe",
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "nach",
+      "Person",
+      "rechts",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b6-200d-2640": {
+    "nm": "Fussgängerin",
+    "kw": [
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-200d-2640-200d-27a1": {
+    "nm": "Fussgängerin: nach rechts",
+    "kw": [
+      "Frau",
+      "Fussgängerin",
+      "gehen",
+      "Gehen",
+      "nach",
+      "rechts",
+      "Schlendern",
+      "Spazieren",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-200d-2642": {
+    "nm": "Fussgänger",
+    "kw": [
+      "Fussgänger",
+      "gehen",
+      "Mann",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-200d-2642-200d-27a1": {
+    "nm": "Fussgänger: nach rechts",
+    "kw": [
+      "Fussgänger",
+      "gehen",
+      "Mann",
+      "nach",
+      "rechts",
+      "Spaziergang"
+    ]
+  },
+  "1f6b6-200d-27a1": {
+    "nm": "Fussgänger(in): nach rechts",
+    "kw": [
+      "Fussgänger",
+      "Fussgänger(in)",
+      "Fussgängerin",
+      "gehen",
+      "gehend",
+      "nach",
+      "Person",
+      "rechts",
+      "schlendern",
+      "schlurfen",
+      "wandern"
+    ]
+  },
+  "1f6b7": {
+    "nm": "Fussgänger verboten",
+    "kw": [
+      "Fussgänger verboten",
+      "Fussgänger-verboten-Schild",
+      "verboten"
+    ]
+  },
+  "1f6b8": {
+    "nm": "Kinder überqueren die Strasse",
+    "kw": [
+      "Kinder",
+      "Kinder überqueren die Strasse",
+      "Kinder-queren-die-Strasse-Schild",
+      "Strassenschild",
+      "Vorsicht"
+    ]
+  },
+  "1f6c5": {
+    "kw": [
+      "Gepäck",
+      "Gepäckaufbewahrung",
+      "Schliessfach"
+    ]
+  },
+  "1f6e3": {
+    "kw": [
+      "Autobahn",
+      "Schnellstrasse"
+    ]
+  },
+  "1f6f8": {
+    "kw": [
+      "Alien",
+      "Ausserirdisch",
+      "fliegende Untertasse",
+      "UFO"
+    ]
+  },
+  "1f90d": {
+    "nm": "weisses Herz",
+    "kw": [
+      "Herz",
+      "weiss",
+      "weisses Herz"
+    ]
+  },
+  "1f910": {
+    "nm": "Gesicht mit Reissverschlussmund",
+    "kw": [
+      "Geheimnis",
+      "Gesicht",
+      "halten",
+      "Mund",
+      "Reissverschluss",
+      "schweigen",
+      "Smiley",
+      "wahren"
+    ]
+  },
+  "1f918": {
+    "nm": "Teufelsgruss",
+    "kw": [
+      "corna",
+      "Finger",
+      "Hand",
+      "Heavy",
+      "Hörner",
+      "Mano cornuta",
+      "Metal",
+      "Metalhand",
+      "Pommesgabel",
+      "Rock",
+      "Teufel",
+      "Teufelsgruss",
+      "yeah"
+    ]
+  },
+  "1f918-1f3fb": {
+    "nm": "Teufelsgruss: helle Hautfarbe",
+    "kw": [
+      "corna",
+      "Finger",
+      "Hand",
+      "Heavy",
+      "helle Hautfarbe",
+      "Hörner",
+      "Mano cornuta",
+      "Metal",
+      "Metalhand",
+      "Pommesgabel",
+      "Rock",
+      "Teufel",
+      "Teufelsgruss",
+      "yeah"
+    ]
+  },
+  "1f918-1f3fc": {
+    "nm": "Teufelsgruss: mittelhelle Hautfarbe",
+    "kw": [
+      "corna",
+      "Finger",
+      "Hand",
+      "Heavy",
+      "Hörner",
+      "Mano cornuta",
+      "Metal",
+      "Metalhand",
+      "mittelhelle Hautfarbe",
+      "Pommesgabel",
+      "Rock",
+      "Teufel",
+      "Teufelsgruss",
+      "yeah"
+    ]
+  },
+  "1f918-1f3fd": {
+    "nm": "Teufelsgruss: mittlere Hautfarbe",
+    "kw": [
+      "corna",
+      "Finger",
+      "Hand",
+      "Heavy",
+      "Hörner",
+      "Mano cornuta",
+      "Metal",
+      "Metalhand",
+      "mittlere Hautfarbe",
+      "Pommesgabel",
+      "Rock",
+      "Teufel",
+      "Teufelsgruss",
+      "yeah"
+    ]
+  },
+  "1f918-1f3fe": {
+    "nm": "Teufelsgruss: mitteldunkle Hautfarbe",
+    "kw": [
+      "corna",
+      "Finger",
+      "Hand",
+      "Heavy",
+      "Hörner",
+      "Mano cornuta",
+      "Metal",
+      "Metalhand",
+      "mitteldunkle Hautfarbe",
+      "Pommesgabel",
+      "Rock",
+      "Teufel",
+      "Teufelsgruss",
+      "yeah"
+    ]
+  },
+  "1f918-1f3ff": {
+    "nm": "Teufelsgruss: dunkle Hautfarbe",
+    "kw": [
+      "corna",
+      "dunkle Hautfarbe",
+      "Finger",
+      "Hand",
+      "Heavy",
+      "Hörner",
+      "Mano cornuta",
+      "Metal",
+      "Metalhand",
+      "Pommesgabel",
+      "Rock",
+      "Teufel",
+      "Teufelsgruss",
+      "yeah"
+    ]
+  },
+  "1f92a": {
+    "kw": [
+      "Auge",
+      "Augen",
+      "Gesicht",
+      "gross",
+      "irre",
+      "klein",
+      "Smiley",
+      "verrückt"
+    ]
+  },
+  "1f937": {
+    "kw": [
+      "egal",
+      "gleichgültig",
+      "keine Ahnung",
+      "Person",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fb": {
+    "kw": [
+      "egal",
+      "gleichgültig",
+      "helle Hautfarbe",
+      "keine Ahnung",
+      "Person",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fb-200d-2640": {
+    "kw": [
+      "egal",
+      "Frau",
+      "gleichgültig",
+      "helle Hautfarbe",
+      "keine Ahnung",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fb-200d-2642": {
+    "kw": [
+      "egal",
+      "gleichgültig",
+      "helle Hautfarbe",
+      "keine Ahnung",
+      "Mann",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fc": {
+    "kw": [
+      "egal",
+      "gleichgültig",
+      "keine Ahnung",
+      "mittelhelle Hautfarbe",
+      "Person",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fc-200d-2640": {
+    "kw": [
+      "egal",
+      "Frau",
+      "gleichgültig",
+      "keine Ahnung",
+      "mittelhelle Hautfarbe",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fc-200d-2642": {
+    "kw": [
+      "egal",
+      "gleichgültig",
+      "keine Ahnung",
+      "Mann",
+      "mittelhelle Hautfarbe",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fd": {
+    "kw": [
+      "egal",
+      "gleichgültig",
+      "keine Ahnung",
+      "mittlere Hautfarbe",
+      "Person",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fd-200d-2640": {
+    "kw": [
+      "egal",
+      "Frau",
+      "gleichgültig",
+      "keine Ahnung",
+      "mittlere Hautfarbe",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fd-200d-2642": {
+    "kw": [
+      "egal",
+      "gleichgültig",
+      "keine Ahnung",
+      "Mann",
+      "mittlere Hautfarbe",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fe": {
+    "kw": [
+      "egal",
+      "gleichgültig",
+      "keine Ahnung",
+      "mitteldunkle Hautfarbe",
+      "Person",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fe-200d-2640": {
+    "kw": [
+      "egal",
+      "Frau",
+      "gleichgültig",
+      "keine Ahnung",
+      "mitteldunkle Hautfarbe",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3fe-200d-2642": {
+    "kw": [
+      "egal",
+      "gleichgültig",
+      "keine Ahnung",
+      "Mann",
+      "mitteldunkle Hautfarbe",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3ff": {
+    "kw": [
+      "dunkle Hautfarbe",
+      "egal",
+      "gleichgültig",
+      "keine Ahnung",
+      "Person",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3ff-200d-2640": {
+    "kw": [
+      "dunkle Hautfarbe",
+      "egal",
+      "Frau",
+      "gleichgültig",
+      "keine Ahnung",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-1f3ff-200d-2642": {
+    "kw": [
+      "dunkle Hautfarbe",
+      "egal",
+      "gleichgültig",
+      "keine Ahnung",
+      "Mann",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-200d-2640": {
+    "kw": [
+      "egal",
+      "Frau",
+      "gleichgültig",
+      "keine Ahnung",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f937-200d-2642": {
+    "kw": [
+      "egal",
+      "gleichgültig",
+      "keine Ahnung",
+      "Mann",
+      "Schultern zucken",
+      "schulterzuckend",
+      "weiss nicht",
+      "Zweifel"
+    ]
+  },
+  "1f942": {
+    "kw": [
+      "anstossen",
+      "Feier",
+      "feiern",
+      "Getränk",
+      "Gläser",
+      "prost",
+      "Sekt",
+      "Sektgläser"
+    ]
+  },
+  "1f945": {
+    "kw": [
+      "Fussball",
+      "Netz",
+      "Sport",
+      "Tor"
+    ]
+  },
+  "1f95f": {
+    "kw": [
+      "chinesische Teigtasche",
+      "dumpling",
+      "empanada",
+      "Empanada",
+      "essen",
+      "Gyōza",
+      "Jiaozi",
+      "kloss",
+      "Pierogi",
+      "potsticker",
+      "Teigtasche"
+    ]
+  },
+  "1f975": {
+    "kw": [
+      "erhitzt",
+      "Fieber",
+      "fiebrig",
+      "Gesicht",
+      "heiss",
+      "herausstrecken",
+      "Hitze",
+      "Hitzschlag",
+      "rot",
+      "schnaufen",
+      "schwitzen",
+      "Smiley",
+      "Zunge"
+    ]
+  },
+  "1f97a": {
+    "kw": [
+      "anflehen",
+      "Augen",
+      "betteln",
+      "bettelnd",
+      "bitte",
+      "bitten",
+      "flehend",
+      "Gesicht",
+      "gross",
+      "Kulleraugen",
+      "Smiley",
+      "traurig",
+      "Welpenaugen"
+    ]
+  },
+  "1f97c": {
+    "kw": [
+      "Arzt",
+      "Arztkittel",
+      "Doc",
+      "Doktor",
+      "Experiment",
+      "Kleidung",
+      "Kleidungsstück",
+      "Laborkittel",
+      "Labormantel",
+      "weisse Jacke",
+      "weisser Mantel",
+      "Wissenschaftler"
+    ]
+  },
+  "1f97d": {
+    "kw": [
+      "Augenschutz",
+      "Brille",
+      "Schutzbrille",
+      "schweissen",
+      "Schweissen",
+      "Schweisserbrille",
+      "schwimmen",
+      "Schwimmen",
+      "tauchen",
+      "Taucherbrille"
+    ]
+  },
+  "1f9a3": {
+    "kw": [
+      "Aussterben",
+      "gross",
+      "Mammut",
+      "Natur",
+      "Stosszahn",
+      "Tier",
+      "wollig"
+    ]
+  },
+  "1f9a4": {
+    "kw": [
+      "Aussterben",
+      "Dodo",
+      "Dronte",
+      "gross",
+      "Mauritius",
+      "Natur",
+      "Tier",
+      "Vogel"
+    ]
+  },
+  "1f9b3": {
+    "nm": "weisses Haar",
+    "kw": [
+      "grau",
+      "graues Haar",
+      "grauhaarig",
+      "weisses Haar",
+      "weisshaarig"
+    ]
+  },
+  "1f9b5": {
+    "kw": [
+      "Bein",
+      "Extremität",
+      "Fuss",
+      "gebeugtes Knie",
+      "Gliedmasse",
+      "Knie",
+      "Körperglied",
+      "Körperteil",
+      "Treten",
+      "Tritt"
+    ]
+  },
+  "1f9b5-1f3fb": {
+    "kw": [
+      "Bein",
+      "Extremität",
+      "Fuss",
+      "gebeugtes Knie",
+      "Gliedmasse",
+      "helle Hautfarbe",
+      "Knie",
+      "Körperglied",
+      "Körperteil",
+      "Treten",
+      "Tritt"
+    ]
+  },
+  "1f9b5-1f3fc": {
+    "kw": [
+      "Bein",
+      "Extremität",
+      "Fuss",
+      "gebeugtes Knie",
+      "Gliedmasse",
+      "Knie",
+      "Körperglied",
+      "Körperteil",
+      "mittelhelle Hautfarbe",
+      "Treten",
+      "Tritt"
+    ]
+  },
+  "1f9b5-1f3fd": {
+    "kw": [
+      "Bein",
+      "Extremität",
+      "Fuss",
+      "gebeugtes Knie",
+      "Gliedmasse",
+      "Knie",
+      "Körperglied",
+      "Körperteil",
+      "mittlere Hautfarbe",
+      "Treten",
+      "Tritt"
+    ]
+  },
+  "1f9b5-1f3fe": {
+    "kw": [
+      "Bein",
+      "Extremität",
+      "Fuss",
+      "gebeugtes Knie",
+      "Gliedmasse",
+      "Knie",
+      "Körperglied",
+      "Körperteil",
+      "mitteldunkle Hautfarbe",
+      "Treten",
+      "Tritt"
+    ]
+  },
+  "1f9b5-1f3ff": {
+    "kw": [
+      "Bein",
+      "dunkle Hautfarbe",
+      "Extremität",
+      "Fuss",
+      "gebeugtes Knie",
+      "Gliedmasse",
+      "Knie",
+      "Körperglied",
+      "Körperteil",
+      "Treten",
+      "Tritt"
+    ]
+  },
+  "1f9b6": {
+    "nm": "Fuss",
+    "kw": [
+      "Fuss",
+      "Füsse",
+      "Kick",
+      "Knöchel",
+      "Körperteil",
+      "stampfen",
+      "treten",
+      "Tritt"
+    ]
+  },
+  "1f9b6-1f3fb": {
+    "nm": "Fuss: helle Hautfarbe",
+    "kw": [
+      "Fuss",
+      "Füsse",
+      "helle Hautfarbe",
+      "Kick",
+      "Knöchel",
+      "Körperteil",
+      "stampfen",
+      "treten",
+      "Tritt"
+    ]
+  },
+  "1f9b6-1f3fc": {
+    "nm": "Fuss: mittelhelle Hautfarbe",
+    "kw": [
+      "Fuss",
+      "Füsse",
+      "Kick",
+      "Knöchel",
+      "Körperteil",
+      "mittelhelle Hautfarbe",
+      "stampfen",
+      "treten",
+      "Tritt"
+    ]
+  },
+  "1f9b6-1f3fd": {
+    "nm": "Fuss: mittlere Hautfarbe",
+    "kw": [
+      "Fuss",
+      "Füsse",
+      "Kick",
+      "Knöchel",
+      "Körperteil",
+      "mittlere Hautfarbe",
+      "stampfen",
+      "treten",
+      "Tritt"
+    ]
+  },
+  "1f9b6-1f3fe": {
+    "nm": "Fuss: mitteldunkle Hautfarbe",
+    "kw": [
+      "Fuss",
+      "Füsse",
+      "Kick",
+      "Knöchel",
+      "Körperteil",
+      "mitteldunkle Hautfarbe",
+      "stampfen",
+      "treten",
+      "Tritt"
+    ]
+  },
+  "1f9b6-1f3ff": {
+    "nm": "Fuss: dunkle Hautfarbe",
+    "kw": [
+      "dunkle Hautfarbe",
+      "Fuss",
+      "Füsse",
+      "Kick",
+      "Knöchel",
+      "Körperteil",
+      "stampfen",
+      "treten",
+      "Tritt"
+    ]
+  },
+  "1f9b7": {
+    "kw": [
+      "perlweiss",
+      "weiss",
+      "Zahn",
+      "Zahnarzt",
+      "Zahnärztin",
+      "Zähne"
+    ]
+  },
+  "1f9c1": {
+    "kw": [
+      "Bäckerei",
+      "Cupcake",
+      "Dessert",
+      "Essen",
+      "Gebäck",
+      "Kalorienbombe",
+      "Konditorei",
+      "Muffin",
+      "Nachspeise",
+      "Streusel",
+      "süss",
+      "Zucker"
+    ]
+  },
+  "1f9d1-1f3fb-200d-1f9b3": {
+    "nm": "Person: helle Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "erwachsene Person",
+      "helle Hautfarbe",
+      "Mensch",
+      "Person",
+      "weisses Haar"
+    ]
+  },
+  "1f9d1-1f3fc-200d-1f9b3": {
+    "nm": "Person: mittelhelle Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "erwachsene Person",
+      "Mensch",
+      "mittelhelle Hautfarbe",
+      "Person",
+      "weisses Haar"
+    ]
+  },
+  "1f9d1-1f3fd-200d-1f9b3": {
+    "nm": "Person: mittlere Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "erwachsene Person",
+      "Mensch",
+      "mittlere Hautfarbe",
+      "Person",
+      "weisses Haar"
+    ]
+  },
+  "1f9d1-1f3fe-200d-1f9b3": {
+    "nm": "Person: mitteldunkle Hautfarbe, weisses Haar",
+    "kw": [
+      "erwachsen",
+      "erwachsene Person",
+      "Mensch",
+      "mitteldunkle Hautfarbe",
+      "Person",
+      "weisses Haar"
+    ]
+  },
+  "1f9d1-1f3ff-200d-1f9b3": {
+    "nm": "Person: dunkle Hautfarbe, weisses Haar",
+    "kw": [
+      "dunkle Hautfarbe",
+      "erwachsen",
+      "erwachsene Person",
+      "Mensch",
+      "Person",
+      "weisses Haar"
+    ]
+  },
+  "1f9d1-200d-1f9b3": {
+    "nm": "Person: weisses Haar",
+    "kw": [
+      "erwachsen",
+      "erwachsene Person",
+      "Mensch",
+      "Person",
+      "weisses Haar"
+    ]
+  },
+  "1f9d3": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Grosseltern",
+      "Mensch",
+      "Person",
+      "weise"
+    ]
+  },
+  "1f9d3-1f3fb": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Grosseltern",
+      "helle Hautfarbe",
+      "Mensch",
+      "Person",
+      "weise"
+    ]
+  },
+  "1f9d3-1f3fc": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Grosseltern",
+      "Mensch",
+      "mittelhelle Hautfarbe",
+      "Person",
+      "weise"
+    ]
+  },
+  "1f9d3-1f3fd": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Grosseltern",
+      "Mensch",
+      "mittlere Hautfarbe",
+      "Person",
+      "weise"
+    ]
+  },
+  "1f9d3-1f3fe": {
+    "kw": [
+      "alt",
+      "älter",
+      "erwachsen",
+      "Grosseltern",
+      "Mensch",
+      "mitteldunkle Hautfarbe",
+      "Person",
+      "weise"
+    ]
+  },
+  "1f9d3-1f3ff": {
+    "kw": [
+      "alt",
+      "älter",
+      "dunkle Hautfarbe",
+      "erwachsen",
+      "Grosseltern",
+      "Mensch",
+      "Person",
+      "weise"
+    ]
+  },
+  "1f9db": {
+    "kw": [
+      "Blutsauger",
+      "Dracula",
+      "Halloween",
+      "Person",
+      "Reisszähne",
+      "untot",
+      "Untoter",
+      "Vampir",
+      "Zähne"
+    ]
+  },
+  "1f9db-1f3fb": {
+    "kw": [
+      "Blutsauger",
+      "Dracula",
+      "Halloween",
+      "helle Hautfarbe",
+      "Person",
+      "Reisszähne",
+      "untot",
+      "Untoter",
+      "Vampir",
+      "Zähne"
+    ]
+  },
+  "1f9db-1f3fc": {
+    "kw": [
+      "Blutsauger",
+      "Dracula",
+      "Halloween",
+      "mittelhelle Hautfarbe",
+      "Person",
+      "Reisszähne",
+      "untot",
+      "Untoter",
+      "Vampir",
+      "Zähne"
+    ]
+  },
+  "1f9db-1f3fd": {
+    "kw": [
+      "Blutsauger",
+      "Dracula",
+      "Halloween",
+      "mittlere Hautfarbe",
+      "Person",
+      "Reisszähne",
+      "untot",
+      "Untoter",
+      "Vampir",
+      "Zähne"
+    ]
+  },
+  "1f9db-1f3fe": {
+    "kw": [
+      "Blutsauger",
+      "Dracula",
+      "Halloween",
+      "mitteldunkle Hautfarbe",
+      "Person",
+      "Reisszähne",
+      "untot",
+      "Untoter",
+      "Vampir",
+      "Zähne"
+    ]
+  },
+  "1f9db-1f3ff": {
+    "kw": [
+      "Blutsauger",
+      "Dracula",
+      "dunkle Hautfarbe",
+      "Halloween",
+      "Person",
+      "Reisszähne",
+      "untot",
+      "Untoter",
+      "Vampir",
+      "Zähne"
+    ]
+  },
+  "1fa75": {
+    "kw": [
+      "aquamarin",
+      "Emotion",
+      "gefallen",
+      "gefällt",
+      "Gefühl",
+      "hdl",
+      "hellblau",
+      "Herz",
+      "Liebe",
+      "mag",
+      "mögen",
+      "niedlich",
+      "süss",
+      "türkis",
+      "zyan"
+    ]
+  },
+  "1fa77": {
+    "kw": [
+      "gefallen",
+      "gefällt",
+      "Gefühl",
+      "Herz",
+      "Liebe",
+      "mag",
+      "mögen",
+      "niedlich",
+      "pink",
+      "rosa",
+      "süss",
+      "verliebt"
+    ]
+  },
+  "1fa7c": {
+    "kw": [
+      "Behinderung",
+      "Beinverletzung",
+      "Fussverletzung",
+      "Gehhilfe",
+      "Gehstütze",
+      "Hilfe",
+      "Krücke",
+      "Schmerzen",
+      "Stock",
+      "verletzt",
+      "Verletzung"
+    ]
+  },
+  "1fa85": {
+    "kw": [
+      "Feier",
+      "Hau drauf",
+      "mexikanisch",
+      "Mexiko",
+      "Objekt",
+      "Party",
+      "Pinada",
+      "Pinata",
+      "Piñata",
+      "süss",
+      "Süssigkeiten"
+    ]
+  },
+  "1faad": {
+    "kw": [
+      "Abkühlung",
+      "Fächer",
+      "Faltfächer",
+      "flirten",
+      "heiss",
+      "kühlen",
+      "Luft zufächeln",
+      "schüchtern",
+      "spanisch",
+      "Tanz",
+      "warm"
+    ]
+  },
+  "1fab0": {
+    "kw": [
+      "Fliege",
+      "fliegen",
+      "Insekt",
+      "Krankheit",
+      "Made",
+      "Mücke",
+      "Plage",
+      "Schmeissfliege",
+      "Tier",
+      "verwesen"
+    ]
+  },
+  "1fad7": {
+    "nm": "Flüssigkeit ausgiessen",
+    "kw": [
+      "ausgiessen",
+      "ausleeren",
+      "Flüssigkeit ausgiessen",
+      "Getränk",
+      "giessen",
+      "Glas",
+      "leer",
+      "Missgeschick",
+      "tropfende Flüssigkeit",
+      "verschütten"
+    ]
+  },
+  "1fae6": {
+    "nm": "auf Lippe beissen",
+    "kw": [
+      "Angst",
+      "ängstlich",
+      "beissen",
+      "besorgt",
+      "flirten",
+      "flirtend",
+      "Kuss",
+      "Lippenstift",
+      "Mund",
+      "nervös",
+      "sexy",
+      "unbehaglich",
+      "Zähne"
+    ]
+  },
+  "24c2": {
+    "kw": [
+      "Buchstabe",
+      "eingekreist",
+      "Grossbuchstabe",
+      "Kreis",
+      "M"
+    ]
+  },
+  "25a1": {
+    "nm": "weisses Quadrat",
+    "kw": [
+      "weisses Quadrat"
+    ]
+  },
+  "25ab": {
+    "nm": "kleines weisses Quadrat",
+    "kw": [
+      "kleines weisses Quadrat",
+      "Kleines weisses Quadrat",
+      "Quadrat",
+      "weiss"
+    ]
+  },
+  "25ad": {
+    "nm": "weisses Rechteck",
+    "kw": [
+      "weisses Rechteck"
+    ]
+  },
+  "25c9": {
+    "nm": "weisser Kreis mit kleinem schwarzem Kreis",
+    "kw": [
+      "weisser Kreis mit kleinem schwarzem Kreis"
+    ]
+  },
+  "25fb": {
+    "nm": "mittelgrosses weisses Quadrat",
+    "kw": [
+      "mittelgrosses weisses Quadrat",
+      "Quadrat",
+      "weiss"
+    ]
+  },
+  "25fc": {
+    "nm": "mittelgrosses schwarzes Quadrat",
+    "kw": [
+      "mittelgrosses schwarzes Quadrat",
+      "Mittelgrosses schwarzes Quadrat",
+      "Quadrat",
+      "schwarz"
+    ]
+  },
+  "25fd": {
+    "nm": "mittelkleines weisses Quadrat",
+    "kw": [
+      "geometrisch",
+      "mittelkleines weisses Quadrat",
+      "Mittelkleines weisses Quadrat",
+      "Quadrat",
+      "weiss"
+    ]
+  },
+  "2615": {
+    "nm": "Heissgetränk",
+    "kw": [
+      "Cafe",
+      "dampfend",
+      "Getränk",
+      "heiss",
+      "Heissgetränk",
+      "Kaffee",
+      "Tasse",
+      "Tee",
+      "trinken"
+    ]
+  },
+  "2668": {
+    "nm": "heisse Quellen",
+    "kw": [
+      "Dampf",
+      "dampfend",
+      "heiss",
+      "heisse Quelle",
+      "heisse Quellen",
+      "Quelle",
+      "Quellen"
+    ]
+  },
+  "26aa": {
+    "nm": "weisser Punkt",
+    "kw": [
+      "Ball",
+      "Grosser weisser Kreis",
+      "Kreis",
+      "Punkt",
+      "weiss",
+      "weisser Punkt"
+    ]
+  },
+  "26ab": {
+    "kw": [
+      "Ball",
+      "Grosser schwarzer Kreis",
+      "Kreis",
+      "Punkt",
+      "rund",
+      "schwarz",
+      "schwarzer Punkt"
+    ]
+  },
+  "26bd": {
+    "nm": "Fussball",
+    "kw": [
+      "Ball",
+      "Bundesliga",
+      "Fussball",
+      "Messi"
+    ]
+  },
+  "26d1": {
+    "kw": [
+      "bergen",
+      "erste Hilfe",
+      "Helm",
+      "Helm mit weissem Kreuz",
+      "Hilfe",
+      "Kreuz",
+      "retten",
+      "Rettungshelm",
+      "roter Helm",
+      "Sanitäter"
+    ]
+  },
+  "2705": {
+    "nm": "weisses Häkchen",
+    "kw": [
+      "abgehakt",
+      "erledigt",
+      "weisses Häkchen",
+      "Weisses Häkchen"
+    ]
+  },
+  "2754": {
+    "nm": "weisses Fragezeichen",
+    "kw": [
+      "Frage",
+      "Fragezeichen",
+      "Satzzeichen",
+      "warum",
+      "weiss",
+      "weisses Fragezeichen"
+    ]
+  },
+  "2755": {
+    "nm": "weisses Ausrufezeichen",
+    "kw": [
+      "Ausrufezeichen",
+      "muss",
+      "Satzzeichen",
+      "weiss",
+      "weisses Ausrufezeichen"
+    ]
+  },
+  "2b1b": {
+    "nm": "grosses schwarzes Quadrat",
+    "kw": [
+      "grosses schwarzes Quadrat",
+      "Grosses schwarzes Quadrat",
+      "Quadrat",
+      "schwarz"
+    ]
+  },
+  "2b1c": {
+    "nm": "grosses weisses Quadrat",
+    "kw": [
+      "grosses weisses Quadrat",
+      "Grosses weisses Quadrat",
+      "Quadrat",
+      "weiss"
+    ]
+  },
+  "2b50": {
+    "nm": "weisser mittelgrosser Stern",
+    "kw": [
+      "astronomie",
+      "gelber Stern",
+      "Himmel",
+      "Stern",
+      "weisser mittelgrosser Stern"
+    ]
+  },
+  "2b55": {
+    "kw": [
+      "grosser Kreis",
+      "Grosser Kreis",
+      "hohler roter Kreis",
+      "Kreis",
+      "o",
+      "rot"
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "version": "2.0",
+  "packs": [
+    { "id": "googleAnimated", "name": "Google Noto Animated" },
+    { "id": "googleNonAnimated", "name": "Google Noto Non-Animated" }
+  ],
+  "emojis": [
+    {
+      "unicode": "1f381",
+      "glyph": "🎁",
+      "name": "wrapped present",
+      "keywords": [
+        "wrapped present",
+        "gift",
+        "birthday"
+      ],
+      "group": "Activities",
+      "styles": {
+        "googleAnimated": "1f381.webp",
+        "googleNonAnimated": "1f381.png"
+      },
+      "unicodeVersion": "6.0",
+      "shortcodes": [":gift:"]
+    },
+    {
+      "unicode": "1f389",
+      "glyph": "🎉",
+      "name": "party popper",
+      "keywords": [
+        "celebrate",
+        "confetti",
+        "tada"
+      ],
+      "group": "Activities",
+      "styles": {
+        "googleAnimated": "1f389.webp"
+      },
+      "unicodeVersion": "6.0",
+      "shortcodes": [":tada:"]
+    }
+  ]
+}

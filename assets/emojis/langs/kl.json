@@ -1,0 +1,10164 @@
+{
+  "0030-20e3": {
+    "kw": [
+      "0",
+      "keycap",
+      "nuulu"
+    ]
+  },
+  "0031-20e3": {
+    "kw": [
+      "1",
+      "ataaseq",
+      "keycap"
+    ]
+  },
+  "0032-20e3": {
+    "kw": [
+      "2",
+      "keycap",
+      "marluk"
+    ]
+  },
+  "0033-20e3": {
+    "kw": [
+      "3",
+      "keycap",
+      "pingasut"
+    ]
+  },
+  "0034-20e3": {
+    "kw": [
+      "4",
+      "keycap",
+      "sisamat"
+    ]
+  },
+  "0035-20e3": {
+    "kw": [
+      "5",
+      "keycap",
+      "tallimat"
+    ]
+  },
+  "0036-20e3": {
+    "kw": [
+      "6",
+      "arfinillit",
+      "keycap"
+    ]
+  },
+  "0037-20e3": {
+    "kw": [
+      "7",
+      "arfineq-marluk",
+      "keycap"
+    ]
+  },
+  "0038-20e3": {
+    "kw": [
+      "8",
+      "arfineq-pingasut",
+      "keycap"
+    ]
+  },
+  "0039-20e3": {
+    "kw": [
+      "9",
+      "arfineq-sisamat",
+      "keycap"
+    ]
+  },
+  "00a9": {
+    "nm": "copyright",
+    "kw": [
+      "copyright",
+      "copyright-tegn",
+      "ophavsret"
+    ]
+  },
+  "00ae": {
+    "nm": "registreret varemærke",
+    "kw": [
+      "registreret",
+      "registreret varemærke"
+    ]
+  },
+  "1f004": {
+    "nm": "mahjong-brik",
+    "kw": [
+      "drage",
+      "mahjong",
+      "mahjong-brik",
+      "rød drage"
+    ]
+  },
+  "1f0cf": {
+    "nm": "joker",
+    "kw": [
+      "joker",
+      "kort",
+      "spillekort"
+    ]
+  },
+  "1f170": {
+    "nm": "blodtype A",
+    "kw": [
+      "A",
+      "blod",
+      "blodtype",
+      "type A"
+    ]
+  },
+  "1f171": {
+    "nm": "blodtype B",
+    "kw": [
+      "B",
+      "blod",
+      "blodtype",
+      "type B"
+    ]
+  },
+  "1f17e": {
+    "nm": "blodtype O",
+    "kw": [
+      "blod",
+      "blodtype",
+      "O",
+      "type O"
+    ]
+  },
+  "1f17f": {
+    "nm": "parkering",
+    "kw": [
+      "parkering",
+      "parkeringsplads"
+    ]
+  },
+  "1f18e": {
+    "nm": "blodtype AB",
+    "kw": [
+      "AB",
+      "blod",
+      "blodtype",
+      "type AB"
+    ]
+  },
+  "1f191": {
+    "nm": "ryd",
+    "kw": [
+      "CL-tegn",
+      "ryd",
+      "ryd-tegn"
+    ]
+  },
+  "1f192": {
+    "nm": "cool",
+    "kw": [
+      "cool",
+      "cool-tegn"
+    ]
+  },
+  "1f193": {
+    "nm": "gratis",
+    "kw": [
+      "gratis",
+      "gratis-tegn"
+    ]
+  },
+  "1f194": {
+    "nm": "id",
+    "kw": [
+      "id",
+      "id-tegn"
+    ]
+  },
+  "1f195": {
+    "nm": "nyt",
+    "kw": [
+      "nyhed",
+      "nyt",
+      "nyt-tegn"
+    ]
+  },
+  "1f196": {
+    "nm": "ikke godt",
+    "kw": [
+      "ikke godt",
+      "ikke godt-tegn",
+      "NG-tegn"
+    ]
+  },
+  "1f197": {
+    "nm": "OK",
+    "kw": [
+      "OK",
+      "OK-tegn"
+    ]
+  },
+  "1f198": {
+    "nm": "SOS",
+    "kw": [
+      "hjælp",
+      "SOS",
+      "SOS-signal",
+      "SOS-tegn"
+    ]
+  },
+  "1f199": {
+    "nm": "OP!",
+    "kw": [
+      "OP!",
+      "OP!-tegn",
+      "UP!-tegn"
+    ]
+  },
+  "1f19a": {
+    "nm": "versus",
+    "kw": [
+      "versus",
+      "versus-tegn",
+      "vs.",
+      "vs.-tegn"
+    ]
+  },
+  "1f201": {
+    "nm": "kvadratisk katakana koko",
+    "kw": [
+      "japansk",
+      "kvadratisk katakana koko"
+    ]
+  },
+  "1f202": {
+    "nm": "kvadratisk katakana sa",
+    "kw": [
+      "japansk",
+      "kvadratisk katakana sa"
+    ]
+  },
+  "1f21a": {
+    "nm": "kvadratisk ideogram for forhandling",
+    "kw": [
+      "japansk",
+      "kvadratisk ideogram for forhandling"
+    ]
+  },
+  "1f22f": {
+    "nm": "kvadratisk ideogram for finger",
+    "kw": [
+      "japansk",
+      "kvadratisk ideogram for finger"
+    ]
+  },
+  "1f232": {
+    "nm": "kvadratisk ideogram for forbud",
+    "kw": [
+      "japansk",
+      "kvadratisk ideogram for forbud"
+    ]
+  },
+  "1f233": {
+    "nm": "kvadratisk ideogram for tom",
+    "kw": [
+      "kinesisk",
+      "kvadratisk ideogram for tom"
+    ]
+  },
+  "1f234": {
+    "nm": "kvadratisk ideogram for sammen",
+    "kw": [
+      "kinesisk",
+      "kvadratisk ideogram for sammen"
+    ]
+  },
+  "1f235": {
+    "nm": "kvadratisk ideogram for fuld",
+    "kw": [
+      "kinesisk",
+      "kvadratisk ideogram for fuld"
+    ]
+  },
+  "1f236": {
+    "nm": "kvadratisk ideogram for eksistens",
+    "kw": [
+      "japansk",
+      "kvadratisk ideogram for eksistens"
+    ]
+  },
+  "1f237": {
+    "nm": "kvadratisk ideogram for måne",
+    "kw": [
+      "japansk",
+      "kvadratisk ideogram for måne"
+    ]
+  },
+  "1f238": {
+    "nm": "kvadratisk ideogram for anvendelse",
+    "kw": [
+      "kinesisk",
+      "kvadratisk ideogram for anvendelse"
+    ]
+  },
+  "1f239": {
+    "nm": "kvadratisk ideogram for opdeling",
+    "kw": [
+      "japansk",
+      "kvadratisk ideogram for opdeling"
+    ]
+  },
+  "1f23a": {
+    "nm": "kvadratisk ideogram for drift",
+    "kw": [
+      "kinesisk",
+      "kvadratisk ideogram for drift"
+    ]
+  },
+  "1f250": {
+    "nm": "cirkulært ideogram for fordel",
+    "kw": [
+      "cirkulært ideogram for fordel",
+      "japansk"
+    ]
+  },
+  "1f251": {
+    "nm": "cirkulært ideogram for accept",
+    "kw": [
+      "cirkulært ideogram for accept",
+      "kinesisk"
+    ]
+  },
+  "1f300": {
+    "nm": "cyklon",
+    "kw": [
+      "cyklon",
+      "svimmel",
+      "tornado",
+      "tyfon"
+    ]
+  },
+  "1f301": {
+    "nm": "tåget",
+    "kw": [
+      "tåge",
+      "tåget"
+    ]
+  },
+  "1f302": {
+    "nm": "lukket paraply",
+    "kw": [
+      "lukket paraply",
+      "regn",
+      "regnvejr"
+    ]
+  },
+  "1f303": {
+    "nm": "stjernehimmel",
+    "kw": [
+      "stjernehimmel",
+      "stjerner"
+    ]
+  },
+  "1f304": {
+    "nm": "solopgang over bjerge",
+    "kw": [
+      "bjerge",
+      "morgensol",
+      "solopgang over bjerge"
+    ]
+  },
+  "1f305": {
+    "nm": "solopgang",
+    "kw": [
+      "morgensol",
+      "solopgang"
+    ]
+  },
+  "1f306": {
+    "nm": "by i solnedgang",
+    "kw": [
+      "aften",
+      "by",
+      "by i solnedgang",
+      "højhuse",
+      "solnedgang"
+    ]
+  },
+  "1f307": {
+    "nm": "solnedgang",
+    "kw": [
+      "skumring",
+      "solnedgang",
+      "solnedgang bag bygninger"
+    ]
+  },
+  "1f308": {
+    "nm": "regnbue",
+    "kw": [
+      "regn",
+      "regnbue",
+      "vejr"
+    ]
+  },
+  "1f309": {
+    "nm": "bro i mørke",
+    "kw": [
+      "bro i mørke",
+      "bro i natten",
+      "nat"
+    ]
+  },
+  "1f30a": {
+    "nm": "bølge",
+    "kw": [
+      "bølge",
+      "havbølge",
+      "vandbølge"
+    ]
+  },
+  "1f30b": {
+    "nm": "vulkan",
+    "kw": [
+      "vulkan",
+      "vulkanudbrud"
+    ]
+  },
+  "1f30c": {
+    "nm": "mælkevejen",
+    "kw": [
+      "galakse",
+      "mælkevejen"
+    ]
+  },
+  "1f30d": {
+    "nm": "globus med europa og afrika",
+    "kw": [
+      "Afrika",
+      "Europa",
+      "globus med europa og afrika",
+      "jorden"
+    ]
+  },
+  "1f30e": {
+    "nm": "globus med nord- og sydamerika",
+    "kw": [
+      "Amerika",
+      "globus med nord- og sydamerika",
+      "jorden",
+      "Nord- og Sydamerika"
+    ]
+  },
+  "1f30f": {
+    "nm": "globus med asien og australien",
+    "kw": [
+      "Asien",
+      "Australien",
+      "globus med asien og australien",
+      "jorden"
+    ]
+  },
+  "1f310": {
+    "nm": "globus med længdegrader",
+    "kw": [
+      "globus med længdegrader",
+      "meridianer"
+    ]
+  },
+  "1f311": {
+    "nm": "nymåne",
+    "kw": [
+      "måne",
+      "månefase",
+      "nymåne"
+    ]
+  },
+  "1f312": {
+    "nm": "tiltagende måne",
+    "kw": [
+      "måne",
+      "månefase",
+      "tiltagende måne"
+    ]
+  },
+  "1f313": {
+    "nm": "halvmåne første kvarter",
+    "kw": [
+      "første kvarter måne",
+      "halvmåne første kvarter",
+      "måne",
+      "månefase"
+    ]
+  },
+  "1f314": {
+    "nm": "tiltagende måne næsten fuld",
+    "kw": [
+      "måne",
+      "månefase",
+      "tiltagende måne næsten fuld"
+    ]
+  },
+  "1f315": {
+    "nm": "fuldmåne",
+    "kw": [
+      "fuldmåne",
+      "måne",
+      "månefase"
+    ]
+  },
+  "1f316": {
+    "nm": "aftagende måne næsten fuld",
+    "kw": [
+      "aftagende måne næsten fuld",
+      "måne",
+      "månefase"
+    ]
+  },
+  "1f317": {
+    "nm": "halvmåne sidste kvarter",
+    "kw": [
+      "halvmåne sidste kvarter",
+      "måne",
+      "månefase",
+      "sidste kvarter måne"
+    ]
+  },
+  "1f318": {
+    "nm": "aftagende måne",
+    "kw": [
+      "aftagende måne",
+      "måne",
+      "månefase"
+    ]
+  },
+  "1f319": {
+    "nm": "halvmåne",
+    "kw": [
+      "aftagende måne",
+      "halvmåne"
+    ]
+  },
+  "1f31a": {
+    "nm": "nymåne med ansigt",
+    "kw": [
+      "ansigt i måne",
+      "nymåne",
+      "nymåne med ansigt"
+    ]
+  },
+  "1f31b": {
+    "nm": "måne med ansigt første kvarter",
+    "kw": [
+      "måne",
+      "måne med ansigt første kvarter",
+      "måneansigt"
+    ]
+  },
+  "1f31c": {
+    "nm": "måne med ansigt andet kvarter",
+    "kw": [
+      "måne",
+      "måne med ansigt andet kvarter",
+      "måneansigt"
+    ]
+  },
+  "1f31d": {
+    "nm": "fuldmåneansigt",
+    "kw": [
+      "fuldmåne",
+      "fuldmåne med ansigt",
+      "fuldmåneansigt",
+      "måne med ansigt",
+      "måneansigt"
+    ]
+  },
+  "1f31e": {
+    "nm": "sol med ansigt",
+    "kw": [
+      "ansigt",
+      "sol",
+      "sol med ansigt"
+    ]
+  },
+  "1f31f": {
+    "nm": "blinkende stjerne",
+    "kw": [
+      "blinkende stjerne",
+      "lysende stjerne",
+      "lyser",
+      "skinner",
+      "stjerneskin"
+    ]
+  },
+  "1f320": {
+    "nm": "stjerneskud",
+    "kw": [
+      "stjerne",
+      "stjerneskud"
+    ]
+  },
+  "1f321": {
+    "nm": "termometer",
+    "kw": [
+      "termometer",
+      "vejr"
+    ]
+  },
+  "1f324": {
+    "nm": "sol bag lille sky",
+    "kw": [
+      "sky",
+      "sol",
+      "sol bag lille sky",
+      "vejr"
+    ]
+  },
+  "1f325": {
+    "nm": "sol bag stor sky",
+    "kw": [
+      "sky",
+      "sol",
+      "sol bag stor sky",
+      "vejr"
+    ]
+  },
+  "1f326": {
+    "nm": "sol bag sky med regn",
+    "kw": [
+      "regn",
+      "sky",
+      "sol",
+      "sol bag sky med regn",
+      "vejr"
+    ]
+  },
+  "1f327": {
+    "nm": "sky med regn",
+    "kw": [
+      "regn",
+      "sky",
+      "sky med regn",
+      "vejr"
+    ]
+  },
+  "1f328": {
+    "nm": "sky med sne",
+    "kw": [
+      "kulde",
+      "sky",
+      "sky med sne",
+      "sne",
+      "vejr"
+    ]
+  },
+  "1f329": {
+    "nm": "tordensky",
+    "kw": [
+      "lyn",
+      "sky",
+      "tordensky",
+      "vejr"
+    ]
+  },
+  "1f32a": {
+    "nm": "tornado",
+    "kw": [
+      "hvirvelvind",
+      "sky",
+      "skypumpe",
+      "tornado",
+      "vejr"
+    ]
+  },
+  "1f32b": {
+    "nm": "tåge",
+    "kw": [
+      "sky",
+      "tåge",
+      "vejr"
+    ]
+  },
+  "1f32c": {
+    "nm": "vindansigt",
+    "kw": [
+      "ansigt",
+      "blæse",
+      "sky",
+      "vejr",
+      "vind",
+      "vindansigt"
+    ]
+  },
+  "1f32d": {
+    "nm": "hotdog",
+    "kw": [
+      "frankfurter",
+      "hotdog",
+      "pølse"
+    ]
+  },
+  "1f32e": {
+    "nm": "taco",
+    "kw": [
+      "mexicansk",
+      "taco"
+    ]
+  },
+  "1f32f": {
+    "nm": "burrito",
+    "kw": [
+      "burrito",
+      "mexicansk"
+    ]
+  },
+  "1f330": {
+    "nm": "kastanje",
+    "kw": [
+      "kastanje",
+      "plante"
+    ]
+  },
+  "1f331": {
+    "nm": "spire",
+    "kw": [
+      "plantespire",
+      "spire"
+    ]
+  },
+  "1f332": {
+    "nm": "grantræ",
+    "kw": [
+      "grantræ",
+      "stedsegrøn",
+      "træ"
+    ]
+  },
+  "1f333": {
+    "nm": "træ",
+    "kw": [
+      "løvfældende træ",
+      "træ"
+    ]
+  },
+  "1f334": {
+    "nm": "palme",
+    "kw": [
+      "palme",
+      "palmetræ"
+    ]
+  },
+  "1f335": {
+    "nm": "kaktus",
+    "kw": [
+      "kaktus",
+      "kaktusplante",
+      "plante"
+    ]
+  },
+  "1f336": {
+    "nm": "chili",
+    "kw": [
+      "chili",
+      "peber",
+      "plante",
+      "stærk"
+    ]
+  },
+  "1f337": {
+    "nm": "tulipan",
+    "kw": [
+      "blomst",
+      "tulipan"
+    ]
+  },
+  "1f338": {
+    "nm": "kirsebærblomst",
+    "kw": [
+      "blomst",
+      "blomstrende kirsebær",
+      "kirsebær",
+      "kirsebærblomst"
+    ]
+  },
+  "1f339": {
+    "nm": "rose",
+    "kw": [
+      "blomst",
+      "rose"
+    ]
+  },
+  "1f33a": {
+    "nm": "hibiscus",
+    "kw": [
+      "blomst",
+      "hawaiiblomst",
+      "hibiscus"
+    ]
+  },
+  "1f33b": {
+    "nm": "solsikke",
+    "kw": [
+      "blomst",
+      "solsikke"
+    ]
+  },
+  "1f33c": {
+    "nm": "blomst",
+    "kw": [
+      "blomst",
+      "gul blomst"
+    ]
+  },
+  "1f33d": {
+    "nm": "majs",
+    "kw": [
+      "majs",
+      "majskolbe"
+    ]
+  },
+  "1f33e": {
+    "nm": "risplante",
+    "kw": [
+      "ris",
+      "risplante"
+    ]
+  },
+  "1f33f": {
+    "nm": "urt",
+    "kw": [
+      "blade",
+      "urt"
+    ]
+  },
+  "1f340": {
+    "nm": "firkløver",
+    "kw": [
+      "firkløver",
+      "held",
+      "heldig",
+      "kløver"
+    ]
+  },
+  "1f341": {
+    "nm": "blad",
+    "kw": [
+      "ahorn",
+      "ahornblad",
+      "blad",
+      "efterår",
+      "efterårsblad"
+    ]
+  },
+  "1f342": {
+    "nm": "faldende blade",
+    "kw": [
+      "blade",
+      "efterårsblade",
+      "faldende blade"
+    ]
+  },
+  "1f343": {
+    "nm": "blad i vinden",
+    "kw": [
+      "blad",
+      "blad i vinden",
+      "blæst",
+      "vind"
+    ]
+  },
+  "1f344": {
+    "nm": "svamp",
+    "kw": [
+      "plante",
+      "svamp"
+    ]
+  },
+  "1f345": {
+    "nm": "tomat",
+    "kw": [
+      "grøntsag",
+      "tomat"
+    ]
+  },
+  "1f346": {
+    "nm": "aubergine",
+    "kw": [
+      "aubergine",
+      "grøntsag"
+    ]
+  },
+  "1f347": {
+    "nm": "vindruer",
+    "kw": [
+      "frugt",
+      "vin",
+      "vindruer"
+    ]
+  },
+  "1f348": {
+    "nm": "melon",
+    "kw": [
+      "frugt",
+      "melon"
+    ]
+  },
+  "1f349": {
+    "nm": "vandmelon",
+    "kw": [
+      "frugt",
+      "sommer",
+      "vandmelon"
+    ]
+  },
+  "1f34a": {
+    "nm": "appelsin",
+    "kw": [
+      "appelsin",
+      "citrus",
+      "frugt"
+    ]
+  },
+  "1f34b": {
+    "nm": "citron",
+    "kw": [
+      "citron",
+      "frugt",
+      "gul"
+    ]
+  },
+  "1f34c": {
+    "nm": "banan",
+    "kw": [
+      "banan",
+      "frugt"
+    ]
+  },
+  "1f34d": {
+    "nm": "ananas",
+    "kw": [
+      "ananas",
+      "frugt"
+    ]
+  },
+  "1f34e": {
+    "nm": "rødt æble",
+    "kw": [
+      "æble",
+      "frugt",
+      "rød",
+      "rødt æble"
+    ]
+  },
+  "1f34f": {
+    "nm": "grønt æble",
+    "kw": [
+      "æble",
+      "frugt",
+      "grøn",
+      "grønt æble"
+    ]
+  },
+  "1f350": {
+    "nm": "pære",
+    "kw": [
+      "frugt",
+      "pære"
+    ]
+  },
+  "1f351": {
+    "nm": "fersken",
+    "kw": [
+      "fersken",
+      "frugt"
+    ]
+  },
+  "1f352": {
+    "nm": "kirsebær",
+    "kw": [
+      "frugt",
+      "kirsebær"
+    ]
+  },
+  "1f353": {
+    "nm": "jordbær",
+    "kw": [
+      "bær",
+      "frugt",
+      "jordbær"
+    ]
+  },
+  "1f354": {
+    "nm": "hamburger",
+    "kw": [
+      "hamburger"
+    ]
+  },
+  "1f355": {
+    "nm": "pizza",
+    "kw": [
+      "pizza",
+      "pizzastykke",
+      "stykke pizza"
+    ]
+  },
+  "1f356": {
+    "nm": "kød",
+    "kw": [
+      "kød",
+      "kødben"
+    ]
+  },
+  "1f357": {
+    "nm": "kyllingelår",
+    "kw": [
+      "kylling",
+      "kyllingelår"
+    ]
+  },
+  "1f358": {
+    "nm": "riskiks",
+    "kw": [
+      "kiks",
+      "riskiks"
+    ]
+  },
+  "1f359": {
+    "nm": "riskugle",
+    "kw": [
+      "ris",
+      "riskugle"
+    ]
+  },
+  "1f35a": {
+    "nm": "ris",
+    "kw": [
+      "restaurant",
+      "ris",
+      "skål ris"
+    ]
+  },
+  "1f35b": {
+    "nm": "ris og karry",
+    "kw": [
+      "ris",
+      "ris og karry"
+    ]
+  },
+  "1f35c": {
+    "nm": "nudler",
+    "kw": [
+      "nudler",
+      "ramen-nudler",
+      "restaurant",
+      "skål nudler"
+    ]
+  },
+  "1f35d": {
+    "nm": "spaghetti",
+    "kw": [
+      "pasta",
+      "restaurant",
+      "spaghetti"
+    ]
+  },
+  "1f35e": {
+    "nm": "brød",
+    "kw": [
+      "bage",
+      "brød"
+    ]
+  },
+  "1f35f": {
+    "nm": "pomfritter",
+    "kw": [
+      "pomfrit",
+      "pomfritter",
+      "pommes frites"
+    ]
+  },
+  "1f360": {
+    "nm": "sød kartoffel",
+    "kw": [
+      "kartoffel",
+      "sød",
+      "stegt"
+    ]
+  },
+  "1f361": {
+    "nm": "iskugler på pind",
+    "kw": [
+      "iskugler",
+      "iskugler på pind"
+    ]
+  },
+  "1f362": {
+    "nm": "mad på spyd",
+    "kw": [
+      "fisk",
+      "grillspyd",
+      "kebab",
+      "mad på spyd",
+      "pind",
+      "skaldyr",
+      "spyd"
+    ]
+  },
+  "1f363": {
+    "nm": "sushi",
+    "kw": [
+      "sushi",
+      "sushi-restaurant"
+    ]
+  },
+  "1f364": {
+    "nm": "dybstegt reje",
+    "kw": [
+      "dybstegt reje",
+      "reje"
+    ]
+  },
+  "1f365": {
+    "nm": "fiskebolle",
+    "kw": [
+      "fiskebolle",
+      "fiskebolle med spiral"
+    ]
+  },
+  "1f366": {
+    "nm": "softice",
+    "kw": [
+      "is",
+      "softice"
+    ]
+  },
+  "1f367": {
+    "nm": "snedessert",
+    "kw": [
+      "is",
+      "isdessert",
+      "snedessert"
+    ]
+  },
+  "1f368": {
+    "nm": "is",
+    "kw": [
+      "is",
+      "isdessert"
+    ]
+  },
+  "1f369": {
+    "nm": "donut",
+    "kw": [
+      "donut",
+      "kage"
+    ]
+  },
+  "1f36a": {
+    "nm": "cookie",
+    "kw": [
+      "cookie",
+      "kage",
+      "småkage"
+    ]
+  },
+  "1f36b": {
+    "nm": "chokolade",
+    "kw": [
+      "chokolade",
+      "et stykke chokolade"
+    ]
+  },
+  "1f36c": {
+    "nm": "bolsje",
+    "kw": [
+      "bolsje",
+      "slik"
+    ]
+  },
+  "1f36d": {
+    "nm": "slikpind",
+    "kw": [
+      "slik",
+      "slikpind"
+    ]
+  },
+  "1f36e": {
+    "nm": "dessert",
+    "kw": [
+      "budding",
+      "dessert"
+    ]
+  },
+  "1f36f": {
+    "nm": "honning",
+    "kw": [
+      "honning",
+      "honningkrukke",
+      "krukke honning"
+    ]
+  },
+  "1f370": {
+    "nm": "lagkage",
+    "kw": [
+      "et stykke kage",
+      "kage",
+      "lagkage"
+    ]
+  },
+  "1f371": {
+    "nm": "bento",
+    "kw": [
+      "bento",
+      "bentoboks",
+      "boks"
+    ]
+  },
+  "1f372": {
+    "nm": "gryde med mad",
+    "kw": [
+      "gryde",
+      "gryde med mad",
+      "gryderet",
+      "suppe"
+    ]
+  },
+  "1f373": {
+    "nm": "stegepande",
+    "kw": [
+      "madlavning",
+      "stegepande",
+      "stegepande med æg"
+    ]
+  },
+  "1f374": {
+    "nm": "kniv og gaffel",
+    "kw": [
+      "bestik",
+      "gaffel",
+      "kniv",
+      "kniv og gaffel"
+    ]
+  },
+  "1f375": {
+    "nm": "tekop",
+    "kw": [
+      "kop",
+      "te",
+      "tekop",
+      "varm te"
+    ]
+  },
+  "1f376": {
+    "nm": "sake",
+    "kw": [
+      "flaske sake",
+      "sake",
+      "sakeflaske",
+      "sakekop"
+    ]
+  },
+  "1f377": {
+    "nm": "vin",
+    "kw": [
+      "et glas vin",
+      "hvidvin",
+      "rødvin",
+      "vin"
+    ]
+  },
+  "1f378": {
+    "nm": "cocktailglas",
+    "kw": [
+      "cocktailglas"
+    ]
+  },
+  "1f379": {
+    "nm": "tropisk drink",
+    "kw": [
+      "cocktail",
+      "tropisk drink"
+    ]
+  },
+  "1f37a": {
+    "nm": "ølkrus",
+    "kw": [
+      "krus",
+      "krus øl",
+      "ølglas",
+      "ølkrus"
+    ]
+  },
+  "1f37b": {
+    "nm": "skålende ølkrus",
+    "kw": [
+      "krus",
+      "krus øl",
+      "ølglas",
+      "ølkrus",
+      "skål",
+      "skålende ølkrus"
+    ]
+  },
+  "1f37c": {
+    "nm": "sutteflaske",
+    "kw": [
+      "flaske",
+      "mælk",
+      "sutteflaske"
+    ]
+  },
+  "1f37d": {
+    "nm": "kniv og gaffel med tallerken",
+    "kw": [
+      "gaffel",
+      "kniv",
+      "kniv og gaffel med tallerken",
+      "madlavning",
+      "tallerken"
+    ]
+  },
+  "1f37e": {
+    "nm": "flaske med flyvende prop",
+    "kw": [
+      "bar",
+      "drik",
+      "flaske",
+      "flaske med flyvende prop",
+      "prop"
+    ]
+  },
+  "1f37f": {
+    "nm": "popcorn",
+    "kw": [
+      "popcorn"
+    ]
+  },
+  "1f380": {
+    "nm": "sløjfe",
+    "kw": [
+      "fejring",
+      "sløjfe"
+    ]
+  },
+  "1f381": {
+    "nm": "gave",
+    "kw": [
+      "fødselsdag",
+      "gave",
+      "overraskelse",
+      "pakke"
+    ]
+  },
+  "1f382": {
+    "nm": "fødselsdagskage",
+    "kw": [
+      "fødselsdagskage",
+      "kage",
+      "lagkage"
+    ]
+  },
+  "1f383": {
+    "nm": "græskarlygte",
+    "kw": [
+      "græskar",
+      "græskarlygte"
+    ]
+  },
+  "1f384": {
+    "nm": "juletræ",
+    "kw": [
+      "jul",
+      "juletræ",
+      "træ"
+    ]
+  },
+  "1f385": {
+    "nm": "julemand",
+    "kw": [
+      "jul",
+      "julemand",
+      "nisse"
+    ]
+  },
+  "1f386": {
+    "nm": "fyrværkeri",
+    "kw": [
+      "fest",
+      "fyrværkeri",
+      "nytår"
+    ]
+  },
+  "1f387": {
+    "nm": "stjernekaster",
+    "kw": [
+      "fyrværkeri",
+      "nytår",
+      "stjernekaster"
+    ]
+  },
+  "1f388": {
+    "nm": "ballon",
+    "kw": [
+      "ballon",
+      "fest",
+      "fødselsdag"
+    ]
+  },
+  "1f389": {
+    "nm": "bordbombe",
+    "kw": [
+      "bordbombe",
+      "fest",
+      "nytår"
+    ]
+  },
+  "1f38a": {
+    "nm": "konfetti",
+    "kw": [
+      "fest",
+      "konfetti",
+      "konfettidåse",
+      "konfettiregn"
+    ]
+  },
+  "1f38b": {
+    "nm": "træ med papirpynt",
+    "kw": [
+      "festival",
+      "træ med papirpynt"
+    ]
+  },
+  "1f38c": {
+    "nm": "to flag",
+    "kw": [
+      "japanske flag",
+      "to flag"
+    ]
+  },
+  "1f38d": {
+    "nm": "fyrtræsdekoration",
+    "kw": [
+      "fyrtræsdekoration",
+      "japansk nytår"
+    ]
+  },
+  "1f38e": {
+    "nm": "dukker",
+    "kw": [
+      "dukker",
+      "japanske dukker"
+    ]
+  },
+  "1f38f": {
+    "nm": "banner",
+    "kw": [
+      "banner",
+      "banner med fisk",
+      "banner med karper"
+    ]
+  },
+  "1f390": {
+    "nm": "vindspil",
+    "kw": [
+      "vindpiber",
+      "vindspil"
+    ]
+  },
+  "1f391": {
+    "nm": "måneceremoni",
+    "kw": [
+      "ceremoni",
+      "fejring",
+      "måne",
+      "måneceremoni"
+    ]
+  },
+  "1f392": {
+    "nm": "rygsæk",
+    "kw": [
+      "rygsæk",
+      "skole",
+      "skoletaske",
+      "taske"
+    ]
+  },
+  "1f393": {
+    "nm": "eksamenshat",
+    "kw": [
+      "eksamen",
+      "eksamenshat",
+      "hat"
+    ]
+  },
+  "1f396": {
+    "nm": "militærmedalje",
+    "kw": [
+      "dekoreret",
+      "fejring",
+      "medalje",
+      "militær",
+      "militærmedalje"
+    ]
+  },
+  "1f397": {
+    "nm": "mindebånd",
+    "kw": [
+      "bånd",
+      "fejring",
+      "minde",
+      "mindebånd"
+    ]
+  },
+  "1f399": {
+    "nm": "studiemikrofon",
+    "kw": [
+      "mikrofon",
+      "musik",
+      "studie",
+      "studiemikrofon"
+    ]
+  },
+  "1f39a": {
+    "nm": "volumenkontrol",
+    "kw": [
+      "musik",
+      "volumenkontrol"
+    ]
+  },
+  "1f39b": {
+    "nm": "knapper",
+    "kw": [
+      "knapper",
+      "musik"
+    ]
+  },
+  "1f39e": {
+    "nm": "filmstrimmel",
+    "kw": [
+      "biograf",
+      "film",
+      "filmstrimmel",
+      "strimmel"
+    ]
+  },
+  "1f39f": {
+    "nm": "adgangsbillet",
+    "kw": [
+      "adgang",
+      "adgangsbillet",
+      "billet"
+    ]
+  },
+  "1f3a0": {
+    "nm": "karrusel",
+    "kw": [
+      "karrusel",
+      "karruselhest",
+      "karruseltur",
+      "køre i karrusel"
+    ]
+  },
+  "1f3a1": {
+    "nm": "pariserhjul",
+    "kw": [
+      "forlystelse",
+      "forlystelsespark",
+      "pariserhjul",
+      "tivoli"
+    ]
+  },
+  "1f3a2": {
+    "nm": "rutsjebane",
+    "kw": [
+      "forlystelse",
+      "forlystelsespark",
+      "rutsjebane",
+      "tivoli"
+    ]
+  },
+  "1f3a3": {
+    "nm": "fiske",
+    "kw": [
+      "fiske",
+      "fiskeri",
+      "fiskestang",
+      "fiskestang med fisk"
+    ]
+  },
+  "1f3a4": {
+    "nm": "mikrofon",
+    "kw": [
+      "mikrofon",
+      "sang",
+      "synge"
+    ]
+  },
+  "1f3a5": {
+    "nm": "filmkamera",
+    "kw": [
+      "biograf",
+      "filme",
+      "filmkamera"
+    ]
+  },
+  "1f3a6": {
+    "nm": "film",
+    "kw": [
+      "biograf",
+      "film",
+      "filme",
+      "teater"
+    ]
+  },
+  "1f3a7": {
+    "nm": "hovedtelefon",
+    "kw": [
+      "høretelefon",
+      "hovedtelefon",
+      "lytte",
+      "musik"
+    ]
+  },
+  "1f3a8": {
+    "nm": "palet",
+    "kw": [
+      "farver",
+      "kunstner",
+      "maler",
+      "palet"
+    ]
+  },
+  "1f3a9": {
+    "nm": "høj hat",
+    "kw": [
+      "hat",
+      "høj hat",
+      "sort hat"
+    ]
+  },
+  "1f3aa": {
+    "nm": "cirkus",
+    "kw": [
+      "cirkus",
+      "cirkustelt",
+      "telt"
+    ]
+  },
+  "1f3ab": {
+    "nm": "billet",
+    "kw": [
+      "billet",
+      "forlystelse",
+      "underholdning"
+    ]
+  },
+  "1f3ac": {
+    "nm": "klaptræ",
+    "kw": [
+      "filmklapper",
+      "klapper",
+      "klaptræ"
+    ]
+  },
+  "1f3ad": {
+    "nm": "masker",
+    "kw": [
+      "masker",
+      "teater"
+    ]
+  },
+  "1f3ae": {
+    "nm": "videospil",
+    "kw": [
+      "håndcontroller",
+      "videospil"
+    ]
+  },
+  "1f3af": {
+    "nm": "pletskud",
+    "kw": [
+      "plet",
+      "pletskud"
+    ]
+  },
+  "1f3b0": {
+    "nm": "spillemaskine",
+    "kw": [
+      "spil",
+      "spillemaskine"
+    ]
+  },
+  "1f3b1": {
+    "nm": "billard",
+    "kw": [
+      "billard",
+      "billardkugle"
+    ]
+  },
+  "1f3b2": {
+    "nm": "terning",
+    "kw": [
+      "terning",
+      "terningspil"
+    ]
+  },
+  "1f3b3": {
+    "nm": "bowling",
+    "kw": [
+      "bowling",
+      "bowlingkugle",
+      "spille"
+    ]
+  },
+  "1f3b4": {
+    "nm": "spillekort",
+    "kw": [
+      "spillekort",
+      "spillekort med blomster"
+    ]
+  },
+  "1f3b5": {
+    "nm": "node",
+    "kw": [
+      "musik",
+      "node"
+    ]
+  },
+  "1f3b6": {
+    "nm": "noder",
+    "kw": [
+      "musik",
+      "node",
+      "noder"
+    ]
+  },
+  "1f3b7": {
+    "nm": "saxofon",
+    "kw": [
+      "instrument",
+      "musik",
+      "musikinstrument",
+      "saxofon"
+    ]
+  },
+  "1f3b8": {
+    "nm": "guitar",
+    "kw": [
+      "guitar",
+      "instrument",
+      "musik",
+      "musikinstrument",
+      "strengeinstrument"
+    ]
+  },
+  "1f3b9": {
+    "nm": "klaver",
+    "kw": [
+      "instrument",
+      "keyboard",
+      "klaver",
+      "musik",
+      "musikinstrument"
+    ]
+  },
+  "1f3ba": {
+    "nm": "trompet",
+    "kw": [
+      "instrument",
+      "musik",
+      "musikinstrument",
+      "trompet"
+    ]
+  },
+  "1f3bb": {
+    "nm": "violin",
+    "kw": [
+      "instrument",
+      "musik",
+      "musikinstrument",
+      "strengeinstrument",
+      "violin"
+    ]
+  },
+  "1f3bc": {
+    "nm": "partitur",
+    "kw": [
+      "g-nøgle",
+      "musik",
+      "partitur"
+    ]
+  },
+  "1f3bd": {
+    "nm": "løbetrøje",
+    "kw": [
+      "løbe",
+      "løbetrøje",
+      "løbetrøje med bånd"
+    ]
+  },
+  "1f3be": {
+    "nm": "tennis",
+    "kw": [
+      "bold",
+      "sport",
+      "tennis",
+      "tennisbold",
+      "tennisbold og ketsjer"
+    ]
+  },
+  "1f3bf": {
+    "nm": "ski",
+    "kw": [
+      "ski",
+      "skisport"
+    ]
+  },
+  "1f3c0": {
+    "nm": "basketball",
+    "kw": [
+      "basketball",
+      "bold",
+      "sport"
+    ]
+  },
+  "1f3c1": {
+    "nm": "ternet flag",
+    "kw": [
+      "flag",
+      "motorsport",
+      "ternet flag"
+    ]
+  },
+  "1f3c2": {
+    "nm": "snowboarder",
+    "kw": [
+      "snowboarder",
+      "sport"
+    ]
+  },
+  "1f3c3": {
+    "nm": "løber",
+    "kw": [
+      "løber",
+      "løbetræning",
+      "maraton",
+      "sport"
+    ]
+  },
+  "1f3c3-200d-2640": {
+    "nm": "kvinde løber",
+    "kw": [
+      "kvinde",
+      "kvinde løber",
+      "løb",
+      "løbetræning",
+      "løbetur",
+      "maraton"
+    ]
+  },
+  "1f3c3-200d-2642": {
+    "nm": "mand løber",
+    "kw": [
+      "løb",
+      "løbetræning",
+      "løbetur",
+      "mand",
+      "mand løber",
+      "maraton"
+    ]
+  },
+  "1f3c4": {
+    "nm": "surfing",
+    "kw": [
+      "sport",
+      "surfing"
+    ]
+  },
+  "1f3c4-200d-2640": {
+    "nm": "kvindelig surfer",
+    "kw": [
+      "kvinde",
+      "kvindelig surfer",
+      "surfer",
+      "surfing"
+    ]
+  },
+  "1f3c4-200d-2642": {
+    "nm": "surfer",
+    "kw": [
+      "mand",
+      "surfer",
+      "surfing"
+    ]
+  },
+  "1f3c5": {
+    "nm": "sportsmedalje",
+    "kw": [
+      "medalje",
+      "sportsmedalje"
+    ]
+  },
+  "1f3c6": {
+    "nm": "pokal",
+    "kw": [
+      "pokal",
+      "præmie",
+      "trofæ"
+    ]
+  },
+  "1f3c7": {
+    "nm": "hestevæddeløb",
+    "kw": [
+      "galop",
+      "hest",
+      "hestesport",
+      "hestevæddeløb",
+      "væddeløbshest"
+    ]
+  },
+  "1f3c8": {
+    "nm": "amerikansk fodbold",
+    "kw": [
+      "amerikansk fodbold",
+      "sport"
+    ]
+  },
+  "1f3c9": {
+    "nm": "rugbybold",
+    "kw": [
+      "bold",
+      "rugbybold",
+      "sport"
+    ]
+  },
+  "1f3ca": {
+    "nm": "svømmer",
+    "kw": [
+      "sport",
+      "svømme",
+      "svømmer",
+      "svømning"
+    ]
+  },
+  "1f3ca-200d-2640": {
+    "nm": "kvindelig svømmer",
+    "kw": [
+      "kvinde",
+      "kvindelig svømmer",
+      "svømmepige",
+      "svømning"
+    ]
+  },
+  "1f3ca-200d-2642": {
+    "nm": "mandlig svømmer",
+    "kw": [
+      "mand",
+      "mandlig svømmer",
+      "svømning"
+    ]
+  },
+  "1f3cb": {
+    "nm": "vægtløfter",
+    "kw": [
+      "løfter",
+      "vægt",
+      "vægtløfter"
+    ]
+  },
+  "1f3cc": {
+    "nm": "golfspiller",
+    "kw": [
+      "bold",
+      "golfspiller"
+    ]
+  },
+  "1f3cd": {
+    "nm": "motorcykel",
+    "kw": [
+      "motorcykel",
+      "racerløb"
+    ]
+  },
+  "1f3ce": {
+    "nm": "racerbil",
+    "kw": [
+      "bil",
+      "racerbil",
+      "racerløb"
+    ]
+  },
+  "1f3cf": {
+    "nm": "cricket",
+    "kw": [
+      "bat",
+      "bold",
+      "cricket",
+      "spil"
+    ]
+  },
+  "1f3d0": {
+    "nm": "volleyball",
+    "kw": [
+      "bold",
+      "spil",
+      "volleyball"
+    ]
+  },
+  "1f3d1": {
+    "nm": "hockey",
+    "kw": [
+      "bold",
+      "hockey",
+      "spil",
+      "stav"
+    ]
+  },
+  "1f3d2": {
+    "nm": "ishockeystav og puck",
+    "kw": [
+      "is",
+      "ishockeystav og puck",
+      "puck",
+      "spil",
+      "stav"
+    ]
+  },
+  "1f3d3": {
+    "nm": "bordtennis",
+    "kw": [
+      "bat",
+      "bold",
+      "bord",
+      "bordtennis",
+      "pingpong",
+      "spil",
+      "tennis"
+    ]
+  },
+  "1f3d4": {
+    "nm": "sneklædt bjerg",
+    "kw": [
+      "bjerg",
+      "koldt",
+      "sne",
+      "sneklædt bjerg"
+    ]
+  },
+  "1f3d5": {
+    "nm": "camping",
+    "kw": [
+      "camping",
+      "telt"
+    ]
+  },
+  "1f3d6": {
+    "nm": "strand med parasol",
+    "kw": [
+      "parasol",
+      "strand",
+      "strand med parasol"
+    ]
+  },
+  "1f3d7": {
+    "nm": "bygningskonstruktion",
+    "kw": [
+      "bygning",
+      "bygningskonstruktion",
+      "konstruktion"
+    ]
+  },
+  "1f3d8": {
+    "nm": "huse",
+    "kw": [
+      "bygning",
+      "hus",
+      "huse"
+    ]
+  },
+  "1f3d9": {
+    "nm": "bylandskab",
+    "kw": [
+      "by",
+      "bygning",
+      "bylandskab"
+    ]
+  },
+  "1f3da": {
+    "nm": "faldefærdigt hus",
+    "kw": [
+      "bygning",
+      "faldefærdig",
+      "faldefærdigt hus",
+      "hus"
+    ]
+  },
+  "1f3db": {
+    "nm": "klassisk bygning",
+    "kw": [
+      "bygning",
+      "klassisk"
+    ]
+  },
+  "1f3dc": {
+    "nm": "ørken",
+    "kw": [
+      "kaktus",
+      "ørken",
+      "sol"
+    ]
+  },
+  "1f3dd": {
+    "nm": "øde ø",
+    "kw": [
+      "ø",
+      "øde"
+    ]
+  },
+  "1f3de": {
+    "nm": "nationalpark",
+    "kw": [
+      "nationalpark"
+    ]
+  },
+  "1f3df": {
+    "nm": "stadion",
+    "kw": [
+      "stadion"
+    ]
+  },
+  "1f3e0": {
+    "nm": "hus",
+    "kw": [
+      "bygning",
+      "hjem",
+      "hus"
+    ]
+  },
+  "1f3e1": {
+    "nm": "hus med have",
+    "kw": [
+      "have",
+      "hjem",
+      "hus med have"
+    ]
+  },
+  "1f3e2": {
+    "nm": "kontorbygning",
+    "kw": [
+      "bygning",
+      "kontor",
+      "kontorbygning"
+    ]
+  },
+  "1f3e3": {
+    "nm": "japansk posthus",
+    "kw": [
+      "japansk",
+      "posthus",
+      "postkontor"
+    ]
+  },
+  "1f3e4": {
+    "nm": "posthus",
+    "kw": [
+      "europæisk posthus",
+      "posthus"
+    ]
+  },
+  "1f3e5": {
+    "nm": "hospital",
+    "kw": [
+      "bygning",
+      "doktor",
+      "hospital",
+      "læge",
+      "medicin"
+    ]
+  },
+  "1f3e6": {
+    "nm": "bank",
+    "kw": [
+      "bank",
+      "bygning"
+    ]
+  },
+  "1f3e7": {
+    "nm": "pengeautomat",
+    "kw": [
+      "dankortsautomat",
+      "hæve penge",
+      "pengeautomat"
+    ]
+  },
+  "1f3e8": {
+    "nm": "hotel",
+    "kw": [
+      "bygning",
+      "hotel"
+    ]
+  },
+  "1f3e9": {
+    "nm": "kærlighedshotel",
+    "kw": [
+      "hotel",
+      "kærlighedshotel",
+      "romantik"
+    ]
+  },
+  "1f3ea": {
+    "nm": "døgnkiosk",
+    "kw": [
+      "døgnkiosk",
+      "kiosk",
+      "købmand"
+    ]
+  },
+  "1f3eb": {
+    "nm": "skole",
+    "kw": [
+      "bygning",
+      "skole"
+    ]
+  },
+  "1f3ec": {
+    "nm": "stormagasin",
+    "kw": [
+      "butik",
+      "stormagasin",
+      "varehus"
+    ]
+  },
+  "1f3ed": {
+    "nm": "fabrik",
+    "kw": [
+      "bygning",
+      "fabrik"
+    ]
+  },
+  "1f3ee": {
+    "nm": "lygte",
+    "kw": [
+      "lanterne",
+      "lygte",
+      "rød lygte"
+    ]
+  },
+  "1f3ef": {
+    "nm": "japansk slot",
+    "kw": [
+      "bygning",
+      "japansk slot",
+      "slot"
+    ]
+  },
+  "1f3f0": {
+    "nm": "slot",
+    "kw": [
+      "bygning",
+      "slot"
+    ]
+  },
+  "1f3f3": {
+    "nm": "hvidt flag",
+    "kw": [
+      "blafrende",
+      "hvidt flag"
+    ]
+  },
+  "1f3f3-200d-1f308": {
+    "nm": "regnbueflag",
+    "kw": [
+      "flag",
+      "regnbue",
+      "regnbueflag"
+    ]
+  },
+  "1f3f4": {
+    "nm": "sort flag",
+    "kw": [
+      "blafrende",
+      "sort flag"
+    ]
+  },
+  "1f3f5": {
+    "nm": "roset",
+    "kw": [
+      "plante",
+      "roset"
+    ]
+  },
+  "1f3f7": {
+    "nm": "label",
+    "kw": [
+      "etiket",
+      "label",
+      "mærkat",
+      "seddel"
+    ]
+  },
+  "1f3f8": {
+    "nm": "badminton",
+    "kw": [
+      "badminton",
+      "fjerbold",
+      "ketsjer",
+      "spil"
+    ]
+  },
+  "1f3f9": {
+    "nm": "bue og pil",
+    "kw": [
+      "bue",
+      "bue og pil",
+      "bueskytte",
+      "pil",
+      "skytten",
+      "stjernetegn",
+      "våben",
+      "værktøj"
+    ]
+  },
+  "1f3fa": {
+    "nm": "amphora",
+    "kw": [
+      "amphora",
+      "drik",
+      "kande",
+      "krukke",
+      "madlavning",
+      "stjernetegn",
+      "våben",
+      "værktøj"
+    ]
+  },
+  "1f400": {
+    "nm": "rotte",
+    "kw": [
+      "dyr",
+      "rotte"
+    ]
+  },
+  "1f401": {
+    "nm": "mus",
+    "kw": [
+      "dyr",
+      "mus"
+    ]
+  },
+  "1f402": {
+    "nm": "okse",
+    "kw": [
+      "dyr",
+      "okse"
+    ]
+  },
+  "1f403": {
+    "nm": "vandbøffel",
+    "kw": [
+      "bøffel",
+      "dyr",
+      "vandbøffel"
+    ]
+  },
+  "1f404": {
+    "nm": "ko",
+    "kw": [
+      "dyr",
+      "ko"
+    ]
+  },
+  "1f405": {
+    "nm": "tiger",
+    "kw": [
+      "dyr",
+      "tiger"
+    ]
+  },
+  "1f406": {
+    "nm": "leopard",
+    "kw": [
+      "dyr",
+      "leopard"
+    ]
+  },
+  "1f407": {
+    "nm": "kanin",
+    "kw": [
+      "dyr",
+      "kanin"
+    ]
+  },
+  "1f408": {
+    "nm": "kat",
+    "kw": [
+      "dyr",
+      "kat"
+    ]
+  },
+  "1f409": {
+    "nm": "drage",
+    "kw": [
+      "drage",
+      "eventyr"
+    ]
+  },
+  "1f40a": {
+    "nm": "krokodille",
+    "kw": [
+      "dyr",
+      "krokodille"
+    ]
+  },
+  "1f40b": {
+    "nm": "hval",
+    "kw": [
+      "dyr",
+      "hval"
+    ]
+  },
+  "1f40c": {
+    "nm": "snegl",
+    "kw": [
+      "dyr",
+      "snegl"
+    ]
+  },
+  "1f40d": {
+    "nm": "slange",
+    "kw": [
+      "dyr",
+      "slange"
+    ]
+  },
+  "1f40e": {
+    "nm": "hest",
+    "kw": [
+      "dyr",
+      "hest"
+    ]
+  },
+  "1f40f": {
+    "nm": "vædder",
+    "kw": [
+      "dyr",
+      "vædder"
+    ]
+  },
+  "1f410": {
+    "nm": "ged",
+    "kw": [
+      "dyr",
+      "ged"
+    ]
+  },
+  "1f411": {
+    "nm": "får",
+    "kw": [
+      "dyr",
+      "får"
+    ]
+  },
+  "1f412": {
+    "nm": "abe",
+    "kw": [
+      "abe",
+      "dyr"
+    ]
+  },
+  "1f413": {
+    "nm": "hane",
+    "kw": [
+      "dyr",
+      "hane"
+    ]
+  },
+  "1f414": {
+    "nm": "høne",
+    "kw": [
+      "dyr",
+      "høne"
+    ]
+  },
+  "1f415": {
+    "nm": "hund",
+    "kw": [
+      "dyr",
+      "hund"
+    ]
+  },
+  "1f416": {
+    "nm": "gris",
+    "kw": [
+      "dyr",
+      "gris"
+    ]
+  },
+  "1f417": {
+    "nm": "vildsvin",
+    "kw": [
+      "dyr",
+      "vildsvin"
+    ]
+  },
+  "1f418": {
+    "nm": "elefant",
+    "kw": [
+      "dyr",
+      "elefant"
+    ]
+  },
+  "1f419": {
+    "nm": "blæksprutte",
+    "kw": [
+      "blæksprutte",
+      "dyr"
+    ]
+  },
+  "1f41a": {
+    "nm": "konkylie",
+    "kw": [
+      "dyr",
+      "konkylie"
+    ]
+  },
+  "1f41b": {
+    "nm": "larve",
+    "kw": [
+      "dyr",
+      "larve",
+      "sommerfuglelarve",
+      "tusindben"
+    ]
+  },
+  "1f41c": {
+    "nm": "myre",
+    "kw": [
+      "dyr",
+      "myre"
+    ]
+  },
+  "1f41d": {
+    "nm": "honningbi",
+    "kw": [
+      "bi",
+      "dyr",
+      "honningbi"
+    ]
+  },
+  "1f41e": {
+    "nm": "mariehøne",
+    "kw": [
+      "dyr",
+      "mariehøne"
+    ]
+  },
+  "1f41f": {
+    "nm": "fisk",
+    "kw": [
+      "dyr",
+      "fisk"
+    ]
+  },
+  "1f420": {
+    "nm": "tropisk fisk",
+    "kw": [
+      "dyr",
+      "fisk",
+      "tropisk fisk"
+    ]
+  },
+  "1f421": {
+    "nm": "kuglefisk",
+    "kw": [
+      "dyr",
+      "fisk",
+      "kuglefisk"
+    ]
+  },
+  "1f422": {
+    "nm": "skildpadde",
+    "kw": [
+      "dyr",
+      "skildpadde"
+    ]
+  },
+  "1f423": {
+    "nm": "ny udklækket kylling",
+    "kw": [
+      "dyr",
+      "kylling",
+      "ny udklækket kylling"
+    ]
+  },
+  "1f424": {
+    "nm": "kylling",
+    "kw": [
+      "dyr",
+      "kylling"
+    ]
+  },
+  "1f425": {
+    "nm": "kylling forfra",
+    "kw": [
+      "dyr",
+      "kylling forfra",
+      "kylling set forfra"
+    ]
+  },
+  "1f426": {
+    "nm": "fugl",
+    "kw": [
+      "dyr",
+      "fugl"
+    ]
+  },
+  "1f427": {
+    "nm": "pingvin",
+    "kw": [
+      "dyr",
+      "pingvin"
+    ]
+  },
+  "1f428": {
+    "nm": "koala",
+    "kw": [
+      "dyr",
+      "koala"
+    ]
+  },
+  "1f429": {
+    "nm": "puddel",
+    "kw": [
+      "dyr",
+      "hund",
+      "puddel"
+    ]
+  },
+  "1f42a": {
+    "nm": "dromedar",
+    "kw": [
+      "dromedar",
+      "dyr",
+      "pukkel"
+    ]
+  },
+  "1f42b": {
+    "nm": "kamel",
+    "kw": [
+      "dyr",
+      "kamel",
+      "to pukler"
+    ]
+  },
+  "1f42c": {
+    "nm": "delfin",
+    "kw": [
+      "delfin",
+      "dyr"
+    ]
+  },
+  "1f42d": {
+    "nm": "museansigt",
+    "kw": [
+      "dyr",
+      "hoved",
+      "mus",
+      "museansigt"
+    ]
+  },
+  "1f42e": {
+    "nm": "koansigt",
+    "kw": [
+      "dyr",
+      "hoved",
+      "ko",
+      "koansigt"
+    ]
+  },
+  "1f42f": {
+    "nm": "tigeransigt",
+    "kw": [
+      "dyr",
+      "hoved",
+      "tigeransigt"
+    ]
+  },
+  "1f430": {
+    "nm": "kaninansigt",
+    "kw": [
+      "dyr",
+      "hoved",
+      "kanin",
+      "kaninansigt"
+    ]
+  },
+  "1f431": {
+    "nm": "katteansigt",
+    "kw": [
+      "dyr",
+      "hoved",
+      "kat",
+      "katteansigt"
+    ]
+  },
+  "1f432": {
+    "nm": "drageansigt",
+    "kw": [
+      "drage",
+      "drageansigt",
+      "hoved"
+    ]
+  },
+  "1f433": {
+    "nm": "hval med vandsprøjt",
+    "kw": [
+      "dyr",
+      "hval",
+      "hval med vandsprøjt"
+    ]
+  },
+  "1f434": {
+    "nm": "hestehoved",
+    "kw": [
+      "dyr",
+      "hest",
+      "hestehoved"
+    ]
+  },
+  "1f435": {
+    "nm": "abeansigt",
+    "kw": [
+      "abe",
+      "abeansigt",
+      "dyr",
+      "hoved"
+    ]
+  },
+  "1f436": {
+    "nm": "hundeansigt",
+    "kw": [
+      "dyr",
+      "hoved",
+      "hund",
+      "hundeansigt"
+    ]
+  },
+  "1f437": {
+    "nm": "griseansigt",
+    "kw": [
+      "dyr",
+      "gris",
+      "griseansigt",
+      "hoved"
+    ]
+  },
+  "1f438": {
+    "nm": "frøansigt",
+    "kw": [
+      "dyr",
+      "frø",
+      "frøansigt",
+      "hoved"
+    ]
+  },
+  "1f439": {
+    "nm": "hamsteransigt",
+    "kw": [
+      "dyr",
+      "hamsteransigt",
+      "hoved"
+    ]
+  },
+  "1f43a": {
+    "nm": "ulvehoved",
+    "kw": [
+      "dyr",
+      "hoved",
+      "ræv",
+      "ulvehoved"
+    ]
+  },
+  "1f43b": {
+    "nm": "bjørneansigt",
+    "kw": [
+      "bjørn",
+      "bjørneansigt",
+      "dyr",
+      "hoved"
+    ]
+  },
+  "1f43c": {
+    "nm": "pandaansigt",
+    "kw": [
+      "dyr",
+      "hoved",
+      "pandaansigt"
+    ]
+  },
+  "1f43d": {
+    "nm": "grisetryne",
+    "kw": [
+      "dyr",
+      "grisetryne",
+      "hoved",
+      "tryne"
+    ]
+  },
+  "1f43e": {
+    "nm": "poteaftryk",
+    "kw": [
+      "dyr",
+      "poteaftryk",
+      "spor"
+    ]
+  },
+  "1f43f": {
+    "nm": "jordegern",
+    "kw": [
+      "jordegern"
+    ]
+  },
+  "1f440": {
+    "nm": "øjne",
+    "kw": [
+      "ansigt",
+      "øjne",
+      "se"
+    ]
+  },
+  "1f441": {
+    "nm": "øje",
+    "kw": [
+      "krop",
+      "øje"
+    ]
+  },
+  "1f441-200d-1f5e8": {
+    "nm": "øje i taleboble",
+    "kw": [
+      "øje",
+      "øje i taleboble",
+      "se",
+      "taleboble",
+      "vidne"
+    ]
+  },
+  "1f442": {
+    "nm": "øre",
+    "kw": [
+      "høre",
+      "krop",
+      "øre"
+    ]
+  },
+  "1f443": {
+    "nm": "næse",
+    "kw": [
+      "dufte",
+      "krop",
+      "lugte ansigt",
+      "næse"
+    ]
+  },
+  "1f444": {
+    "nm": "mund",
+    "kw": [
+      "ansigt",
+      "krop",
+      "læber",
+      "mund"
+    ]
+  },
+  "1f445": {
+    "nm": "tunge",
+    "kw": [
+      "krop",
+      "smage",
+      "tunge"
+    ]
+  },
+  "1f446": {
+    "nm": "finger peger op",
+    "kw": [
+      "finger",
+      "finger peger op",
+      "pegefinger",
+      "peger op"
+    ]
+  },
+  "1f447": {
+    "nm": "ned",
+    "kw": [
+      "finger",
+      "finger peger ned",
+      "ned",
+      "pegefinger",
+      "peger ned"
+    ]
+  },
+  "1f448": {
+    "nm": "venstre",
+    "kw": [
+      "finger",
+      "finger peger til venstre",
+      "pegefinger",
+      "peger til venstre",
+      "venstre"
+    ]
+  },
+  "1f449": {
+    "nm": "højre",
+    "kw": [
+      "finger",
+      "finger peger til højre",
+      "højre",
+      "pegefinger",
+      "peger til højre"
+    ]
+  },
+  "1f44a": {
+    "nm": "knytnæve",
+    "kw": [
+      "hånd",
+      "knytnæve",
+      "knyttet hånd"
+    ]
+  },
+  "1f44b": {
+    "nm": "vinker",
+    "kw": [
+      "hånd",
+      "vinker"
+    ]
+  },
+  "1f44c": {
+    "nm": "ok-tegn",
+    "kw": [
+      "OK-håndtegn",
+      "OK-tegn"
+    ]
+  },
+  "1f44d": {
+    "nm": "tommelfinger op",
+    "kw": [
+      "håndtegn",
+      "tommelfinger op"
+    ]
+  },
+  "1f44e": {
+    "nm": "tommelfinger ned",
+    "kw": [
+      "håndtegn",
+      "tommelfinger ned"
+    ]
+  },
+  "1f44f": {
+    "nm": "hænder klapper",
+    "kw": [
+      "hænder klapper",
+      "håndtegn",
+      "klapper"
+    ]
+  },
+  "1f450": {
+    "nm": "åbne hænder",
+    "kw": [
+      "åbne hænder",
+      "åbne hænder-tegn",
+      "håndtegn"
+    ]
+  },
+  "1f451": {
+    "nm": "krone",
+    "kw": [
+      "beklædning",
+      "krone"
+    ]
+  },
+  "1f452": {
+    "nm": "hat",
+    "kw": [
+      "beklædning",
+      "hat",
+      "kvindes hat"
+    ]
+  },
+  "1f453": {
+    "nm": "briller",
+    "kw": [
+      "beklædning",
+      "briller"
+    ]
+  },
+  "1f454": {
+    "nm": "slips",
+    "kw": [
+      "beklædning",
+      "slips"
+    ]
+  },
+  "1f455": {
+    "nm": "T-shirt",
+    "kw": [
+      "beklædning",
+      "bluse",
+      "T-shirt",
+      "trøje"
+    ]
+  },
+  "1f456": {
+    "nm": "bukser",
+    "kw": [
+      "beklædning",
+      "bukser"
+    ]
+  },
+  "1f457": {
+    "nm": "kjole",
+    "kw": [
+      "beklædning",
+      "kjole"
+    ]
+  },
+  "1f458": {
+    "nm": "kimono",
+    "kw": [
+      "beklædning",
+      "kåbe",
+      "kimono"
+    ]
+  },
+  "1f459": {
+    "nm": "bikini",
+    "kw": [
+      "badetøj",
+      "beklædning",
+      "bikini"
+    ]
+  },
+  "1f45a": {
+    "nm": "bluse",
+    "kw": [
+      "beklædning",
+      "bluse"
+    ]
+  },
+  "1f45b": {
+    "nm": "pung",
+    "kw": [
+      "pengepung",
+      "pung"
+    ]
+  },
+  "1f45c": {
+    "nm": "håndtaske",
+    "kw": [
+      "håndtaske",
+      "taske"
+    ]
+  },
+  "1f45d": {
+    "nm": "taske",
+    "kw": [
+      "pung",
+      "taske"
+    ]
+  },
+  "1f45e": {
+    "nm": "herresko",
+    "kw": [
+      "herresko",
+      "sko"
+    ]
+  },
+  "1f45f": {
+    "nm": "gummisko",
+    "kw": [
+      "fritidssko",
+      "gummisko",
+      "sko",
+      "tennissko"
+    ]
+  },
+  "1f460": {
+    "nm": "høje hæle",
+    "kw": [
+      "høje hæle",
+      "højhælet sko",
+      "sko"
+    ]
+  },
+  "1f461": {
+    "nm": "damesandaler",
+    "kw": [
+      "damesandaler",
+      "sandaler"
+    ]
+  },
+  "1f462": {
+    "nm": "damestøvler",
+    "kw": [
+      "damestøvler",
+      "støvler"
+    ]
+  },
+  "1f463": {
+    "nm": "fodspor",
+    "kw": [
+      "fødder",
+      "fodspor"
+    ]
+  },
+  "1f464": {
+    "nm": "buste i silhuet",
+    "kw": [
+      "buste",
+      "buste i silhuet"
+    ]
+  },
+  "1f465": {
+    "nm": "buster i silhuet",
+    "kw": [
+      "buster",
+      "buster i silhuet"
+    ]
+  },
+  "1f466": {
+    "nm": "dreng",
+    "kw": [
+      "dreng",
+      "menneske",
+      "person"
+    ]
+  },
+  "1f467": {
+    "nm": "pige",
+    "kw": [
+      "menneske",
+      "person",
+      "pige"
+    ]
+  },
+  "1f468": {
+    "nm": "mand",
+    "kw": [
+      "mand",
+      "menneske",
+      "person"
+    ]
+  },
+  "1f468-200d-1f33e": {
+    "nm": "landmand",
+    "kw": [
+      "bonde",
+      "bondemand",
+      "gartner",
+      "landmand",
+      "mand"
+    ]
+  },
+  "1f468-200d-1f373": {
+    "nm": "kok",
+    "kw": [
+      "kok",
+      "madlavning",
+      "mand",
+      "stegepande"
+    ]
+  },
+  "1f468-200d-1f393": {
+    "nm": "studerende",
+    "kw": [
+      "dimittend",
+      "eksamenshat",
+      "mand",
+      "studerende"
+    ]
+  },
+  "1f468-200d-1f3a4": {
+    "nm": "sanger",
+    "kw": [
+      "entertainer",
+      "karaoke",
+      "mand",
+      "sang",
+      "sanger",
+      "skuespiller",
+      "stjerne",
+      "synge"
+    ]
+  },
+  "1f468-200d-1f3a8": {
+    "nm": "kunstner",
+    "kw": [
+      "billedkunstner",
+      "kreativ",
+      "kunstmaler",
+      "kunstner",
+      "palet",
+      "pensler"
+    ]
+  },
+  "1f468-200d-1f3eb": {
+    "nm": "lærer",
+    "kw": [
+      "lærer",
+      "mand",
+      "professor",
+      "underviser"
+    ]
+  },
+  "1f468-200d-1f3ed": {
+    "nm": "fabriksarbejder",
+    "kw": [
+      "arbejder",
+      "fabrik",
+      "fabriksarbejder",
+      "industri",
+      "mand"
+    ]
+  },
+  "1f468-200d-1f466": {
+    "nm": "familie: mand, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "mand",
+      "menneske",
+      "mor"
+    ]
+  },
+  "1f468-200d-1f466-200d-1f466": {
+    "nm": "familie: mand, dreng, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "mand",
+      "menneske",
+      "mor"
+    ]
+  },
+  "1f468-200d-1f467": {
+    "nm": "familie: mand, pige",
+    "kw": [
+      "barn",
+      "familie",
+      "far",
+      "mand",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f468-200d-1f467-200d-1f466": {
+    "nm": "familie: mand, pige, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "mand",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f468-200d-1f467-200d-1f467": {
+    "nm": "familie: mand, pige, pige",
+    "kw": [
+      "barn",
+      "familie",
+      "far",
+      "mand",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f468-200d-1f468-200d-1f466": {
+    "nm": "familie: mand, mand, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "mand",
+      "menneske",
+      "mor"
+    ]
+  },
+  "1f468-200d-1f468-200d-1f466-200d-1f466": {
+    "nm": "familie: mand, mand, dreng, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "mand",
+      "menneske",
+      "mor"
+    ]
+  },
+  "1f468-200d-1f468-200d-1f467": {
+    "nm": "familie: mand, mand, pige",
+    "kw": [
+      "barn",
+      "familie",
+      "far",
+      "mand",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f468-200d-1f468-200d-1f467-200d-1f466": {
+    "nm": "familie: mand, mand, pige, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "mand",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f468-200d-1f468-200d-1f467-200d-1f467": {
+    "nm": "familie: mand, mand, pige, pige",
+    "kw": [
+      "barn",
+      "familie",
+      "far",
+      "mand",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f468-200d-1f469-200d-1f466": {
+    "nm": "familie: mand, kvinde, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "kvinde",
+      "mand",
+      "menneske",
+      "mor"
+    ]
+  },
+  "1f468-200d-1f469-200d-1f466-200d-1f466": {
+    "nm": "familie: mand, kvinde, dreng, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "kvinde",
+      "mand",
+      "menneske",
+      "mor"
+    ]
+  },
+  "1f468-200d-1f469-200d-1f467": {
+    "nm": "familie: mand, kvinde, pige",
+    "kw": [
+      "barn",
+      "familie",
+      "far",
+      "kvinde",
+      "mand",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f468-200d-1f469-200d-1f467-200d-1f466": {
+    "nm": "familie: mand, kvinde, pige, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "kvinde",
+      "mand",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f468-200d-1f469-200d-1f467-200d-1f467": {
+    "nm": "familie: mand, kvinde, pige, pige",
+    "kw": [
+      "barn",
+      "familie",
+      "far",
+      "kvinde",
+      "mand",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f468-200d-1f4bb": {
+    "nm": "IT-medarbejder",
+    "kw": [
+      "computer",
+      "it",
+      "IT-medarbejder",
+      "mand",
+      "pc",
+      "programmør",
+      "skærm",
+      "software",
+      "teknologi",
+      "udvikler"
+    ]
+  },
+  "1f468-200d-1f4bc": {
+    "nm": "kontoransat",
+    "kw": [
+      "business",
+      "jakkesæt",
+      "kontor",
+      "kontoransat",
+      "kontormand",
+      "mappe"
+    ]
+  },
+  "1f468-200d-1f527": {
+    "nm": "mekaniker",
+    "kw": [
+      "håndværker",
+      "mand",
+      "mekaniker",
+      "skruenøgle",
+      "værktøj"
+    ]
+  },
+  "1f468-200d-1f52c": {
+    "nm": "forsker",
+    "kw": [
+      "forsker",
+      "naturvidenskab",
+      "naturvidenskabsmand",
+      "videnskab",
+      "videnskabsmand"
+    ]
+  },
+  "1f468-200d-1f680": {
+    "nm": "astronaut",
+    "kw": [
+      "astronaut",
+      "mand",
+      "raket",
+      "rumdragt",
+      "rumfartøj",
+      "rummet",
+      "rumskib"
+    ]
+  },
+  "1f468-200d-1f692": {
+    "nm": "brandmand",
+    "kw": [
+      "brand",
+      "brandbil",
+      "brandmand",
+      "hjelm",
+      "mand"
+    ]
+  },
+  "1f468-200d-2695": {
+    "nm": "mandlig sundhedsperson",
+    "kw": [
+      "kittel",
+      "læge",
+      "mand",
+      "mandlig sundhedsperson",
+      "sygeplejerske"
+    ]
+  },
+  "1f468-200d-2696": {
+    "nm": "dommer",
+    "kw": [
+      "dommer",
+      "jura",
+      "lov",
+      "mand",
+      "retfærdighed"
+    ]
+  },
+  "1f468-200d-2708": {
+    "nm": "pilot",
+    "kw": [
+      "fly",
+      "mand",
+      "pilot"
+    ]
+  },
+  "1f468-200d-2764-200d-1f468": {
+    "nm": "par med hjerte: mand, mand",
+    "kw": [
+      "kærlighed",
+      "mand",
+      "par med hjerte",
+      "romantik"
+    ]
+  },
+  "1f468-200d-2764-200d-1f48b-200d-1f468": {
+    "nm": "kys: mand, mand",
+    "kw": [
+      "kærlighed",
+      "kys",
+      "mand",
+      "par med hjerte",
+      "romantik"
+    ]
+  },
+  "1f469": {
+    "nm": "kvinde",
+    "kw": [
+      "kvinde",
+      "menneske",
+      "person"
+    ]
+  },
+  "1f469-200d-1f33e": {
+    "nm": "kvindelig landmand",
+    "kw": [
+      "bonde",
+      "gartner",
+      "kvinde",
+      "kvindelig landmand",
+      "landmand"
+    ]
+  },
+  "1f469-200d-1f373": {
+    "nm": "kvindelig kok",
+    "kw": [
+      "kok",
+      "kvinde",
+      "kvindelig kok",
+      "madlavning",
+      "stegepande"
+    ]
+  },
+  "1f469-200d-1f393": {
+    "nm": "kvindelig studerende",
+    "kw": [
+      "dimittend",
+      "eksamenshat",
+      "kvinde",
+      "kvindelig studerende",
+      "studerende"
+    ]
+  },
+  "1f469-200d-1f3a4": {
+    "nm": "sangerinde",
+    "kw": [
+      "entertainer",
+      "karaoke",
+      "kvinde",
+      "sang",
+      "sangerinde",
+      "skuespiller",
+      "stjerne",
+      "synge"
+    ]
+  },
+  "1f469-200d-1f3a8": {
+    "nm": "kvindelig kunstner",
+    "kw": [
+      "billedkunstner",
+      "kunstmaler",
+      "kvinde",
+      "kvindelig kunstner",
+      "palet",
+      "pensler"
+    ]
+  },
+  "1f469-200d-1f3eb": {
+    "nm": "kvindelig lærer",
+    "kw": [
+      "kvinde",
+      "kvindelig lærer",
+      "lærerinde",
+      "professor",
+      "underviser"
+    ]
+  },
+  "1f469-200d-1f3ed": {
+    "nm": "kvindelig fabriksarbejder",
+    "kw": [
+      "arbejder",
+      "fabrik",
+      "industri",
+      "kvinde",
+      "kvindelig fabriksarbejder"
+    ]
+  },
+  "1f469-200d-1f466": {
+    "nm": "familie: kvinde, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "kvinde",
+      "menneske",
+      "mor"
+    ]
+  },
+  "1f469-200d-1f466-200d-1f466": {
+    "nm": "familie: kvinde, dreng, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "kvinde",
+      "menneske",
+      "mor"
+    ]
+  },
+  "1f469-200d-1f467": {
+    "nm": "familie: kvinde, pige",
+    "kw": [
+      "barn",
+      "familie",
+      "far",
+      "kvinde",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f469-200d-1f467-200d-1f466": {
+    "nm": "familie: kvinde, pige, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "kvinde",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f469-200d-1f467-200d-1f467": {
+    "nm": "familie: kvinde, pige, pige",
+    "kw": [
+      "barn",
+      "familie",
+      "far",
+      "kvinde",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f469-200d-1f469-200d-1f466": {
+    "nm": "familie: kvinde, kvinde, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "kvinde",
+      "menneske",
+      "mor"
+    ]
+  },
+  "1f469-200d-1f469-200d-1f466-200d-1f466": {
+    "nm": "familie: kvinde, kvinde, dreng, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "kvinde",
+      "menneske",
+      "mor"
+    ]
+  },
+  "1f469-200d-1f469-200d-1f467": {
+    "nm": "familie: kvinde, kvinde, pige",
+    "kw": [
+      "barn",
+      "familie",
+      "far",
+      "kvinde",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f469-200d-1f469-200d-1f467-200d-1f466": {
+    "nm": "familie: kvinde, kvinde, pige, dreng",
+    "kw": [
+      "barn",
+      "dreng",
+      "familie",
+      "far",
+      "kvinde",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f469-200d-1f469-200d-1f467-200d-1f467": {
+    "nm": "familie: kvinde, kvinde, pige, pige",
+    "kw": [
+      "barn",
+      "familie",
+      "far",
+      "kvinde",
+      "menneske",
+      "mor",
+      "pige"
+    ]
+  },
+  "1f469-200d-1f4bb": {
+    "nm": "kvindelig IT-medarbejder",
+    "kw": [
+      "computer",
+      "it",
+      "kvinde",
+      "kvindelig IT-medarbejder",
+      "pc",
+      "programmør",
+      "skærm",
+      "software",
+      "udvikler"
+    ]
+  },
+  "1f469-200d-1f4bc": {
+    "nm": "kvindelig kontoransat",
+    "kw": [
+      "business",
+      "kontor",
+      "kvinde",
+      "kvindelig kontoransat",
+      "mappe"
+    ]
+  },
+  "1f469-200d-1f527": {
+    "nm": "kvindelig mekaniker",
+    "kw": [
+      "håndværker",
+      "kvinde",
+      "kvindelig mekaniker",
+      "mekaniker",
+      "skruenøgle",
+      "værktøj"
+    ]
+  },
+  "1f469-200d-1f52c": {
+    "nm": "kvindelig forsker",
+    "kw": [
+      "kvinde",
+      "kvindelig forsker",
+      "naturvidenskab",
+      "videnskab",
+      "videnskabsmand"
+    ]
+  },
+  "1f469-200d-1f680": {
+    "nm": "kvindelig astronaut",
+    "kw": [
+      "kvinde",
+      "kvindelig astronaut",
+      "raket",
+      "rumdragt",
+      "rumfartøj",
+      "rummet",
+      "rumskib"
+    ]
+  },
+  "1f469-200d-1f692": {
+    "nm": "kvindelig brandmand",
+    "kw": [
+      "brand",
+      "brandbil",
+      "hjelm",
+      "kvinde",
+      "kvindelig brandmand"
+    ]
+  },
+  "1f469-200d-2695": {
+    "nm": "kvindelig sundhedsperson",
+    "kw": [
+      "kittel",
+      "kvinde",
+      "kvindelig sundhedsperson",
+      "læge",
+      "sygeplejerske"
+    ]
+  },
+  "1f469-200d-2696": {
+    "nm": "kvindelig dommer",
+    "kw": [
+      "jura",
+      "kvinde",
+      "kvindelig dommer",
+      "lov",
+      "retfærdighed"
+    ]
+  },
+  "1f469-200d-2708": {
+    "nm": "kvindelig pilot",
+    "kw": [
+      "fly",
+      "kvinde",
+      "kvindelig pilot",
+      "pilot"
+    ]
+  },
+  "1f469-200d-2764-200d-1f468": {
+    "nm": "par med hjerte: kvinde, mand",
+    "kw": [
+      "kærlighed",
+      "kvinde",
+      "mand",
+      "par med hjerte",
+      "romantik"
+    ]
+  },
+  "1f469-200d-2764-200d-1f469": {
+    "nm": "par med hjerte: kvinde, kvinde",
+    "kw": [
+      "kærlighed",
+      "kvinde",
+      "par med hjerte",
+      "romantik"
+    ]
+  },
+  "1f469-200d-2764-200d-1f48b-200d-1f468": {
+    "nm": "kys: kvinde, mand",
+    "kw": [
+      "kærlighed",
+      "kvinde",
+      "kys",
+      "mand",
+      "par med hjerte",
+      "romantik"
+    ]
+  },
+  "1f469-200d-2764-200d-1f48b-200d-1f469": {
+    "nm": "kys: kvinde, kvinde",
+    "kw": [
+      "kærlighed",
+      "kvinde",
+      "kys",
+      "par med hjerte",
+      "romantik"
+    ]
+  },
+  "1f46a": {
+    "nm": "familie",
+    "kw": [
+      "barn",
+      "familie",
+      "far",
+      "menneske",
+      "mor"
+    ]
+  },
+  "1f46b": {
+    "nm": "man og kvinde",
+    "kw": [
+      "man og kvinde",
+      "par"
+    ]
+  },
+  "1f46c": {
+    "nm": "to mænd",
+    "kw": [
+      "par",
+      "to mænd"
+    ]
+  },
+  "1f46d": {
+    "nm": "to kvinder",
+    "kw": [
+      "par",
+      "to kvinder"
+    ]
+  },
+  "1f46e": {
+    "nm": "politibetjent",
+    "kw": [
+      "betjent",
+      "politi",
+      "politibetjent"
+    ]
+  },
+  "1f46e-200d-2640": {
+    "nm": "kvindelig politibetjent",
+    "kw": [
+      "betjent",
+      "kvinde",
+      "kvindelig politibetjent",
+      "politi"
+    ]
+  },
+  "1f46e-200d-2642": {
+    "nm": "mandlig politibetjent",
+    "kw": [
+      "betjent",
+      "mand",
+      "mandlig politibetjent",
+      "politi",
+      "politimand"
+    ]
+  },
+  "1f46f": {
+    "nm": "kvinder med kaninører",
+    "kw": [
+      "kvinder",
+      "kvinder med kaninører",
+      "ører"
+    ]
+  },
+  "1f46f-200d-2640": {
+    "nm": "kvinder fester",
+    "kw": [
+      "dans",
+      "fest",
+      "kaninører",
+      "kvinder",
+      "kvinder fester"
+    ]
+  },
+  "1f46f-200d-2642": {
+    "nm": "mænd fester",
+    "kw": [
+      "dans",
+      "fest",
+      "kaninører",
+      "mænd",
+      "mænd fester"
+    ]
+  },
+  "1f470": {
+    "nm": "brud",
+    "kw": [
+      "brud",
+      "brud med slør"
+    ]
+  },
+  "1f471": {
+    "nm": "person",
+    "kw": [
+      "blond person",
+      "menneske",
+      "person"
+    ]
+  },
+  "1f471-200d-2640": {
+    "nm": "blond kvinde",
+    "kw": [
+      "blond kvinde",
+      "blondine",
+      "kvinde",
+      "lyshåret"
+    ]
+  },
+  "1f471-200d-2642": {
+    "nm": "blond mand",
+    "kw": [
+      "blond",
+      "lyshåret",
+      "mand"
+    ]
+  },
+  "1f472": {
+    "nm": "mand med kinesisk hat",
+    "kw": [
+      "mand med kinesisk hat",
+      "menneske"
+    ]
+  },
+  "1f473-200d-2640": {
+    "nm": "kvinde med turban",
+    "kw": [
+      "kvinde",
+      "kvinde med turban",
+      "turban"
+    ]
+  },
+  "1f473-200d-2642": {
+    "nm": "mand med turban",
+    "kw": [
+      "mand",
+      "mand med turban",
+      "turban"
+    ]
+  },
+  "1f474": {
+    "nm": "gammel mand",
+    "kw": [
+      "gammel mand",
+      "mand",
+      "menneske"
+    ]
+  },
+  "1f475": {
+    "nm": "gammel kvinde",
+    "kw": [
+      "gammel kvinde",
+      "kvinde",
+      "menneske"
+    ]
+  },
+  "1f476": {
+    "nm": "baby",
+    "kw": [
+      "baby",
+      "barn",
+      "menneske"
+    ]
+  },
+  "1f477": {
+    "nm": "byggearbejder",
+    "kw": [
+      "arbejder",
+      "byggearbejder",
+      "byggeri"
+    ]
+  },
+  "1f477-200d-2640": {
+    "nm": "kvindelig bygningsarbejder",
+    "kw": [
+      "arbejder",
+      "byggearbejder",
+      "byggeri",
+      "hammer",
+      "kvinde",
+      "kvindelig bygningsarbejder"
+    ]
+  },
+  "1f477-200d-2642": {
+    "nm": "bygningsarbejder",
+    "kw": [
+      "arbejder",
+      "byggearbejder",
+      "byggeri",
+      "bygningsarbejder",
+      "hammer",
+      "mand"
+    ]
+  },
+  "1f478": {
+    "nm": "prinsesse",
+    "kw": [
+      "eventyr",
+      "menneske",
+      "prinsesse"
+    ]
+  },
+  "1f479": {
+    "nm": "trold",
+    "kw": [
+      "japansk uhyre",
+      "monster",
+      "trold"
+    ]
+  },
+  "1f47a": {
+    "nm": "ånd",
+    "kw": [
+      "ånd",
+      "japansk ånd"
+    ]
+  },
+  "1f47b": {
+    "nm": "spøgelse",
+    "kw": [
+      "ansigt",
+      "eventyr",
+      "fantasi",
+      "gespenst",
+      "monster",
+      "spøgelse",
+      "væsen"
+    ]
+  },
+  "1f47c": {
+    "nm": "babyengel",
+    "kw": [
+      "babyengel",
+      "engel"
+    ]
+  },
+  "1f47d": {
+    "nm": "rumvæsen",
+    "kw": [
+      "rumvæsen"
+    ]
+  },
+  "1f47e": {
+    "nm": "alien-monster",
+    "kw": [
+      "alien",
+      "alien-monster",
+      "ansigt",
+      "eventyr",
+      "fantasi",
+      "rummet",
+      "rumvæsen",
+      "ufo"
+    ]
+  },
+  "1f47f": {
+    "nm": "lilla djævel",
+    "kw": [
+      "lilla djævel",
+      "lille djævel"
+    ]
+  },
+  "1f480": {
+    "nm": "kranium",
+    "kw": [
+      "dødningehoved",
+      "kranium"
+    ]
+  },
+  "1f481": {
+    "nm": "information",
+    "kw": [
+      "hjælp",
+      "information"
+    ]
+  },
+  "1f481-200d-2640": {
+    "nm": "kvinde vender håndfladen op",
+    "kw": [
+      "flabet",
+      "håndflade",
+      "hjælp",
+      "information",
+      "kvinde",
+      "kvinde vender håndfladen op"
+    ]
+  },
+  "1f481-200d-2642": {
+    "nm": "mand vender håndfladen op",
+    "kw": [
+      "flabet",
+      "hjælp",
+      "information",
+      "mand",
+      "mand vender håndfladen op"
+    ]
+  },
+  "1f482": {
+    "nm": "garder",
+    "kw": [
+      "garder",
+      "garderofficer",
+      "gardist"
+    ]
+  },
+  "1f482-200d-2640": {
+    "nm": "kvindelig garder",
+    "kw": [
+      "bevogtning",
+      "kvinde",
+      "kvindelig garder",
+      "livgarde",
+      "sikkerhed",
+      "vagt"
+    ]
+  },
+  "1f482-200d-2642": {
+    "nm": "mandlig garder",
+    "kw": [
+      "bevogtning",
+      "livgarde",
+      "mand",
+      "mandlig garder",
+      "sikkerhed",
+      "vagt"
+    ]
+  },
+  "1f483": {
+    "nm": "danser",
+    "kw": [
+      "dans",
+      "danser"
+    ]
+  },
+  "1f484": {
+    "nm": "læbestift",
+    "kw": [
+      "kosmetik",
+      "læbestift"
+    ]
+  },
+  "1f485": {
+    "nm": "neglelak",
+    "kw": [
+      "kosmetik",
+      "negle",
+      "neglelak"
+    ]
+  },
+  "1f486": {
+    "nm": "ansigtsmassage",
+    "kw": [
+      "ansigtsmassage",
+      "salon"
+    ]
+  },
+  "1f486-200d-2640": {
+    "nm": "kvinde får ansigtsmassage",
+    "kw": [
+      "ansigt",
+      "kvinde",
+      "kvinde får ansigtsmassage",
+      "massage"
+    ]
+  },
+  "1f486-200d-2642": {
+    "nm": "mand får ansigtsmassage",
+    "kw": [
+      "ansigt",
+      "mand",
+      "mand får ansigtsmassage",
+      "massage"
+    ]
+  },
+  "1f487": {
+    "nm": "frisør",
+    "kw": [
+      "frisør",
+      "hår",
+      "klipning"
+    ]
+  },
+  "1f487-200d-2640": {
+    "nm": "kvinde bliver klippet",
+    "kw": [
+      "frisør",
+      "hår",
+      "klipning",
+      "klippe",
+      "kvinde",
+      "kvinde bliver klippet"
+    ]
+  },
+  "1f487-200d-2642": {
+    "nm": "mand bliver klippet",
+    "kw": [
+      "frisør",
+      "hår",
+      "klipning",
+      "klippe",
+      "mand",
+      "mand bliver klippet"
+    ]
+  },
+  "1f488": {
+    "nm": "barber",
+    "kw": [
+      "barber",
+      "barbersalon"
+    ]
+  },
+  "1f489": {
+    "nm": "sprøjte",
+    "kw": [
+      "indsprøjtning",
+      "læge",
+      "sprøjte"
+    ]
+  },
+  "1f48a": {
+    "nm": "pille",
+    "kw": [
+      "læge",
+      "medicin",
+      "pille"
+    ]
+  },
+  "1f48b": {
+    "nm": "læbeaftryk",
+    "kw": [
+      "læbeaftryk",
+      "læber",
+      "romantik"
+    ]
+  },
+  "1f48c": {
+    "nm": "kærlighedsbrev",
+    "kw": [
+      "brev med hjerte",
+      "kærlighedsbrev"
+    ]
+  },
+  "1f48d": {
+    "nm": "ring",
+    "kw": [
+      "ring",
+      "romantik"
+    ]
+  },
+  "1f48e": {
+    "nm": "diamant",
+    "kw": [
+      "diamant",
+      "juvel",
+      "romantik"
+    ]
+  },
+  "1f48f": {
+    "nm": "kys",
+    "kw": [
+      "kærlighed",
+      "kys",
+      "par med hjerte",
+      "romantik"
+    ]
+  },
+  "1f490": {
+    "nm": "blomsterbuket",
+    "kw": [
+      "blomster",
+      "blomsterbuket",
+      "buket"
+    ]
+  },
+  "1f491": {
+    "nm": "par med hjerte",
+    "kw": [
+      "kærlighed",
+      "par med hjerte",
+      "romantik"
+    ]
+  },
+  "1f492": {
+    "nm": "bryllup",
+    "kw": [
+      "bryllup",
+      "kærlighed",
+      "kirke",
+      "romantik"
+    ]
+  },
+  "1f493": {
+    "nm": "bankende hjerte",
+    "kw": [
+      "bankende hjerte",
+      "hjerte",
+      "kærlighed",
+      "romantik"
+    ]
+  },
+  "1f494": {
+    "nm": "knust hjerte",
+    "kw": [
+      "knust hjerte",
+      "ulykkelig kærlighed"
+    ]
+  },
+  "1f495": {
+    "nm": "to hjerter",
+    "kw": [
+      "kærlighed",
+      "romantik",
+      "to hjerter"
+    ]
+  },
+  "1f496": {
+    "nm": "hjerte med stjerner",
+    "kw": [
+      "følelser",
+      "gnister",
+      "hjerte med stjerner",
+      "kærlighed"
+    ]
+  },
+  "1f497": {
+    "nm": "voksende hjerte",
+    "kw": [
+      "følelser",
+      "hjerte",
+      "kærlighed",
+      "nervøs",
+      "voksende hjerte"
+    ]
+  },
+  "1f498": {
+    "nm": "hjerte med pil",
+    "kw": [
+      "følelser",
+      "hjerte",
+      "hjerte med pil",
+      "kærlighed",
+      "pil"
+    ]
+  },
+  "1f499": {
+    "nm": "blåt hjerte",
+    "kw": [
+      "blå",
+      "blåt hjerte",
+      "følelser",
+      "hjerte"
+    ]
+  },
+  "1f49a": {
+    "nm": "grønt hjerte",
+    "kw": [
+      "følelser",
+      "grøn",
+      "grønt hjerte",
+      "hjerte"
+    ]
+  },
+  "1f49b": {
+    "nm": "gult hjerte",
+    "kw": [
+      "følelser",
+      "gul",
+      "gult hjerte",
+      "hjerte"
+    ]
+  },
+  "1f49c": {
+    "nm": "violet hjerte",
+    "kw": [
+      "følelser",
+      "hjerte",
+      "violet"
+    ]
+  },
+  "1f49d": {
+    "nm": "hjerte med bånd",
+    "kw": [
+      "bånd",
+      "følelser",
+      "hjerte",
+      "hjerte med bånd"
+    ]
+  },
+  "1f49e": {
+    "nm": "roterende hjerter",
+    "kw": [
+      "følelser",
+      "hjerter",
+      "roterende hjerter"
+    ]
+  },
+  "1f49f": {
+    "nm": "hjertedekoration",
+    "kw": [
+      "hjerte",
+      "hjertedekoration"
+    ]
+  },
+  "1f4a0": {
+    "nm": "diamant med prik",
+    "kw": [
+      "diamant med prik",
+      "følelse"
+    ]
+  },
+  "1f4a1": {
+    "nm": "elpære",
+    "kw": [
+      "elpære",
+      "ide",
+      "lys ide"
+    ]
+  },
+  "1f4a2": {
+    "nm": "vrede",
+    "kw": [
+      "følelse",
+      "tegn for vrede",
+      "vrede"
+    ]
+  },
+  "1f4a3": {
+    "nm": "bombe",
+    "kw": [
+      "bombe",
+      "følelse"
+    ]
+  },
+  "1f4a4": {
+    "nm": "søvnig",
+    "kw": [
+      "følelse",
+      "snorke",
+      "sove",
+      "søvnig"
+    ]
+  },
+  "1f4a5": {
+    "nm": "kollision",
+    "kw": [
+      "følelser",
+      "kollision",
+      "kollitionstegn"
+    ]
+  },
+  "1f4a6": {
+    "nm": "sveddråber",
+    "kw": [
+      "følelser",
+      "sveddråber"
+    ]
+  },
+  "1f4a7": {
+    "nm": "dråbe",
+    "kw": [
+      "dråbe",
+      "dråbe sved",
+      "følelser",
+      "koldsved"
+    ]
+  },
+  "1f4a8": {
+    "nm": "smutter",
+    "kw": [
+      "er løbet",
+      "følelser",
+      "løber væk",
+      "smutter"
+    ]
+  },
+  "1f4a9": {
+    "nm": "bæ",
+    "kw": [
+      "bæ",
+      "bunke bæ"
+    ]
+  },
+  "1f4aa": {
+    "nm": "armmuskler",
+    "kw": [
+      "armmuskler",
+      "muskel",
+      "stærk"
+    ]
+  },
+  "1f4ab": {
+    "nm": "svimmel",
+    "kw": [
+      "følelser",
+      "se stjerner",
+      "svimmel"
+    ]
+  },
+  "1f4ac": {
+    "nm": "taleboble",
+    "kw": [
+      "tale",
+      "taleboble"
+    ]
+  },
+  "1f4ad": {
+    "nm": "tankeboble",
+    "kw": [
+      "tanke",
+      "tankeboble"
+    ]
+  },
+  "1f4ae": {
+    "nm": "blomsterstempel",
+    "kw": [
+      "blomsterstempel",
+      "stempel"
+    ]
+  },
+  "1f4af": {
+    "nm": "100 point",
+    "kw": [
+      "100 point",
+      "alle rigtige",
+      "hundrede",
+      "point"
+    ]
+  },
+  "1f4b0": {
+    "nm": "pengepose",
+    "kw": [
+      "dollar",
+      "penge",
+      "pengepose"
+    ]
+  },
+  "1f4b1": {
+    "nm": "valutaveksling",
+    "kw": [
+      "bank",
+      "penge",
+      "valuta",
+      "valutaveksling",
+      "veksling"
+    ]
+  },
+  "1f4b2": {
+    "nm": "dollartegn",
+    "kw": [
+      "dollartegn"
+    ]
+  },
+  "1f4b3": {
+    "nm": "kreditkort",
+    "kw": [
+      "bank",
+      "kort",
+      "kredit",
+      "kreditkort",
+      "penge"
+    ]
+  },
+  "1f4b4": {
+    "nm": "yenseddel",
+    "kw": [
+      "penge",
+      "yenseddel"
+    ]
+  },
+  "1f4b5": {
+    "nm": "dollarseddel",
+    "kw": [
+      "dollarseddel",
+      "penge"
+    ]
+  },
+  "1f4b6": {
+    "nm": "euroseddel",
+    "kw": [
+      "euroseddel",
+      "penge"
+    ]
+  },
+  "1f4b7": {
+    "nm": "pundseddel",
+    "kw": [
+      "penge",
+      "pund",
+      "pundseddel"
+    ]
+  },
+  "1f4b8": {
+    "nm": "flyvende penge",
+    "kw": [
+      "flyvende penge",
+      "penge",
+      "penge med vinger"
+    ]
+  },
+  "1f4b9": {
+    "nm": "stigende marked",
+    "kw": [
+      "opadgående graf",
+      "stigende marked"
+    ]
+  },
+  "1f4ba": {
+    "nm": "sæde",
+    "kw": [
+      "sæde",
+      "stol"
+    ]
+  },
+  "1f4bb": {
+    "nm": "computer",
+    "kw": [
+      "computer"
+    ]
+  },
+  "1f4bc": {
+    "nm": "attachémappe",
+    "kw": [
+      "attachémappe",
+      "mappe"
+    ]
+  },
+  "1f4bd": {
+    "nm": "mini disk",
+    "kw": [
+      "disk",
+      "mini disk"
+    ]
+  },
+  "1f4be": {
+    "nm": "diskette",
+    "kw": [
+      "computer",
+      "diskette"
+    ]
+  },
+  "1f4bf": {
+    "nm": "cd",
+    "kw": [
+      "cd",
+      "dvd"
+    ]
+  },
+  "1f4c0": {
+    "nm": "DVD",
+    "kw": [
+      "blu-ray",
+      "cd",
+      "computer",
+      "disk",
+      "DVD",
+      "optisk"
+    ]
+  },
+  "1f4c1": {
+    "nm": "mappe",
+    "kw": [
+      "dokument",
+      "mappe"
+    ]
+  },
+  "1f4c2": {
+    "nm": "åben mappe",
+    "kw": [
+      "åben mappe",
+      "dokument"
+    ]
+  },
+  "1f4c3": {
+    "nm": "side med fold",
+    "kw": [
+      "side",
+      "side med fold"
+    ]
+  },
+  "1f4c4": {
+    "nm": "dokument",
+    "kw": [
+      "dokument",
+      "side"
+    ]
+  },
+  "1f4c5": {
+    "nm": "kalender",
+    "kw": [
+      "dato",
+      "kalender"
+    ]
+  },
+  "1f4c6": {
+    "nm": "kalenderblok",
+    "kw": [
+      "afrivningskalender",
+      "kalender",
+      "kalenderblok"
+    ]
+  },
+  "1f4c7": {
+    "nm": "kartotek",
+    "kw": [
+      "indekskort",
+      "kartotek",
+      "kontakter"
+    ]
+  },
+  "1f4c8": {
+    "nm": "opadgående graf",
+    "kw": [
+      "graf",
+      "opadgående graf",
+      "tendens"
+    ]
+  },
+  "1f4c9": {
+    "nm": "nedadgående graf",
+    "kw": [
+      "graf",
+      "nedadgående graf",
+      "tendens"
+    ]
+  },
+  "1f4ca": {
+    "nm": "søjlediagram",
+    "kw": [
+      "diagram",
+      "søjlediagram"
+    ]
+  },
+  "1f4cb": {
+    "nm": "clipboard",
+    "kw": [
+      "clipboard"
+    ]
+  },
+  "1f4cc": {
+    "nm": "tegnestift",
+    "kw": [
+      "stift",
+      "tegnestift"
+    ]
+  },
+  "1f4cd": {
+    "nm": "rund tegnestift",
+    "kw": [
+      "rund tegnestift",
+      "stift",
+      "tegnestift"
+    ]
+  },
+  "1f4ce": {
+    "nm": "papirclips",
+    "kw": [
+      "clips",
+      "papirclips"
+    ]
+  },
+  "1f4cf": {
+    "nm": "lineal",
+    "kw": [
+      "lige kant",
+      "lineal"
+    ]
+  },
+  "1f4d0": {
+    "nm": "trekant",
+    "kw": [
+      "trekant",
+      "vinkel",
+      "vinkelmåler"
+    ]
+  },
+  "1f4d1": {
+    "nm": "faner",
+    "kw": [
+      "bogmærke",
+      "faner",
+      "mærke"
+    ]
+  },
+  "1f4d2": {
+    "nm": "regnskabsbog",
+    "kw": [
+      "notesbog",
+      "regnskabsbog"
+    ]
+  },
+  "1f4d3": {
+    "nm": "notesbog",
+    "kw": [
+      "noter",
+      "notesbog"
+    ]
+  },
+  "1f4d4": {
+    "nm": "notesbog med udsmykning",
+    "kw": [
+      "notesbog",
+      "notesbog med udsmykning"
+    ]
+  },
+  "1f4d5": {
+    "nm": "lukket bog",
+    "kw": [
+      "bog",
+      "lukket bog"
+    ]
+  },
+  "1f4d6": {
+    "nm": "åben bog",
+    "kw": [
+      "åben bog",
+      "bog"
+    ]
+  },
+  "1f4d7": {
+    "nm": "grøn bog",
+    "kw": [
+      "bog",
+      "grøn bog"
+    ]
+  },
+  "1f4d8": {
+    "nm": "blå bog",
+    "kw": [
+      "blå bog",
+      "bog"
+    ]
+  },
+  "1f4d9": {
+    "nm": "orange bog",
+    "kw": [
+      "bog",
+      "orange bog"
+    ]
+  },
+  "1f4da": {
+    "nm": "bøger",
+    "kw": [
+      "bog",
+      "bøger"
+    ]
+  },
+  "1f4db": {
+    "nm": "navneskilt",
+    "kw": [
+      "navn",
+      "navneskilt",
+      "skilt"
+    ]
+  },
+  "1f4dc": {
+    "nm": "skriftrulle",
+    "kw": [
+      "papir",
+      "skriftrulle"
+    ]
+  },
+  "1f4dd": {
+    "nm": "notat",
+    "kw": [
+      "kommunikation",
+      "notat"
+    ]
+  },
+  "1f4de": {
+    "nm": "telefonrør",
+    "kw": [
+      "kommunikation",
+      "telefonrør"
+    ]
+  },
+  "1f4df": {
+    "nm": "personsøger",
+    "kw": [
+      "bipper",
+      "kommunikation",
+      "personsøger"
+    ]
+  },
+  "1f4e0": {
+    "nm": "fax",
+    "kw": [
+      "fax",
+      "faxmaskine",
+      "kommunikation"
+    ]
+  },
+  "1f4e1": {
+    "nm": "parabolantenne",
+    "kw": [
+      "kommunikation",
+      "parabolantenne"
+    ]
+  },
+  "1f4e2": {
+    "nm": "højttaler med håndtag",
+    "kw": [
+      "højt",
+      "højttaler med håndtag",
+      "offentlig"
+    ]
+  },
+  "1f4e3": {
+    "nm": "megafon",
+    "kw": [
+      "kommunikation",
+      "megafon"
+    ]
+  },
+  "1f4e4": {
+    "nm": "udbakke",
+    "kw": [
+      "kommunikation",
+      "sendt",
+      "udbakke"
+    ]
+  },
+  "1f4e5": {
+    "nm": "indbakke",
+    "kw": [
+      "indbakke",
+      "kommunikation",
+      "modtaget"
+    ]
+  },
+  "1f4e6": {
+    "nm": "pakke",
+    "kw": [
+      "kasse",
+      "pakke"
+    ]
+  },
+  "1f4e7": {
+    "nm": "e-mail",
+    "kw": [
+      "brev",
+      "e-mail",
+      "kommunikation"
+    ]
+  },
+  "1f4e8": {
+    "nm": "indgående post",
+    "kw": [
+      "e-mail",
+      "indgående post",
+      "modtaget post"
+    ]
+  },
+  "1f4e9": {
+    "nm": "udgående post",
+    "kw": [
+      "e-mail",
+      "sendt post",
+      "udgående post"
+    ]
+  },
+  "1f4ea": {
+    "nm": "lukket postkasse med sænket flag",
+    "kw": [
+      "lukket postkasse med sænket flag",
+      "post",
+      "postkasse med flag nede"
+    ]
+  },
+  "1f4eb": {
+    "nm": "lukket postkasse med hævet flag",
+    "kw": [
+      "lukket postkasse med hævet flag",
+      "post",
+      "postkasse med flag op"
+    ]
+  },
+  "1f4ec": {
+    "nm": "åben postkasse med hævet flag",
+    "kw": [
+      "åben postkasse med hævet flag",
+      "post",
+      "postkasse med brev"
+    ]
+  },
+  "1f4ed": {
+    "nm": "åben postkasse med sænket flag",
+    "kw": [
+      "åben postkasse",
+      "åben postkasse med sænket flag",
+      "post"
+    ]
+  },
+  "1f4ee": {
+    "nm": "postkasse",
+    "kw": [
+      "postkasse"
+    ]
+  },
+  "1f4ef": {
+    "nm": "posthorn",
+    "kw": [
+      "posthorn"
+    ]
+  },
+  "1f4f0": {
+    "nm": "avis",
+    "kw": [
+      "avis",
+      "nyheder"
+    ]
+  },
+  "1f4f1": {
+    "nm": "mobil",
+    "kw": [
+      "mobil",
+      "mobiltelefon"
+    ]
+  },
+  "1f4f2": {
+    "nm": "mobil med pil",
+    "kw": [
+      "lav et opkald",
+      "mobil med pil"
+    ]
+  },
+  "1f4f3": {
+    "nm": "vibration",
+    "kw": [
+      "mobil",
+      "vibration"
+    ]
+  },
+  "1f4f4": {
+    "nm": "mobil slået fra",
+    "kw": [
+      "mobil",
+      "mobil slået fra"
+    ]
+  },
+  "1f4f5": {
+    "nm": "mobiltelefoner forbudt",
+    "kw": [
+      "ingen mobiltelefoner",
+      "mobiltelefoner forbudt"
+    ]
+  },
+  "1f4f6": {
+    "nm": "mobilsignal",
+    "kw": [
+      "mobilsignal",
+      "signalstyrke"
+    ]
+  },
+  "1f4f7": {
+    "nm": "kamera",
+    "kw": [
+      "kamera",
+      "video"
+    ]
+  },
+  "1f4f8": {
+    "nm": "kamera med blitz",
+    "kw": [
+      "blitz",
+      "kamera",
+      "kamera med blitz",
+      "video"
+    ]
+  },
+  "1f4f9": {
+    "nm": "videokamera",
+    "kw": [
+      "kamera",
+      "video",
+      "videokamera"
+    ]
+  },
+  "1f4fa": {
+    "nm": "tv",
+    "kw": [
+      "fjernsyn",
+      "tv"
+    ]
+  },
+  "1f4fb": {
+    "nm": "radio",
+    "kw": [
+      "æteren",
+      "radio"
+    ]
+  },
+  "1f4fc": {
+    "nm": "videobånd",
+    "kw": [
+      "video",
+      "videobånd"
+    ]
+  },
+  "1f4fd": {
+    "nm": "filmprojektor",
+    "kw": [
+      "biograf",
+      "filmprojektor",
+      "projektor",
+      "video"
+    ]
+  },
+  "1f4ff": {
+    "nm": "bedekrans",
+    "kw": [
+      "bedekrans",
+      "bøn",
+      "halskæde",
+      "påklædning",
+      "perler",
+      "religion"
+    ]
+  },
+  "1f500": {
+    "nm": "krydsede pile",
+    "kw": [
+      "krydsede pile",
+      "pile",
+      "pile mod højre"
+    ]
+  },
+  "1f501": {
+    "nm": "gentageknap",
+    "kw": [
+      "gentag",
+      "gentageknap",
+      "med uret",
+      "pil"
+    ]
+  },
+  "1f502": {
+    "nm": "knap til én gentagelse",
+    "kw": [
+      "én gang",
+      "knap til én gentagelse",
+      "med uret",
+      "pil"
+    ]
+  },
+  "1f503": {
+    "nm": "genindlæse",
+    "kw": [
+      "genindlæse",
+      "genindlæse-tegn",
+      "vertikale pile med uret"
+    ]
+  },
+  "1f504": {
+    "nm": "mod uret",
+    "kw": [
+      "mod uret",
+      "pile",
+      "pile mod uret"
+    ]
+  },
+  "1f505": {
+    "nm": "lav lysstyrke",
+    "kw": [
+      "dæmpet lysstyrke",
+      "lav lysstyrke"
+    ]
+  },
+  "1f506": {
+    "nm": "høj lysstyrke",
+    "kw": [
+      "høj lysstyrke",
+      "lysstyrke"
+    ]
+  },
+  "1f507": {
+    "nm": "højttaler fra",
+    "kw": [
+      "højttaler",
+      "højttaler fra",
+      "lyd fra",
+      "lydstyrke",
+      "stille"
+    ]
+  },
+  "1f508": {
+    "nm": "højttaler",
+    "kw": [
+      "højttaler",
+      "lydstyrke"
+    ]
+  },
+  "1f509": {
+    "nm": "højttaler til",
+    "kw": [
+      "højtaler med en lydbølge",
+      "højttaler til",
+      "lav volumen"
+    ]
+  },
+  "1f50a": {
+    "nm": "højttaler høj",
+    "kw": [
+      "høj volumen",
+      "højtaler med høj volumen",
+      "højttaler høj"
+    ]
+  },
+  "1f50b": {
+    "nm": "batteri",
+    "kw": [
+      "batteri"
+    ]
+  },
+  "1f50c": {
+    "nm": "stik",
+    "kw": [
+      "elektricitet",
+      "elektrisk",
+      "stik"
+    ]
+  },
+  "1f50d": {
+    "nm": "forstørrelsesglas til venstre",
+    "kw": [
+      "forstørrelse",
+      "forstørrelsesglas",
+      "forstørrelsesglas til venstre",
+      "søgning",
+      "værktøj"
+    ]
+  },
+  "1f50e": {
+    "nm": "forstørrelsesglas til højre",
+    "kw": [
+      "forstørrelse",
+      "forstørrelsesglas",
+      "forstørrelsesglas til højre",
+      "søgning",
+      "værktøj"
+    ]
+  },
+  "1f50f": {
+    "nm": "hængelås med pen",
+    "kw": [
+      "fyldepen",
+      "hængelås med pen",
+      "lås med fyldepen",
+      "privat"
+    ]
+  },
+  "1f510": {
+    "nm": "lukket hængelås med nøgle",
+    "kw": [
+      "lås med nøgle",
+      "låst",
+      "lukket hængelås med nøgle",
+      "sikker"
+    ]
+  },
+  "1f511": {
+    "nm": "nøgle",
+    "kw": [
+      "adgangskode",
+      "nøgle",
+      "password"
+    ]
+  },
+  "1f512": {
+    "nm": "hængelås",
+    "kw": [
+      "hængelås",
+      "låst"
+    ]
+  },
+  "1f513": {
+    "nm": "åben hængelås",
+    "kw": [
+      "åben hængelås",
+      "åben lås"
+    ]
+  },
+  "1f514": {
+    "nm": "klokke",
+    "kw": [
+      "klokke"
+    ]
+  },
+  "1f515": {
+    "nm": "ingen klokke",
+    "kw": [
+      "ingen klokke",
+      "ingen lyd",
+      "klokke med streg over"
+    ]
+  },
+  "1f516": {
+    "nm": "bogmærke",
+    "kw": [
+      "bogmærke",
+      "mærke"
+    ]
+  },
+  "1f517": {
+    "nm": "link",
+    "kw": [
+      "link",
+      "link-tegn"
+    ]
+  },
+  "1f518": {
+    "nm": "knap",
+    "kw": [
+      "alternativknap",
+      "knap"
+    ]
+  },
+  "1f519": {
+    "nm": "tilbage",
+    "kw": [
+      "tilbage",
+      "tilbage-pil",
+      "venstrepil"
+    ]
+  },
+  "1f51a": {
+    "nm": "end",
+    "kw": [
+      "end",
+      "end-pil",
+      "venstrepil"
+    ]
+  },
+  "1f51b": {
+    "nm": "ON-pil",
+    "kw": [
+      "ON med udråbstegn",
+      "ON-pil",
+      "på"
+    ]
+  },
+  "1f51c": {
+    "nm": "snart",
+    "kw": [
+      "snart",
+      "snart med højrepil",
+      "snart-tegn"
+    ]
+  },
+  "1f51d": {
+    "nm": "top",
+    "kw": [
+      "pil peger op",
+      "top",
+      "toppil"
+    ]
+  },
+  "1f51e": {
+    "nm": "forbudt for under 18",
+    "kw": [
+      "forbudt for under 18",
+      "ingen under 18"
+    ]
+  },
+  "1f520": {
+    "nm": "store bogstaver",
+    "kw": [
+      "store bogstaver",
+      "symbol for store bogstaver"
+    ]
+  },
+  "1f521": {
+    "nm": "små bogstaver",
+    "kw": [
+      "små bogstaver",
+      "symbol for små bogstaver"
+    ]
+  },
+  "1f522": {
+    "nm": "tal",
+    "kw": [
+      "symbol for tal",
+      "tal"
+    ]
+  },
+  "1f523": {
+    "nm": "symboler",
+    "kw": [
+      "symbol for symboler",
+      "symboler"
+    ]
+  },
+  "1f524": {
+    "nm": "latinske alfabet",
+    "kw": [
+      "latinske alfabet",
+      "symbol for latinske alfabet"
+    ]
+  },
+  "1f525": {
+    "nm": "ild",
+    "kw": [
+      "flamme",
+      "ild"
+    ]
+  },
+  "1f526": {
+    "nm": "lommelygte",
+    "kw": [
+      "lommelygte",
+      "lygte"
+    ]
+  },
+  "1f527": {
+    "nm": "skruenøgle",
+    "kw": [
+      "skruenøgle",
+      "værktøj"
+    ]
+  },
+  "1f528": {
+    "nm": "hammer",
+    "kw": [
+      "hammer",
+      "værktøj"
+    ]
+  },
+  "1f529": {
+    "nm": "møtrik og bolt",
+    "kw": [
+      "bolt",
+      "møtrik",
+      "møtrik og bolt",
+      "værktøj"
+    ]
+  },
+  "1f52a": {
+    "nm": "køkkenkniv",
+    "kw": [
+      "kniv",
+      "køkkenkniv"
+    ]
+  },
+  "1f52b": {
+    "nm": "pistol",
+    "kw": [
+      "pistol",
+      "revolver",
+      "våben"
+    ]
+  },
+  "1f52c": {
+    "nm": "mikroskop",
+    "kw": [
+      "mikroskop",
+      "redskab",
+      "værktøj"
+    ]
+  },
+  "1f52d": {
+    "nm": "teleskop",
+    "kw": [
+      "redskab",
+      "teleskop",
+      "værktøj"
+    ]
+  },
+  "1f52e": {
+    "nm": "krystalkugle",
+    "kw": [
+      "krystalkugle",
+      "spådom",
+      "spådomskunst"
+    ]
+  },
+  "1f52f": {
+    "nm": "sekstakket stjerne med prik",
+    "kw": [
+      "horoskop",
+      "sekstakket stjerne med prik",
+      "stjerne"
+    ]
+  },
+  "1f530": {
+    "nm": "grønt og gult blad",
+    "kw": [
+      "grønt og gult",
+      "grønt og gult blad"
+    ]
+  },
+  "1f531": {
+    "nm": "trefork",
+    "kw": [
+      "trefork",
+      "trefork-symbol"
+    ]
+  },
+  "1f532": {
+    "nm": "sort kvadratisk knap",
+    "kw": [
+      "geometrisk",
+      "knap",
+      "kvadrat",
+      "sort kvadratisk knap"
+    ]
+  },
+  "1f533": {
+    "nm": "hvid kvadratisk knap",
+    "kw": [
+      "geometrisk",
+      "hvid kvadratisk knap",
+      "knap",
+      "kvadrat",
+      "omrids"
+    ]
+  },
+  "1f534": {
+    "nm": "rød cirkel",
+    "kw": [
+      "cirkel",
+      "geometrisk",
+      "rød"
+    ]
+  },
+  "1f535": {
+    "nm": "blå cirkel",
+    "kw": [
+      "blå",
+      "cirkel",
+      "geometrisk"
+    ]
+  },
+  "1f536": {
+    "nm": "stor orange diamant",
+    "kw": [
+      "diamant",
+      "geometrisk",
+      "orange",
+      "stor orange diamant"
+    ]
+  },
+  "1f537": {
+    "nm": "stor blå diamant",
+    "kw": [
+      "blå",
+      "diamant",
+      "geometrisk",
+      "stor blå diamant"
+    ]
+  },
+  "1f538": {
+    "nm": "lille orange diamant",
+    "kw": [
+      "diamant",
+      "geometrisk",
+      "lille orange diamant",
+      "orange"
+    ]
+  },
+  "1f539": {
+    "nm": "lille blå diamant",
+    "kw": [
+      "blå",
+      "diamant",
+      "geometrisk",
+      "lille blå diamant"
+    ]
+  },
+  "1f53a": {
+    "nm": "op-trekant",
+    "kw": [
+      "op",
+      "op-trekant",
+      "rød trekant",
+      "trekant"
+    ]
+  },
+  "1f53b": {
+    "nm": "ned-trekant",
+    "kw": [
+      "ned",
+      "ned-trekant",
+      "rød trekant",
+      "trekant"
+    ]
+  },
+  "1f53c": {
+    "nm": "op-knap",
+    "kw": [
+      "knap",
+      "op-knap",
+      "opad",
+      "pil"
+    ]
+  },
+  "1f53d": {
+    "nm": "ned-knap",
+    "kw": [
+      "knap",
+      "ned",
+      "ned-knap",
+      "nedad",
+      "pil"
+    ]
+  },
+  "1f549": {
+    "nm": "om",
+    "kw": [
+      "hindu",
+      "om",
+      "religion"
+    ]
+  },
+  "1f54a": {
+    "nm": "due",
+    "kw": [
+      "due",
+      "flyve",
+      "fred",
+      "fugl"
+    ]
+  },
+  "1f54b": {
+    "nm": "kaaba",
+    "kw": [
+      "islam",
+      "kaaba",
+      "muslim",
+      "religion"
+    ]
+  },
+  "1f54c": {
+    "nm": "moské",
+    "kw": [
+      "islam",
+      "moské",
+      "muslim",
+      "religion"
+    ]
+  },
+  "1f54d": {
+    "nm": "synagoge",
+    "kw": [
+      "jøde",
+      "jødisk",
+      "religion",
+      "synagoge",
+      "tempel"
+    ]
+  },
+  "1f54e": {
+    "nm": "syvarmet lysestage",
+    "kw": [
+      "lysestage",
+      "religion",
+      "syvarmet lysestage"
+    ]
+  },
+  "1f550": {
+    "nm": "kl. 1",
+    "kw": [
+      "1.00",
+      "13.00",
+      "kl. 1",
+      "kl. 13"
+    ]
+  },
+  "1f551": {
+    "nm": "kl. 2",
+    "kw": [
+      "14.00",
+      "2.00",
+      "kl. 2",
+      "kl.14"
+    ]
+  },
+  "1f552": {
+    "nm": "kl. 3",
+    "kw": [
+      "15.00",
+      "3.00",
+      "kl. 3",
+      "kl.15"
+    ]
+  },
+  "1f553": {
+    "nm": "kl. 4",
+    "kw": [
+      "16.00",
+      "4.00",
+      "kl. 16",
+      "kl. 4"
+    ]
+  },
+  "1f554": {
+    "nm": "kl. 5",
+    "kw": [
+      "17.00",
+      "5.00",
+      "kl. 17",
+      "kl. 5"
+    ]
+  },
+  "1f555": {
+    "nm": "kl. 6",
+    "kw": [
+      "18.00",
+      "6.00",
+      "kl. 18",
+      "kl. 6"
+    ]
+  },
+  "1f556": {
+    "nm": "kl. 7",
+    "kw": [
+      "19.00",
+      "7.00",
+      "kl. 19",
+      "kl. 7"
+    ]
+  },
+  "1f557": {
+    "nm": "kl. 8",
+    "kw": [
+      "20.00",
+      "8.00",
+      "kl. 20",
+      "kl. 8"
+    ]
+  },
+  "1f558": {
+    "nm": "kl. 9",
+    "kw": [
+      "21.00",
+      "9.00",
+      "kl. 21",
+      "kl. 9"
+    ]
+  },
+  "1f559": {
+    "nm": "kl. 10",
+    "kw": [
+      "10.00",
+      "22.00",
+      "kl. 10",
+      "kl. 22"
+    ]
+  },
+  "1f55a": {
+    "nm": "kl.11",
+    "kw": [
+      "11.00",
+      "23.00",
+      "kl. 23",
+      "kl.11"
+    ]
+  },
+  "1f55b": {
+    "nm": "kl.12",
+    "kw": [
+      "12.00",
+      "24.00",
+      "kl. 24",
+      "kl.12"
+    ]
+  },
+  "1f55c": {
+    "nm": "halv to",
+    "kw": [
+      "1.30",
+      "13.30",
+      "halv to"
+    ]
+  },
+  "1f55d": {
+    "nm": "halv tre",
+    "kw": [
+      "14.30",
+      "2.30",
+      "halv tre"
+    ]
+  },
+  "1f55e": {
+    "nm": "halv fire",
+    "kw": [
+      "15.30",
+      "3.30",
+      "halv fire"
+    ]
+  },
+  "1f55f": {
+    "nm": "halv fem",
+    "kw": [
+      "16.30",
+      "4.30",
+      "halv fem"
+    ]
+  },
+  "1f560": {
+    "nm": "halv seks",
+    "kw": [
+      "17.30",
+      "5.30",
+      "halv seks"
+    ]
+  },
+  "1f561": {
+    "nm": "halv syv",
+    "kw": [
+      "18.30",
+      "6.30",
+      "halv syv"
+    ]
+  },
+  "1f562": {
+    "nm": "halv otte",
+    "kw": [
+      "19.30",
+      "7.30",
+      "halv otte"
+    ]
+  },
+  "1f563": {
+    "nm": "halv ni",
+    "kw": [
+      "20.30",
+      "8.30",
+      "halv ni"
+    ]
+  },
+  "1f564": {
+    "nm": "halv ti",
+    "kw": [
+      "21.30",
+      "9.30",
+      "halv ti"
+    ]
+  },
+  "1f565": {
+    "nm": "halv elleve",
+    "kw": [
+      "10.30",
+      "22.30",
+      "halv elleve"
+    ]
+  },
+  "1f566": {
+    "nm": "halv tolv",
+    "kw": [
+      "11.30",
+      "23.30",
+      "halv tolv"
+    ]
+  },
+  "1f56f": {
+    "nm": "stearinlys",
+    "kw": [
+      "lys",
+      "stearinlys"
+    ]
+  },
+  "1f570": {
+    "nm": "pynteur",
+    "kw": [
+      "pynteur",
+      "ur"
+    ]
+  },
+  "1f573": {
+    "nm": "hul",
+    "kw": [
+      "hul",
+      "sort"
+    ]
+  },
+  "1f574": {
+    "nm": "svævende forretningsmand",
+    "kw": [
+      "forretning",
+      "forretningsmand",
+      "jakkesæt",
+      "mand",
+      "svævende forretningsmand"
+    ]
+  },
+  "1f575": {
+    "nm": "detektiv",
+    "kw": [
+      "detektiv",
+      "spion"
+    ]
+  },
+  "1f576": {
+    "nm": "solbriller",
+    "kw": [
+      "briller",
+      "mørk",
+      "øje",
+      "solbriller"
+    ]
+  },
+  "1f577": {
+    "nm": "edderkop",
+    "kw": [
+      "edderkop",
+      "insekt"
+    ]
+  },
+  "1f578": {
+    "nm": "edderkoppespind",
+    "kw": [
+      "edderkop",
+      "edderkoppespind",
+      "spind"
+    ]
+  },
+  "1f579": {
+    "nm": "joystick",
+    "kw": [
+      "joystick",
+      "spil",
+      "videospil"
+    ]
+  },
+  "1f57a": {
+    "nm": "dansende mand",
+    "kw": [
+      "dans",
+      "dansende mand",
+      "danser",
+      "mand"
+    ]
+  },
+  "1f587": {
+    "nm": "sammensatte papirclips",
+    "kw": [
+      "papirclip",
+      "sammensat",
+      "sammensatte papirclips"
+    ]
+  },
+  "1f58a": {
+    "nm": "kuglepen",
+    "kw": [
+      "kuglepen",
+      "pen"
+    ]
+  },
+  "1f58b": {
+    "nm": "fyldepen",
+    "kw": [
+      "fyldepen",
+      "pen"
+    ]
+  },
+  "1f58c": {
+    "nm": "malerpensel",
+    "kw": [
+      "maleri",
+      "malerpensel",
+      "maling"
+    ]
+  },
+  "1f58d": {
+    "nm": "farvekridt",
+    "kw": [
+      "farveblyant",
+      "farvekridt",
+      "fedtfarve"
+    ]
+  },
+  "1f590": {
+    "nm": "hånd med spredte fingre",
+    "kw": [
+      "hånd",
+      "hånd med spredte fingre",
+      "krop",
+      "spredte"
+    ]
+  },
+  "1f595": {
+    "nm": "langefinger",
+    "kw": [
+      "finger",
+      "hånd",
+      "krop",
+      "langefinger"
+    ]
+  },
+  "1f596": {
+    "nm": "vulcan-hilsen",
+    "kw": [
+      "finger",
+      "hånd",
+      "krop",
+      "vulcan-hilsen"
+    ]
+  },
+  "1f5a4": {
+    "nm": "sort hjerte",
+    "kw": [
+      "hjerte",
+      "ondskab",
+      "ondt",
+      "sort"
+    ]
+  },
+  "1f5a5": {
+    "nm": "stationær computer",
+    "kw": [
+      "computer",
+      "stationær"
+    ]
+  },
+  "1f5a8": {
+    "nm": "printer",
+    "kw": [
+      "computer",
+      "printer",
+      "stationær"
+    ]
+  },
+  "1f5b1": {
+    "nm": "computermus",
+    "kw": [
+      "computer",
+      "computermus",
+      "knap",
+      "mus"
+    ]
+  },
+  "1f5b2": {
+    "nm": "trackball",
+    "kw": [
+      "computer",
+      "trackball"
+    ]
+  },
+  "1f5bc": {
+    "nm": "ramme med billede",
+    "kw": [
+      "billede",
+      "kunst",
+      "maleri",
+      "museum",
+      "ramme",
+      "ramme med billede"
+    ]
+  },
+  "1f5c2": {
+    "nm": "kartotekskort",
+    "kw": [
+      "kartotek",
+      "kartotekskort",
+      "kort"
+    ]
+  },
+  "1f5c3": {
+    "nm": "arkivkasse",
+    "kw": [
+      "arkiv",
+      "arkivkasse",
+      "kasse",
+      "pap"
+    ]
+  },
+  "1f5c4": {
+    "nm": "arkivskab",
+    "kw": [
+      "arkiv",
+      "arkivskab",
+      "skab"
+    ]
+  },
+  "1f5d1": {
+    "nm": "papirkurv",
+    "kw": [
+      "papirkurv",
+      "skraldespand"
+    ]
+  },
+  "1f5d2": {
+    "nm": "notesblok",
+    "kw": [
+      "blok",
+      "note",
+      "noter",
+      "notesblok",
+      "spiral",
+      "spiralryg"
+    ]
+  },
+  "1f5d3": {
+    "nm": "spiralkalender",
+    "kw": [
+      "blok",
+      "kalender",
+      "spiral",
+      "spiralkalender"
+    ]
+  },
+  "1f5dc": {
+    "nm": "skruetvinge",
+    "kw": [
+      "skruestik",
+      "skruetvinge",
+      "værktøj"
+    ]
+  },
+  "1f5dd": {
+    "nm": "gammel nøgle",
+    "kw": [
+      "gammel",
+      "lås",
+      "nøgle"
+    ]
+  },
+  "1f5de": {
+    "nm": "sammenrullet avis",
+    "kw": [
+      "avis",
+      "nyheder",
+      "sammenrullet"
+    ]
+  },
+  "1f5e1": {
+    "nm": "daggert",
+    "kw": [
+      "daggert",
+      "kniv",
+      "våben"
+    ]
+  },
+  "1f5e3": {
+    "nm": "talende hoved",
+    "kw": [
+      "ansigt",
+      "hoved",
+      "silhuet",
+      "tale",
+      "talende"
+    ]
+  },
+  "1f5e8": {
+    "nm": "taleboble til venstre",
+    "kw": [
+      "dialog",
+      "snak",
+      "tale",
+      "taleboble til venstre"
+    ]
+  },
+  "1f5ef": {
+    "nm": "vred taleboble til højre",
+    "kw": [
+      "ballon",
+      "boble",
+      "mad",
+      "vred",
+      "vred taleboble til højre"
+    ]
+  },
+  "1f5f3": {
+    "nm": "valgurne med stemmeseddel",
+    "kw": [
+      "boks",
+      "kasse",
+      "stemme",
+      "urne",
+      "valgurne med stemmeseddel"
+    ]
+  },
+  "1f5fa": {
+    "nm": "verdenskort",
+    "kw": [
+      "kort",
+      "verden",
+      "verdenskort"
+    ]
+  },
+  "1f5fb": {
+    "nm": "Mount Fuji",
+    "kw": [
+      "bjerg",
+      "Fuji",
+      "Fuji-bjerget",
+      "Mount Fuji"
+    ]
+  },
+  "1f5fc": {
+    "nm": "Tokyo Tower",
+    "kw": [
+      "Tokyo",
+      "Tokyo Tower"
+    ]
+  },
+  "1f5fd": {
+    "nm": "Frihedsgudinden",
+    "kw": [
+      "frihed",
+      "Frihedsgudinden",
+      "gudinde"
+    ]
+  },
+  "1f5fe": {
+    "nm": "Japan",
+    "kw": [
+      "Japan",
+      "kort over Japan"
+    ]
+  },
+  "1f5ff": {
+    "nm": "statue",
+    "kw": [
+      "moyai-statue",
+      "statue"
+    ]
+  },
+  "1f600": {
+    "nm": "grinende ansigt",
+    "kw": [
+      "glad",
+      "grinende ansigt",
+      "smilende ansigt",
+      "smiley"
+    ]
+  },
+  "1f601": {
+    "nm": "grinende ansigt med smilende øjne",
+    "kw": [
+      "ansigt der griner",
+      "glad",
+      "grinende ansigt med smilende øjne",
+      "smiley"
+    ]
+  },
+  "1f602": {
+    "nm": "ansigt med glædestårer",
+    "kw": [
+      "ansigt med glædestårer",
+      "glad",
+      "glæde",
+      "tårer"
+    ]
+  },
+  "1f603": {
+    "nm": "smilende ansigt med åben mund",
+    "kw": [
+      "glad",
+      "smilende ansigt med åben mund",
+      "smiler",
+      "smiley"
+    ]
+  },
+  "1f604": {
+    "nm": "smilende ansigt med åben mund og smilende øjne",
+    "kw": [
+      "glad",
+      "smil",
+      "smilende ansigt med åben mund og smilende øjne",
+      "smileøjne",
+      "smiley"
+    ]
+  },
+  "1f605": {
+    "nm": "smilende ansigt med åben mund og koldsved",
+    "kw": [
+      "smil med koldsved",
+      "smilende ansigt med åben mund og koldsved"
+    ]
+  },
+  "1f606": {
+    "nm": "smilende ansigt med åben mund og lukkede øjne",
+    "kw": [
+      "glad",
+      "lukkede øjne",
+      "smil",
+      "smil med lukkede øjne",
+      "smilende ansigt med åben mund og lukkede øjne"
+    ]
+  },
+  "1f607": {
+    "nm": "smilende ansigt med glorie",
+    "kw": [
+      "ansigt",
+      "glorie",
+      "smil",
+      "smilende ansigt med glorie"
+    ]
+  },
+  "1f608": {
+    "nm": "smilende ansigt med horn",
+    "kw": [
+      "ansigt",
+      "horn",
+      "smil",
+      "smilende ansigt med horn"
+    ]
+  },
+  "1f609": {
+    "nm": "blinkende ansigt",
+    "kw": [
+      "ansigt",
+      "ansigt der blinker",
+      "blink",
+      "blinkende ansigt"
+    ]
+  },
+  "1f60a": {
+    "nm": "smilende ansigt og øjne",
+    "kw": [
+      "smil med smileøjne",
+      "smilende ansigt og øjne",
+      "smileøjne"
+    ]
+  },
+  "1f60b": {
+    "nm": "nydende ansigt",
+    "kw": [
+      "ansigt",
+      "god mad",
+      "nydende ansigt",
+      "smil"
+    ]
+  },
+  "1f60c": {
+    "nm": "lettet ansigt",
+    "kw": [
+      "ansigt",
+      "lettelse",
+      "lettet ansigt"
+    ]
+  },
+  "1f60d": {
+    "nm": "smilende ansigt med hjertøjne",
+    "kw": [
+      "hjerteøjne",
+      "hjerter",
+      "kærlighed",
+      "smilende ansigt med hjertøjne"
+    ]
+  },
+  "1f60e": {
+    "nm": "smilende ansigt med solbriller",
+    "kw": [
+      "ansigt",
+      "sej",
+      "smil med solbriller",
+      "smilende ansigt med solbriller",
+      "solbriller"
+    ]
+  },
+  "1f60f": {
+    "nm": "ansigt med smørret grin",
+    "kw": [
+      "ansigt",
+      "ansigt med smørret grin",
+      "smørret"
+    ]
+  },
+  "1f610": {
+    "nm": "neutralt ansigt",
+    "kw": [
+      "ingen kommentar",
+      "neutralt ansigt",
+      "pokeransigt"
+    ]
+  },
+  "1f611": {
+    "nm": "udtryksløst ansigt",
+    "kw": [
+      "ingen kommentar",
+      "pokeransigt",
+      "udtryksløst ansigt"
+    ]
+  },
+  "1f612": {
+    "nm": "uimponeret ansigt",
+    "kw": [
+      "ansigt",
+      "ikke glad",
+      "uimponeret ansigt"
+    ]
+  },
+  "1f613": {
+    "nm": "ansigt med koldsved",
+    "kw": [
+      "ansigt",
+      "ansigt med koldsved"
+    ]
+  },
+  "1f614": {
+    "nm": "eftertænksomt ansigt",
+    "kw": [
+      "ansigt",
+      "eftertænksom",
+      "eftertænksomt ansigt",
+      "nedslået"
+    ]
+  },
+  "1f615": {
+    "nm": "forvirret ansigt",
+    "kw": [
+      "ansigt",
+      "forvirret ansigt"
+    ]
+  },
+  "1f616": {
+    "nm": "forbistret ansigt",
+    "kw": [
+      "ansigt",
+      "forbandet",
+      "forbistret ansigt"
+    ]
+  },
+  "1f617": {
+    "nm": "kysseansigt",
+    "kw": [
+      "ansigt",
+      "kys",
+      "kysseansigt",
+      "kysser"
+    ]
+  },
+  "1f618": {
+    "nm": "kyssende ansigt",
+    "kw": [
+      "ansigt",
+      "kyssende ansigt",
+      "sender kys"
+    ]
+  },
+  "1f619": {
+    "nm": "kysseansigt med smilende øjne",
+    "kw": [
+      "ansigt",
+      "kysseansigt med smilende øjne",
+      "smilende øjne"
+    ]
+  },
+  "1f61a": {
+    "nm": "kysseansigt med lukkede øjne",
+    "kw": [
+      "ansigt",
+      "kys",
+      "kysseansigt med lukkede øjne",
+      "lukkede øjne"
+    ]
+  },
+  "1f61b": {
+    "nm": "ansigt med tungen ude",
+    "kw": [
+      "ansigt",
+      "ansigt med tungen ude"
+    ]
+  },
+  "1f61c": {
+    "nm": "ansigt med tungen ude og blinkende øje",
+    "kw": [
+      "ansigt",
+      "ansigt med tungen ude og blinkende øje",
+      "blink",
+      "driller"
+    ]
+  },
+  "1f61d": {
+    "nm": "ansigt med tungen ude og sammenknebne øjne",
+    "kw": [
+      "ansigt",
+      "ansigt med tungen ude og sammenknebne øjne",
+      "rækker tunge"
+    ]
+  },
+  "1f61e": {
+    "nm": "skuffet ansigt",
+    "kw": [
+      "ansigt",
+      "skuffet ansigt"
+    ]
+  },
+  "1f61f": {
+    "nm": "bekymret ansigt",
+    "kw": [
+      "ansigt",
+      "bekymret",
+      "bekymring"
+    ]
+  },
+  "1f620": {
+    "nm": "vredt ansigt",
+    "kw": [
+      "ansigt",
+      "vredt ansigt"
+    ]
+  },
+  "1f621": {
+    "nm": "surt ansigt",
+    "kw": [
+      "rød",
+      "surt ansigt",
+      "vred",
+      "vredt ansigt"
+    ]
+  },
+  "1f622": {
+    "nm": "grædende ansigt",
+    "kw": [
+      "ansigt",
+      "grædende ansigt",
+      "ked af det",
+      "tårer"
+    ]
+  },
+  "1f623": {
+    "nm": "stædigt ansigt",
+    "kw": [
+      "stædigt ansigt",
+      "udholdenhed"
+    ]
+  },
+  "1f624": {
+    "nm": "fnysende ansigt",
+    "kw": [
+      "fnysende ansigt",
+      "jeg vandt"
+    ]
+  },
+  "1f625": {
+    "nm": "skuffet men lettet ansigt",
+    "kw": [
+      "skuffet men lettet",
+      "skuffet men lettet ansigt"
+    ]
+  },
+  "1f626": {
+    "nm": "måbende ansigt med åben mund",
+    "kw": [
+      "åben mund",
+      "ansigt",
+      "måbende ansigt med åben mund",
+      "rynkede bryn"
+    ]
+  },
+  "1f627": {
+    "nm": "forpint ansigt",
+    "kw": [
+      "ansigt",
+      "forpint ansigt",
+      "lider",
+      "smerte"
+    ]
+  },
+  "1f628": {
+    "nm": "bange ansigt",
+    "kw": [
+      "bange ansigt",
+      "frygt"
+    ]
+  },
+  "1f629": {
+    "nm": "udmattet ansigt",
+    "kw": [
+      "udkørt",
+      "udmattet",
+      "udmattet ansigt"
+    ]
+  },
+  "1f62a": {
+    "nm": "dyb søvn",
+    "kw": [
+      "ansigt",
+      "dyb søvn",
+      "træt"
+    ]
+  },
+  "1f62b": {
+    "nm": "træt ansigt",
+    "kw": [
+      "ansigt",
+      "træt ansigt"
+    ]
+  },
+  "1f62c": {
+    "nm": "sammenbidt ansigt",
+    "kw": [
+      "ansigt",
+      "lave grimasse",
+      "sammenbidt ansigt"
+    ]
+  },
+  "1f62d": {
+    "nm": "grådkvalt ansigt",
+    "kw": [
+      "grådkvalt ansigt",
+      "græder",
+      "tårer"
+    ]
+  },
+  "1f62e": {
+    "nm": "ansigt med åben mund",
+    "kw": [
+      "ansigt",
+      "ansigt med åben mund"
+    ]
+  },
+  "1f62f": {
+    "nm": "tavst ansigt",
+    "kw": [
+      "stille ansigt",
+      "tavst ansigt"
+    ]
+  },
+  "1f630": {
+    "nm": "ansigt med åben mund og koldsved",
+    "kw": [
+      "åben mund",
+      "ansigt med åben mund og koldsved",
+      "blå i ansigtet",
+      "koldsved"
+    ]
+  },
+  "1f631": {
+    "nm": "skrigende ansigt",
+    "kw": [
+      "angst",
+      "skrigende ansigt"
+    ]
+  },
+  "1f632": {
+    "nm": "overrasket ansigt",
+    "kw": [
+      "chokeret",
+      "overrasket ansigt"
+    ]
+  },
+  "1f633": {
+    "nm": "rødmende ansigt",
+    "kw": [
+      "røde kinder",
+      "rødmende ansigt"
+    ]
+  },
+  "1f634": {
+    "nm": "sovende ansigt",
+    "kw": [
+      "ansigt",
+      "sove",
+      "sovende ansigt",
+      "søvn"
+    ]
+  },
+  "1f635": {
+    "nm": "svimmelt ansigt",
+    "kw": [
+      "ansigt",
+      "ør",
+      "svimmel",
+      "svimmelt ansigt"
+    ]
+  },
+  "1f636": {
+    "nm": "ansigt uden mund",
+    "kw": [
+      "ansigt",
+      "ansigt uden mund",
+      "mund",
+      "stille",
+      "tavs"
+    ]
+  },
+  "1f637": {
+    "nm": "ansigt med maske",
+    "kw": [
+      "ansigt",
+      "ansigt med maske",
+      "doktor",
+      "forkølelse",
+      "maske",
+      "medicin",
+      "syg"
+    ]
+  },
+  "1f638": {
+    "nm": "kat griner",
+    "kw": [
+      "kat",
+      "kat griner"
+    ]
+  },
+  "1f639": {
+    "nm": "kat med glædestårer",
+    "kw": [
+      "kat",
+      "kat med glædestårer"
+    ]
+  },
+  "1f63a": {
+    "nm": "kat smiler",
+    "kw": [
+      "glad kat",
+      "kat smiler"
+    ]
+  },
+  "1f63b": {
+    "nm": "glad kat med hjerter",
+    "kw": [
+      "glad kat med hjerter",
+      "kat smiler"
+    ]
+  },
+  "1f63c": {
+    "nm": "kat med ironisk smil",
+    "kw": [
+      "ironisk kat",
+      "kat med ironisk smil"
+    ]
+  },
+  "1f63d": {
+    "nm": "kyssende kat med lukkede øjne",
+    "kw": [
+      "kat",
+      "kyssende kat med lukkede øjne",
+      "kysser"
+    ]
+  },
+  "1f63e": {
+    "nm": "sur kat",
+    "kw": [
+      "sur kat",
+      "surmulende kat"
+    ]
+  },
+  "1f63f": {
+    "nm": "grædende kat",
+    "kw": [
+      "grædende kat",
+      "kat græder"
+    ]
+  },
+  "1f640": {
+    "nm": "træt kat",
+    "kw": [
+      "overrasket kat",
+      "træt kat"
+    ]
+  },
+  "1f641": {
+    "nm": "lidt trist ansigt",
+    "kw": [
+      "ansigt",
+      "lidt trist ansigt",
+      "trist"
+    ]
+  },
+  "1f642": {
+    "nm": "let smilende ansigt",
+    "kw": [
+      "ansigt",
+      "let smilende ansigt",
+      "smil"
+    ]
+  },
+  "1f643": {
+    "nm": "omvendt ansigt",
+    "kw": [
+      "ansigt",
+      "omvendt"
+    ]
+  },
+  "1f644": {
+    "nm": "ansigt med rullende øjne",
+    "kw": [
+      "ansigt",
+      "ansigt med rullende øjne",
+      "øjne",
+      "rullende"
+    ]
+  },
+  "1f645": {
+    "nm": "signalerer nej",
+    "kw": [
+      "forbudt",
+      "nej",
+      "signalerer nej"
+    ]
+  },
+  "1f645-200d-2640": {
+    "nm": "kvinde signalerer nej",
+    "kw": [
+      "forbudt",
+      "gestus",
+      "ikke i orden",
+      "kvinde",
+      "kvinde signalerer nej",
+      "nej"
+    ]
+  },
+  "1f645-200d-2642": {
+    "nm": "mand signalerer nej",
+    "kw": [
+      "forbudt",
+      "gestus",
+      "ikke i orden",
+      "mand",
+      "mand signalerer nej",
+      "nej"
+    ]
+  },
+  "1f646": {
+    "nm": "signalerer ok",
+    "kw": [
+      "allright",
+      "ansigt",
+      "signalerer ok"
+    ]
+  },
+  "1f646-200d-2640": {
+    "nm": "kvinde signalerer ok",
+    "kw": [
+      "gestus",
+      "i orden",
+      "kvinde",
+      "kvinde signalerer ok",
+      "ok",
+      "tilladt"
+    ]
+  },
+  "1f646-200d-2642": {
+    "nm": "mand signalerer ok",
+    "kw": [
+      "gestus",
+      "i orden",
+      "mand",
+      "mand signalerer ok",
+      "ok",
+      "tilladt"
+    ]
+  },
+  "1f647-200d-2640": {
+    "nm": "kvinde bukker dybt",
+    "kw": [
+      "buk",
+      "kvinde",
+      "kvinde bukker dybt",
+      "undskyld",
+      "undskyldning"
+    ]
+  },
+  "1f647-200d-2642": {
+    "nm": "mand bukker dybt",
+    "kw": [
+      "buk",
+      "mand",
+      "mand bukker dybt",
+      "undskyld",
+      "undskyldning"
+    ]
+  },
+  "1f648": {
+    "nm": "ikke se",
+    "kw": [
+      "ikke se",
+      "tre vise aber"
+    ]
+  },
+  "1f649": {
+    "nm": "ikke høre",
+    "kw": [
+      "ikke høre",
+      "tre vise aber"
+    ]
+  },
+  "1f64a": {
+    "nm": "ikke tale",
+    "kw": [
+      "ikke tale",
+      "tre vise aber"
+    ]
+  },
+  "1f64b": {
+    "nm": "glad person",
+    "kw": [
+      "glad person",
+      "hej",
+      "løftet hånd"
+    ]
+  },
+  "1f64b-200d-2640": {
+    "nm": "kvinde med løftet hånd",
+    "kw": [
+      "gestus",
+      "hej",
+      "hilsen",
+      "kvinde",
+      "kvinde med løftet hånd",
+      "løftet hånd"
+    ]
+  },
+  "1f64b-200d-2642": {
+    "nm": "mand med løftet hånd",
+    "kw": [
+      "gestus",
+      "hej",
+      "hilsen",
+      "løftet hånd",
+      "mand",
+      "mand med løftet hånd"
+    ]
+  },
+  "1f64c": {
+    "nm": "hurra",
+    "kw": [
+      "begge hænder oppe",
+      "hurra"
+    ]
+  },
+  "1f64d": {
+    "nm": "rynkede bryn",
+    "kw": [
+      "rynkede bryn",
+      "udtryk",
+      "utilfreds"
+    ]
+  },
+  "1f64d-200d-2640": {
+    "nm": "kvinde rynker panden",
+    "kw": [
+      "kvinde",
+      "kvinde rynker panden",
+      "rynke panden",
+      "rynkede bryn",
+      "rynket pande",
+      "utilfreds"
+    ]
+  },
+  "1f64d-200d-2642": {
+    "nm": "mand rynker panden",
+    "kw": [
+      "mand",
+      "mand rynker panden",
+      "rynke panden",
+      "rynkede bryn",
+      "rynket pande",
+      "utilfreds"
+    ]
+  },
+  "1f64e": {
+    "nm": "surmulende person",
+    "kw": [
+      "gestus",
+      "surmule",
+      "surmulende person"
+    ]
+  },
+  "1f64e-200d-2640": {
+    "nm": "kvinde surmuler",
+    "kw": [
+      "kvinde",
+      "kvinde surmuler",
+      "sur",
+      "surmule",
+      "utilfreds"
+    ]
+  },
+  "1f64e-200d-2642": {
+    "nm": "mand surmuler",
+    "kw": [
+      "mand",
+      "mand surmuler",
+      "sur",
+      "surmule",
+      "utilfreds"
+    ]
+  },
+  "1f64f": {
+    "nm": "foldede hænder",
+    "kw": [
+      "bøn",
+      "foldede hænder"
+    ]
+  },
+  "1f680": {
+    "nm": "raket",
+    "kw": [
+      "fartøj",
+      "raket",
+      "rumfartøj",
+      "rummet",
+      "rumskib"
+    ]
+  },
+  "1f681": {
+    "nm": "helikopter",
+    "kw": [
+      "fartøj",
+      "helikopter"
+    ]
+  },
+  "1f682": {
+    "nm": "damplokomotiv",
+    "kw": [
+      "damplokomotiv",
+      "tog"
+    ]
+  },
+  "1f683": {
+    "nm": "togvogn",
+    "kw": [
+      "tog",
+      "togvogn"
+    ]
+  },
+  "1f684": {
+    "nm": "lyntog",
+    "kw": [
+      "lyntog",
+      "tog"
+    ]
+  },
+  "1f685": {
+    "nm": "lyntog med projektilnæse",
+    "kw": [
+      "lyntog med projektilnæse",
+      "tog"
+    ]
+  },
+  "1f686": {
+    "nm": "tog",
+    "kw": [
+      "køretøj",
+      "tog"
+    ]
+  },
+  "1f687": {
+    "nm": "metro",
+    "kw": [
+      "køretøj",
+      "metro"
+    ]
+  },
+  "1f688": {
+    "nm": "letbane",
+    "kw": [
+      "køretøj",
+      "letbane",
+      "tog"
+    ]
+  },
+  "1f689": {
+    "nm": "togstation",
+    "kw": [
+      "tog",
+      "togstation"
+    ]
+  },
+  "1f68a": {
+    "nm": "sporvogn",
+    "kw": [
+      "køretøj",
+      "sporvogn",
+      "trolleybus"
+    ]
+  },
+  "1f68b": {
+    "nm": "vogn",
+    "kw": [
+      "køretøj",
+      "sporvogn",
+      "trolleybus",
+      "vogn"
+    ]
+  },
+  "1f68c": {
+    "nm": "bus",
+    "kw": [
+      "bus",
+      "køretøj"
+    ]
+  },
+  "1f68d": {
+    "nm": "bus forfra",
+    "kw": [
+      "bus",
+      "forfra",
+      "kørende",
+      "køretøj"
+    ]
+  },
+  "1f68e": {
+    "nm": "trolleybus",
+    "kw": [
+      "bus",
+      "køretøj",
+      "sporvogn",
+      "trolley",
+      "trolleybus"
+    ]
+  },
+  "1f68f": {
+    "nm": "busstoppested",
+    "kw": [
+      "bus",
+      "busstoppested",
+      "stoppested"
+    ]
+  },
+  "1f690": {
+    "nm": "minibus",
+    "kw": [
+      "bus",
+      "minibus"
+    ]
+  },
+  "1f691": {
+    "nm": "ambulance",
+    "kw": [
+      "ambulance",
+      "køretøj"
+    ]
+  },
+  "1f692": {
+    "nm": "brandbil",
+    "kw": [
+      "brand",
+      "brandbil",
+      "køretøj"
+    ]
+  },
+  "1f693": {
+    "nm": "politibil",
+    "kw": [
+      "politi",
+      "politibil"
+    ]
+  },
+  "1f694": {
+    "nm": "politibil forfra",
+    "kw": [
+      "kørende politibil",
+      "politi",
+      "politibil forfra"
+    ]
+  },
+  "1f695": {
+    "nm": "taxa",
+    "kw": [
+      "bil",
+      "køretøj",
+      "taxa"
+    ]
+  },
+  "1f696": {
+    "nm": "taxa forfra",
+    "kw": [
+      "kørende taxa",
+      "taxa forfra"
+    ]
+  },
+  "1f697": {
+    "nm": "bil",
+    "kw": [
+      "bil",
+      "køretøj"
+    ]
+  },
+  "1f698": {
+    "nm": "bil forfra",
+    "kw": [
+      "bil",
+      "bil forfra",
+      "fartøj",
+      "kørende"
+    ]
+  },
+  "1f699": {
+    "nm": "firehjulstræk",
+    "kw": [
+      "firehjulstræk",
+      "fritid",
+      "jeep",
+      "køretøj"
+    ]
+  },
+  "1f69a": {
+    "nm": "lastbil",
+    "kw": [
+      "køretøj",
+      "lastbil",
+      "levering",
+      "transport"
+    ]
+  },
+  "1f69b": {
+    "nm": "lastvogn",
+    "kw": [
+      "køretøj",
+      "lastbil",
+      "lastvogn",
+      "levering",
+      "transport"
+    ]
+  },
+  "1f69c": {
+    "nm": "traktor",
+    "kw": [
+      "køretøj",
+      "traktor"
+    ]
+  },
+  "1f69d": {
+    "nm": "monorail",
+    "kw": [
+      "køretøj",
+      "monorail"
+    ]
+  },
+  "1f69e": {
+    "nm": "bjergbane",
+    "kw": [
+      "bjergbane",
+      "svævebane"
+    ]
+  },
+  "1f69f": {
+    "nm": "luftbane",
+    "kw": [
+      "fartøj",
+      "hængende",
+      "luftbane",
+      "togbane"
+    ]
+  },
+  "1f6a0": {
+    "nm": "kabelbane",
+    "kw": [
+      "bjerg",
+      "fartøj",
+      "gondol",
+      "kabel",
+      "kabelbane"
+    ]
+  },
+  "1f6a1": {
+    "nm": "svævebane",
+    "kw": [
+      "fartøj",
+      "gondol",
+      "kabel",
+      "svæve",
+      "svævebane"
+    ]
+  },
+  "1f6a2": {
+    "nm": "skib",
+    "kw": [
+      "fartøj",
+      "skib"
+    ]
+  },
+  "1f6a3": {
+    "nm": "robåd",
+    "kw": [
+      "båd",
+      "robåd"
+    ]
+  },
+  "1f6a3-200d-2640": {
+    "nm": "kvinde i robåd",
+    "kw": [
+      "båd",
+      "kvinde",
+      "kvinde i robåd",
+      "roer",
+      "roning"
+    ]
+  },
+  "1f6a3-200d-2642": {
+    "nm": "mand i robåd",
+    "kw": [
+      "båd",
+      "mand",
+      "mand i robåd",
+      "roer",
+      "roning"
+    ]
+  },
+  "1f6a4": {
+    "nm": "speedbåd",
+    "kw": [
+      "båd",
+      "speedbåd"
+    ]
+  },
+  "1f6a5": {
+    "nm": "liggende trafiklys",
+    "kw": [
+      "liggende trafiklys",
+      "lys",
+      "trafik"
+    ]
+  },
+  "1f6a6": {
+    "nm": "trafiklys",
+    "kw": [
+      "lys",
+      "trafik",
+      "trafiklys"
+    ]
+  },
+  "1f6a7": {
+    "nm": "byggeri",
+    "kw": [
+      "byggeri",
+      "spærring"
+    ]
+  },
+  "1f6a8": {
+    "nm": "blinklys",
+    "kw": [
+      "blinklys",
+      "politi"
+    ]
+  },
+  "1f6a9": {
+    "nm": "flag",
+    "kw": [
+      "flag",
+      "trekantet rødt flag"
+    ]
+  },
+  "1f6aa": {
+    "nm": "dør",
+    "kw": [
+      "åben dør",
+      "dør"
+    ]
+  },
+  "1f6ab": {
+    "nm": "ingen adgang",
+    "kw": [
+      "adgang forbudt",
+      "ingen adgang"
+    ]
+  },
+  "1f6ac": {
+    "nm": "rygeskilt",
+    "kw": [
+      "rygeskilt",
+      "rygning tilladt"
+    ]
+  },
+  "1f6ad": {
+    "nm": "rygning forbudt",
+    "kw": [
+      "rygning forbudt",
+      "rygning ikke tilladt"
+    ]
+  },
+  "1f6ae": {
+    "nm": "smid i skraldespanden",
+    "kw": [
+      "skraldespand",
+      "smid i skraldespanden"
+    ]
+  },
+  "1f6af": {
+    "nm": "smid ikke affald",
+    "kw": [
+      "affald",
+      "forbudt",
+      "ikke tilladt",
+      "smid ikke affald"
+    ]
+  },
+  "1f6b0": {
+    "nm": "drikkevand",
+    "kw": [
+      "drik",
+      "drikkevand",
+      "vand"
+    ]
+  },
+  "1f6b1": {
+    "nm": "ikke drikkevand",
+    "kw": [
+      "drik",
+      "forbudt",
+      "ikke drikkevand",
+      "vand"
+    ]
+  },
+  "1f6b2": {
+    "nm": "cykel",
+    "kw": [
+      "cykel",
+      "tohjulet"
+    ]
+  },
+  "1f6b3": {
+    "nm": "cykler forbudt",
+    "kw": [
+      "cykler forbudt",
+      "ingen cykler"
+    ]
+  },
+  "1f6b4": {
+    "nm": "cyklist",
+    "kw": [
+      "cykel",
+      "cyklist"
+    ]
+  },
+  "1f6b4-200d-2640": {
+    "nm": "kvindelig cyklist",
+    "kw": [
+      "cykel",
+      "cykelrytter",
+      "cykle",
+      "cyklist",
+      "kvinde",
+      "kvindelig cyklist"
+    ]
+  },
+  "1f6b4-200d-2642": {
+    "nm": "mandlig cyklist",
+    "kw": [
+      "cykel",
+      "cykelrytter",
+      "cykle",
+      "mand",
+      "mandlig cyklist"
+    ]
+  },
+  "1f6b5": {
+    "nm": "mountainbikerytter",
+    "kw": [
+      "bjerg",
+      "cykel",
+      "cyklist",
+      "mountainbike",
+      "mountainbikerytter"
+    ]
+  },
+  "1f6b5-200d-2640": {
+    "nm": "kvinde på mountainbike",
+    "kw": [
+      "cykelrytter",
+      "kvinde",
+      "kvinde på mountainbike",
+      "mountainbike"
+    ]
+  },
+  "1f6b5-200d-2642": {
+    "nm": "mand på mountainbike",
+    "kw": [
+      "cykelrytter",
+      "mand",
+      "mand på mountainbike",
+      "mountainbike"
+    ]
+  },
+  "1f6b6": {
+    "nm": "fodgænger",
+    "kw": [
+      "fodgænger",
+      "gå",
+      "gang",
+      "hike",
+      "vandre",
+      "vandring"
+    ]
+  },
+  "1f6b6-200d-2640": {
+    "nm": "kvinde går",
+    "kw": [
+      "fodgænger",
+      "gå",
+      "gang",
+      "gåtur",
+      "hike",
+      "kvinde",
+      "kvinde går",
+      "vandre",
+      "vandretur",
+      "vandring"
+    ]
+  },
+  "1f6b6-200d-2642": {
+    "nm": "mand går",
+    "kw": [
+      "fodgænger",
+      "gå",
+      "gang",
+      "gåtur",
+      "hike",
+      "mand",
+      "mand går",
+      "vandre",
+      "vandretur",
+      "vandring"
+    ]
+  },
+  "1f6b7": {
+    "nm": "ingen fodgængere",
+    "kw": [
+      "fodgænger",
+      "forbudt",
+      "ingen fodgængere"
+    ]
+  },
+  "1f6b8": {
+    "nm": "børn krydser vej",
+    "kw": [
+      "børn",
+      "børn krydser vej",
+      "pas på børn"
+    ]
+  },
+  "1f6b9": {
+    "nm": "mænd",
+    "kw": [
+      "mænd",
+      "wc"
+    ]
+  },
+  "1f6ba": {
+    "nm": "kvinder",
+    "kw": [
+      "kvinder",
+      "wc"
+    ]
+  },
+  "1f6bb": {
+    "nm": "toiletskilt",
+    "kw": [
+      "toilet-skilt",
+      "toiletskilt"
+    ]
+  },
+  "1f6bc": {
+    "nm": "babysymbol",
+    "kw": [
+      "baby-skilt",
+      "babysymbol",
+      "skifte"
+    ]
+  },
+  "1f6bd": {
+    "nm": "toilet",
+    "kw": [
+      "toilet",
+      "wc"
+    ]
+  },
+  "1f6be": {
+    "nm": "wc",
+    "kw": [
+      "toilet",
+      "wc"
+    ]
+  },
+  "1f6bf": {
+    "nm": "brusebad",
+    "kw": [
+      "bad",
+      "brusebad"
+    ]
+  },
+  "1f6c0": {
+    "nm": "bad",
+    "kw": [
+      "bad",
+      "badekar"
+    ]
+  },
+  "1f6c1": {
+    "nm": "badekar",
+    "kw": [
+      "bad",
+      "badekar"
+    ]
+  },
+  "1f6c2": {
+    "nm": "paskontrol",
+    "kw": [
+      "pas",
+      "paskontrol"
+    ]
+  },
+  "1f6c3": {
+    "nm": "told",
+    "kw": [
+      "told"
+    ]
+  },
+  "1f6c4": {
+    "nm": "baggageudlevering",
+    "kw": [
+      "baggage",
+      "baggageudlevering"
+    ]
+  },
+  "1f6c5": {
+    "nm": "hittegods",
+    "kw": [
+      "baggage",
+      "hittegods"
+    ]
+  },
+  "1f6cb": {
+    "nm": "sofa og lampe",
+    "kw": [
+      "hotel",
+      "lampe",
+      "sofa",
+      "sofa og lampe"
+    ]
+  },
+  "1f6cc": {
+    "nm": "person i seng",
+    "kw": [
+      "person i seng",
+      "sove"
+    ]
+  },
+  "1f6cd": {
+    "nm": "indkøbsposer",
+    "kw": [
+      "hotel",
+      "indkøbsposer",
+      "pose"
+    ]
+  },
+  "1f6ce": {
+    "nm": "hotelklokke",
+    "kw": [
+      "hotel",
+      "hotelklokke",
+      "klokke"
+    ]
+  },
+  "1f6cf": {
+    "nm": "seng",
+    "kw": [
+      "hotel",
+      "seng",
+      "sove"
+    ]
+  },
+  "1f6d0": {
+    "nm": "bedested",
+    "kw": [
+      "bedested",
+      "bøn",
+      "religion"
+    ]
+  },
+  "1f6d1": {
+    "nm": "stopskilt",
+    "kw": [
+      "ottekant",
+      "ottekantet",
+      "skilt",
+      "stopskilt"
+    ]
+  },
+  "1f6d2": {
+    "nm": "indkøbsvogn",
+    "kw": [
+      "butik",
+      "forretning",
+      "indkøb",
+      "indkøbsvogn",
+      "køb",
+      "vogn"
+    ]
+  },
+  "1f6e0": {
+    "nm": "hammer og skruenøgle",
+    "kw": [
+      "hammer",
+      "hammer og skruenøgle",
+      "skruenøgle",
+      "svensknøgle",
+      "værktøj"
+    ]
+  },
+  "1f6e1": {
+    "nm": "skjold",
+    "kw": [
+      "skjold",
+      "våben"
+    ]
+  },
+  "1f6e2": {
+    "nm": "olietønde",
+    "kw": [
+      "olie",
+      "olietønde",
+      "tønde"
+    ]
+  },
+  "1f6e3": {
+    "nm": "motorvej",
+    "kw": [
+      "motorvej",
+      "vej"
+    ]
+  },
+  "1f6e4": {
+    "nm": "togspor",
+    "kw": [
+      "spor",
+      "tog",
+      "togspor"
+    ]
+  },
+  "1f6e5": {
+    "nm": "motorbåd",
+    "kw": [
+      "båd",
+      "fartøj",
+      "motorbåd"
+    ]
+  },
+  "1f6e9": {
+    "nm": "lille fly",
+    "kw": [
+      "fartøj",
+      "fly",
+      "lille fly"
+    ]
+  },
+  "1f6eb": {
+    "nm": "fly afgang",
+    "kw": [
+      "afgang",
+      "afrejse",
+      "fartøj",
+      "fly",
+      "indtjekning"
+    ]
+  },
+  "1f6ec": {
+    "nm": "fly ankomst",
+    "kw": [
+      "ankomme",
+      "ankomst",
+      "fartøj",
+      "fly"
+    ]
+  },
+  "1f6f0": {
+    "nm": "satellit",
+    "kw": [
+      "fartøj",
+      "rummet",
+      "satellit"
+    ]
+  },
+  "1f6f3": {
+    "nm": "passagerskib",
+    "kw": [
+      "fartøj",
+      "passager",
+      "passagerskib",
+      "skib"
+    ]
+  },
+  "1f6f4": {
+    "nm": "løbehjul",
+    "kw": [
+      "løbehjul",
+      "transportmiddel"
+    ]
+  },
+  "1f6f5": {
+    "nm": "scooter",
+    "kw": [
+      "scooter",
+      "transportmiddel"
+    ]
+  },
+  "1f6f6": {
+    "nm": "kano",
+    "kw": [
+      "båd",
+      "kano",
+      "transportmiddel"
+    ]
+  },
+  "1f910": {
+    "nm": "ansigt med lynlåsmund",
+    "kw": [
+      "ansigt",
+      "ansigt med lynlåsmund",
+      "lynlås",
+      "mund"
+    ]
+  },
+  "1f911": {
+    "nm": "ansigt med dollartegn",
+    "kw": [
+      "ansigt",
+      "ansigt med dollartegn",
+      "mund",
+      "penge"
+    ]
+  },
+  "1f912": {
+    "nm": "ansigt med termometer",
+    "kw": [
+      "ansigt",
+      "ansigt med termometer",
+      "syg",
+      "termometer"
+    ]
+  },
+  "1f913": {
+    "nm": "nørdansigt",
+    "kw": [
+      "ansigt",
+      "nørd",
+      "nørdansigt"
+    ]
+  },
+  "1f914": {
+    "nm": "tænkende ansigt",
+    "kw": [
+      "ansigt",
+      "tænkende",
+      "tanker"
+    ]
+  },
+  "1f915": {
+    "nm": "ansigt med bandage",
+    "kw": [
+      "ansigt",
+      "ansigt med bandage",
+      "bandage",
+      "skade",
+      "smerte"
+    ]
+  },
+  "1f916": {
+    "nm": "robotansigt",
+    "kw": [
+      "ansigt",
+      "monster",
+      "robotansigt"
+    ]
+  },
+  "1f917": {
+    "nm": "krammende ansigt",
+    "kw": [
+      "ansigt",
+      "knus",
+      "knuser",
+      "kram",
+      "kramme",
+      "krammende ansigt"
+    ]
+  },
+  "1f918": {
+    "nm": "djævletegn",
+    "kw": [
+      "djævletegn",
+      "finger",
+      "hånd",
+      "heavy metal",
+      "horn",
+      "krop"
+    ]
+  },
+  "1f919": {
+    "nm": "ring til mig-hånd",
+    "kw": [
+      "hånd",
+      "krop",
+      "opringning",
+      "ring til mig-hånd",
+      "ringer",
+      "telefonhånd"
+    ]
+  },
+  "1f91a": {
+    "nm": "løftet baghånd",
+    "kw": [
+      "baghånd",
+      "hånd",
+      "krop",
+      "løftet"
+    ]
+  },
+  "1f91b": {
+    "nm": "venstrevendt knytnæve",
+    "kw": [
+      "hånd",
+      "hånd knyttet mod venstre",
+      "knytnæve",
+      "knyttet hånd",
+      "krop",
+      "venstre",
+      "venstrevendt"
+    ]
+  },
+  "1f91c": {
+    "nm": "højrevendt knytnæve",
+    "kw": [
+      "hånd",
+      "hånd knyttet mod højre",
+      "højre",
+      "højrevendt",
+      "knytnæve",
+      "knyttet hånd",
+      "krop"
+    ]
+  },
+  "1f91d": {
+    "nm": "håndtryk",
+    "kw": [
+      "enighed",
+      "hænder",
+      "hånd",
+      "håndtryk",
+      "hilsen",
+      "hilser",
+      "krop",
+      "mødes"
+    ]
+  },
+  "1f91e": {
+    "nm": "krydsede fingre",
+    "kw": [
+      "finger",
+      "håb",
+      "hånd",
+      "held og lykke",
+      "krop",
+      "krydsede fingre",
+      "krydser fingre"
+    ]
+  },
+  "1f920": {
+    "nm": "cowboyhat ansigt",
+    "kw": [
+      "ansigt",
+      "cowboyhat",
+      "cowgirl",
+      "hat"
+    ]
+  },
+  "1f921": {
+    "nm": "klovneansigt",
+    "kw": [
+      "ansigt",
+      "klovn",
+      "klovneansigt"
+    ]
+  },
+  "1f922": {
+    "nm": "ansigt med kvalme",
+    "kw": [
+      "ansigt",
+      "ansigt med kvalme",
+      "bræk",
+      "kaster op",
+      "kvalme",
+      "kvalmeansigt",
+      "opkast",
+      "syg",
+      "sygdom"
+    ]
+  },
+  "1f923": {
+    "nm": "ruller rundt på gulvet af grin",
+    "kw": [
+      "ansigt",
+      "grine",
+      "griner",
+      "gulv",
+      "latter",
+      "ler",
+      "ruller",
+      "ruller rundt på gulvet af grin",
+      "vrider sig"
+    ]
+  },
+  "1f924": {
+    "nm": "savlende ansigt",
+    "kw": [
+      "ansigt",
+      "savl",
+      "savlende ansigt",
+      "savler"
+    ]
+  },
+  "1f925": {
+    "nm": "løgneransigt",
+    "kw": [
+      "ansigt",
+      "lang næse",
+      "løgn",
+      "løgneransigt",
+      "lyver",
+      "pinocchio"
+    ]
+  },
+  "1f926": {
+    "nm": "facepalm",
+    "kw": [
+      "ansigt",
+      "dumt",
+      "facepalm",
+      "hånd",
+      "håndflade",
+      "irritation",
+      "irriteret",
+      "skepsis"
+    ]
+  },
+  "1f926-200d-2640": {
+    "nm": "kvinde slår sig for panden",
+    "kw": [
+      "facepalm",
+      "græmmes",
+      "håndflade",
+      "irritation",
+      "irriteret",
+      "kvinde",
+      "kvinde slår sig for panden",
+      "skepsis"
+    ]
+  },
+  "1f926-200d-2642": {
+    "nm": "mand slår sig for panden",
+    "kw": [
+      "facepalm",
+      "græmmes",
+      "håndflade",
+      "irritation",
+      "irriteret",
+      "mand",
+      "mand slår sig for panden",
+      "skepsis"
+    ]
+  },
+  "1f927": {
+    "nm": "nysende ansigt",
+    "kw": [
+      "forkølet",
+      "lommetørklæde",
+      "nys",
+      "nysende ansigt",
+      "nyser",
+      "prosit",
+      "pudser næse",
+      "syg",
+      "sygdom"
+    ]
+  },
+  "1f930": {
+    "nm": "gravid kvinde",
+    "kw": [
+      "gravid",
+      "kvinde",
+      "mave",
+      "mor",
+      "vordende mor"
+    ]
+  },
+  "1f933": {
+    "nm": "selfie",
+    "kw": [
+      "arm",
+      "foto",
+      "fotograf",
+      "fotograferer",
+      "fotografi",
+      "kamera",
+      "mobil",
+      "mobiltelefon",
+      "selfie",
+      "tager billeder",
+      "telefon"
+    ]
+  },
+  "1f934": {
+    "nm": "prins",
+    "kw": [
+      "kongelig",
+      "kongesøn",
+      "krone",
+      "prins",
+      "royal"
+    ]
+  },
+  "1f935": {
+    "nm": "mand i smoking",
+    "kw": [
+      "brudgom",
+      "festdeltager",
+      "festtøj",
+      "gom",
+      "mand",
+      "mand i smoking",
+      "smoking"
+    ]
+  },
+  "1f936": {
+    "nm": "juledame",
+    "kw": [
+      "dame",
+      "fru julemand",
+      "jul",
+      "juledame",
+      "julekvinde",
+      "julemandinde",
+      "kvinde"
+    ]
+  },
+  "1f937": {
+    "nm": "trækker på skuldrene",
+    "kw": [
+      "aner det ikke",
+      "ligeglad",
+      "ligegyldighed",
+      "ligegyldigt",
+      "pas",
+      "skulder",
+      "skuldre",
+      "træk",
+      "trækker på skuldrene",
+      "tvivl",
+      "uvidenhed",
+      "ved det ikke",
+      "ved ikke"
+    ]
+  },
+  "1f937-200d-2640": {
+    "nm": "kvinde trækker på skuldrene",
+    "kw": [
+      "ingen anelse",
+      "kvinde",
+      "kvinde trækker på skuldrene",
+      "ligeglad",
+      "ligegyldighed",
+      "pas",
+      "skuldre",
+      "tvivl",
+      "uvidenhed"
+    ]
+  },
+  "1f937-200d-2642": {
+    "nm": "mand trækker på skuldrene",
+    "kw": [
+      "ingen anelse",
+      "ligeglad",
+      "ligegyldighed",
+      "mand",
+      "mand trækker på skuldrene",
+      "pas",
+      "skuldre",
+      "tvivl",
+      "uvidenhed"
+    ]
+  },
+  "1f938": {
+    "nm": "vejrmølle",
+    "kw": [
+      "gymnastik",
+      "menneske",
+      "person",
+      "sport",
+      "vejrmølle"
+    ]
+  },
+  "1f938-200d-2640": {
+    "nm": "kvinde slår vejrmøller",
+    "kw": [
+      "gymnastik",
+      "kvinde",
+      "kvinde slår vejrmøller",
+      "vejrmølle"
+    ]
+  },
+  "1f938-200d-2642": {
+    "nm": "mand slår vejrmøller",
+    "kw": [
+      "gymnastik",
+      "mand",
+      "mand slår vejrmøller",
+      "vejrmølle"
+    ]
+  },
+  "1f939": {
+    "nm": "jonglerer",
+    "kw": [
+      "balance",
+      "behændighed",
+      "dygtighed",
+      "jonglere",
+      "jonglerer",
+      "jonglør",
+      "multitaske",
+      "multitasking"
+    ]
+  },
+  "1f939-200d-2640": {
+    "nm": "kvindelig jonglør",
+    "kw": [
+      "bolde",
+      "jonglere",
+      "kvinde",
+      "kvindelig jonglør",
+      "multitaske",
+      "multitasking"
+    ]
+  },
+  "1f939-200d-2642": {
+    "nm": "jonglør",
+    "kw": [
+      "bolde",
+      "jonglere",
+      "jonglør",
+      "mand",
+      "multitakse",
+      "multitasking"
+    ]
+  },
+  "1f93a": {
+    "nm": "fægter",
+    "kw": [
+      "fægter",
+      "fægtning",
+      "person",
+      "sport",
+      "sværd"
+    ]
+  },
+  "1f93c": {
+    "nm": "brydere",
+    "kw": [
+      "bryder",
+      "brydere",
+      "brydning",
+      "personer",
+      "sport"
+    ]
+  },
+  "1f93c-200d-2640": {
+    "nm": "kvindelige brydere",
+    "kw": [
+      "brydere",
+      "brydning",
+      "kvindelige brydere",
+      "kvinder",
+      "wrestling"
+    ]
+  },
+  "1f93c-200d-2642": {
+    "nm": "mandlige brydere",
+    "kw": [
+      "brydere",
+      "brydning",
+      "mænd",
+      "mandlige brydere",
+      "wrestling"
+    ]
+  },
+  "1f93d": {
+    "nm": "vandpolo",
+    "kw": [
+      "sport",
+      "vand",
+      "vandpolo",
+      "vandsport"
+    ]
+  },
+  "1f93d-200d-2640": {
+    "nm": "kvindelig vandpolospiller",
+    "kw": [
+      "kvinde",
+      "kvindelig vandpolospiller",
+      "vandpolo"
+    ]
+  },
+  "1f93d-200d-2642": {
+    "nm": "vandpolospiller",
+    "kw": [
+      "mand",
+      "vandpolo",
+      "vandpolospiller"
+    ]
+  },
+  "1f93e": {
+    "nm": "håndbold",
+    "kw": [
+      "bold",
+      "håndbold",
+      "person",
+      "sport"
+    ]
+  },
+  "1f93e-200d-2640": {
+    "nm": "kvindelig håndboldspiller",
+    "kw": [
+      "håndbold",
+      "håndboldspiller",
+      "kvinde",
+      "kvindelig håndboldspiller"
+    ]
+  },
+  "1f93e-200d-2642": {
+    "nm": "håndboldspiller",
+    "kw": [
+      "håndbold",
+      "håndboldspiller",
+      "mand"
+    ]
+  },
+  "1f940": {
+    "nm": "vissen blomst",
+    "kw": [
+      "afblomstret",
+      "blomst",
+      "visnet",
+      "vissen"
+    ]
+  },
+  "1f941": {
+    "nm": "tromme",
+    "kw": [
+      "musik",
+      "rytme",
+      "tromme",
+      "trommestikker"
+    ]
+  },
+  "1f942": {
+    "nm": "skål",
+    "kw": [
+      "alkohol",
+      "drikke",
+      "drikker",
+      "fejrer",
+      "fejring",
+      "fest",
+      "glas",
+      "skål",
+      "skåler"
+    ]
+  },
+  "1f943": {
+    "nm": "fladbundet glas",
+    "kw": [
+      "drikke",
+      "drikker",
+      "fladbundet",
+      "glas",
+      "shot",
+      "shotglas",
+      "spiritus",
+      "spiritusglas",
+      "sprut",
+      "whiskyglas"
+    ]
+  },
+  "1f944": {
+    "nm": "ske",
+    "kw": [
+      "bestik",
+      "ske"
+    ]
+  },
+  "1f945": {
+    "nm": "målnet",
+    "kw": [
+      "mål",
+      "målnet",
+      "net",
+      "sport"
+    ]
+  },
+  "1f947": {
+    "nm": "guldmedalje",
+    "kw": [
+      "førsteplads",
+      "førstepræmie",
+      "guld",
+      "guldmedalje",
+      "medalje",
+      "vinder"
+    ]
+  },
+  "1f948": {
+    "nm": "sølvmedalje",
+    "kw": [
+      "andenplads",
+      "andenpræmie",
+      "medalje",
+      "sølv",
+      "sølvmedalje",
+      "vinder"
+    ]
+  },
+  "1f949": {
+    "nm": "bronzemedalje",
+    "kw": [
+      "bronzemedalje",
+      "medalje",
+      "tredjeplads",
+      "tredjepræmie",
+      "vinder"
+    ]
+  },
+  "1f94a": {
+    "nm": "boksehandske",
+    "kw": [
+      "bokse",
+      "boksehandske",
+      "boksning",
+      "handske",
+      "sport"
+    ]
+  },
+  "1f94b": {
+    "nm": "kampsportsuniform",
+    "kw": [
+      "kampsport",
+      "kampsportsuniform",
+      "sport",
+      "taekwondo",
+      "uniform"
+    ]
+  },
+  "1f950": {
+    "nm": "croissant",
+    "kw": [
+      "brød",
+      "croissant",
+      "fransk",
+      "mad",
+      "morgenbrød",
+      "morgenmad"
+    ]
+  },
+  "1f951": {
+    "nm": "avokado",
+    "kw": [
+      "avokado",
+      "frugt",
+      "mad"
+    ]
+  },
+  "1f952": {
+    "nm": "agurk",
+    "kw": [
+      "agurk",
+      "grøntsag",
+      "mad"
+    ]
+  },
+  "1f953": {
+    "nm": "bacon",
+    "kw": [
+      "bacon",
+      "gris",
+      "kød",
+      "mad",
+      "svinekød"
+    ]
+  },
+  "1f954": {
+    "nm": "kartoffel",
+    "kw": [
+      "grøntsag",
+      "kartoffel",
+      "mad",
+      "rodfrugt"
+    ]
+  },
+  "1f955": {
+    "nm": "gulerod",
+    "kw": [
+      "grøntsag",
+      "gulerod",
+      "mad",
+      "rodfrugt"
+    ]
+  },
+  "1f956": {
+    "nm": "flute",
+    "kw": [
+      "brød",
+      "flute",
+      "franskbrød",
+      "mad"
+    ]
+  },
+  "1f957": {
+    "nm": "grøn salat",
+    "kw": [
+      "grøn",
+      "mad",
+      "salat"
+    ]
+  },
+  "1f958": {
+    "nm": "pande med mad",
+    "kw": [
+      "mad",
+      "pande",
+      "pande med mad",
+      "pandestegt",
+      "steger"
+    ]
+  },
+  "1f959": {
+    "nm": "fladbrød med fyld",
+    "kw": [
+      "fladbrød",
+      "fladbrød med fyld",
+      "fyld",
+      "fyldt",
+      "gyros",
+      "mad",
+      "pandekage med fyld",
+      "pita"
+    ]
+  },
+  "1f95a": {
+    "nm": "æg",
+    "kw": [
+      "æg",
+      "mad"
+    ]
+  },
+  "1f95b": {
+    "nm": "glas mælk",
+    "kw": [
+      "drik",
+      "drikke",
+      "glas",
+      "mælk"
+    ]
+  },
+  "1f95c": {
+    "nm": "peanuts",
+    "kw": [
+      "mad",
+      "mellemmåltid",
+      "nød",
+      "nødder",
+      "peanuts",
+      "snack"
+    ]
+  },
+  "1f95d": {
+    "nm": "kiwifrugt",
+    "kw": [
+      "frugt",
+      "kiwifrugt",
+      "mad"
+    ]
+  },
+  "1f95e": {
+    "nm": "pandekager",
+    "kw": [
+      "crêpe",
+      "mad",
+      "pandekage",
+      "pandekager"
+    ]
+  },
+  "1f980": {
+    "nm": "krabbe",
+    "kw": [
+      "krabbe",
+      "krebsen",
+      "stjernetegn"
+    ]
+  },
+  "1f981": {
+    "nm": "løvehoved",
+    "kw": [
+      "hoved",
+      "løve",
+      "løvehoved",
+      "løven",
+      "stjernetegn"
+    ]
+  },
+  "1f982": {
+    "nm": "skorpion",
+    "kw": [
+      "skorpion",
+      "skorpionen",
+      "stjernetegn"
+    ]
+  },
+  "1f983": {
+    "nm": "kalkun",
+    "kw": [
+      "kalkun"
+    ]
+  },
+  "1f984": {
+    "nm": "enhjørning",
+    "kw": [
+      "enhjørning",
+      "hoved"
+    ]
+  },
+  "1f985": {
+    "nm": "ørn",
+    "kw": [
+      "dyr",
+      "fugl",
+      "ørn"
+    ]
+  },
+  "1f986": {
+    "nm": "and",
+    "kw": [
+      "and",
+      "andrik",
+      "dyr",
+      "fugl",
+      "svømmefugl"
+    ]
+  },
+  "1f987": {
+    "nm": "flagermus",
+    "kw": [
+      "dyr",
+      "flagermus",
+      "nat",
+      "vampyr"
+    ]
+  },
+  "1f988": {
+    "nm": "haj",
+    "kw": [
+      "dyr",
+      "fisk",
+      "haj"
+    ]
+  },
+  "1f989": {
+    "nm": "ugle",
+    "kw": [
+      "dyr",
+      "fugl",
+      "klog",
+      "klogskab",
+      "ugle",
+      "vis",
+      "visdom"
+    ]
+  },
+  "1f98a": {
+    "nm": "rævehoved",
+    "kw": [
+      "ansigt",
+      "dyr",
+      "listig",
+      "ræv",
+      "rævehoved",
+      "snedig"
+    ]
+  },
+  "1f98b": {
+    "nm": "sommerfugl",
+    "kw": [
+      "dyr",
+      "insekt",
+      "sommer",
+      "sommerfugl",
+      "vinger"
+    ]
+  },
+  "1f98c": {
+    "nm": "hjort",
+    "kw": [
+      "ansigt",
+      "dyr",
+      "gevir",
+      "hjort",
+      "hjortetakker"
+    ]
+  },
+  "1f98d": {
+    "nm": "gorilla",
+    "kw": [
+      "abe",
+      "ansigt",
+      "dyr",
+      "gorilla"
+    ]
+  },
+  "1f98e": {
+    "nm": "firben",
+    "kw": [
+      "dyr",
+      "firben",
+      "krybdyr",
+      "reptil"
+    ]
+  },
+  "1f98f": {
+    "nm": "næsehorn",
+    "kw": [
+      "dyr",
+      "horn",
+      "næsehorn"
+    ]
+  },
+  "1f990": {
+    "nm": "reje",
+    "kw": [
+      "dyr",
+      "havdyr",
+      "mad",
+      "reje",
+      "skaldyr"
+    ]
+  },
+  "1f991": {
+    "nm": "sprutte",
+    "kw": [
+      "arme",
+      "blæk",
+      "blæksprutte",
+      "bløddyr",
+      "dyr",
+      "flerarmet",
+      "havdyr",
+      "mad",
+      "multitasking",
+      "sprutte"
+    ]
+  },
+  "1f9c0": {
+    "nm": "et stykke ost",
+    "kw": [
+      "et stykke ost",
+      "ost"
+    ]
+  },
+  "203c": {
+    "nm": "dobbelt udråbstegn",
+    "kw": [
+      "dobbelt udråbstegn",
+      "tegnsætning",
+      "udråbstegn"
+    ]
+  },
+  "2049": {
+    "nm": "udråbstegn og spørgsmålstegn",
+    "kw": [
+      "spørgsmål",
+      "tegn",
+      "tegnsætning",
+      "udråbstegn",
+      "udråbstegn og spørgsmålstegn"
+    ]
+  },
+  "2122": {
+    "nm": "varemærke",
+    "kw": [
+      "varemærke"
+    ]
+  },
+  "2139": {
+    "nm": "informationskilde",
+    "kw": [
+      "i",
+      "information",
+      "informationskilde",
+      "turistinformation"
+    ]
+  },
+  "2194": {
+    "nm": "pil mod venstre og højre",
+    "kw": [
+      "pil",
+      "pil mod venstre og højre"
+    ]
+  },
+  "2195": {
+    "nm": "op- og nedadvendt pil",
+    "kw": [
+      "op- og nedadvendt pil",
+      "pil"
+    ]
+  },
+  "2196": {
+    "nm": "opadvendt pil mod venstre",
+    "kw": [
+      "nordvest",
+      "opadvendt pil mod venstre",
+      "pil",
+      "retning"
+    ]
+  },
+  "2197": {
+    "nm": "opadvendt pil mod højre",
+    "kw": [
+      "nordøst",
+      "opadvendt pil mod højre",
+      "pil",
+      "retning"
+    ]
+  },
+  "2198": {
+    "nm": "nedadvendt pil mod højre",
+    "kw": [
+      "nedadvendt pil mod højre",
+      "pil",
+      "retning",
+      "sydøst"
+    ]
+  },
+  "2199": {
+    "nm": "nedadvendt pil mod venstre",
+    "kw": [
+      "nedadvendt pil mod venstre",
+      "pil",
+      "retning",
+      "sydvest"
+    ]
+  },
+  "21a9": {
+    "nm": "pil mod højre med sving til venstre",
+    "kw": [
+      "pil",
+      "pil mod højre med sving til venstre"
+    ]
+  },
+  "21aa": {
+    "nm": "pil mod venstre med sving til højre",
+    "kw": [
+      "pil",
+      "pil mod venstre med sving til højre"
+    ]
+  },
+  "231a": {
+    "nm": "ur",
+    "kw": [
+      "armbåndsur",
+      "ur"
+    ]
+  },
+  "231b": {
+    "nm": "timeglas",
+    "kw": [
+      "tid",
+      "timeglas"
+    ]
+  },
+  "2328": {
+    "nm": "tastatur",
+    "kw": [
+      "computer",
+      "tastatur"
+    ]
+  },
+  "23cf": {
+    "nm": "udskubningsknap",
+    "kw": [
+      "eject",
+      "skub ud",
+      "udskubningsknap"
+    ]
+  },
+  "23e9": {
+    "nm": "spole frem",
+    "kw": [
+      "dobbelt højrepil",
+      "højre",
+      "spole frem"
+    ]
+  },
+  "23ea": {
+    "nm": "spole tilbage",
+    "kw": [
+      "dobbelt venstrepil",
+      "spole tilbage",
+      "venstre"
+    ]
+  },
+  "23eb": {
+    "nm": "pil op",
+    "kw": [
+      "dobbeltpil op",
+      "op",
+      "pil op"
+    ]
+  },
+  "23ec": {
+    "nm": "pil ned",
+    "kw": [
+      "dobbeltpil ned",
+      "ned",
+      "pil ned"
+    ]
+  },
+  "23ed": {
+    "nm": "knap til næste nummer",
+    "kw": [
+      "knap til næste nummer",
+      "næste nummer",
+      "næste scene",
+      "pil",
+      "trekant"
+    ]
+  },
+  "23ee": {
+    "nm": "knap til forrige nummer",
+    "kw": [
+      "forrige nummer",
+      "forrige scene",
+      "knap til forrige nummer",
+      "pil",
+      "trekant"
+    ]
+  },
+  "23ef": {
+    "nm": "knap til afspilning og pause",
+    "kw": [
+      "afspil",
+      "højre",
+      "knap til afspilning og pause",
+      "pause",
+      "pil",
+      "play",
+      "trekant"
+    ]
+  },
+  "23f0": {
+    "nm": "vækkeur",
+    "kw": [
+      "ur",
+      "vækkeur"
+    ]
+  },
+  "23f1": {
+    "nm": "stopur",
+    "kw": [
+      "stopur",
+      "ur"
+    ]
+  },
+  "23f2": {
+    "nm": "æggeur",
+    "kw": [
+      "æggeur",
+      "tidtager",
+      "ur"
+    ]
+  },
+  "23f3": {
+    "nm": "timeglas med løbende sand",
+    "kw": [
+      "tid",
+      "timeglas",
+      "timeglas med løbende sand"
+    ]
+  },
+  "23f8": {
+    "nm": "pauseknap",
+    "kw": [
+      "bjælke",
+      "dobbelt",
+      "lodret",
+      "pause",
+      "pauseknap"
+    ]
+  },
+  "23f9": {
+    "nm": "stopknap",
+    "kw": [
+      "kvadrat",
+      "stop",
+      "stopknap"
+    ]
+  },
+  "23fa": {
+    "nm": "optageknap",
+    "kw": [
+      "cirkel",
+      "optage",
+      "optageknap"
+    ]
+  },
+  "24c2": {
+    "nm": "m i cirkel",
+    "kw": [
+      "cirkel",
+      "m",
+      "m i cirkel"
+    ]
+  },
+  "25aa": {
+    "nm": "lille sort kvadrat",
+    "kw": [
+      "geometrisk",
+      "kvadrat",
+      "lille sort kvadrat"
+    ]
+  },
+  "25ab": {
+    "nm": "lille hvidt kvadrat",
+    "kw": [
+      "geometrisk",
+      "kvadrat",
+      "lille hvidt kvadrat"
+    ]
+  },
+  "25b6": {
+    "nm": "afspilningsknap",
+    "kw": [
+      "afspil",
+      "afspilning",
+      "afspilningsknap",
+      "højre",
+      "pil",
+      "play",
+      "trekant"
+    ]
+  },
+  "25c0": {
+    "nm": "knap til baglæns afspilning",
+    "kw": [
+      "baglæns",
+      "knap til baglæns afspilning",
+      "pil",
+      "trekant",
+      "venstre"
+    ]
+  },
+  "25fb": {
+    "nm": "mellemstort hvidt kvadrat",
+    "kw": [
+      "geometrisk",
+      "kvadrat",
+      "mellemstort hvidt kvadrat"
+    ]
+  },
+  "25fc": {
+    "nm": "mellemstort sort kvadrat",
+    "kw": [
+      "geometrisk",
+      "kvadrat",
+      "mellemstort sort kvadrat"
+    ]
+  },
+  "25fd": {
+    "nm": "halvlille hvidt kvadrat",
+    "kw": [
+      "geometrisk",
+      "halvlille hvidt kvadrat",
+      "kvadrat"
+    ]
+  },
+  "25fe": {
+    "nm": "halvlille sort kvadrat",
+    "kw": [
+      "geometrisk",
+      "halvlille sort kvadrat",
+      "kvadrat"
+    ]
+  },
+  "2600": {
+    "nm": "sol",
+    "kw": [
+      "lys",
+      "rum",
+      "sol",
+      "solskin",
+      "stråler",
+      "vejr"
+    ]
+  },
+  "2601": {
+    "nm": "sky",
+    "kw": [
+      "sky",
+      "vejr"
+    ]
+  },
+  "2602": {
+    "nm": "paraply",
+    "kw": [
+      "paraply",
+      "regn",
+      "tøj",
+      "vejr"
+    ]
+  },
+  "2603": {
+    "nm": "snemand",
+    "kw": [
+      "kulde",
+      "sne",
+      "snemand",
+      "vejr"
+    ]
+  },
+  "2604": {
+    "nm": "komet",
+    "kw": [
+      "komet",
+      "rummet"
+    ]
+  },
+  "260e": {
+    "nm": "telefon",
+    "kw": [
+      "telefon"
+    ]
+  },
+  "2611": {
+    "nm": "afkrydsningsfelt med flueben",
+    "kw": [
+      "afkrydsning",
+      "afkrydsningsfelt med flueben",
+      "flueben",
+      "markere",
+      "stemme"
+    ]
+  },
+  "2614": {
+    "nm": "paraply med regndråber",
+    "kw": [
+      "dråbe",
+      "paraply",
+      "paraply med regndråber",
+      "regn",
+      "tøj",
+      "vejr"
+    ]
+  },
+  "2615": {
+    "nm": "varm drik",
+    "kw": [
+      "dampende",
+      "drik",
+      "drikkevare",
+      "kaffe",
+      "te",
+      "varm"
+    ]
+  },
+  "2618": {
+    "nm": "kløver",
+    "kw": [
+      "kløver",
+      "plante"
+    ]
+  },
+  "261d": {
+    "nm": "opadvendt pegefinger",
+    "kw": [
+      "finger",
+      "hånd",
+      "krop",
+      "op",
+      "opadvendt",
+      "pege",
+      "pegefinger"
+    ]
+  },
+  "2620": {
+    "nm": "kranie og korslagte knogler",
+    "kw": [
+      "ansigt",
+      "død",
+      "korslagte knogler",
+      "kranie",
+      "kranie og korslagte knogler",
+      "kranium",
+      "krop",
+      "monster"
+    ]
+  },
+  "2622": {
+    "nm": "radioaktiv",
+    "kw": [
+      "advarsel",
+      "radioaktiv",
+      "radioaktivitet",
+      "risiko",
+      "skilt"
+    ]
+  },
+  "2623": {
+    "nm": "biologisk fare",
+    "kw": [
+      "advarsel",
+      "biologisk",
+      "fare",
+      "risiko",
+      "skilt"
+    ]
+  },
+  "2626": {
+    "nm": "ortodokst kors",
+    "kw": [
+      "kors",
+      "kristen",
+      "ortodokst kors",
+      "religion"
+    ]
+  },
+  "262a": {
+    "nm": "stjerne og halvmåne",
+    "kw": [
+      "islam",
+      "muslim",
+      "religion",
+      "stjerne og halvmåne"
+    ]
+  },
+  "262e": {
+    "nm": "fredssymbol",
+    "kw": [
+      "fred",
+      "fredssymbol"
+    ]
+  },
+  "262f": {
+    "nm": "yin og yang",
+    "kw": [
+      "religion",
+      "tao",
+      "taoist",
+      "yang",
+      "yin",
+      "yin og yang"
+    ]
+  },
+  "2638": {
+    "nm": "dharma-hjul",
+    "kw": [
+      "buddhist",
+      "dharma",
+      "dharma-hjul",
+      "hjul",
+      "religion"
+    ]
+  },
+  "2639": {
+    "nm": "trist ansigt",
+    "kw": [
+      "ansigt",
+      "trist"
+    ]
+  },
+  "263a": {
+    "nm": "smilende ansigt",
+    "kw": [
+      "smil",
+      "smilende ansigt"
+    ]
+  },
+  "2648": {
+    "nm": "vædderen",
+    "kw": [
+      "stjernetegn",
+      "vædderen"
+    ]
+  },
+  "2649": {
+    "nm": "tyren",
+    "kw": [
+      "stjernetegn",
+      "tyren"
+    ]
+  },
+  "264a": {
+    "nm": "tvillingen",
+    "kw": [
+      "stjernetegn",
+      "tvillingen"
+    ]
+  },
+  "264b": {
+    "nm": "krebsen",
+    "kw": [
+      "krebsen",
+      "stjernetegn"
+    ]
+  },
+  "264c": {
+    "nm": "løven",
+    "kw": [
+      "løven",
+      "stjernetegn"
+    ]
+  },
+  "264d": {
+    "nm": "jomfruen",
+    "kw": [
+      "jomfruen",
+      "stjernetegn"
+    ]
+  },
+  "264e": {
+    "nm": "vægten",
+    "kw": [
+      "stjernetegn",
+      "vægten"
+    ]
+  },
+  "264f": {
+    "nm": "skorpionen",
+    "kw": [
+      "skorpionen",
+      "stjernetegn"
+    ]
+  },
+  "2650": {
+    "nm": "skytten",
+    "kw": [
+      "skytten",
+      "stjernetegn"
+    ]
+  },
+  "2651": {
+    "nm": "stenbukken",
+    "kw": [
+      "stenbukken",
+      "stjernetegn"
+    ]
+  },
+  "2652": {
+    "nm": "vandmanden",
+    "kw": [
+      "stjernetegn",
+      "vandmanden"
+    ]
+  },
+  "2653": {
+    "nm": "fisken",
+    "kw": [
+      "fisken",
+      "stjernetegn"
+    ]
+  },
+  "2660": {
+    "nm": "spar",
+    "kw": [
+      "kort",
+      "spar",
+      "spil"
+    ]
+  },
+  "2663": {
+    "nm": "klør",
+    "kw": [
+      "klør",
+      "kort",
+      "spil"
+    ]
+  },
+  "2665": {
+    "nm": "hjerter",
+    "kw": [
+      "hjerter",
+      "kort",
+      "spil"
+    ]
+  },
+  "2666": {
+    "nm": "ruder",
+    "kw": [
+      "kort",
+      "ruder",
+      "spil"
+    ]
+  },
+  "2668": {
+    "nm": "varme kilder",
+    "kw": [
+      "damp",
+      "kilder",
+      "varm",
+      "varme kilder"
+    ]
+  },
+  "267b": {
+    "nm": "genbrug",
+    "kw": [
+      "genbrug",
+      "genbrugssymbol"
+    ]
+  },
+  "267f": {
+    "nm": "rullestolsadgang",
+    "kw": [
+      "adgang",
+      "rullestol",
+      "rullestolsadgang"
+    ]
+  },
+  "2692": {
+    "nm": "hammer og hakke",
+    "kw": [
+      "hakke",
+      "hammer",
+      "hammer og hakke",
+      "værktøj"
+    ]
+  },
+  "2693": {
+    "nm": "anker",
+    "kw": [
+      "anker",
+      "båd",
+      "skib",
+      "værktøj"
+    ]
+  },
+  "2694": {
+    "nm": "korslagte sværd",
+    "kw": [
+      "korslagt",
+      "korslagte sværd",
+      "sværd",
+      "våben"
+    ]
+  },
+  "2695": {
+    "nm": "medicinsymbol",
+    "kw": [
+      "æskulap",
+      "æskulapstav",
+      "lægekunst",
+      "lægevidenskab",
+      "medicin",
+      "medicinsymbol",
+      "slange",
+      "stav"
+    ]
+  },
+  "2696": {
+    "nm": "vægt",
+    "kw": [
+      "balance",
+      "jura",
+      "retfærdighed",
+      "stjernetegn",
+      "vægt",
+      "værktøj"
+    ]
+  },
+  "2697": {
+    "nm": "kolbe",
+    "kw": [
+      "kemi",
+      "kolbe",
+      "værktøj"
+    ]
+  },
+  "2699": {
+    "nm": "tandhjul",
+    "kw": [
+      "tandhjul",
+      "værktøj"
+    ]
+  },
+  "269b": {
+    "nm": "atomsymbol",
+    "kw": [
+      "ateist",
+      "atom",
+      "atomsymbol"
+    ]
+  },
+  "269c": {
+    "nm": "fransk lilje",
+    "kw": [
+      "fleur-de-lis",
+      "fransk lilje",
+      "heraldik",
+      "heraldisk lilje",
+      "lilje"
+    ]
+  },
+  "26a0": {
+    "nm": "advarselsskilt",
+    "kw": [
+      "advarsel",
+      "advarselsskilt"
+    ]
+  },
+  "26a1": {
+    "nm": "højspænding",
+    "kw": [
+      "advarsel",
+      "fare",
+      "højspænding"
+    ]
+  },
+  "26aa": {
+    "nm": "hvid cirkel",
+    "kw": [
+      "cirkel",
+      "geometrisk",
+      "hvid cirkel"
+    ]
+  },
+  "26ab": {
+    "nm": "sort cirkel",
+    "kw": [
+      "cirkel",
+      "geometrisk",
+      "sort cirkel"
+    ]
+  },
+  "26b0": {
+    "nm": "kiste",
+    "kw": [
+      "død",
+      "kiste"
+    ]
+  },
+  "26b1": {
+    "nm": "urne",
+    "kw": [
+      "begravelse",
+      "død",
+      "urne"
+    ]
+  },
+  "26bd": {
+    "nm": "fodbold",
+    "kw": [
+      "bold",
+      "fodbold"
+    ]
+  },
+  "26be": {
+    "nm": "baseball",
+    "kw": [
+      "baseball",
+      "bold"
+    ]
+  },
+  "26c4": {
+    "nm": "snemand uden snevejr",
+    "kw": [
+      "sne",
+      "snemand uden snevejr"
+    ]
+  },
+  "26c5": {
+    "nm": "sol bag sky",
+    "kw": [
+      "sky",
+      "sol",
+      "sol bag sky"
+    ]
+  },
+  "26c8": {
+    "nm": "sky med lyn og regn",
+    "kw": [
+      "regn",
+      "sky",
+      "sky med lyn og regn",
+      "torden",
+      "vejr"
+    ]
+  },
+  "26ce": {
+    "nm": "slangebæreren",
+    "kw": [
+      "slangebæreren",
+      "stjernebillede"
+    ]
+  },
+  "26cf": {
+    "nm": "hakke",
+    "kw": [
+      "hakke",
+      "mine",
+      "værktøj"
+    ]
+  },
+  "26d1": {
+    "nm": "hjelm med hvidt kors",
+    "kw": [
+      "ansigt",
+      "hjelm",
+      "hjelm med hvidt kors",
+      "kors",
+      "nødhjælp"
+    ]
+  },
+  "26d3": {
+    "nm": "kæder",
+    "kw": [
+      "kæde",
+      "kæder"
+    ]
+  },
+  "26d4": {
+    "nm": "adgang forbudt",
+    "kw": [
+      "adgang",
+      "forbudt",
+      "ingen adgang",
+      "trafik"
+    ]
+  },
+  "26e9": {
+    "nm": "shinto-alter",
+    "kw": [
+      "alter",
+      "religion",
+      "shinto",
+      "shinto-alter"
+    ]
+  },
+  "26ea": {
+    "nm": "kirke",
+    "kw": [
+      "bygning",
+      "kirke",
+      "kors",
+      "kristen",
+      "religion"
+    ]
+  },
+  "26f0": {
+    "nm": "bjerg",
+    "kw": [
+      "bjerg"
+    ]
+  },
+  "26f1": {
+    "nm": "parasol",
+    "kw": [
+      "paraply",
+      "parasol",
+      "regn",
+      "sol",
+      "vejr"
+    ]
+  },
+  "26f2": {
+    "nm": "springvand",
+    "kw": [
+      "fontæne",
+      "springvand"
+    ]
+  },
+  "26f3": {
+    "nm": "golf flag",
+    "kw": [
+      "golf flag"
+    ]
+  },
+  "26f4": {
+    "nm": "færge",
+    "kw": [
+      "båd",
+      "færge"
+    ]
+  },
+  "26f5": {
+    "nm": "sejlbåd",
+    "kw": [
+      "båd",
+      "sejlbåd"
+    ]
+  },
+  "26f7": {
+    "nm": "skiløber",
+    "kw": [
+      "skiløber",
+      "sne"
+    ]
+  },
+  "26f8": {
+    "nm": "skøjte",
+    "kw": [
+      "is",
+      "skøjte"
+    ]
+  },
+  "26f9": {
+    "nm": "person med bold",
+    "kw": [
+      "bold",
+      "person med bold"
+    ]
+  },
+  "26fa": {
+    "nm": "telt",
+    "kw": [
+      "telt"
+    ]
+  },
+  "26fd": {
+    "nm": "benzin",
+    "kw": [
+      "benzin",
+      "benzinpumpe",
+      "tankstation"
+    ]
+  },
+  "2702": {
+    "nm": "saks",
+    "kw": [
+      "saks",
+      "værktøj"
+    ]
+  },
+  "2705": {
+    "nm": "flueben",
+    "kw": [
+      "flueben",
+      "markering"
+    ]
+  },
+  "2708": {
+    "nm": "fly",
+    "kw": [
+      "fartøj",
+      "fly"
+    ]
+  },
+  "2709": {
+    "nm": "konvolut",
+    "kw": [
+      "e-mail",
+      "konvolut"
+    ]
+  },
+  "270a": {
+    "nm": "løftet knytnæve",
+    "kw": [
+      "hånd",
+      "knytnæve",
+      "knyttet",
+      "krop",
+      "løftet knytnæve",
+      "slå"
+    ]
+  },
+  "270b": {
+    "nm": "løftet hånd",
+    "kw": [
+      "hånd",
+      "krop",
+      "løftet hånd"
+    ]
+  },
+  "270c": {
+    "nm": "v-tegn",
+    "kw": [
+      "V-tegn",
+      "yeah"
+    ]
+  },
+  "270d": {
+    "nm": "skrivende hånd",
+    "kw": [
+      "hånd",
+      "krop",
+      "skrive",
+      "skrivende hånd"
+    ]
+  },
+  "270f": {
+    "nm": "blyant",
+    "kw": [
+      "blyant"
+    ]
+  },
+  "2712": {
+    "nm": "sort fyldepen",
+    "kw": [
+      "fyldepen",
+      "pen",
+      "sort fyldepen"
+    ]
+  },
+  "2714": {
+    "nm": "stort flueben",
+    "kw": [
+      "flueben",
+      "stort flueben"
+    ]
+  },
+  "2716": {
+    "nm": "stort kryds",
+    "kw": [
+      "annuller",
+      "gange",
+      "gangetegn",
+      "multiplicer",
+      "multiplikation",
+      "stort kryds",
+      "x"
+    ]
+  },
+  "271d": {
+    "nm": "latinsk kors",
+    "kw": [
+      "kors",
+      "kristen",
+      "latinsk kors",
+      "religion"
+    ]
+  },
+  "2721": {
+    "nm": "davidsstjerne",
+    "kw": [
+      "david",
+      "davidsstjerne",
+      "jøde",
+      "jødisk",
+      "religion",
+      "stjerne"
+    ]
+  },
+  "2728": {
+    "nm": "stjerner",
+    "kw": [
+      "skinne",
+      "stjerne",
+      "stjerner"
+    ]
+  },
+  "2733": {
+    "nm": "ottetakket spids stjerne",
+    "kw": [
+      "asterisk",
+      "ottetakket spids stjerne",
+      "stjerne"
+    ]
+  },
+  "2734": {
+    "nm": "ottetakket stjerne",
+    "kw": [
+      "ottetakket stjerne",
+      "stjerne"
+    ]
+  },
+  "2744": {
+    "nm": "snefnug",
+    "kw": [
+      "kulde",
+      "sne",
+      "snefnug",
+      "vejr"
+    ]
+  },
+  "2747": {
+    "nm": "funkle",
+    "kw": [
+      "funkle",
+      "funklen",
+      "glans",
+      "stråle"
+    ]
+  },
+  "274c": {
+    "nm": "kryds",
+    "kw": [
+      "annuller",
+      "gange",
+      "kryds",
+      "mærke",
+      "multiplicer",
+      "multiplikation",
+      "x"
+    ]
+  },
+  "274e": {
+    "nm": "krydsknap",
+    "kw": [
+      "krydsknap",
+      "kvadrat",
+      "mærke",
+      "x"
+    ]
+  },
+  "2753": {
+    "nm": "spørgsmålstegn",
+    "kw": [
+      "spørgsmål",
+      "spørgsmålstegn",
+      "tegn",
+      "tegnsætning"
+    ]
+  },
+  "2754": {
+    "nm": "hvidt spørgsmålstegn",
+    "kw": [
+      "hvidt spørgsmålstegn",
+      "omrids",
+      "spørgsmål",
+      "tegn",
+      "tegnsætning"
+    ]
+  },
+  "2755": {
+    "nm": "hvidt udråbstegn",
+    "kw": [
+      "fixed to avoid duplicate",
+      "hvidt udråbstegn"
+    ]
+  },
+  "2757": {
+    "nm": "udråbstegn",
+    "kw": [
+      "tegnsætning",
+      "udråbstegn"
+    ]
+  },
+  "2763": {
+    "nm": "hjerte som udråbstegn",
+    "kw": [
+      "hjerte",
+      "hjerte som udråbstegn",
+      "tegnsætning",
+      "udråbstegn"
+    ]
+  },
+  "2764": {
+    "nm": "rødt hjerte",
+    "kw": [
+      "hjerte",
+      "rødt hjerte"
+    ]
+  },
+  "2795": {
+    "nm": "plus",
+    "kw": [
+      "plus",
+      "plustegn"
+    ]
+  },
+  "2796": {
+    "nm": "minus",
+    "kw": [
+      "minus",
+      "minustegn"
+    ]
+  },
+  "2797": {
+    "nm": "division",
+    "kw": [
+      "division",
+      "divisionstegn"
+    ]
+  },
+  "27a1": {
+    "nm": "pil mod højre",
+    "kw": [
+      "øst",
+      "pil",
+      "pil mod højre",
+      "retning",
+      "verdenshjørne"
+    ]
+  },
+  "27b0": {
+    "nm": "krølle",
+    "kw": [
+      "krølle",
+      "løkke",
+      "loop"
+    ]
+  },
+  "27bf": {
+    "nm": "dobbelt krølle",
+    "kw": [
+      "dobbelt",
+      "krølle",
+      "løkke",
+      "loop"
+    ]
+  },
+  "2934": {
+    "nm": "pil mod højre med sving opad",
+    "kw": [
+      "pil",
+      "pil mod højre med sving opad"
+    ]
+  },
+  "2935": {
+    "nm": "pil mod højre med sving nedad",
+    "kw": [
+      "ned",
+      "pil",
+      "pil mod højre med sving nedad"
+    ]
+  },
+  "2b05": {
+    "nm": "pil mod venstre",
+    "kw": [
+      "pil",
+      "pil mod venstre",
+      "retning",
+      "verdenshjørne",
+      "vest"
+    ]
+  },
+  "2b06": {
+    "nm": "opadvendt pil",
+    "kw": [
+      "nord",
+      "opadvendt pil",
+      "pil",
+      "retning",
+      "verdenshjørne"
+    ]
+  },
+  "2b07": {
+    "nm": "nedadvendt pil",
+    "kw": [
+      "ned",
+      "nedadvendt pil",
+      "pil",
+      "retning",
+      "syd",
+      "verdenshjørne"
+    ]
+  },
+  "2b1b": {
+    "nm": "stort sort kvadrat",
+    "kw": [
+      "geometrisk",
+      "kvadrat",
+      "stort sort kvadrat"
+    ]
+  },
+  "2b1c": {
+    "nm": "stort hvidt kvadrat",
+    "kw": [
+      "geometrisk",
+      "kvadrat",
+      "stort hvidt kvadrat"
+    ]
+  },
+  "2b50": {
+    "nm": "hvid mellemstor stjerne",
+    "kw": [
+      "hvid mellemstor stjerne",
+      "stjerne"
+    ]
+  },
+  "2b55": {
+    "nm": "stor kraftig cirkel",
+    "kw": [
+      "cirkel",
+      "o",
+      "stor kraftig cirkel"
+    ]
+  },
+  "3030": {
+    "nm": "bølgestreg",
+    "kw": [
+      "bølgestreg",
+      "bølget",
+      "tegn",
+      "tegnsætning"
+    ]
+  },
+  "303d": {
+    "nm": "japansk kommatering",
+    "kw": [
+      "del",
+      "japansk",
+      "kommatering"
+    ]
+  },
+  "3297": {
+    "nm": "cirkulært ideogram for lykønskning",
+    "kw": [
+      "cirkulært ideogram for lykønskning",
+      "ideogram",
+      "kinesisk",
+      "lykønskning",
+      "tillykke"
+    ]
+  },
+  "3299": {
+    "nm": "cirkulært ideogram for hemmelighed",
+    "kw": [
+      "cirkulært ideogram for hemmelighed",
+      "hemmelighed",
+      "ideogram",
+      "kinesisk"
+    ]
+  }
+}

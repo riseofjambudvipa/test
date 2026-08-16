@@ -1,0 +1,2820 @@
+{
+  "0023-20e3": {
+    "nm": "clave: #",
+    "kw": [
+      "clave"
+    ]
+  },
+  "002a-20e3": {
+    "nm": "clave: *",
+    "kw": [
+      "clave"
+    ]
+  },
+  "0030-20e3": {
+    "nm": "clave: 0"
+  },
+  "0031-20e3": {
+    "nm": "clave: 1"
+  },
+  "0032-20e3": {
+    "nm": "clave: 2"
+  },
+  "0033-20e3": {
+    "nm": "clave: 3"
+  },
+  "0034-20e3": {
+    "nm": "clave: 4"
+  },
+  "0035-20e3": {
+    "nm": "clave: 5"
+  },
+  "0036-20e3": {
+    "nm": "clave: 6"
+  },
+  "0037-20e3": {
+    "nm": "clave: 7"
+  },
+  "0038-20e3": {
+    "nm": "clave: 8"
+  },
+  "0039-20e3": {
+    "nm": "clave: 9"
+  },
+  "1f1e6-1f1e8": {
+    "nm": "bandiera: Insula del Ascension",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1e9": {
+    "nm": "bandiera: Andorra",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1ea": {
+    "nm": "bandiera: Emiratos Arabe Unite",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1eb": {
+    "nm": "bandiera: Afghanistan",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1ec": {
+    "nm": "bandiera: Antigua e Barbuda",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1ee": {
+    "nm": "bandiera: Anguilla",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1f1": {
+    "nm": "bandiera: Albania",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1f2": {
+    "nm": "bandiera: Armenia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1f4": {
+    "nm": "bandiera: Angola",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1f6": {
+    "nm": "bandiera: Antarctica",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1f7": {
+    "nm": "bandiera: Argentina",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1f8": {
+    "nm": "bandiera: Samoa american",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1f9": {
+    "nm": "bandiera: Austria",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1fa": {
+    "nm": "bandiera: Australia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1fc": {
+    "nm": "bandiera: Aruba",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1fd": {
+    "nm": "bandiera: Insulas Åland",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e6-1f1ff": {
+    "nm": "bandiera: Azerbaidzhan",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1e6": {
+    "nm": "bandiera: Bosnia e Herzegovina",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1e7": {
+    "nm": "bandiera: Barbados",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1e9": {
+    "nm": "bandiera: Bangladesh",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1ea": {
+    "nm": "bandiera: Belgica",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1eb": {
+    "nm": "bandiera: Burkina Faso",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1ec": {
+    "nm": "bandiera: Bulgaria",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1ed": {
+    "nm": "bandiera: Bahrain",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1ee": {
+    "nm": "bandiera: Burundi",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1ef": {
+    "nm": "bandiera: Benin",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1f1": {
+    "nm": "bandiera: Sancte Bartholomeo",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1f2": {
+    "nm": "bandiera: Bermuda",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1f3": {
+    "nm": "bandiera: Brunei",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1f4": {
+    "nm": "bandiera: Bolivia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1f6": {
+    "nm": "bandiera: Paises Basse caribe",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1f7": {
+    "nm": "bandiera: Brasil",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1f8": {
+    "nm": "bandiera: Bahamas",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1f9": {
+    "nm": "bandiera: Bhutan",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1fb": {
+    "nm": "bandiera: Insula de Bouvet",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1fc": {
+    "nm": "bandiera: Botswana",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1fe": {
+    "nm": "bandiera: Bielorussia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e7-1f1ff": {
+    "nm": "bandiera: Belize",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1e6": {
+    "nm": "bandiera: Canada",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1e8": {
+    "nm": "bandiera: Insulas Cocos (Keeling)",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1e9": {
+    "nm": "bandiera: Congo - Kinshasa",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1eb": {
+    "nm": "bandiera: Republica African Central",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1ec": {
+    "nm": "bandiera: Congo - Brazzaville",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1ed": {
+    "nm": "bandiera: Suissa",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1ee": {
+    "nm": "bandiera: Costa de Ebore",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1f0": {
+    "nm": "bandiera: Insulas Cook",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1f1": {
+    "nm": "bandiera: Chile",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1f2": {
+    "nm": "bandiera: Camerun",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1f3": {
+    "nm": "bandiera: China",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1f4": {
+    "nm": "bandiera: Colombia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1f5": {
+    "nm": "bandiera: Insula Clipperton",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1f6": {
+    "nm": "bandiera: Sark",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1f7": {
+    "nm": "bandiera: Costa Rica",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1fa": {
+    "nm": "bandiera: Cuba",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1fb": {
+    "nm": "bandiera: Capo Verde",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1fc": {
+    "nm": "bandiera: Curaçao",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1fd": {
+    "nm": "bandiera: Insula de Natal",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1fe": {
+    "nm": "bandiera: Cypro",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e8-1f1ff": {
+    "nm": "bandiera: Chechia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e9-1f1ea": {
+    "nm": "bandiera: Germania",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e9-1f1ec": {
+    "nm": "bandiera: Diego Garcia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e9-1f1ef": {
+    "nm": "bandiera: Djibuti",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e9-1f1f0": {
+    "nm": "bandiera: Danmark",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e9-1f1f2": {
+    "nm": "bandiera: Dominica",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e9-1f1f4": {
+    "nm": "bandiera: Republica Dominican",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1e9-1f1ff": {
+    "nm": "bandiera: Algeria",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ea-1f1e6": {
+    "nm": "bandiera: Ceuta e Melilla",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ea-1f1e8": {
+    "nm": "bandiera: Ecuador",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ea-1f1ea": {
+    "nm": "bandiera: Estonia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ea-1f1ec": {
+    "nm": "bandiera: Egypto",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ea-1f1ed": {
+    "nm": "bandiera: Sahara occidental",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ea-1f1f7": {
+    "nm": "bandiera: Eritrea",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ea-1f1f8": {
+    "nm": "bandiera: Espania",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ea-1f1f9": {
+    "nm": "bandiera: Ethiopia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ea-1f1fa": {
+    "nm": "bandiera: Union Europee",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1eb-1f1ee": {
+    "nm": "bandiera: Finlandia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1eb-1f1ef": {
+    "nm": "bandiera: Fiji",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1eb-1f1f0": {
+    "nm": "bandiera: Insulas Falkland",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1eb-1f1f2": {
+    "nm": "bandiera: Micronesia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1eb-1f1f4": {
+    "nm": "bandiera: Insulas Feroe",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1eb-1f1f7": {
+    "nm": "bandiera: Francia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1e6": {
+    "nm": "bandiera: Gabon",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1e7": {
+    "nm": "bandiera: Regno Unite",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1e9": {
+    "nm": "bandiera: Grenada",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1ea": {
+    "nm": "bandiera: Georgia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1eb": {
+    "nm": "bandiera: Guyana francese",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1ec": {
+    "nm": "bandiera: Guernsey",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1ed": {
+    "nm": "bandiera: Ghana",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1ee": {
+    "nm": "bandiera: Gibraltar",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1f1": {
+    "nm": "bandiera: Groenlandia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1f2": {
+    "nm": "bandiera: Gambia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1f3": {
+    "nm": "bandiera: Guinea",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1f5": {
+    "nm": "bandiera: Guadeloupe",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1f6": {
+    "nm": "bandiera: Guinea equatorial",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1f7": {
+    "nm": "bandiera: Grecia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1f8": {
+    "nm": "bandiera: Georgia del Sud e Insulas Sandwich Austral",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1f9": {
+    "nm": "bandiera: Guatemala",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1fa": {
+    "nm": "bandiera: Guam",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1fc": {
+    "nm": "bandiera: Guinea-Bissau",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ec-1f1fe": {
+    "nm": "bandiera: Guyana",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ed-1f1f0": {
+    "nm": "bandiera: Hongkong, R.A.S. de China",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ed-1f1f2": {
+    "nm": "bandiera: Insulas Heard e McDonald",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ed-1f1f3": {
+    "nm": "bandiera: Honduras",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ed-1f1f7": {
+    "nm": "bandiera: Croatia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ed-1f1f9": {
+    "nm": "bandiera: Haiti",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ed-1f1fa": {
+    "nm": "bandiera: Hungaria",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ee-1f1e8": {
+    "nm": "bandiera: Insulas Canari",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ee-1f1e9": {
+    "nm": "bandiera: Indonesia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ee-1f1ea": {
+    "nm": "bandiera: Irlanda",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ee-1f1f1": {
+    "nm": "bandiera: Israel",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ee-1f1f2": {
+    "nm": "bandiera: Insula de Man",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ee-1f1f3": {
+    "nm": "bandiera: India",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ee-1f1f4": {
+    "nm": "bandiera: Territorio oceanic britanno-indian",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ee-1f1f6": {
+    "nm": "bandiera: Irak",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ee-1f1f7": {
+    "nm": "bandiera: Iran",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ee-1f1f8": {
+    "nm": "bandiera: Islanda",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ee-1f1f9": {
+    "nm": "bandiera: Italia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ef-1f1ea": {
+    "nm": "bandiera: Jersey",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ef-1f1f2": {
+    "nm": "bandiera: Jamaica",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ef-1f1f4": {
+    "nm": "bandiera: Jordania",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ef-1f1f5": {
+    "nm": "bandiera: Japon",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f0-1f1ea": {
+    "nm": "bandiera: Kenya",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f0-1f1ec": {
+    "nm": "bandiera: Kirghizistan",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f0-1f1ed": {
+    "nm": "bandiera: Cambodgia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f0-1f1ee": {
+    "nm": "bandiera: Kiribati",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f0-1f1f2": {
+    "nm": "bandiera: Comoros",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f0-1f1f3": {
+    "nm": "bandiera: Sancte Christophoro e Nevis",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f0-1f1f5": {
+    "nm": "bandiera: Corea del Nord",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f0-1f1f7": {
+    "nm": "bandiera: Corea del Sud",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f0-1f1fc": {
+    "nm": "bandiera: Kuwait",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f0-1f1fe": {
+    "nm": "bandiera: Insulas de Caiman",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f0-1f1ff": {
+    "nm": "bandiera: Kazakhstan",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f1-1f1e6": {
+    "nm": "bandiera: Laos",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f1-1f1e7": {
+    "nm": "bandiera: Libano",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f1-1f1e8": {
+    "nm": "bandiera: Sancte Lucia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f1-1f1ee": {
+    "nm": "bandiera: Liechtenstein",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f1-1f1f0": {
+    "nm": "bandiera: Sri Lanka",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f1-1f1f7": {
+    "nm": "bandiera: Liberia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f1-1f1f8": {
+    "nm": "bandiera: Lesotho",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f1-1f1f9": {
+    "nm": "bandiera: Lituania",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f1-1f1fa": {
+    "nm": "bandiera: Luxemburg",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f1-1f1fb": {
+    "nm": "bandiera: Lettonia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f1-1f1fe": {
+    "nm": "bandiera: Libya",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1e6": {
+    "nm": "bandiera: Marocco",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1e8": {
+    "nm": "bandiera: Monaco",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1e9": {
+    "nm": "bandiera: Moldavia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1ea": {
+    "nm": "bandiera: Montenegro",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1eb": {
+    "nm": "bandiera: Sancte Martino francese",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1ec": {
+    "nm": "bandiera: Madagascar",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1ed": {
+    "nm": "bandiera: Insulas Marshall",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1f0": {
+    "nm": "bandiera: Macedonia del Nord",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1f1": {
+    "nm": "bandiera: Mali",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1f2": {
+    "nm": "bandiera: Myanmar (Birmania)",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1f3": {
+    "nm": "bandiera: Mongolia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1f4": {
+    "nm": "bandiera: Macao, R.A.S. de China",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1f5": {
+    "nm": "bandiera: Insulas Marianna del Nord",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1f6": {
+    "nm": "bandiera: Martinica",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1f7": {
+    "nm": "bandiera: Mauritania",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1f8": {
+    "nm": "bandiera: Montserrat",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1f9": {
+    "nm": "bandiera: Malta",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1fa": {
+    "nm": "bandiera: Mauritio",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1fb": {
+    "nm": "bandiera: Maldivas",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1fc": {
+    "nm": "bandiera: Malawi",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1fd": {
+    "nm": "bandiera: Mexico",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1fe": {
+    "nm": "bandiera: Malaysia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f2-1f1ff": {
+    "nm": "bandiera: Mozambique",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1e6": {
+    "nm": "bandiera: Namibia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1e8": {
+    "nm": "bandiera: Nove Caledonia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1ea": {
+    "nm": "bandiera: Niger",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1eb": {
+    "nm": "bandiera: Insula Norfolk",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1ec": {
+    "nm": "bandiera: Nigeria",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1ee": {
+    "nm": "bandiera: Nicaragua",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1f1": {
+    "nm": "bandiera: Nederlandia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1f4": {
+    "nm": "bandiera: Norvegia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1f5": {
+    "nm": "bandiera: Nepal",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1f7": {
+    "nm": "bandiera: Nauru",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1fa": {
+    "nm": "bandiera: Niue",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f3-1f1ff": {
+    "nm": "bandiera: Nove Zelanda",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f4-1f1f2": {
+    "nm": "bandiera: Oman",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1e6": {
+    "nm": "bandiera: Panama",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1ea": {
+    "nm": "bandiera: Peru",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1eb": {
+    "nm": "bandiera: Polynesia francese",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1ec": {
+    "nm": "bandiera: Papua Nove Guinea",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1ed": {
+    "nm": "bandiera: Philippinas",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1f0": {
+    "nm": "bandiera: Pakistan",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1f1": {
+    "nm": "bandiera: Polonia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1f2": {
+    "nm": "bandiera: St. Pierre e Miquelon",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1f3": {
+    "nm": "bandiera: Insulas Pitcairn",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1f7": {
+    "nm": "bandiera: Porto Rico",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1f8": {
+    "nm": "bandiera: Territorios palestin",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1f9": {
+    "nm": "bandiera: Portugal",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1fc": {
+    "nm": "bandiera: Palau",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f5-1f1fe": {
+    "nm": "bandiera: Paraguay",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f6-1f1e6": {
+    "nm": "bandiera: Qatar",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f7-1f1ea": {
+    "nm": "bandiera: Reunion",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f7-1f1f4": {
+    "nm": "bandiera: Romania",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f7-1f1f8": {
+    "nm": "bandiera: Serbia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f7-1f1fa": {
+    "nm": "bandiera: Russia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f7-1f1fc": {
+    "nm": "bandiera: Ruanda",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1e6": {
+    "nm": "bandiera: Arabia Saudita",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1e7": {
+    "nm": "bandiera: Insulas Solomon",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1e8": {
+    "nm": "bandiera: Seychelles",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1e9": {
+    "nm": "bandiera: Sudan",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1ea": {
+    "nm": "bandiera: Svedia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1ec": {
+    "nm": "bandiera: Singapur",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1ed": {
+    "nm": "bandiera: Sancte Helena",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1ee": {
+    "nm": "bandiera: Slovenia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1ef": {
+    "nm": "bandiera: Svalbard e Jan Mayen",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1f0": {
+    "nm": "bandiera: Slovachia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1f1": {
+    "nm": "bandiera: Sierra Leone",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1f2": {
+    "nm": "bandiera: San Marino",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1f3": {
+    "nm": "bandiera: Senegal",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1f4": {
+    "nm": "bandiera: Somalia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1f7": {
+    "nm": "bandiera: Suriname",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1f8": {
+    "nm": "bandiera: Sudan del Sud",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1f9": {
+    "nm": "bandiera: São Tomé e Príncipe",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1fb": {
+    "nm": "bandiera: El Salvador",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1fd": {
+    "nm": "bandiera: Sancte Martino nederlandese",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1fe": {
+    "nm": "bandiera: Syria",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f8-1f1ff": {
+    "nm": "bandiera: Eswatini",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1e6": {
+    "nm": "bandiera: Tristan da Cunha",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1e8": {
+    "nm": "bandiera: Insulas Turcos e Caicos",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1e9": {
+    "nm": "bandiera: Tchad",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1eb": {
+    "nm": "bandiera: Territorios meridional francese",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1ec": {
+    "nm": "bandiera: Togo",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1ed": {
+    "nm": "bandiera: Thailandia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1ef": {
+    "nm": "bandiera: Tadzhikistan",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1f0": {
+    "nm": "bandiera: Tokelau",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1f1": {
+    "nm": "bandiera: Timor del Est",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1f2": {
+    "nm": "bandiera: Turkmenistan",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1f3": {
+    "nm": "bandiera: Tunisia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1f4": {
+    "nm": "bandiera: Tonga",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1f7": {
+    "nm": "bandiera: Turchia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1f9": {
+    "nm": "bandiera: Trinidad e Tobago",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1fb": {
+    "nm": "bandiera: Tuvalu",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1fc": {
+    "nm": "bandiera: Taiwan",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1f9-1f1ff": {
+    "nm": "bandiera: Tanzania",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fa-1f1e6": {
+    "nm": "bandiera: Ukraina",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fa-1f1ec": {
+    "nm": "bandiera: Uganda",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fa-1f1f2": {
+    "nm": "bandiera: Insulas peripheric del SUA",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fa-1f1f3": {
+    "nm": "bandiera: Nationes Unite",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fa-1f1f8": {
+    "nm": "bandiera: Statos Unite",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fa-1f1fe": {
+    "nm": "bandiera: Uruguay",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fa-1f1ff": {
+    "nm": "bandiera: Uzbekistan",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fb-1f1e6": {
+    "nm": "bandiera: Citate del Vaticano",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fb-1f1e8": {
+    "nm": "bandiera: Sancte Vincente e le Grenadinas",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fb-1f1ea": {
+    "nm": "bandiera: Venezuela",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fb-1f1ec": {
+    "nm": "bandiera: Insulas Virgine britannic",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fb-1f1ee": {
+    "nm": "bandiera: Insulas Virgine statounitese",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fb-1f1f3": {
+    "nm": "bandiera: Vietnam",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fb-1f1fa": {
+    "nm": "bandiera: Vanuatu",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fc-1f1eb": {
+    "nm": "bandiera: Wallis e Futuna",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fc-1f1f8": {
+    "nm": "bandiera: Samoa",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fd-1f1f0": {
+    "nm": "bandiera: Kosovo",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fe-1f1ea": {
+    "nm": "bandiera: Yemen",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1fe-1f1f9": {
+    "nm": "bandiera: Mayotte",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ff-1f1e6": {
+    "nm": "bandiera: Africa del Sud",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ff-1f1f2": {
+    "nm": "bandiera: Zambia",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f1ff-1f1fc": {
+    "nm": "bandiera: Zimbabwe",
+    "kw": [
+      "bandiera"
+    ]
+  },
+  "1f38c": {
+    "nm": "bandieras cruciate",
+    "kw": [
+      "bandieras cruciate",
+      "celebration",
+      "cruce",
+      "cruciate",
+      "japonese"
+    ]
+  },
+  "1f3c1": {
+    "nm": "bandiera a quadros",
+    "kw": [
+      "bandiera",
+      "bandiera a quadros",
+      "currer",
+      "cursa",
+      "quadrettos",
+      "quadros"
+    ]
+  },
+  "1f3e7": {
+    "nm": "signo de cassa automatic",
+    "kw": [
+      "automatic",
+      "banca",
+      "billetes",
+      "cassa",
+      "distributor",
+      "signo de cassa automatic"
+    ]
+  },
+  "1f3f3": {
+    "nm": "bandiera blanc",
+    "kw": [
+      "agitante",
+      "bandiera blanc",
+      "flottante",
+      "undulante"
+    ]
+  },
+  "1f3f3-200d-1f308": {
+    "nm": "bandiera iride",
+    "kw": [
+      "arco del celo",
+      "bandiera iride",
+      "bandiera iris",
+      "iride",
+      "iris"
+    ]
+  },
+  "1f3f4": {
+    "nm": "bandiera nigre",
+    "kw": [
+      "agitante",
+      "bandiera nigre",
+      "flottante",
+      "undulante"
+    ]
+  },
+  "1f3f4-200d-2620": {
+    "nm": "bandiera de pirata",
+    "kw": [
+      "bandiera de pirata",
+      "cranio",
+      "ossos",
+      "piliage",
+      "pirata",
+      "tresor"
+    ]
+  },
+  "1f3fb": {
+    "nm": "tono de pelle clar",
+    "kw": [
+      "tono de pelle",
+      "tono de pelle clar",
+      "typo 1–2"
+    ]
+  },
+  "1f3fc": {
+    "nm": "tono de pelle medio clar",
+    "kw": [
+      "tono de pelle",
+      "tono de pelle medio clar",
+      "typo 3"
+    ]
+  },
+  "1f3fd": {
+    "nm": "tono de pelle medie",
+    "kw": [
+      "tono de pelle",
+      "tono de pelle medie",
+      "typo 4"
+    ]
+  },
+  "1f3fe": {
+    "nm": "tono de pelle medio-obscur",
+    "kw": [
+      "tono de pelle",
+      "tono de pelle medio obscur",
+      "tono de pelle medio-obscur",
+      "typo 5"
+    ]
+  },
+  "1f3ff": {
+    "nm": "tono de pelle obscur",
+    "kw": [
+      "tono de pelle",
+      "tono de pelle obscur",
+      "typo 6"
+    ]
+  },
+  "1f440": {
+    "nm": "oculos",
+    "kw": [
+      "facie",
+      "ocular",
+      "oculo",
+      "oculos",
+      "ophthalmologia",
+      "vision",
+      "visual"
+    ]
+  },
+  "1f441": {
+    "nm": "oculo",
+    "kw": [
+      "corpore",
+      "ocular",
+      "oculo",
+      "ophthalmologia",
+      "vision",
+      "visual"
+    ]
+  },
+  "1f442": {
+    "nm": "aure",
+    "kw": [
+      "audientia",
+      "audita",
+      "audition",
+      "aural",
+      "aure",
+      "auricular",
+      "corpore"
+    ]
+  },
+  "1f442-1f3fb": {
+    "nm": "aure: tono de pelle clar",
+    "kw": [
+      "audientia",
+      "audita",
+      "audition",
+      "aural",
+      "aure",
+      "auricular",
+      "corpore",
+      "tono de pelle clar"
+    ]
+  },
+  "1f442-1f3fc": {
+    "nm": "aure: tono de pelle medio clar",
+    "kw": [
+      "audientia",
+      "audita",
+      "audition",
+      "aural",
+      "aure",
+      "auricular",
+      "corpore",
+      "tono de pelle medio clar"
+    ]
+  },
+  "1f442-1f3fd": {
+    "nm": "aure: tono de pelle medie",
+    "kw": [
+      "audientia",
+      "audita",
+      "audition",
+      "aural",
+      "aure",
+      "auricular",
+      "corpore",
+      "tono de pelle medie"
+    ]
+  },
+  "1f442-1f3fe": {
+    "nm": "aure: tono de pelle medio-obscur",
+    "kw": [
+      "audientia",
+      "audita",
+      "audition",
+      "aural",
+      "aure",
+      "auricular",
+      "corpore",
+      "tono de pelle medio-obscur"
+    ]
+  },
+  "1f442-1f3ff": {
+    "nm": "aure: tono de pelle obscur",
+    "kw": [
+      "audientia",
+      "audita",
+      "audition",
+      "aural",
+      "aure",
+      "auricular",
+      "corpore",
+      "tono de pelle obscur"
+    ]
+  },
+  "1f443": {
+    "nm": "naso",
+    "kw": [
+      "corpore",
+      "naso"
+    ]
+  },
+  "1f443-1f3fb": {
+    "nm": "naso: tono de pelle clar",
+    "kw": [
+      "corpore",
+      "naso",
+      "tono de pelle clar"
+    ]
+  },
+  "1f443-1f3fc": {
+    "nm": "naso: tono de pelle medio clar",
+    "kw": [
+      "corpore",
+      "naso",
+      "tono de pelle medio clar"
+    ]
+  },
+  "1f443-1f3fd": {
+    "nm": "naso: tono de pelle medie",
+    "kw": [
+      "corpore",
+      "naso",
+      "tono de pelle medie"
+    ]
+  },
+  "1f443-1f3fe": {
+    "nm": "naso: tono de pelle medio-obscur",
+    "kw": [
+      "corpore",
+      "naso",
+      "tono de pelle medio-obscur"
+    ]
+  },
+  "1f443-1f3ff": {
+    "nm": "naso: tono de pelle obscur",
+    "kw": [
+      "corpore",
+      "naso",
+      "tono de pelle obscur"
+    ]
+  },
+  "1f444": {
+    "nm": "bucca",
+    "kw": [
+      "bucca",
+      "labial",
+      "labios",
+      "oral",
+      "ore"
+    ]
+  },
+  "1f445": {
+    "nm": "lingua",
+    "kw": [
+      "corpore",
+      "lingua",
+      "lingual"
+    ]
+  },
+  "1f470": {
+    "nm": "persona con vela",
+    "kw": [
+      "femina",
+      "fidantiata",
+      "marita",
+      "persona con vela",
+      "sponsa",
+      "sposa",
+      "vela"
+    ]
+  },
+  "1f470-1f3fb": {
+    "nm": "persona con vela: tono de pelle clar",
+    "kw": [
+      "femina",
+      "fidantiata",
+      "marita",
+      "persona con vela",
+      "sponsa",
+      "sposa",
+      "tono de pelle clar",
+      "vela"
+    ]
+  },
+  "1f470-1f3fc": {
+    "nm": "persona con vela: tono de pelle medio clar",
+    "kw": [
+      "femina",
+      "fidantiata",
+      "marita",
+      "persona con vela",
+      "sponsa",
+      "sposa",
+      "tono de pelle medio clar",
+      "vela"
+    ]
+  },
+  "1f470-1f3fd": {
+    "nm": "persona con vela: tono de pelle medie",
+    "kw": [
+      "femina",
+      "fidantiata",
+      "marita",
+      "persona con vela",
+      "sponsa",
+      "sposa",
+      "tono de pelle medie",
+      "vela"
+    ]
+  },
+  "1f470-1f3fe": {
+    "nm": "persona con vela: tono de pelle medio-obscur",
+    "kw": [
+      "femina",
+      "fidantiata",
+      "marita",
+      "persona con vela",
+      "sponsa",
+      "sposa",
+      "tono de pelle medio-obscur",
+      "vela"
+    ]
+  },
+  "1f470-1f3ff": {
+    "nm": "persona con vela: tono de pelle obscur",
+    "kw": [
+      "femina",
+      "fidantiata",
+      "marita",
+      "persona con vela",
+      "sponsa",
+      "sposa",
+      "tono de pelle obscur",
+      "vela"
+    ]
+  },
+  "1f4aa": {
+    "nm": "biceps flectite",
+    "kw": [
+      "biceps",
+      "biceps contrahite",
+      "biceps flectite",
+      "flexion",
+      "forte",
+      "musculo"
+    ]
+  },
+  "1f4aa-1f3fb": {
+    "nm": "biceps flectite: tono de pelle clar",
+    "kw": [
+      "biceps",
+      "biceps contrahite",
+      "biceps flectite",
+      "flexion",
+      "forte",
+      "musculo",
+      "tono de pelle clar"
+    ]
+  },
+  "1f4aa-1f3fc": {
+    "nm": "biceps flectite: tono de pelle medio clar",
+    "kw": [
+      "biceps",
+      "biceps contrahite",
+      "biceps flectite",
+      "flexion",
+      "forte",
+      "musculo",
+      "tono de pelle medio clar"
+    ]
+  },
+  "1f4aa-1f3fd": {
+    "nm": "biceps flectite: tono de pelle medie",
+    "kw": [
+      "biceps",
+      "biceps contrahite",
+      "biceps flectite",
+      "flexion",
+      "forte",
+      "musculo",
+      "tono de pelle medie"
+    ]
+  },
+  "1f4aa-1f3fe": {
+    "nm": "biceps flectite: tono de pelle medio-obscur",
+    "kw": [
+      "biceps",
+      "biceps contrahite",
+      "biceps flectite",
+      "flexion",
+      "forte",
+      "musculo",
+      "tono de pelle medio-obscur"
+    ]
+  },
+  "1f4aa-1f3ff": {
+    "nm": "biceps flectite: tono de pelle obscur",
+    "kw": [
+      "biceps",
+      "biceps contrahite",
+      "biceps flectite",
+      "flexion",
+      "forte",
+      "musculo",
+      "tono de pelle obscur"
+    ]
+  },
+  "1f4f5": {
+    "nm": "telephonos mobile prohibite",
+    "kw": [
+      "interdicite",
+      "mobile",
+      "portabile",
+      "prohibite",
+      "telephono",
+      "telephonos mobile prohibite"
+    ]
+  },
+  "1f51f": {
+    "nm": "clave: 10",
+    "kw": [
+      "clave"
+    ]
+  },
+  "1f600": {
+    "nm": "visage con grande surriso",
+    "kw": [
+      "allegre",
+      "dentes",
+      "facie",
+      "felice",
+      "rider",
+      "surridente",
+      "surriso",
+      "visage",
+      "visage con grande surriso"
+    ]
+  },
+  "1f601": {
+    "nm": "visage radiante con oculos surridente",
+    "kw": [
+      "dentes",
+      "facie",
+      "felice",
+      "grimassante",
+      "grimassar",
+      "oculo",
+      "oculos",
+      "placente",
+      "radiante",
+      "surridente",
+      "surriso"
+    ]
+  },
+  "1f602": {
+    "nm": "visage plorante de riso",
+    "kw": [
+      "facie",
+      "gaudio",
+      "joia",
+      "lacrimas",
+      "plorante",
+      "plorar",
+      "ridente",
+      "rider",
+      "riso",
+      "visage"
+    ]
+  },
+  "1f603": {
+    "nm": "grande surriso con grande oculos",
+    "kw": [
+      "aperte",
+      "bucca",
+      "dentes",
+      "facie",
+      "felice",
+      "grande",
+      "grimassante",
+      "grimassar",
+      "hurra",
+      "oculos",
+      "surridente",
+      "surriso"
+    ]
+  },
+  "1f604": {
+    "nm": "grande surriso con oculos surridente",
+    "kw": [
+      "aperte",
+      "bucca",
+      "facie",
+      "felice",
+      "grimassante",
+      "grimassar",
+      "oculo",
+      "oculos",
+      "ridente",
+      "rider",
+      "surridente",
+      "surrider"
+    ]
+  },
+  "1f605": {
+    "nm": "grande surriso con gutta de sudor",
+    "kw": [
+      "aperte",
+      "bucca",
+      "dejecte",
+      "excitate",
+      "facie",
+      "frigide",
+      "nervose",
+      "stress",
+      "stressate",
+      "sudor",
+      "surridente",
+      "surriso"
+    ]
+  },
+  "1f606": {
+    "nm": "grande surriso con oculos semiclaudite",
+    "kw": [
+      "aperte",
+      "bucca",
+      "claudite",
+      "facie",
+      "felice",
+      "grimassante",
+      "haha",
+      "oculos",
+      "rider",
+      "semiclaudite",
+      "surridente",
+      "surriso"
+    ]
+  },
+  "1f609": {
+    "nm": "visage que batte le palpebras",
+    "kw": [
+      "batte",
+      "battente",
+      "batter",
+      "facie",
+      "palpebras",
+      "visage"
+    ]
+  },
+  "1f60a": {
+    "nm": "surriso con oculos surridente",
+    "kw": [
+      "contente",
+      "facie",
+      "felice",
+      "oculos",
+      "rubescente",
+      "rubescer",
+      "rubor",
+      "surridente",
+      "surriso",
+      "visage"
+    ]
+  },
+  "1f60b": {
+    "nm": "visage que sapora un bon repasto",
+    "kw": [
+      "alimento",
+      "bon",
+      "deliciose",
+      "facie",
+      "mangiar",
+      "repasto",
+      "sapor",
+      "visage"
+    ]
+  },
+  "1f60d": {
+    "nm": "surriso con oculos in forma de corde",
+    "kw": [
+      "amor",
+      "basios",
+      "corde",
+      "facie",
+      "inamorate",
+      "oculo",
+      "romantic",
+      "surridente",
+      "surriso con oculos in forma de corde",
+      "visage"
+    ]
+  },
+  "1f60e": {
+    "nm": "surriso con oculares de sol",
+    "kw": [
+      "berillos",
+      "facie",
+      "sol",
+      "surriso",
+      "surriso con oculares de sol",
+      "visage"
+    ]
+  },
+  "1f6a9": {
+    "nm": "bandiera triangular",
+    "kw": [
+      "bandiera triangular",
+      "palo"
+    ]
+  },
+  "1f6ab": {
+    "nm": "prohibite",
+    "kw": [
+      "entrata",
+      "no",
+      "non",
+      "prohibite",
+      "sin"
+    ]
+  },
+  "1f6ad": {
+    "nm": "non fumar",
+    "kw": [
+      "fumar",
+      "fumo",
+      "no",
+      "non",
+      "prohibite"
+    ]
+  },
+  "1f6ae": {
+    "nm": "signo de receptaculo de immunditias",
+    "kw": [
+      "immunditias",
+      "jectar",
+      "receptaculo",
+      "recipiente",
+      "signo de receptaculo de immunditias"
+    ]
+  },
+  "1f6af": {
+    "nm": "non abandonar immunditias",
+    "kw": [
+      "immunditias",
+      "jectar",
+      "lassar cader",
+      "non abandonar immunditias",
+      "prohibite"
+    ]
+  },
+  "1f6b0": {
+    "nm": "aqua potabile",
+    "kw": [
+      "aqua",
+      "biber",
+      "bibibile",
+      "potabile"
+    ]
+  },
+  "1f6b1": {
+    "nm": "aqua non potabile",
+    "kw": [
+      "aqua",
+      "aqua non potabile",
+      "non bibibile",
+      "non potabile"
+    ]
+  },
+  "1f6b3": {
+    "nm": "bicyclettas prohibite",
+    "kw": [
+      "bicycletta",
+      "bicyclettas prohibite",
+      "bicyclo",
+      "no",
+      "prohibite",
+      "sin"
+    ]
+  },
+  "1f6b7": {
+    "nm": "prohibite al pedones",
+    "kw": [
+      "accesso",
+      "interdicite",
+      "pedon",
+      "pedones",
+      "prohibite",
+      "prohibite al pedones"
+    ]
+  },
+  "1f6b8": {
+    "nm": "transversata de infantes",
+    "kw": [
+      "infante",
+      "passage",
+      "pedones",
+      "traffico",
+      "transversata",
+      "transversata de infantes"
+    ]
+  },
+  "1f6b9": {
+    "nm": "lavatorio pro homines",
+    "kw": [
+      "cabinetto",
+      "homine",
+      "lavatorio",
+      "lavatorio pro homines",
+      "toilette",
+      "wc"
+    ]
+  },
+  "1f6ba": {
+    "nm": "lavatorio pro feminas",
+    "kw": [
+      "cabinetto",
+      "femina",
+      "lavatorio",
+      "lavatorio pro feminas",
+      "toilette",
+      "wc"
+    ]
+  },
+  "1f6bb": {
+    "nm": "lavatorio",
+    "kw": [
+      "cabinetto",
+      "lavatorio",
+      "toilette",
+      "toilettes",
+      "wc"
+    ]
+  },
+  "1f6bc": {
+    "nm": "symbolo de bebe",
+    "kw": [
+      "baby",
+      "bebe",
+      "cambiar",
+      "fascia",
+      "neonato",
+      "symbolo de bebe"
+    ]
+  },
+  "1f6be": {
+    "nm": "water-closet",
+    "kw": [
+      "aqua",
+      "cabinetto",
+      "lavatorio",
+      "toilette",
+      "water-closet",
+      "wc"
+    ]
+  },
+  "1f6c2": {
+    "nm": "controlo de passaportos",
+    "kw": [
+      "controlo",
+      "controlo de passaportos",
+      "passaporto"
+    ]
+  },
+  "1f6c3": {
+    "nm": "doana",
+    "kw": [
+      "doana"
+    ]
+  },
+  "1f6c4": {
+    "nm": "collecta de bagage",
+    "kw": [
+      "bagage",
+      "collecta",
+      "collecta de bagage",
+      "reception",
+      "retiro"
+    ]
+  },
+  "1f6c5": {
+    "nm": "deposito de bagage",
+    "kw": [
+      "bagage",
+      "consigna",
+      "deposito",
+      "deposito de bagage"
+    ]
+  },
+  "1f923": {
+    "nm": "rolante se per terra de rider",
+    "kw": [
+      "facie",
+      "gaudio",
+      "joia",
+      "lacrimas",
+      "ridente",
+      "rider",
+      "riso",
+      "rolante",
+      "rolar",
+      "visage"
+    ]
+  },
+  "1f935": {
+    "nm": "persona in tuxedo",
+    "kw": [
+      "fidantiato",
+      "homine",
+      "marito",
+      "persona in tuxedo",
+      "sponso",
+      "sposo",
+      "tuxedo"
+    ]
+  },
+  "1f935-1f3fb": {
+    "nm": "persona in tuxedo: tono de pelle clar",
+    "kw": [
+      "fidantiato",
+      "homine",
+      "marito",
+      "persona in tuxedo",
+      "sponso",
+      "sposo",
+      "tono de pelle clar",
+      "tuxedo"
+    ]
+  },
+  "1f935-1f3fc": {
+    "nm": "persona in tuxedo: tono de pelle medio clar",
+    "kw": [
+      "fidantiato",
+      "homine",
+      "marito",
+      "persona in tuxedo",
+      "sponso",
+      "sposo",
+      "tono de pelle medio clar",
+      "tuxedo"
+    ]
+  },
+  "1f935-1f3fd": {
+    "nm": "persona in tuxedo: tono de pelle medie",
+    "kw": [
+      "fidantiato",
+      "homine",
+      "marito",
+      "persona in tuxedo",
+      "sponso",
+      "sposo",
+      "tono de pelle medie",
+      "tuxedo"
+    ]
+  },
+  "1f935-1f3fe": {
+    "nm": "persona in tuxedo: tono de pelle medio-obscur",
+    "kw": [
+      "fidantiato",
+      "homine",
+      "marito",
+      "persona in tuxedo",
+      "sponso",
+      "sposo",
+      "tono de pelle medio-obscur",
+      "tuxedo"
+    ]
+  },
+  "1f935-1f3ff": {
+    "nm": "persona in tuxedo: tono de pelle obscur",
+    "kw": [
+      "fidantiato",
+      "homine",
+      "marito",
+      "persona in tuxedo",
+      "sponso",
+      "sposo",
+      "tono de pelle obscur",
+      "tuxedo"
+    ]
+  },
+  "1f9b0": {
+    "nm": "capillos rosse",
+    "kw": [
+      "capillos rosse",
+      "rossa",
+      "rossastre",
+      "rubee",
+      "rubie",
+      "rubre"
+    ]
+  },
+  "1f9b1": {
+    "nm": "capillos crispe",
+    "kw": [
+      "afro",
+      "buclate",
+      "buclettas",
+      "capillos",
+      "crispe"
+    ]
+  },
+  "1f9b2": {
+    "nm": "calve",
+    "kw": [
+      "calve",
+      "chemotherapia",
+      "glabre",
+      "rasate",
+      "sin capillos"
+    ]
+  },
+  "1f9b3": {
+    "nm": "capillos blanc",
+    "kw": [
+      "blanc",
+      "capillos",
+      "gris",
+      "vetere",
+      "vetule"
+    ]
+  },
+  "1f9b4": {
+    "nm": "osso",
+    "kw": [
+      "osso",
+      "osteologia",
+      "skeleto"
+    ]
+  },
+  "1f9b5": {
+    "nm": "gamba",
+    "kw": [
+      "colpo de pede",
+      "gamba",
+      "membro"
+    ]
+  },
+  "1f9b5-1f3fb": {
+    "nm": "gamba: tono de pelle clar",
+    "kw": [
+      "colpo de pede",
+      "gamba",
+      "membro",
+      "tono de pelle clar"
+    ]
+  },
+  "1f9b5-1f3fc": {
+    "nm": "gamba: tono de pelle medio clar",
+    "kw": [
+      "colpo de pede",
+      "gamba",
+      "membro",
+      "tono de pelle medio clar"
+    ]
+  },
+  "1f9b5-1f3fd": {
+    "nm": "gamba: tono de pelle medie",
+    "kw": [
+      "colpo de pede",
+      "gamba",
+      "membro",
+      "tono de pelle medie"
+    ]
+  },
+  "1f9b5-1f3fe": {
+    "nm": "gamba: tono de pelle medio-obscur",
+    "kw": [
+      "colpo de pede",
+      "gamba",
+      "membro",
+      "tono de pelle medio-obscur"
+    ]
+  },
+  "1f9b5-1f3ff": {
+    "nm": "gamba: tono de pelle obscur",
+    "kw": [
+      "colpo de pede",
+      "gamba",
+      "membro",
+      "tono de pelle obscur"
+    ]
+  },
+  "1f9b6": {
+    "nm": "pede",
+    "kw": [
+      "colpo de pede",
+      "pede"
+    ]
+  },
+  "1f9b6-1f3fb": {
+    "nm": "pede: tono de pelle clar",
+    "kw": [
+      "colpo de pede",
+      "pede",
+      "tono de pelle clar"
+    ]
+  },
+  "1f9b6-1f3fc": {
+    "nm": "pede: tono de pelle medio clar",
+    "kw": [
+      "colpo de pede",
+      "pede",
+      "tono de pelle medio clar"
+    ]
+  },
+  "1f9b6-1f3fd": {
+    "nm": "pede: tono de pelle medie",
+    "kw": [
+      "colpo de pede",
+      "pede",
+      "tono de pelle medie"
+    ]
+  },
+  "1f9b6-1f3fe": {
+    "nm": "pede: tono de pelle medio-obscur",
+    "kw": [
+      "colpo de pede",
+      "pede",
+      "tono de pelle medio-obscur"
+    ]
+  },
+  "1f9b6-1f3ff": {
+    "nm": "pede: tono de pelle obscur",
+    "kw": [
+      "colpo de pede",
+      "pede",
+      "tono de pelle obscur"
+    ]
+  },
+  "1f9b7": {
+    "nm": "dente",
+    "kw": [
+      "dental",
+      "dentari",
+      "dente",
+      "dentista",
+      "odontologia",
+      "orthodontista"
+    ]
+  },
+  "1f9bb": {
+    "nm": "aure con audiophono",
+    "kw": [
+      "accessibilitate",
+      "aure con audiophono",
+      "debile de audito",
+      "dur de aure"
+    ]
+  },
+  "1f9bb-1f3fb": {
+    "nm": "aure con audiophono: tono de pelle clar",
+    "kw": [
+      "accessibilitate",
+      "aure con audiophono",
+      "debile de audito",
+      "dur de aure",
+      "tono de pelle clar"
+    ]
+  },
+  "1f9bb-1f3fc": {
+    "nm": "aure con audiophono: tono de pelle medio clar",
+    "kw": [
+      "accessibilitate",
+      "aure con audiophono",
+      "debile de audito",
+      "dur de aure",
+      "tono de pelle medio clar"
+    ]
+  },
+  "1f9bb-1f3fd": {
+    "nm": "aure con audiophono: tono de pelle medie",
+    "kw": [
+      "accessibilitate",
+      "aure con audiophono",
+      "debile de audito",
+      "dur de aure",
+      "tono de pelle medie"
+    ]
+  },
+  "1f9bb-1f3fe": {
+    "nm": "aure con audiophono: tono de pelle medio-obscur",
+    "kw": [
+      "accessibilitate",
+      "aure con audiophono",
+      "debile de audito",
+      "dur de aure",
+      "tono de pelle medio-obscur"
+    ]
+  },
+  "1f9bb-1f3ff": {
+    "nm": "aure con audiophono: tono de pelle obscur",
+    "kw": [
+      "accessibilitate",
+      "aure con audiophono",
+      "debile de audito",
+      "dur de aure",
+      "tono de pelle obscur"
+    ]
+  },
+  "1f9be": {
+    "nm": "bracio mechanic",
+    "kw": [
+      "accessibilitate",
+      "bracio mechanic",
+      "prothese",
+      "prothesis"
+    ]
+  },
+  "1f9bf": {
+    "nm": "gamba mechanic",
+    "kw": [
+      "accessibilitate",
+      "gamba mechanic",
+      "prothese",
+      "prothesis"
+    ]
+  },
+  "1f9e0": {
+    "nm": "cerebro",
+    "kw": [
+      "cerebro",
+      "intelligente"
+    ]
+  },
+  "1fac0": {
+    "nm": "corde",
+    "kw": [
+      "battimento del corde",
+      "centro",
+      "corde",
+      "organo",
+      "pulsation",
+      "rhythmo cardiac",
+      "rhythmo del corde"
+    ]
+  },
+  "1fac1": {
+    "nm": "pulmones",
+    "kw": [
+      "exhalation",
+      "halito",
+      "inhalation",
+      "organo",
+      "pulmones",
+      "respiration",
+      "sufflo"
+    ]
+  },
+  "267f": {
+    "nm": "symbolo de sedia rolante",
+    "kw": [
+      "accesso",
+      "rolante",
+      "rotas",
+      "sede",
+      "sedia",
+      "symbolo de sedia rolante"
+    ]
+  },
+  "26a0": {
+    "nm": "aviso",
+    "kw": [
+      "advertimento",
+      "attention",
+      "aviso"
+    ]
+  },
+  "26d4": {
+    "nm": "entrata prohibite",
+    "kw": [
+      "direction unic",
+      "entrata prohibite",
+      "senso unic",
+      "traffico",
+      "unidirectional"
+    ]
+  },
+  "2716": {
+    "nm": "multiplication",
+    "kw": [
+      "multiplication"
+    ]
+  },
+  "2795": {
+    "nm": "plus",
+    "kw": [
+      "plus"
+    ]
+  },
+  "2796": {
+    "nm": "minus",
+    "kw": [
+      "minus"
+    ]
+  },
+  "2797": {
+    "nm": "division",
+    "kw": [
+      "÷",
+      "divider",
+      "division",
+      "mathematica",
+      "signo"
+    ]
+  }
+}

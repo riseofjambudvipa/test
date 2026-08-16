@@ -1,0 +1,10431 @@
+{
+  "002a": {
+    "nm": "steredennig",
+    "kw": [
+      "steredennig"
+    ]
+  },
+  "00a9": {
+    "nm": "copyright",
+    "kw": [
+      "c",
+      "copyright"
+    ]
+  },
+  "00ae": {
+    "nm": "merk marilhet",
+    "kw": [
+      "merk marilhet",
+      "r"
+    ]
+  },
+  "1f0cf": {
+    "nm": "joker",
+    "kw": [
+      "joker",
+      "kartenn joker"
+    ]
+  },
+  "1f170": {
+    "nm": "bouton A (rumm-gwad)",
+    "kw": [
+      "A",
+      "bouton A",
+      "bouton A (rumm-gwad)",
+      "rumm-gwad"
+    ]
+  },
+  "1f171": {
+    "nm": "bouton B (rumm-gwad)",
+    "kw": [
+      "B",
+      "bouton B",
+      "bouton B (rumm-gwad)",
+      "rumm-gwad"
+    ]
+  },
+  "1f17e": {
+    "nm": "bouton O (rumm-gwad)",
+    "kw": [
+      "bouton O",
+      "bouton O (rumm-gwad)",
+      "O",
+      "rumm-gwad"
+    ]
+  },
+  "1f17f": {
+    "nm": "bouton P",
+    "kw": [
+      "bouton P",
+      "P",
+      "parklecʼh"
+    ]
+  },
+  "1f18e": {
+    "nm": "bouton AB (rumm-gwad)",
+    "kw": [
+      "AB",
+      "bouton AB",
+      "bouton AB (rumm-gwad)",
+      "rumm-gwad"
+    ]
+  },
+  "1f191": {
+    "nm": "bouton Diverkañ",
+    "kw": [
+      "bouton Diverkañ",
+      "CL"
+    ]
+  },
+  "1f192": {
+    "nm": "bouton Cool",
+    "kw": [
+      "bouton Cool",
+      "COOL"
+    ]
+  },
+  "1f193": {
+    "nm": "bouton Digoust",
+    "kw": [
+      "bouton Digoust",
+      "FREE"
+    ]
+  },
+  "1f194": {
+    "nm": "bouton Anaouder",
+    "kw": [
+      "bouton Anaouder",
+      "ID"
+    ]
+  },
+  "1f195": {
+    "nm": "bouton Nevez",
+    "kw": [
+      "bouton Nevez",
+      "NEW"
+    ]
+  },
+  "1f197": {
+    "nm": "bouton OK",
+    "kw": [
+      "bouton OK",
+      "OK"
+    ]
+  },
+  "1f198": {
+    "nm": "bouton SOS",
+    "kw": [
+      "bouton SOS",
+      "SOS"
+    ]
+  },
+  "1f19a": {
+    "nm": "bouton VS",
+    "kw": [
+      "bouton VS",
+      "versus",
+      "VS"
+    ]
+  },
+  "1f1e6-1f1e8": {
+    "nm": "banniel : Enez Ascension",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1e9": {
+    "nm": "banniel : Andorra",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1ea": {
+    "nm": "banniel : Emirelezhioù-Arab-Unanet",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1eb": {
+    "nm": "banniel : Afghanistan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1ec": {
+    "nm": "banniel : Antigua-ha-Barbuda",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1ee": {
+    "nm": "banniel : Anguilla",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1f1": {
+    "nm": "banniel : Albania",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1f2": {
+    "nm": "banniel : Armenia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1f4": {
+    "nm": "banniel : Angola",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1f6": {
+    "nm": "banniel : Antarktika",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1f7": {
+    "nm": "banniel : Arcʼhantina",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1f8": {
+    "nm": "banniel : Samoa Amerikan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1f9": {
+    "nm": "banniel : Aostria",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1fa": {
+    "nm": "banniel : Aostralia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1fc": {
+    "nm": "banniel : Aruba",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1fd": {
+    "nm": "banniel : Inizi Åland",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e6-1f1ff": {
+    "nm": "banniel : Azerbaidjan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1e6": {
+    "nm": "banniel : Bosnia-ha-Herzegovina",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1e7": {
+    "nm": "banniel : Barbados",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1e9": {
+    "nm": "banniel : Bangladesh",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1ea": {
+    "nm": "banniel : Belgia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1eb": {
+    "nm": "banniel : Burkina Faso",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1ec": {
+    "nm": "banniel : Bulgaria",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1ed": {
+    "nm": "banniel : Bahrein",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1ee": {
+    "nm": "banniel : Burundi",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1ef": {
+    "nm": "banniel : Benin",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1f1": {
+    "nm": "banniel : Sant-Bertele",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1f2": {
+    "nm": "banniel : Bermudez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1f3": {
+    "nm": "banniel : Brunei",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1f4": {
+    "nm": "banniel : Bolivia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1f6": {
+    "nm": "banniel : Karib Nederlandat",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1f7": {
+    "nm": "banniel : Brazil",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1f8": {
+    "nm": "banniel : Bahamas",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1f9": {
+    "nm": "banniel : Bhoutan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1fb": {
+    "nm": "banniel : Enez Bouvet",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1fc": {
+    "nm": "banniel : Botswana",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1fe": {
+    "nm": "banniel : Belarus",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e7-1f1ff": {
+    "nm": "banniel : Belize",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1e6": {
+    "nm": "banniel : Kanada",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1e8": {
+    "nm": "banniel : Inizi Kokoz",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1e9": {
+    "nm": "banniel : Kongo - Kinshasa",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1eb": {
+    "nm": "banniel : Republik Kreizafrikan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1ec": {
+    "nm": "banniel : Kongo - Brazzaville",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1ed": {
+    "nm": "banniel : Suis",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1ee": {
+    "nm": "banniel : Aod-an-Olifant",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1f0": {
+    "nm": "banniel : Inizi Cook",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1f1": {
+    "nm": "banniel : Chile",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1f2": {
+    "nm": "banniel : Kameroun",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1f3": {
+    "nm": "banniel : Sina",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1f4": {
+    "nm": "banniel : Kolombia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1f5": {
+    "nm": "banniel : Enez Clipperton",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1f6": {
+    "nm": "banniel : Sark",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1f7": {
+    "nm": "banniel : Costa Rica",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1fa": {
+    "nm": "banniel : Kuba",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1fb": {
+    "nm": "banniel : Kab-Glas",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1fc": {
+    "nm": "banniel : Curaçao",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1fd": {
+    "nm": "banniel : Enez Christmas",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1fe": {
+    "nm": "banniel : Kiprenez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e8-1f1ff": {
+    "nm": "banniel : Tchekia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e9-1f1ea": {
+    "nm": "banniel : Alamagn",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e9-1f1ec": {
+    "nm": "banniel : Diego Garcia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e9-1f1ef": {
+    "nm": "banniel : Djibouti",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e9-1f1f0": {
+    "nm": "banniel : Danmark",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e9-1f1f2": {
+    "nm": "banniel : Dominica",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e9-1f1f4": {
+    "nm": "banniel : Republik Dominikan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1e9-1f1ff": {
+    "nm": "banniel : Aljeria",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ea-1f1e6": {
+    "nm": "banniel : Ceuta ha Melilla",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ea-1f1e8": {
+    "nm": "banniel : Ecuador",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ea-1f1ea": {
+    "nm": "banniel : Estonia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ea-1f1ec": {
+    "nm": "banniel : Egipt",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ea-1f1ed": {
+    "nm": "banniel : Sahara ar Cʼhornôg",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ea-1f1f7": {
+    "nm": "banniel : Eritrea",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ea-1f1f8": {
+    "nm": "banniel : Spagn",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ea-1f1f9": {
+    "nm": "banniel : Etiopia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ea-1f1fa": {
+    "nm": "banniel : Unaniezh Europa",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1eb-1f1ee": {
+    "nm": "banniel : Finland",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1eb-1f1ef": {
+    "nm": "banniel : Fidji",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1eb-1f1f0": {
+    "nm": "banniel : Inizi Falkland",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1eb-1f1f2": {
+    "nm": "banniel : Mikronezia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1eb-1f1f4": {
+    "nm": "banniel : Inizi Faero",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1eb-1f1f7": {
+    "nm": "banniel : Frañs",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1e6": {
+    "nm": "banniel : Gabon",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1e7": {
+    "nm": "banniel : Rouantelezh-Unanet",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1e9": {
+    "nm": "banniel : Grenada",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1ea": {
+    "nm": "banniel : Jorjia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1eb": {
+    "nm": "banniel : Gwiana cʼhall",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1ec": {
+    "nm": "banniel : Gwernenez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1ed": {
+    "nm": "banniel : Ghana",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1ee": {
+    "nm": "banniel : Jibraltar",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1f1": {
+    "nm": "banniel : Greunland",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1f2": {
+    "nm": "banniel : Gambia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1f3": {
+    "nm": "banniel : Ginea",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1f5": {
+    "nm": "banniel : Gwadeloup",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1f6": {
+    "nm": "banniel : Ginea-ar-Cʼheheder",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1f7": {
+    "nm": "banniel : Gres",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1f8": {
+    "nm": "banniel : Inizi Georgia ar Su hag Inizi Sandwich ar Su",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1f9": {
+    "nm": "banniel : Guatemala",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1fa": {
+    "nm": "banniel : Guam",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1fc": {
+    "nm": "banniel : Ginea-Bissau",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ec-1f1fe": {
+    "nm": "banniel : Guyana",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ed-1f1f0": {
+    "nm": "banniel : Hong Kong RMD Sina",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ed-1f1f2": {
+    "nm": "banniel : Inizi Heard-ha-McDonald",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ed-1f1f3": {
+    "nm": "banniel : Honduras",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ed-1f1f7": {
+    "nm": "banniel : Kroatia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ed-1f1f9": {
+    "nm": "banniel : Haiti",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ed-1f1fa": {
+    "nm": "banniel : Hungaria",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ee-1f1e8": {
+    "nm": "banniel : Inizi Kanariez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ee-1f1e9": {
+    "nm": "banniel : Indonezia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ee-1f1ea": {
+    "nm": "banniel : Iwerzhon",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ee-1f1f1": {
+    "nm": "banniel : Israel",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ee-1f1f2": {
+    "nm": "banniel : Enez-Vanav",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ee-1f1f3": {
+    "nm": "banniel : India",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ee-1f1f4": {
+    "nm": "banniel : Tiriad breizhveurat Meurvor Indez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ee-1f1f6": {
+    "nm": "banniel : Iraq",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ee-1f1f7": {
+    "nm": "banniel : Iran",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ee-1f1f8": {
+    "nm": "banniel : Island",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ee-1f1f9": {
+    "nm": "banniel : Italia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ef-1f1ea": {
+    "nm": "banniel : Jerzenez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ef-1f1f2": {
+    "nm": "banniel : Jamaika",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ef-1f1f4": {
+    "nm": "banniel : Jordania",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ef-1f1f5": {
+    "nm": "banniel : Japan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f0-1f1ea": {
+    "nm": "banniel : Kenya",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f0-1f1ec": {
+    "nm": "banniel : Kyrgyzstan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f0-1f1ed": {
+    "nm": "banniel : Kambodja",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f0-1f1ee": {
+    "nm": "banniel : Kiribati",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f0-1f1f2": {
+    "nm": "banniel : Komorez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f0-1f1f3": {
+    "nm": "banniel : Saint Kitts-ha-Nevis",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f0-1f1f5": {
+    "nm": "banniel : Norzhkorea",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f0-1f1f7": {
+    "nm": "banniel : Sukorea",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f0-1f1fc": {
+    "nm": "banniel : Koweit",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f0-1f1fe": {
+    "nm": "banniel : Inizi Cayman",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f0-1f1ff": {
+    "nm": "banniel : Kazakstan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f1-1f1e6": {
+    "nm": "banniel : Laos",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f1-1f1e7": {
+    "nm": "banniel : Liban",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f1-1f1e8": {
+    "nm": "banniel : Saint Lucia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f1-1f1ee": {
+    "nm": "banniel : Liechtenstein",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f1-1f1f0": {
+    "nm": "banniel : Sri Lanka",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f1-1f1f7": {
+    "nm": "banniel : Liberia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f1-1f1f8": {
+    "nm": "banniel : Lesotho",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f1-1f1f9": {
+    "nm": "banniel : Lituania",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f1-1f1fa": {
+    "nm": "banniel : Luksembourg",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f1-1f1fb": {
+    "nm": "banniel : Latvia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f1-1f1fe": {
+    "nm": "banniel : Libia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1e6": {
+    "nm": "banniel : Maroko",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1e8": {
+    "nm": "banniel : Monaco",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1e9": {
+    "nm": "banniel : Moldova",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1ea": {
+    "nm": "banniel : Montenegro",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1eb": {
+    "nm": "banniel : Sant-Martin",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1ec": {
+    "nm": "banniel : Madagaskar",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1ed": {
+    "nm": "banniel : Inizi Marshall",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1f0": {
+    "nm": "banniel : Makedonia an Norzh",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1f1": {
+    "nm": "banniel : Mali",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1f2": {
+    "nm": "banniel : Myanmar (Birmania)",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1f3": {
+    "nm": "banniel : Mongolia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1f4": {
+    "nm": "banniel : Makao RMD Sina",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1f5": {
+    "nm": "banniel : Inizi Mariana an Norzh",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1f6": {
+    "nm": "banniel : Martinik",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1f7": {
+    "nm": "banniel : Maouritania",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1f8": {
+    "nm": "banniel : Montserrat",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1f9": {
+    "nm": "banniel : Malta",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1fa": {
+    "nm": "banniel : Moris",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1fb": {
+    "nm": "banniel : Maldivez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1fc": {
+    "nm": "banniel : Malawi",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1fd": {
+    "nm": "banniel : Mecʼhiko",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1fe": {
+    "nm": "banniel : Malaysia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f2-1f1ff": {
+    "nm": "banniel : Mozambik",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1e6": {
+    "nm": "banniel : Namibia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1e8": {
+    "nm": "banniel : Kaledonia-Nevez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1ea": {
+    "nm": "banniel : Niger",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1eb": {
+    "nm": "banniel : Enez Norfolk",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1ec": {
+    "nm": "banniel : Nigeria",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1ee": {
+    "nm": "banniel : Nicaragua",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1f1": {
+    "nm": "banniel : Izelvroioù",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1f4": {
+    "nm": "banniel : Norvegia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1f5": {
+    "nm": "banniel : Nepal",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1f7": {
+    "nm": "banniel : Nauru",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1fa": {
+    "nm": "banniel : Niue",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f3-1f1ff": {
+    "nm": "banniel : Zeland-Nevez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f4-1f1f2": {
+    "nm": "banniel : Oman",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1e6": {
+    "nm": "banniel : Panamá",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1ea": {
+    "nm": "banniel : Perou",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1eb": {
+    "nm": "banniel : Polinezia Cʼhall",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1ec": {
+    "nm": "banniel : Papoua Ginea-Nevez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1ed": {
+    "nm": "banniel : Filipinez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1f0": {
+    "nm": "banniel : Pakistan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1f1": {
+    "nm": "banniel : Polonia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1f2": {
+    "nm": "banniel : Sant-Pêr-ha-Mikelon",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1f3": {
+    "nm": "banniel : Enez Pitcairn",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1f7": {
+    "nm": "banniel : Puerto Rico",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1f8": {
+    "nm": "banniel : Tiriadoù Palestina",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1f9": {
+    "nm": "banniel : Portugal",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1fc": {
+    "nm": "banniel : Palau",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f5-1f1fe": {
+    "nm": "banniel : Paraguay",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f6-1f1e6": {
+    "nm": "banniel : Qatar",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f7-1f1ea": {
+    "nm": "banniel : Ar Reünion",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f7-1f1f4": {
+    "nm": "banniel : Roumania",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f7-1f1f8": {
+    "nm": "banniel : Serbia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f7-1f1fa": {
+    "nm": "banniel : Rusia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f7-1f1fc": {
+    "nm": "banniel : Rwanda",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1e6": {
+    "nm": "banniel : Arabia Saoudat",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1e7": {
+    "nm": "banniel : Inizi Salomon",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1e8": {
+    "nm": "banniel : Sechelez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1e9": {
+    "nm": "banniel : Soudan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1ea": {
+    "nm": "banniel : Sveden",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1ec": {
+    "nm": "banniel : Singapoura",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1ed": {
+    "nm": "banniel : Saint-Helena",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1ee": {
+    "nm": "banniel : Slovenia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1ef": {
+    "nm": "banniel : Svalbard",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1f0": {
+    "nm": "banniel : Slovakia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1f1": {
+    "nm": "banniel : Sierra Leone",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1f2": {
+    "nm": "banniel : San Marino",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1f3": {
+    "nm": "banniel : Senegal",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1f4": {
+    "nm": "banniel : Somalia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1f7": {
+    "nm": "banniel : Surinam",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1f8": {
+    "nm": "banniel : Soudan ar Su",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1f9": {
+    "nm": "banniel : São-Tomé-ha-Príncipe",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1fb": {
+    "nm": "banniel : Salvador",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1fd": {
+    "nm": "banniel : Sint Maarten",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1fe": {
+    "nm": "banniel : Siria",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f8-1f1ff": {
+    "nm": "banniel : Eswatini",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1e6": {
+    "nm": "banniel : Tristan da Cunha",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1e8": {
+    "nm": "banniel : Inizi Turks-ha-Caicos",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1e9": {
+    "nm": "banniel : Tchad",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1eb": {
+    "nm": "banniel : Douaroù aostral Frañs",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1ec": {
+    "nm": "banniel : Togo",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1ed": {
+    "nm": "banniel : Thailand",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1ef": {
+    "nm": "banniel : Tadjikistan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1f0": {
+    "nm": "banniel : Tokelau",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1f1": {
+    "nm": "banniel : Timor-Leste",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1f2": {
+    "nm": "banniel : Turkmenistan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1f3": {
+    "nm": "banniel : Tunizia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1f4": {
+    "nm": "banniel : Tonga",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1f7": {
+    "nm": "banniel : Turkia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1f9": {
+    "nm": "banniel : Trinidad-ha-Tobago",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1fb": {
+    "nm": "banniel : Tuvalu",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1fc": {
+    "nm": "banniel : Taiwan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1f9-1f1ff": {
+    "nm": "banniel : Tanzania",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fa-1f1e6": {
+    "nm": "banniel : Ukraina",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fa-1f1ec": {
+    "nm": "banniel : Ouganda",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fa-1f1f2": {
+    "nm": "banniel : Inizi diabell ar Stadoù-Unanet",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fa-1f1f3": {
+    "nm": "banniel : Broadoù unanet",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fa-1f1f8": {
+    "nm": "banniel : Stadoù-Unanet",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fa-1f1fe": {
+    "nm": "banniel : Uruguay",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fa-1f1ff": {
+    "nm": "banniel : Ouzbekistan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fb-1f1e6": {
+    "nm": "banniel : Vatikan",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fb-1f1e8": {
+    "nm": "banniel : Sant-Visant hag ar Grenadinez",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fb-1f1ea": {
+    "nm": "banniel : Venezuela",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fb-1f1ec": {
+    "nm": "banniel : Inizi Gwercʼh Breizh-Veur",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fb-1f1ee": {
+    "nm": "banniel : Inizi Gwercʼh ar Stadoù-Unanet",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fb-1f1f3": {
+    "nm": "banniel : Viêt Nam",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fb-1f1fa": {
+    "nm": "banniel : Vanuatu",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fc-1f1eb": {
+    "nm": "banniel : Wallis-ha-Futuna",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fc-1f1f8": {
+    "nm": "banniel : Samoa",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fd-1f1f0": {
+    "nm": "banniel : Kosovo",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fe-1f1ea": {
+    "nm": "banniel : Yemen",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1fe-1f1f9": {
+    "nm": "banniel : Mayotte",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ff-1f1e6": {
+    "nm": "banniel : Suafrika",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ff-1f1f2": {
+    "nm": "banniel : Zambia",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f1ff-1f1fc": {
+    "nm": "banniel : Zimbabwe",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f201": {
+    "nm": "bouton \"amañ\" e japaneg",
+    "kw": [
+      "amañ",
+      "bouton",
+      "bouton \"amañ\" e japaneg",
+      "japaneg"
+    ]
+  },
+  "1f21a": {
+    "nm": "bouton \"digoust\" e japaneg",
+    "kw": [
+      "bouton \"digoust\" e japaneg"
+    ]
+  },
+  "1f232": {
+    "nm": "bouton \"difennet\" e japaneg",
+    "kw": [
+      "bouton \"difennet\" e japaneg"
+    ]
+  },
+  "1f300": {
+    "nm": "kelcʼhwidenn",
+    "kw": [
+      "kelcʼhwidenn",
+      "tifon"
+    ]
+  },
+  "1f301": {
+    "nm": "brumennek",
+    "kw": [
+      "brumennek",
+      "latar"
+    ]
+  },
+  "1f302": {
+    "nm": "disglavier serr",
+    "kw": [
+      "disglavier",
+      "disglavier serr",
+      "glav"
+    ]
+  },
+  "1f303": {
+    "nm": "stergann",
+    "kw": [
+      "noz",
+      "stered",
+      "stergann"
+    ]
+  },
+  "1f304": {
+    "nm": "sav-heol war ar menezioù",
+    "kw": [
+      "beure",
+      "heol",
+      "menez",
+      "mintin",
+      "sav-heol",
+      "sav-heol war ar menezioù"
+    ]
+  },
+  "1f305": {
+    "nm": "sav-heol",
+    "kw": [
+      "beure",
+      "heol",
+      "mintin",
+      "sav-heol"
+    ]
+  },
+  "1f306": {
+    "nm": "gweledva kêr da serr-noz",
+    "kw": [
+      "gweledva",
+      "gweledva kêr da serr-noz",
+      "kêr",
+      "serr-noz"
+    ]
+  },
+  "1f307": {
+    "nm": "kuzh-heol",
+    "kw": [
+      "heol",
+      "kuzh-heol",
+      "serr-noz"
+    ]
+  },
+  "1f308": {
+    "nm": "kanevedenn",
+    "kw": [
+      "glav",
+      "kanevedenn"
+    ]
+  },
+  "1f309": {
+    "nm": "pont en noz",
+    "kw": [
+      "noz",
+      "pont",
+      "pont en noz"
+    ]
+  },
+  "1f30a": {
+    "nm": "gwagenn",
+    "kw": [
+      "gwagenn",
+      "meurvor",
+      "mor"
+    ]
+  },
+  "1f30b": {
+    "nm": "menez-tan",
+    "kw": [
+      "dislonkadenn",
+      "menez-tan"
+    ]
+  },
+  "1f30c": {
+    "nm": "Hent-sant-Jakez",
+    "kw": [
+      "egor",
+      "Hent-sant-Jakez"
+    ]
+  },
+  "1f30d": {
+    "nm": "boul douar o tiskouez Europa hag Afrika",
+    "kw": [
+      "Afrika",
+      "bed",
+      "boul",
+      "boul douar o tiskouez Europa hag Afrika",
+      "douar",
+      "Europa"
+    ]
+  },
+  "1f30e": {
+    "nm": "boul douar o tiskouez Amerika",
+    "kw": [
+      "Amerika",
+      "bed",
+      "boul",
+      "boul douar o tiskouez Amerika",
+      "douar"
+    ]
+  },
+  "1f30f": {
+    "nm": "boul douar o tiskouez Azia hag Aostralia",
+    "kw": [
+      "Aostralia",
+      "Azia",
+      "bed",
+      "boul",
+      "boul douar o tiskouez Azia hag Aostralia",
+      "douar"
+    ]
+  },
+  "1f310": {
+    "nm": "boul douar gant hedredennoù",
+    "kw": [
+      "bed",
+      "boul",
+      "boul douar gant hedredennoù",
+      "douar",
+      "hedredennoù"
+    ]
+  },
+  "1f311": {
+    "nm": "loar nevez",
+    "kw": [
+      "loar",
+      "loar nevez"
+    ]
+  },
+  "1f312": {
+    "nm": "loar vihan ar cʼhresk",
+    "kw": [
+      "loar",
+      "loar vihan ar cʼhresk"
+    ]
+  },
+  "1f313": {
+    "nm": "hanterloar ar cʼhresk",
+    "kw": [
+      "hanterloar",
+      "hanterloar ar cʼhresk",
+      "loar"
+    ]
+  },
+  "1f314": {
+    "nm": "loar vras ar c’hresk",
+    "kw": [
+      "loar",
+      "loar vras ar c’hresk"
+    ]
+  },
+  "1f315": {
+    "nm": "loargann",
+    "kw": [
+      "loar",
+      "loargann"
+    ]
+  },
+  "1f316": {
+    "nm": "loar vras an digresk",
+    "kw": [
+      "loar",
+      "loar vras an digresk"
+    ]
+  },
+  "1f317": {
+    "nm": "hanterloar an digresk",
+    "kw": [
+      "hanterloar",
+      "hanterloar an digresk",
+      "loar"
+    ]
+  },
+  "1f318": {
+    "nm": "loar vihan an digresk",
+    "kw": [
+      "loar",
+      "loar vihan an digresk"
+    ]
+  },
+  "1f319": {
+    "nm": "kreskenn loar",
+    "kw": [
+      "kreskenn",
+      "loar"
+    ]
+  },
+  "1f31a": {
+    "nm": "penn loar nevez",
+    "kw": [
+      "loar",
+      "penn",
+      "penn loar nevez"
+    ]
+  },
+  "1f31b": {
+    "nm": "penn loar vihan ar cʼhresk",
+    "kw": [
+      "loar",
+      "penn",
+      "penn loar vihan ar cʼhresk"
+    ]
+  },
+  "1f31c": {
+    "nm": "penn loar vihan an digresk",
+    "kw": [
+      "loar",
+      "penn",
+      "penn loar vihan an digresk"
+    ]
+  },
+  "1f31d": {
+    "nm": "penn loargann",
+    "kw": [
+      "loar",
+      "loargann",
+      "penn"
+    ]
+  },
+  "1f31e": {
+    "nm": "penn heol",
+    "kw": [
+      "heol",
+      "penn heol",
+      "skin"
+    ]
+  },
+  "1f31f": {
+    "nm": "steredenn skedus",
+    "kw": [
+      "steredenn",
+      "steredenn skedus"
+    ]
+  },
+  "1f320": {
+    "nm": "steredenn-dared",
+    "kw": [
+      "steredenn",
+      "steredenn-dared"
+    ]
+  },
+  "1f321": {
+    "nm": "gwerzverker",
+    "kw": [
+      "amzer",
+      "gwerzverker"
+    ]
+  },
+  "1f324": {
+    "nm": "heol a-dreñv dʼur goumoulennig",
+    "kw": [
+      "heol",
+      "heol a-dreñv dʼur goumoulennig",
+      "koumoul"
+    ]
+  },
+  "1f325": {
+    "nm": "heol a-dreñv dʼur goumoulenn vras",
+    "kw": [
+      "heol",
+      "heol a-dreñv dʼur goumoulenn vras",
+      "koumoul"
+    ]
+  },
+  "1f326": {
+    "nm": "heol a-dreñv dʼur goumoulenn cʼhlav",
+    "kw": [
+      "heol",
+      "heol a-dreñv dʼur goumoulenn cʼhlav",
+      "koumoul"
+    ]
+  },
+  "1f327": {
+    "nm": "koumoulenn gant glav",
+    "kw": [
+      "glav",
+      "koumoul",
+      "koumoulenn gant glav"
+    ]
+  },
+  "1f328": {
+    "nm": "koumoulenn gant ercʼh",
+    "kw": [
+      "ercʼh",
+      "koumoul",
+      "koumoulenn gant ercʼh"
+    ]
+  },
+  "1f329": {
+    "nm": "koumoulenn gant lucʼhedenn",
+    "kw": [
+      "koumoul",
+      "koumoulenn gant lucʼhedenn",
+      "lucʼhedenn"
+    ]
+  },
+  "1f32a": {
+    "nm": "tornadenn",
+    "kw": [
+      "koumoul",
+      "tornadenn"
+    ]
+  },
+  "1f32b": {
+    "nm": "latar",
+    "kw": [
+      "koumoul",
+      "latar"
+    ]
+  },
+  "1f32d": {
+    "nm": "hot-dog",
+    "kw": [
+      "hot-dog",
+      "silzig"
+    ]
+  },
+  "1f32e": {
+    "nm": "tako",
+    "kw": [
+      "mecʼhikan",
+      "tako"
+    ]
+  },
+  "1f32f": {
+    "nm": "burrito",
+    "kw": [
+      "burrito",
+      "mecʼhikan"
+    ]
+  },
+  "1f330": {
+    "nm": "kistin",
+    "kw": [
+      "boued",
+      "kistin"
+    ]
+  },
+  "1f331": {
+    "nm": "strujenn yaouank",
+    "kw": [
+      "strujenn",
+      "yaouank"
+    ]
+  },
+  "1f332": {
+    "nm": "avalpineg",
+    "kw": [
+      "avalpineg",
+      "gwez"
+    ]
+  },
+  "1f333": {
+    "nm": "deliaoueg",
+    "kw": [
+      "deliaoueg",
+      "gwez"
+    ]
+  },
+  "1f334": {
+    "nm": "gwez-palmez",
+    "kw": [
+      "gwez",
+      "gwez-palmez",
+      "palmez"
+    ]
+  },
+  "1f335": {
+    "nm": "kaktuz",
+    "kw": [
+      "kaktuz",
+      "plant"
+    ]
+  },
+  "1f336": {
+    "nm": "pimant ruz",
+    "kw": [
+      "pimant",
+      "pimant ruz"
+    ]
+  },
+  "1f337": {
+    "nm": "tulipezenn",
+    "kw": [
+      "bleunienn",
+      "tulipezenn"
+    ]
+  },
+  "1f338": {
+    "nm": "bleunienn gerez",
+    "kw": [
+      "bleunienn gerez",
+      "bleuñv",
+      "kerez"
+    ]
+  },
+  "1f339": {
+    "nm": "rozenn",
+    "kw": [
+      "bleunienn",
+      "rozenn"
+    ]
+  },
+  "1f33a": {
+    "nm": "hibiskuz",
+    "kw": [
+      "bleunienn",
+      "hibiskuz",
+      "plantenn"
+    ]
+  },
+  "1f33b": {
+    "nm": "tro-heol",
+    "kw": [
+      "bleunienn",
+      "heol",
+      "plantenn",
+      "tro-heol"
+    ]
+  },
+  "1f33c": {
+    "nm": "broñs",
+    "kw": [
+      "bleunienn",
+      "broñs"
+    ]
+  },
+  "1f33d": {
+    "nm": "penn-maiz",
+    "kw": [
+      "maiz",
+      "penn-maiz"
+    ]
+  },
+  "1f33e": {
+    "nm": "plant riz",
+    "kw": [
+      "plant",
+      "riz"
+    ]
+  },
+  "1f33f": {
+    "nm": "louzaouenn",
+    "kw": [
+      "delienn",
+      "louzaouenn",
+      "plantenn"
+    ]
+  },
+  "1f340": {
+    "nm": "melchon peder",
+    "kw": [
+      "4",
+      "melchon peder",
+      "plant"
+    ]
+  },
+  "1f341": {
+    "nm": "delienn skav-gwracʼh",
+    "kw": [
+      "delienn",
+      "skav-gwracʼh"
+    ]
+  },
+  "1f342": {
+    "nm": "delioù secʼh",
+    "kw": [
+      "delienn",
+      "delioù secʼh"
+    ]
+  },
+  "1f343": {
+    "nm": "delienn en avel",
+    "kw": [
+      "avel",
+      "delienn",
+      "delienn en avel"
+    ]
+  },
+  "1f344": {
+    "nm": "kabell-touseg",
+    "kw": [
+      "kabell-touseg",
+      "tog-touseg"
+    ]
+  },
+  "1f345": {
+    "nm": "tomatez",
+    "kw": [
+      "frouezh",
+      "legumaj",
+      "tomatez"
+    ]
+  },
+  "1f346": {
+    "nm": "berjinez",
+    "kw": [
+      "berjinez",
+      "legumaj"
+    ]
+  },
+  "1f347": {
+    "nm": "rezin",
+    "kw": [
+      "frouezh",
+      "rezin"
+    ]
+  },
+  "1f348": {
+    "nm": "meloñs",
+    "kw": [
+      "frouezh",
+      "meloñs"
+    ]
+  },
+  "1f349": {
+    "nm": "pastekez",
+    "kw": [
+      "frouezh",
+      "pastekez"
+    ]
+  },
+  "1f34a": {
+    "nm": "mandarin",
+    "kw": [
+      "frouezh",
+      "mandarin",
+      "orañjez"
+    ]
+  },
+  "1f34b": {
+    "nm": "sitroñs",
+    "kw": [
+      "frouezh",
+      "sitroñs"
+    ]
+  },
+  "1f34c": {
+    "nm": "bananez",
+    "kw": [
+      "bananez",
+      "frouezh"
+    ]
+  },
+  "1f34d": {
+    "nm": "ananaz",
+    "kw": [
+      "ananaz",
+      "frouezh"
+    ]
+  },
+  "1f34e": {
+    "nm": "aval ruz",
+    "kw": [
+      "aval",
+      "frouezh",
+      "ruz"
+    ]
+  },
+  "1f34f": {
+    "nm": "aval glas",
+    "kw": [
+      "aval",
+      "frouezh",
+      "glas"
+    ]
+  },
+  "1f350": {
+    "nm": "per",
+    "kw": [
+      "frouezh",
+      "per"
+    ]
+  },
+  "1f351": {
+    "nm": "pechez",
+    "kw": [
+      "frouezh",
+      "pechez"
+    ]
+  },
+  "1f352": {
+    "nm": "kerez",
+    "kw": [
+      "frouezh",
+      "kerez"
+    ]
+  },
+  "1f353": {
+    "nm": "sivi",
+    "kw": [
+      "frouezh",
+      "sivi"
+    ]
+  },
+  "1f354": {
+    "nm": "hamburger",
+    "kw": [
+      "boued",
+      "buan",
+      "burger",
+      "debriñ",
+      "hamburger",
+      "naon"
+    ]
+  },
+  "1f355": {
+    "nm": "pizza",
+    "kw": [
+      "formaj-laezh",
+      "keuz",
+      "pizza",
+      "tamm formaj-laezh",
+      "tamm keuz"
+    ]
+  },
+  "1f356": {
+    "nm": "kig war askorn",
+    "kw": [
+      "askorn",
+      "kig",
+      "kig war askorn"
+    ]
+  },
+  "1f357": {
+    "nm": "morzhed yar",
+    "kw": [
+      "kig",
+      "kig-yar",
+      "morzhed",
+      "yar"
+    ]
+  },
+  "1f358": {
+    "nm": "galetez riz",
+    "kw": [
+      "boued",
+      "galetez",
+      "riz"
+    ]
+  },
+  "1f359": {
+    "nm": "boulig riz",
+    "kw": [
+      "boued",
+      "boulig",
+      "japanat",
+      "riz"
+    ]
+  },
+  "1f35a": {
+    "nm": "bolennad riz",
+    "kw": [
+      "bolennad",
+      "riz"
+    ]
+  },
+  "1f35b": {
+    "nm": "riz dre gari",
+    "kw": [
+      "boued",
+      "kari",
+      "riz",
+      "riz dre gari"
+    ]
+  },
+  "1f35c": {
+    "nm": "bolennad tomm",
+    "kw": [
+      "bolennad",
+      "tomm"
+    ]
+  },
+  "1f35d": {
+    "nm": "spaghetti",
+    "kw": [
+      "spaghetti",
+      "toazennoù"
+    ]
+  },
+  "1f35e": {
+    "nm": "bara",
+    "kw": [
+      "bara",
+      "choanenn"
+    ]
+  },
+  "1f35f": {
+    "nm": "fritez",
+    "kw": [
+      "boued",
+      "buan",
+      "fritez",
+      "patatez"
+    ]
+  },
+  "1f360": {
+    "nm": "patatez dous rostet",
+    "kw": [
+      "boued",
+      "dous",
+      "patatez",
+      "rostet"
+    ]
+  },
+  "1f361": {
+    "nm": "beriad madigoù",
+    "kw": [
+      "beriad",
+      "madigoù"
+    ]
+  },
+  "1f362": {
+    "nm": "beriad pesked",
+    "kw": [
+      "beriad",
+      "pesked"
+    ]
+  },
+  "1f363": {
+    "nm": "sushi",
+    "kw": [
+      "boued",
+      "pesked",
+      "sushi"
+    ]
+  },
+  "1f364": {
+    "nm": "bignez chevr",
+    "kw": [
+      "bignez",
+      "chevr"
+    ]
+  },
+  "1f365": {
+    "nm": "krokedenn besked",
+    "kw": [
+      "krokedenn",
+      "krokedenn besked",
+      "pesked"
+    ]
+  },
+  "1f366": {
+    "nm": "dienn-skorn mod Italia",
+    "kw": [
+      "dibenn-pred",
+      "dienn-skorn",
+      "dienn-skorn mod Italia",
+      "skorn"
+    ]
+  },
+  "1f367": {
+    "nm": "greunitad",
+    "kw": [
+      "dibenn-pred",
+      "greunitad",
+      "skorn"
+    ]
+  },
+  "1f368": {
+    "nm": "dienn-skorn",
+    "kw": [
+      "dibenn-pred",
+      "dienn-skorn",
+      "skorn"
+    ]
+  },
+  "1f369": {
+    "nm": "donut",
+    "kw": [
+      "dibenn-pred",
+      "donut"
+    ]
+  },
+  "1f36a": {
+    "nm": "cookie",
+    "kw": [
+      "cookie",
+      "dibenn-pred"
+    ]
+  },
+  "1f36b": {
+    "nm": "barrenn chokolad",
+    "kw": [
+      "barrenn chokolad",
+      "dibenn-pred"
+    ]
+  },
+  "1f36c": {
+    "nm": "madig",
+    "kw": [
+      "dibenn-pred",
+      "madig"
+    ]
+  },
+  "1f36d": {
+    "nm": "sunig",
+    "kw": [
+      "dibenn-pred",
+      "sunig"
+    ]
+  },
+  "1f36e": {
+    "nm": "dienn war e cʼhenoù",
+    "kw": [
+      "dibenn-pred",
+      "dienn war e cʼhenoù",
+      "koaven war e cʼhenoù"
+    ]
+  },
+  "1f36f": {
+    "nm": "podad mel",
+    "kw": [
+      "mel",
+      "pod",
+      "podad mel"
+    ]
+  },
+  "1f370": {
+    "nm": "sablegenn",
+    "kw": [
+      "dibenn-pred",
+      "gwastell",
+      "sablegenn"
+    ]
+  },
+  "1f371": {
+    "nm": "bento",
+    "kw": [
+      "bento",
+      "boest",
+      "boued"
+    ]
+  },
+  "1f372": {
+    "nm": "pothouarnad",
+    "kw": [
+      "keusteurenn",
+      "pothouarn",
+      "pothouarnad"
+    ]
+  },
+  "1f373": {
+    "nm": "vi war ar plad",
+    "kw": [
+      "dijuniñ",
+      "paelon",
+      "plad",
+      "vi",
+      "vi war ar plad"
+    ]
+  },
+  "1f374": {
+    "nm": "kontell ha fourchetez",
+    "kw": [
+      "kontell ha fourchetez",
+      "preti"
+    ]
+  },
+  "1f375": {
+    "nm": "tasenn",
+    "kw": [
+      "evaj",
+      "tasenn",
+      "te",
+      "tomm"
+    ]
+  },
+  "1f376": {
+    "nm": "sake",
+    "kw": [
+      "evaj",
+      "sake"
+    ]
+  },
+  "1f377": {
+    "nm": "gwerennad gwin",
+    "kw": [
+      "evaj",
+      "gwerenn",
+      "gwerennad gwin",
+      "gwin"
+    ]
+  },
+  "1f378": {
+    "nm": "koktel",
+    "kw": [
+      "evaj",
+      "gwerenn",
+      "koktel"
+    ]
+  },
+  "1f379": {
+    "nm": "koktel trovanel",
+    "kw": [
+      "evaj",
+      "koktel",
+      "trovanel"
+    ]
+  },
+  "1f37a": {
+    "nm": "chopad bier",
+    "kw": [
+      "bier",
+      "chop",
+      "chopad bier",
+      "evaj"
+    ]
+  },
+  "1f37b": {
+    "nm": "chopadoù bier",
+    "kw": [
+      "bier",
+      "chop",
+      "chopadoù bier",
+      "evaj"
+    ]
+  },
+  "1f37c": {
+    "nm": "bured",
+    "kw": [
+      "babig",
+      "bured",
+      "evaj",
+      "laezh"
+    ]
+  },
+  "1f37d": {
+    "nm": "kontell ha fourchetez gant asied",
+    "kw": [
+      "asied",
+      "fourchetez",
+      "kontell",
+      "kontell ha fourchetez gant asied"
+    ]
+  },
+  "1f37e": {
+    "nm": "boutailhad champagn",
+    "kw": [
+      "boutailh",
+      "boutailhad champagn",
+      "champagn",
+      "evaj",
+      "stouv"
+    ]
+  },
+  "1f37f": {
+    "nm": "popcorn",
+    "kw": [
+      "popcorn"
+    ]
+  },
+  "1f380": {
+    "nm": "seizenn",
+    "kw": [
+      "fest",
+      "gouel",
+      "seizenn"
+    ]
+  },
+  "1f381": {
+    "nm": "prof",
+    "kw": [
+      "fest",
+      "gouel",
+      "prof",
+      "seizenn"
+    ]
+  },
+  "1f382": {
+    "nm": "gwastell deiz-ha-bloaz",
+    "kw": [
+      "deiz-ha-bloaz",
+      "dibenn-pred",
+      "gwastell"
+    ]
+  },
+  "1f383": {
+    "nm": "jack-oʼ-lantern",
+    "kw": [
+      "fest",
+      "gouel",
+      "halloween",
+      "jack-oʼ-lantern",
+      "letern",
+      "lid",
+      "sitrouilhez"
+    ]
+  },
+  "1f384": {
+    "nm": "gwezenn Nedeleg",
+    "kw": [
+      "fest",
+      "gouel",
+      "gwezenn",
+      "lid",
+      "Nedeleg"
+    ]
+  },
+  "1f385": {
+    "nm": "Tad Nedeleg",
+    "kw": [
+      "fest",
+      "gouel",
+      "lid",
+      "Nedeleg",
+      "tad"
+    ]
+  },
+  "1f385-1f3ff": {
+    "nm": "Tad Nedeleg : krocʼhen teñval",
+    "kw": [
+      "fest",
+      "gouel",
+      "krocʼhen teñval",
+      "lid",
+      "Nedeleg",
+      "tad"
+    ]
+  },
+  "1f386": {
+    "nm": "tan-arvest",
+    "kw": [
+      "fest",
+      "gouel",
+      "lid",
+      "tan",
+      "tan-arvest"
+    ]
+  },
+  "1f387": {
+    "nm": "piled-hud",
+    "kw": [
+      "fest",
+      "gouel",
+      "lid",
+      "piled-hud",
+      "tan-arvest"
+    ]
+  },
+  "1f388": {
+    "nm": "cʼhwezigell",
+    "kw": [
+      "cʼhwezigell",
+      "fest",
+      "gouel"
+    ]
+  },
+  "1f389": {
+    "nm": "kotilhon",
+    "kw": [
+      "fest",
+      "gouel",
+      "kotilhon",
+      "lid"
+    ]
+  },
+  "1f38a": {
+    "nm": "koñfeti",
+    "kw": [
+      "fest",
+      "gouel",
+      "koñfeti",
+      "lid"
+    ]
+  },
+  "1f38b": {
+    "nm": "gwez-hetoù",
+    "kw": [
+      "fest",
+      "gouel",
+      "gwez-hetoù",
+      "lid"
+    ]
+  },
+  "1f38c": {
+    "nm": "bannieloù kroaziet",
+    "kw": [
+      "banniel",
+      "bannieloù kroaziet"
+    ]
+  },
+  "1f38d": {
+    "nm": "kadomatsu",
+    "kw": [
+      "bambouz",
+      "kadomatsu"
+    ]
+  },
+  "1f38e": {
+    "nm": "poupinelloù japanat",
+    "kw": [
+      "fest",
+      "gouel",
+      "lid",
+      "poupinell",
+      "poupinelloù japanat"
+    ]
+  },
+  "1f38f": {
+    "nm": "koinobori",
+    "kw": [
+      "fest",
+      "gouel",
+      "karpenn",
+      "koinobori"
+    ]
+  },
+  "1f390": {
+    "nm": "karilhon-avel",
+    "kw": [
+      "fest",
+      "gouel",
+      "karilhon-avel",
+      "klocʼh",
+      "lid",
+      "son"
+    ]
+  },
+  "1f391": {
+    "nm": "lid al loar",
+    "kw": [
+      "fest",
+      "gouel",
+      "lid",
+      "lid al loar",
+      "loar"
+    ]
+  },
+  "1f392": {
+    "nm": "sacʼh-kein",
+    "kw": [
+      "sacʼh",
+      "sacʼh-kein",
+      "sacʼh-skol"
+    ]
+  },
+  "1f393": {
+    "nm": "tok skol-veur",
+    "kw": [
+      "dilhad",
+      "tog",
+      "tok skol-veur"
+    ]
+  },
+  "1f396": {
+    "nm": "medalenn vilourel",
+    "kw": [
+      "medalenn",
+      "medalenn vilourel"
+    ]
+  },
+  "1f397": {
+    "nm": "seizenn-goun",
+    "kw": [
+      "fest",
+      "gouel",
+      "seizenn-goun"
+    ]
+  },
+  "1f399": {
+    "nm": "mikrofon studio",
+    "kw": [
+      "mikro",
+      "mikrofon",
+      "sonerezh",
+      "studio"
+    ]
+  },
+  "1f39e": {
+    "nm": "kocʼhenn",
+    "kw": [
+      "film",
+      "kocʼhenn",
+      "sinema"
+    ]
+  },
+  "1f39f": {
+    "nm": "bilhed mont e-barzh",
+    "kw": [
+      "bilhed",
+      "bilhed mont e-barzh"
+    ]
+  },
+  "1f3a0": {
+    "nm": "kazeg-vezevenn",
+    "kw": [
+      "kazeg",
+      "kazeg-vezevenn",
+      "manej"
+    ]
+  },
+  "1f3a1": {
+    "nm": "rod vras",
+    "kw": [
+      "rod",
+      "rod vras",
+      "tachenn ar cʼhoarioù"
+    ]
+  },
+  "1f3a2": {
+    "nm": "sav-diskenn",
+    "kw": [
+      "sav-diskenn",
+      "tachenn ar cʼhoarioù"
+    ]
+  },
+  "1f3a3": {
+    "nm": "lazheta",
+    "kw": [
+      "lazheta",
+      "pesketa"
+    ]
+  },
+  "1f3a4": {
+    "nm": "mikrofon",
+    "kw": [
+      "mikro",
+      "mikrofon",
+      "sonerezh"
+    ]
+  },
+  "1f3a5": {
+    "nm": "kamera",
+    "kw": [
+      "kamera",
+      "sinema"
+    ]
+  },
+  "1f3a6": {
+    "nm": "sinema",
+    "kw": [
+      "film",
+      "kamera",
+      "sinema"
+    ]
+  },
+  "1f3a7": {
+    "nm": "selaouelloù",
+    "kw": [
+      "selaouelloù"
+    ]
+  },
+  "1f3a8": {
+    "nm": "pladennad livioù",
+    "kw": [
+      "arz",
+      "pladenn",
+      "pladennad livioù"
+    ]
+  },
+  "1f3a9": {
+    "nm": "tog moull uhel",
+    "kw": [
+      "dilhad",
+      "tog",
+      "tog moull uhel"
+    ]
+  },
+  "1f3aa": {
+    "nm": "pabell sirk",
+    "kw": [
+      "pabell",
+      "sirk"
+    ]
+  },
+  "1f3ab": {
+    "nm": "bilhed",
+    "kw": [
+      "arvest",
+      "bilhed"
+    ]
+  },
+  "1f3ac": {
+    "nm": "klek",
+    "kw": [
+      "film",
+      "klek"
+    ]
+  },
+  "1f3ad": {
+    "nm": "arvestoù bev",
+    "kw": [
+      "arvestoù bev",
+      "arz",
+      "maskl"
+    ]
+  },
+  "1f3ae": {
+    "nm": "cʼhoari video",
+    "kw": [
+      "cʼhoari",
+      "cʼhoari video"
+    ]
+  },
+  "1f3af": {
+    "nm": "ober mil",
+    "kw": [
+      "gwenn",
+      "ober mil"
+    ]
+  },
+  "1f3b1": {
+    "nm": "bilhard saoz",
+    "kw": [
+      "8",
+      "bilhard",
+      "bilhard saoz",
+      "boul"
+    ]
+  },
+  "1f3b2": {
+    "nm": "diñs",
+    "kw": [
+      "cʼhoari diñsoù",
+      "diñs"
+    ]
+  },
+  "1f3b3": {
+    "nm": "bowling",
+    "kw": [
+      "boul",
+      "bowling"
+    ]
+  },
+  "1f3b5": {
+    "nm": "notenn sonerezh",
+    "kw": [
+      "notenn",
+      "sonerezh"
+    ]
+  },
+  "1f3b6": {
+    "nm": "notennoù sonerezh",
+    "kw": [
+      "notenn",
+      "notennoù",
+      "sonerezh"
+    ]
+  },
+  "1f3b7": {
+    "nm": "saksofon",
+    "kw": [
+      "benveg",
+      "saksofon",
+      "sonerezh"
+    ]
+  },
+  "1f3b8": {
+    "nm": "gitar",
+    "kw": [
+      "benveg",
+      "gitar",
+      "sonerezh"
+    ]
+  },
+  "1f3b9": {
+    "nm": "klavier sonerezh",
+    "kw": [
+      "benveg",
+      "klavier",
+      "sonerezh"
+    ]
+  },
+  "1f3ba": {
+    "nm": "trompilh",
+    "kw": [
+      "benveg",
+      "sonerezh",
+      "trompilh"
+    ]
+  },
+  "1f3bb": {
+    "nm": "violoñs",
+    "kw": [
+      "benveg",
+      "biolin",
+      "sonerezh",
+      "violoñs"
+    ]
+  },
+  "1f3bc": {
+    "nm": "skrid-sonerezh",
+    "kw": [
+      "kevrollenn",
+      "skrid-sonerezh",
+      "sonerezh"
+    ]
+  },
+  "1f3bd": {
+    "nm": "krez redek",
+    "kw": [
+      "krez",
+      "redek"
+    ]
+  },
+  "1f3be": {
+    "nm": "tennis",
+    "kw": [
+      "polotenn",
+      "tennis"
+    ]
+  },
+  "1f3bf": {
+    "nm": "ski",
+    "kw": [
+      "ercʼh",
+      "ski"
+    ]
+  },
+  "1f3c0": {
+    "nm": "basket-ball",
+    "kw": [
+      "basket-ball",
+      "mell"
+    ]
+  },
+  "1f3c1": {
+    "nm": "banniel karrezek",
+    "kw": [
+      "banniel",
+      "karrezek",
+      "redadeg"
+    ]
+  },
+  "1f3c5": {
+    "nm": "medalenn sport",
+    "kw": [
+      "medalenn",
+      "medalenn sport"
+    ]
+  },
+  "1f3c6": {
+    "nm": "trofe",
+    "kw": [
+      "priz",
+      "trofe"
+    ]
+  },
+  "1f3c8": {
+    "nm": "fobal amerikan",
+    "kw": [
+      "amerikan",
+      "fobal",
+      "mell"
+    ]
+  },
+  "1f3c9": {
+    "nm": "rugbi",
+    "kw": [
+      "mell",
+      "rugbi"
+    ]
+  },
+  "1f3cd": {
+    "nm": "marcʼh-tan",
+    "kw": [
+      "karbed",
+      "marcʼh-tan"
+    ]
+  },
+  "1f3cf": {
+    "nm": "kriked",
+    "kw": [
+      "kriked",
+      "krogad",
+      "match",
+      "sport"
+    ]
+  },
+  "1f3d0": {
+    "nm": "volley-ball",
+    "kw": [
+      "mell",
+      "volley-ball"
+    ]
+  },
+  "1f3d1": {
+    "nm": "hoke war leton",
+    "kw": [
+      "hoke war leton",
+      "sport"
+    ]
+  },
+  "1f3d2": {
+    "nm": "hoke war skorn",
+    "kw": [
+      "hoke war skorn",
+      "sport"
+    ]
+  },
+  "1f3d3": {
+    "nm": "ping pong",
+    "kw": [
+      "paliked",
+      "ping pong",
+      "polotenn",
+      "tennis-taol"
+    ]
+  },
+  "1f3d4": {
+    "nm": "menez ercʼhek",
+    "kw": [
+      "ercʼh",
+      "menez",
+      "menez ercʼhek"
+    ]
+  },
+  "1f3d5": {
+    "nm": "kampiñ",
+    "kw": [
+      "kampiñ"
+    ]
+  },
+  "1f3d6": {
+    "nm": "traezhenn gant disheolier",
+    "kw": [
+      "disheolier",
+      "traezhenn",
+      "traezhenn gant disheolier"
+    ]
+  },
+  "1f3d7": {
+    "nm": "savadur war sevel",
+    "kw": [
+      "savadur",
+      "savadur war sevel",
+      "sevel"
+    ]
+  },
+  "1f3d8": {
+    "nm": "tiez",
+    "kw": [
+      "savadurioù",
+      "tiez"
+    ]
+  },
+  "1f3d9": {
+    "nm": "gweledva kêr",
+    "kw": [
+      "gweledva kêr",
+      "kêr"
+    ]
+  },
+  "1f3da": {
+    "nm": "ti dilezet",
+    "kw": [
+      "dilezet",
+      "ti"
+    ]
+  },
+  "1f3db": {
+    "nm": "savadur klasel",
+    "kw": [
+      "savadur",
+      "savadur klasel"
+    ]
+  },
+  "1f3dc": {
+    "nm": "dezerzh",
+    "kw": [
+      "dezerzh"
+    ]
+  },
+  "1f3dd": {
+    "nm": "enezenn didud",
+    "kw": [
+      "didud",
+      "enezenn"
+    ]
+  },
+  "1f3de": {
+    "nm": "park broadel",
+    "kw": [
+      "park",
+      "park broadel"
+    ]
+  },
+  "1f3df": {
+    "nm": "stad",
+    "kw": [
+      "stad"
+    ]
+  },
+  "1f3e0": {
+    "nm": "ti",
+    "kw": [
+      "savadur",
+      "ti"
+    ]
+  },
+  "1f3e1": {
+    "nm": "ti ha liorzh",
+    "kw": [
+      "liorzh",
+      "ti",
+      "ti ha liorzh"
+    ]
+  },
+  "1f3e2": {
+    "nm": "savadur burevioù",
+    "kw": [
+      "savadur",
+      "savadur burevioù"
+    ]
+  },
+  "1f3e3": {
+    "nm": "ti-post japanat",
+    "kw": [
+      "japanat",
+      "post",
+      "ti-post"
+    ]
+  },
+  "1f3e4": {
+    "nm": "ti-post",
+    "kw": [
+      "europat",
+      "post",
+      "ti-post"
+    ]
+  },
+  "1f3e5": {
+    "nm": "ospital",
+    "kw": [
+      "medisinerezh",
+      "mezegiezh",
+      "ospital",
+      "savadur"
+    ]
+  },
+  "1f3e6": {
+    "nm": "bank",
+    "kw": [
+      "bank",
+      "savadur"
+    ]
+  },
+  "1f3e7": {
+    "nm": "arlun bilhedaouer",
+    "kw": [
+      "arcʼhant",
+      "arlun bilhedaouer",
+      "bank",
+      "bilhedaouer"
+    ]
+  },
+  "1f3e8": {
+    "nm": "leti",
+    "kw": [
+      "leti",
+      "savadur"
+    ]
+  },
+  "1f3e9": {
+    "nm": "love hotel",
+    "kw": [
+      "hotel",
+      "love"
+    ]
+  },
+  "1f3ea": {
+    "nm": "gourstalig",
+    "kw": [
+      "gourstalig",
+      "stal"
+    ]
+  },
+  "1f3eb": {
+    "nm": "skol",
+    "kw": [
+      "savadur",
+      "skol"
+    ]
+  },
+  "1f3ec": {
+    "nm": "stal vras",
+    "kw": [
+      "stal",
+      "stal vras"
+    ]
+  },
+  "1f3ed": {
+    "nm": "labouradeg",
+    "kw": [
+      "labouradeg",
+      "savadur"
+    ]
+  },
+  "1f3ee": {
+    "nm": "lampig ruz",
+    "kw": [
+      "lampig ruz",
+      "letern",
+      "ruz",
+      "tavarn"
+    ]
+  },
+  "1f3ef": {
+    "nm": "kastell japanat",
+    "kw": [
+      "japanat",
+      "kastell"
+    ]
+  },
+  "1f3f0": {
+    "nm": "kastell",
+    "kw": [
+      "europat",
+      "kastell"
+    ]
+  },
+  "1f3f3": {
+    "nm": "banniel gwenn",
+    "kw": [
+      "banniel",
+      "banniel gwenn"
+    ]
+  },
+  "1f3f3-200d-1f308": {
+    "nm": "banniel kanevedenn",
+    "kw": [
+      "banniel",
+      "banniel kanevedenn"
+    ]
+  },
+  "1f3f3-200d-26a7": {
+    "nm": "banniel treuzjener",
+    "kw": [
+      "banniel",
+      "banniel treuzjener"
+    ]
+  },
+  "1f3f4": {
+    "nm": "banniel du",
+    "kw": [
+      "banniel",
+      "banniel du"
+    ]
+  },
+  "1f3f4-200d-2620": {
+    "nm": "banniel ar vorlaeron",
+    "kw": [
+      "banniel",
+      "banniel ar vorlaeron"
+    ]
+  },
+  "1f3f4-e0067-e0062-e0065-e006e-e0067-e007f": {
+    "nm": "banniel : Bro-Saoz",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f3f4-e0067-e0062-e0073-e0063-e0074-e007f": {
+    "nm": "banniel : Skos",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f3f4-e0067-e0062-e0077-e006c-e0073-e007f": {
+    "nm": "banniel : Kembre",
+    "kw": [
+      "banniel"
+    ]
+  },
+  "1f3f5": {
+    "nm": "rozetenn",
+    "kw": [
+      "plantenn",
+      "rozetenn"
+    ]
+  },
+  "1f3f7": {
+    "nm": "tikedenn",
+    "kw": [
+      "tikedenn"
+    ]
+  },
+  "1f3f8": {
+    "nm": "badminton",
+    "kw": [
+      "badminton",
+      "paliked",
+      "skobitell"
+    ]
+  },
+  "1f3f9": {
+    "nm": "gwareg ha saezh",
+    "kw": [
+      "gwareg",
+      "gwareg ha saezh",
+      "gwareger",
+      "saezh"
+    ]
+  },
+  "1f3fa": {
+    "nm": "añforenn",
+    "kw": [
+      "añforenn",
+      "evaj"
+    ]
+  },
+  "1f3ff": {
+    "nm": "krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval"
+    ]
+  },
+  "1f400": {
+    "nm": "razh",
+    "kw": [
+      "loen",
+      "razh"
+    ]
+  },
+  "1f401": {
+    "nm": "logodenn",
+    "kw": [
+      "loen",
+      "loened",
+      "logodenn"
+    ]
+  },
+  "1f402": {
+    "nm": "ejen",
+    "kw": [
+      "ejen",
+      "loen"
+    ]
+  },
+  "1f403": {
+    "nm": "bual",
+    "kw": [
+      "bual",
+      "loen"
+    ]
+  },
+  "1f404": {
+    "nm": "buocʼh",
+    "kw": [
+      "buocʼh",
+      "loen"
+    ]
+  },
+  "1f405": {
+    "nm": "tigr",
+    "kw": [
+      "tigr"
+    ]
+  },
+  "1f406": {
+    "nm": "loupard",
+    "kw": [
+      "loupard"
+    ]
+  },
+  "1f407": {
+    "nm": "lapin",
+    "kw": [
+      "lapin",
+      "loen"
+    ]
+  },
+  "1f408": {
+    "nm": "kazh",
+    "kw": [
+      "kazh",
+      "loen"
+    ]
+  },
+  "1f408-200d-2b1b": {
+    "nm": "kazh du",
+    "kw": [
+      "dichañs",
+      "du",
+      "kazh"
+    ]
+  },
+  "1f409": {
+    "nm": "dragon",
+    "kw": [
+      "dragon",
+      "loen"
+    ]
+  },
+  "1f40a": {
+    "nm": "krokodil",
+    "kw": [
+      "krokodil",
+      "loen",
+      "zoo"
+    ]
+  },
+  "1f40b": {
+    "nm": "balum",
+    "kw": [
+      "aod",
+      "balum",
+      "loen",
+      "meurvor"
+    ]
+  },
+  "1f40c": {
+    "nm": "maligorn",
+    "kw": [
+      "loen",
+      "maligorn"
+    ]
+  },
+  "1f40d": {
+    "nm": "naer",
+    "kw": [
+      "loen",
+      "naer"
+    ]
+  },
+  "1f40e": {
+    "nm": "marcʼh",
+    "kw": [
+      "loen",
+      "marcʼh"
+    ]
+  },
+  "1f40f": {
+    "nm": "tourz",
+    "kw": [
+      "loen",
+      "tourz"
+    ]
+  },
+  "1f410": {
+    "nm": "gavr",
+    "kw": [
+      "gavr",
+      "loen"
+    ]
+  },
+  "1f411": {
+    "nm": "dañvad",
+    "kw": [
+      "dañvad",
+      "loen"
+    ]
+  },
+  "1f412": {
+    "nm": "marmouz",
+    "kw": [
+      "loen",
+      "marmouz"
+    ]
+  },
+  "1f413": {
+    "nm": "kilhog",
+    "kw": [
+      "evn",
+      "evnoniezh",
+      "kilhog",
+      "loen"
+    ]
+  },
+  "1f414": {
+    "nm": "yar",
+    "kw": [
+      "evn",
+      "evnoniezh",
+      "loen",
+      "yar"
+    ]
+  },
+  "1f415": {
+    "nm": "ki",
+    "kw": [
+      "ki",
+      "loen"
+    ]
+  },
+  "1f416": {
+    "nm": "pemocʼh",
+    "kw": [
+      "loen",
+      "pemocʼh"
+    ]
+  },
+  "1f417": {
+    "nm": "hocʼh gouez",
+    "kw": [
+      "hocʼh gouez",
+      "loen"
+    ]
+  },
+  "1f418": {
+    "nm": "olifant",
+    "kw": [
+      "loen",
+      "olifant"
+    ]
+  },
+  "1f419": {
+    "nm": "morgazh",
+    "kw": [
+      "loen",
+      "morgazh"
+    ]
+  },
+  "1f41a": {
+    "nm": "krogenn droellennek",
+    "kw": [
+      "krogenn",
+      "krogenn droellennek",
+      "troellenn"
+    ]
+  },
+  "1f41b": {
+    "nm": "biskoulenn",
+    "kw": [
+      "amprevan",
+      "biskoulenn"
+    ]
+  },
+  "1f41c": {
+    "nm": "merienenn",
+    "kw": [
+      "amprevan",
+      "liorzh",
+      "loen",
+      "merienenn"
+    ]
+  },
+  "1f41d": {
+    "nm": "gwenanenn",
+    "kw": [
+      "amprevan",
+      "gwenanenn"
+    ]
+  },
+  "1f41e": {
+    "nm": "buocʼhan",
+    "kw": [
+      "amprevan",
+      "buocʼhan"
+    ]
+  },
+  "1f41f": {
+    "nm": "pesk",
+    "kw": [
+      "loen",
+      "pesk",
+      "pesked"
+    ]
+  },
+  "1f420": {
+    "nm": "pesk trovanel",
+    "kw": [
+      "loen",
+      "pesk",
+      "pesked",
+      "trovanel"
+    ]
+  },
+  "1f421": {
+    "nm": "loar-vor",
+    "kw": [
+      "loar-vor",
+      "pesk"
+    ]
+  },
+  "1f422": {
+    "nm": "baot",
+    "kw": [
+      "baot",
+      "loen"
+    ]
+  },
+  "1f424": {
+    "nm": "poñsin",
+    "kw": [
+      "babig",
+      "evn",
+      "evnoniezh",
+      "loen",
+      "poñsin"
+    ]
+  },
+  "1f426": {
+    "nm": "evn",
+    "kw": [
+      "evn",
+      "evnoniezh",
+      "loen"
+    ]
+  },
+  "1f427": {
+    "nm": "god",
+    "kw": [
+      "evn",
+      "god"
+    ]
+  },
+  "1f428": {
+    "nm": "koala",
+    "kw": [
+      "koala",
+      "loen"
+    ]
+  },
+  "1f429": {
+    "nm": "ki rodellek",
+    "kw": [
+      "ki",
+      "ki rodellek"
+    ]
+  },
+  "1f42a": {
+    "nm": "dremedal",
+    "kw": [
+      "dremedal",
+      "loen"
+    ]
+  },
+  "1f42b": {
+    "nm": "kañval",
+    "kw": [
+      "kañval",
+      "loen"
+    ]
+  },
+  "1f42c": {
+    "nm": "delfin",
+    "kw": [
+      "delfin",
+      "loen"
+    ]
+  },
+  "1f42d": {
+    "nm": "penn logodenn",
+    "kw": [
+      "loen",
+      "logodenn",
+      "penn"
+    ]
+  },
+  "1f42e": {
+    "nm": "penn buocʼh",
+    "kw": [
+      "buocʼh",
+      "penn"
+    ]
+  },
+  "1f42f": {
+    "nm": "penn tigr",
+    "kw": [
+      "penn",
+      "tigr"
+    ]
+  },
+  "1f430": {
+    "nm": "penn lapin",
+    "kw": [
+      "lapin",
+      "penn"
+    ]
+  },
+  "1f431": {
+    "nm": "penn kazh",
+    "kw": [
+      "kazh",
+      "penn"
+    ]
+  },
+  "1f432": {
+    "nm": "penn dragon",
+    "kw": [
+      "dragon",
+      "penn"
+    ]
+  },
+  "1f434": {
+    "nm": "penn marcʼh",
+    "kw": [
+      "marcʼh",
+      "penn"
+    ]
+  },
+  "1f435": {
+    "nm": "penn marmouz",
+    "kw": [
+      "marmouz",
+      "penn"
+    ]
+  },
+  "1f436": {
+    "nm": "penn ki",
+    "kw": [
+      "ki",
+      "penn"
+    ]
+  },
+  "1f437": {
+    "nm": "penn mocʼh",
+    "kw": [
+      "mocʼh",
+      "penn"
+    ]
+  },
+  "1f438": {
+    "nm": "ran",
+    "kw": [
+      "loen",
+      "penn",
+      "ran"
+    ]
+  },
+  "1f439": {
+    "nm": "hamster",
+    "kw": [
+      "hamster",
+      "penn"
+    ]
+  },
+  "1f43a": {
+    "nm": "bleiz",
+    "kw": [
+      "bleiz",
+      "penn"
+    ]
+  },
+  "1f43b": {
+    "nm": "arzh",
+    "kw": [
+      "arzh",
+      "penn"
+    ]
+  },
+  "1f43b-200d-2744": {
+    "nm": "arzh gwenn",
+    "kw": [
+      "arzh",
+      "gwenn"
+    ]
+  },
+  "1f43c": {
+    "nm": "panda",
+    "kw": [
+      "panda",
+      "penn"
+    ]
+  },
+  "1f43d": {
+    "nm": "moj",
+    "kw": [
+      "loen",
+      "moj",
+      "pemocʼh"
+    ]
+  },
+  "1f43e": {
+    "nm": "loucʼhadoù pavioù",
+    "kw": [
+      "loucʼhad",
+      "loucʼhadoù pavioù",
+      "pav"
+    ]
+  },
+  "1f43f": {
+    "nm": "gwiñver",
+    "kw": [
+      "gwiñver",
+      "loen"
+    ]
+  },
+  "1f440": {
+    "nm": "daoulagad",
+    "kw": [
+      "daoulagad"
+    ]
+  },
+  "1f441": {
+    "nm": "lagad",
+    "kw": [
+      "1",
+      "korf",
+      "lagad"
+    ]
+  },
+  "1f442": {
+    "nm": "skouarn",
+    "kw": [
+      "skouarn"
+    ]
+  },
+  "1f442-1f3ff": {
+    "nm": "skouarn : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "skouarn"
+    ]
+  },
+  "1f443": {
+    "nm": "fri",
+    "kw": [
+      "fri"
+    ]
+  },
+  "1f443-1f3ff": {
+    "nm": "fri : krocʼhen teñval",
+    "kw": [
+      "fri",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f445": {
+    "nm": "teod",
+    "kw": [
+      "korf",
+      "lipat",
+      "teod"
+    ]
+  },
+  "1f451": {
+    "nm": "kurunenn",
+    "kw": [
+      "dilhad",
+      "kurunenn",
+      "tog"
+    ]
+  },
+  "1f453": {
+    "nm": "lunedoù gwelet",
+    "kw": [
+      "daoulagad",
+      "lunedoù",
+      "lunedoù gwelet"
+    ]
+  },
+  "1f454": {
+    "nm": "kravatenn",
+    "kw": [
+      "dilhad",
+      "kravatenn"
+    ]
+  },
+  "1f455": {
+    "nm": "tee-shirt",
+    "kw": [
+      "dilhad",
+      "tee-shirt"
+    ]
+  },
+  "1f456": {
+    "nm": "jeanʼs",
+    "kw": [
+      "dilhad",
+      "jeanʼs"
+    ]
+  },
+  "1f457": {
+    "nm": "sae",
+    "kw": [
+      "dilhad",
+      "sae"
+    ]
+  },
+  "1f458": {
+    "nm": "kimono",
+    "kw": [
+      "dilhad",
+      "kimono"
+    ]
+  },
+  "1f459": {
+    "nm": "bikini",
+    "kw": [
+      "bikini",
+      "dilhad-kouronkañ"
+    ]
+  },
+  "1f45a": {
+    "nm": "dilhad mercʼhed",
+    "kw": [
+      "dilhad",
+      "mercʼhed"
+    ]
+  },
+  "1f45b": {
+    "nm": "doug-moneiz",
+    "kw": [
+      "doug-moneiz",
+      "moneiz"
+    ]
+  },
+  "1f45c": {
+    "nm": "sacʼh-dorn",
+    "kw": [
+      "dilhad",
+      "sacʼh",
+      "sacʼh-dorn"
+    ]
+  },
+  "1f45d": {
+    "nm": "godellig",
+    "kw": [
+      "godellig",
+      "sacʼh"
+    ]
+  },
+  "1f45f": {
+    "nm": "botez sport",
+    "kw": [
+      "botez",
+      "botez sport"
+    ]
+  },
+  "1f460": {
+    "nm": "skarpin",
+    "kw": [
+      "botez",
+      "skarpin"
+    ]
+  },
+  "1f466": {
+    "nm": "paotr",
+    "kw": [
+      "paotr",
+      "yaouank"
+    ]
+  },
+  "1f466-1f3ff": {
+    "nm": "paotr : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "paotr",
+      "yaouank"
+    ]
+  },
+  "1f467": {
+    "nm": "placʼh",
+    "kw": [
+      "placʼh",
+      "yaouank"
+    ]
+  },
+  "1f467-1f3ff": {
+    "nm": "placʼh : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "placʼh",
+      "yaouank"
+    ]
+  },
+  "1f468": {
+    "nm": "gwaz",
+    "kw": [
+      "deuet",
+      "gwaz"
+    ]
+  },
+  "1f468-1f3ff": {
+    "nm": "gwaz : krocʼhen teñval",
+    "kw": [
+      "deuet",
+      "gwaz",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f468-1f3ff-200d-1f33e": {
+    "nm": "labourer-douar : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "labourer-douar"
+    ]
+  },
+  "1f468-1f3ff-200d-1f373": {
+    "nm": "keginer : krocʼhen teñval",
+    "kw": [
+      "keginer",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f468-1f3ff-200d-1f393": {
+    "nm": "studier : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "studier"
+    ]
+  },
+  "1f468-1f3ff-200d-1f3a4": {
+    "nm": "kaner : krocʼhen teñval",
+    "kw": [
+      "kaner",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f468-1f3ff-200d-1f3a8": {
+    "nm": "arzour : krocʼhen teñval",
+    "kw": [
+      "arzour",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f468-1f3ff-200d-1f3eb": {
+    "nm": "kelenner : krocʼhen teñval",
+    "kw": [
+      "kelenner",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f468-1f3ff-200d-1f3ed": {
+    "nm": "micherour : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "micherour"
+    ]
+  },
+  "1f468-1f3ff-200d-1f4bb": {
+    "nm": "stlennegour : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "stlennegour"
+    ]
+  },
+  "1f468-1f3ff-200d-1f4bc": {
+    "nm": "implijad : krocʼhen teñval",
+    "kw": [
+      "implijad",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f468-1f3ff-200d-1f52c": {
+    "nm": "skiantour : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "skiantour"
+    ]
+  },
+  "1f468-1f3ff-200d-1f680": {
+    "nm": "astraer : krocʼhen teñval",
+    "kw": [
+      "astraer",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f468-1f3ff-200d-1f692": {
+    "nm": "pomper : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "pomper"
+    ]
+  },
+  "1f468-1f3ff-200d-1f9b0": {
+    "nm": "gwaz : krocʼhen teñval, blev ruz",
+    "kw": [
+      "blev ruz",
+      "deuet",
+      "gwaz",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f468-1f3ff-200d-1f9b1": {
+    "nm": "gwaz : krocʼhen teñval, blev rodellek",
+    "kw": [
+      "blev rodellek",
+      "deuet",
+      "gwaz",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f468-1f3ff-200d-1f9b2": {
+    "nm": "gwaz : krocʼhen teñval, moal",
+    "kw": [
+      "deuet",
+      "gwaz",
+      "krocʼhen teñval",
+      "moal"
+    ]
+  },
+  "1f468-1f3ff-200d-1f9b3": {
+    "nm": "gwaz : krocʼhen teñval, blev gwenn",
+    "kw": [
+      "blev gwenn",
+      "deuet",
+      "gwaz",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f468-1f3ff-200d-2696": {
+    "nm": "barner : krocʼhen teñval",
+    "kw": [
+      "barner",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f468-1f3ff-200d-2708": {
+    "nm": "levier : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "levier"
+    ]
+  },
+  "1f468-200d-1f33e": {
+    "nm": "labourer-douar",
+    "kw": [
+      "labourer-douar"
+    ]
+  },
+  "1f468-200d-1f373": {
+    "nm": "keginer",
+    "kw": [
+      "keginer"
+    ]
+  },
+  "1f468-200d-1f393": {
+    "nm": "studier",
+    "kw": [
+      "studier"
+    ]
+  },
+  "1f468-200d-1f3a4": {
+    "nm": "kaner",
+    "kw": [
+      "kaner"
+    ]
+  },
+  "1f468-200d-1f3a8": {
+    "nm": "arzour",
+    "kw": [
+      "arzour"
+    ]
+  },
+  "1f468-200d-1f3eb": {
+    "nm": "kelenner",
+    "kw": [
+      "kelenner"
+    ]
+  },
+  "1f468-200d-1f3ed": {
+    "nm": "micherour",
+    "kw": [
+      "micherour"
+    ]
+  },
+  "1f468-200d-1f466": {
+    "nm": "familh : gwaz, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "paotr",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f466-200d-1f466": {
+    "nm": "familh : gwaz, paotr, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "paotr",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f467": {
+    "nm": "familh : gwaz, placʼh",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f467-200d-1f466": {
+    "nm": "familh : gwaz, placʼh, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "paotr",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f467-200d-1f467": {
+    "nm": "familh : gwaz, placʼh, placʼh",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f468-200d-1f466": {
+    "nm": "familh : gwaz, gwaz, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "paotr",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f468-200d-1f466-200d-1f466": {
+    "nm": "familh : gwaz, gwaz, paotr, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "paotr",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f468-200d-1f467": {
+    "nm": "familh : gwaz, gwaz, placʼh",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f468-200d-1f467-200d-1f466": {
+    "nm": "familh : gwaz, gwaz, placʼh, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "paotr",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f468-200d-1f467-200d-1f467": {
+    "nm": "familh : gwaz, gwaz, placʼh, placʼh",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f469-200d-1f466": {
+    "nm": "familh : gwaz, maouez, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "maouez",
+      "paotr",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f469-200d-1f466-200d-1f466": {
+    "nm": "familh : gwaz, maouez, paotr, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "maouez",
+      "paotr",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f469-200d-1f467": {
+    "nm": "familh : gwaz, maouez, placʼh",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "maouez",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f469-200d-1f467-200d-1f466": {
+    "nm": "familh : gwaz, maouez, placʼh, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "maouez",
+      "paotr",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f469-200d-1f467-200d-1f467": {
+    "nm": "familh : gwaz, maouez, placʼh, placʼh",
+    "kw": [
+      "bugel",
+      "familh",
+      "gwaz",
+      "mamm",
+      "maouez",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f468-200d-1f4bb": {
+    "nm": "stlennegour",
+    "kw": [
+      "stlennegour"
+    ]
+  },
+  "1f468-200d-1f4bc": {
+    "nm": "implijad",
+    "kw": [
+      "implijad"
+    ]
+  },
+  "1f468-200d-1f52c": {
+    "nm": "skiantour",
+    "kw": [
+      "skiantour"
+    ]
+  },
+  "1f468-200d-1f680": {
+    "nm": "astraer",
+    "kw": [
+      "astraer"
+    ]
+  },
+  "1f468-200d-1f692": {
+    "nm": "pomper",
+    "kw": [
+      "pomper"
+    ]
+  },
+  "1f468-200d-1f9b0": {
+    "nm": "gwaz : blev ruz",
+    "kw": [
+      "blev ruz",
+      "deuet",
+      "gwaz"
+    ]
+  },
+  "1f468-200d-1f9b1": {
+    "nm": "gwaz : blev rodellek",
+    "kw": [
+      "blev rodellek",
+      "deuet",
+      "gwaz"
+    ]
+  },
+  "1f468-200d-1f9b2": {
+    "nm": "gwaz : moal",
+    "kw": [
+      "deuet",
+      "gwaz",
+      "moal"
+    ]
+  },
+  "1f468-200d-1f9b3": {
+    "nm": "gwaz : blev gwenn",
+    "kw": [
+      "blev gwenn",
+      "deuet",
+      "gwaz"
+    ]
+  },
+  "1f468-200d-2696": {
+    "nm": "barner",
+    "kw": [
+      "barner"
+    ]
+  },
+  "1f468-200d-2708": {
+    "nm": "levier",
+    "kw": [
+      "levier"
+    ]
+  },
+  "1f469": {
+    "nm": "maouez",
+    "kw": [
+      "deuet",
+      "maouez"
+    ]
+  },
+  "1f469-1f3ff": {
+    "nm": "maouez : krocʼhen teñval",
+    "kw": [
+      "deuet",
+      "krocʼhen teñval",
+      "maouez"
+    ]
+  },
+  "1f469-1f3ff-200d-1f33e": {
+    "nm": "labourerez-douar : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "labourerez-douar"
+    ]
+  },
+  "1f469-1f3ff-200d-1f373": {
+    "nm": "keginerez : krocʼhen teñval",
+    "kw": [
+      "keginerez",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f469-1f3ff-200d-1f393": {
+    "nm": "studierez : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "studierez"
+    ]
+  },
+  "1f469-1f3ff-200d-1f3a4": {
+    "nm": "kanerez : krocʼhen teñval",
+    "kw": [
+      "kanerez",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f469-1f3ff-200d-1f3a8": {
+    "nm": "arzourez : krocʼhen teñval",
+    "kw": [
+      "arzourez",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f469-1f3ff-200d-1f3eb": {
+    "nm": "kelennerez : krocʼhen teñval",
+    "kw": [
+      "kelennerez",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f469-1f3ff-200d-1f3ed": {
+    "nm": "micherourez : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "micherourez"
+    ]
+  },
+  "1f469-1f3ff-200d-1f4bb": {
+    "nm": "stlennegourez : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "stlennegourez"
+    ]
+  },
+  "1f469-1f3ff-200d-1f4bc": {
+    "nm": "implijadez : krocʼhen teñval",
+    "kw": [
+      "implijadez",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f469-1f3ff-200d-1f52c": {
+    "nm": "skiantourez : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "skiantourez"
+    ]
+  },
+  "1f469-1f3ff-200d-1f680": {
+    "nm": "astraerez : krocʼhen teñval",
+    "kw": [
+      "astraerez",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f469-1f3ff-200d-1f692": {
+    "nm": "pomperez : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "pomperez"
+    ]
+  },
+  "1f469-1f3ff-200d-1f9b0": {
+    "nm": "maouez : krocʼhen teñval, blev ruz",
+    "kw": [
+      "blev ruz",
+      "deuet",
+      "krocʼhen teñval",
+      "maouez"
+    ]
+  },
+  "1f469-1f3ff-200d-1f9b1": {
+    "nm": "maouez : krocʼhen teñval, blev rodellek",
+    "kw": [
+      "blev rodellek",
+      "deuet",
+      "krocʼhen teñval",
+      "maouez"
+    ]
+  },
+  "1f469-1f3ff-200d-1f9b2": {
+    "nm": "maouez : krocʼhen teñval, moal",
+    "kw": [
+      "deuet",
+      "krocʼhen teñval",
+      "maouez",
+      "moal"
+    ]
+  },
+  "1f469-1f3ff-200d-1f9b3": {
+    "nm": "maouez : krocʼhen teñval, blev gwenn",
+    "kw": [
+      "blev gwenn",
+      "deuet",
+      "krocʼhen teñval",
+      "maouez"
+    ]
+  },
+  "1f469-1f3ff-200d-2696": {
+    "nm": "barnerez : krocʼhen teñval",
+    "kw": [
+      "barnerez",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f469-1f3ff-200d-2708": {
+    "nm": "levierez : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "levierez"
+    ]
+  },
+  "1f469-200d-1f33e": {
+    "nm": "labourerez-douar",
+    "kw": [
+      "labourerez-douar"
+    ]
+  },
+  "1f469-200d-1f373": {
+    "nm": "keginerez",
+    "kw": [
+      "keginerez"
+    ]
+  },
+  "1f469-200d-1f393": {
+    "nm": "studierez",
+    "kw": [
+      "studierez"
+    ]
+  },
+  "1f469-200d-1f3a4": {
+    "nm": "kanerez",
+    "kw": [
+      "kanerez"
+    ]
+  },
+  "1f469-200d-1f3a8": {
+    "nm": "arzourez",
+    "kw": [
+      "arzourez"
+    ]
+  },
+  "1f469-200d-1f3eb": {
+    "nm": "kelennerez",
+    "kw": [
+      "kelennerez"
+    ]
+  },
+  "1f469-200d-1f3ed": {
+    "nm": "micherourez",
+    "kw": [
+      "micherourez"
+    ]
+  },
+  "1f469-200d-1f466": {
+    "nm": "familh : maouez, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "mamm",
+      "maouez",
+      "paotr",
+      "tad"
+    ]
+  },
+  "1f469-200d-1f466-200d-1f466": {
+    "nm": "familh : maouez, paotr, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "mamm",
+      "maouez",
+      "paotr",
+      "tad"
+    ]
+  },
+  "1f469-200d-1f467": {
+    "nm": "familh : maouez, placʼh",
+    "kw": [
+      "bugel",
+      "familh",
+      "mamm",
+      "maouez",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f469-200d-1f467-200d-1f466": {
+    "nm": "familh : maouez, placʼh, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "mamm",
+      "maouez",
+      "paotr",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f469-200d-1f467-200d-1f467": {
+    "nm": "familh : maouez, placʼh, placʼh",
+    "kw": [
+      "bugel",
+      "familh",
+      "mamm",
+      "maouez",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f469-200d-1f469-200d-1f466": {
+    "nm": "familh : maouez, maouez, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "mamm",
+      "maouez",
+      "paotr",
+      "tad"
+    ]
+  },
+  "1f469-200d-1f469-200d-1f466-200d-1f466": {
+    "nm": "familh : maouez, maouez, paotr, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "mamm",
+      "maouez",
+      "paotr",
+      "tad"
+    ]
+  },
+  "1f469-200d-1f469-200d-1f467": {
+    "nm": "familh : maouez, maouez, placʼh",
+    "kw": [
+      "bugel",
+      "familh",
+      "mamm",
+      "maouez",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f469-200d-1f469-200d-1f467-200d-1f466": {
+    "nm": "familh : maouez, maouez, placʼh, paotr",
+    "kw": [
+      "bugel",
+      "familh",
+      "mamm",
+      "maouez",
+      "paotr",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f469-200d-1f469-200d-1f467-200d-1f467": {
+    "nm": "familh : maouez, maouez, placʼh, placʼh",
+    "kw": [
+      "bugel",
+      "familh",
+      "mamm",
+      "maouez",
+      "placʼh",
+      "tad"
+    ]
+  },
+  "1f469-200d-1f4bb": {
+    "nm": "stlennegourez",
+    "kw": [
+      "stlennegourez"
+    ]
+  },
+  "1f469-200d-1f4bc": {
+    "nm": "implijadez",
+    "kw": [
+      "implijadez"
+    ]
+  },
+  "1f469-200d-1f52c": {
+    "nm": "skiantourez",
+    "kw": [
+      "skiantourez"
+    ]
+  },
+  "1f469-200d-1f680": {
+    "nm": "astraerez",
+    "kw": [
+      "astraerez"
+    ]
+  },
+  "1f469-200d-1f692": {
+    "nm": "pomperez",
+    "kw": [
+      "pomperez"
+    ]
+  },
+  "1f469-200d-1f9b0": {
+    "nm": "maouez : blev ruz",
+    "kw": [
+      "blev ruz",
+      "deuet",
+      "maouez"
+    ]
+  },
+  "1f469-200d-1f9b1": {
+    "nm": "maouez : blev rodellek",
+    "kw": [
+      "blev rodellek",
+      "deuet",
+      "maouez"
+    ]
+  },
+  "1f469-200d-1f9b2": {
+    "nm": "maouez : moal",
+    "kw": [
+      "deuet",
+      "maouez",
+      "moal"
+    ]
+  },
+  "1f469-200d-1f9b3": {
+    "nm": "maouez : blev gwenn",
+    "kw": [
+      "blev gwenn",
+      "deuet",
+      "maouez"
+    ]
+  },
+  "1f469-200d-2696": {
+    "nm": "barnerez",
+    "kw": [
+      "barnerez"
+    ]
+  },
+  "1f469-200d-2708": {
+    "nm": "levierez",
+    "kw": [
+      "levierez"
+    ]
+  },
+  "1f46a": {
+    "nm": "familh",
+    "kw": [
+      "bugel",
+      "familh",
+      "mamm",
+      "tad"
+    ]
+  },
+  "1f46e": {
+    "nm": "polis",
+    "kw": [
+      "polis"
+    ]
+  },
+  "1f46e-1f3ff": {
+    "nm": "polis : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "polis"
+    ]
+  },
+  "1f46e-1f3ff-200d-2640": {
+    "nm": "poliserez : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "poliserez"
+    ]
+  },
+  "1f46e-1f3ff-200d-2642": {
+    "nm": "poliser : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "poliser"
+    ]
+  },
+  "1f46e-200d-2640": {
+    "nm": "poliserez",
+    "kw": [
+      "poliserez"
+    ]
+  },
+  "1f46e-200d-2642": {
+    "nm": "poliser",
+    "kw": [
+      "poliser"
+    ]
+  },
+  "1f471": {
+    "nm": "den melegan",
+    "kw": [
+      "den",
+      "melegan"
+    ]
+  },
+  "1f471-1f3ff": {
+    "nm": "den melegan : krocʼhen teñval",
+    "kw": [
+      "den",
+      "krocʼhen teñval",
+      "melegan"
+    ]
+  },
+  "1f471-1f3ff-200d-2640": {
+    "nm": "meleganez : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "maouez",
+      "meleganez"
+    ]
+  },
+  "1f471-1f3ff-200d-2642": {
+    "nm": "melegan : krocʼhen teñval",
+    "kw": [
+      "gwaz",
+      "krocʼhen teñval",
+      "melegan"
+    ]
+  },
+  "1f471-200d-2640": {
+    "nm": "meleganez",
+    "kw": [
+      "maouez",
+      "meleganez"
+    ]
+  },
+  "1f471-200d-2642": {
+    "nm": "melegan",
+    "kw": [
+      "gwaz",
+      "melegan"
+    ]
+  },
+  "1f474": {
+    "nm": "gwaz kozh",
+    "kw": [
+      "gwaz",
+      "kozh"
+    ]
+  },
+  "1f474-1f3ff": {
+    "nm": "gwaz kozh : krocʼhen teñval",
+    "kw": [
+      "gwaz",
+      "kozh",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f475": {
+    "nm": "maouez kozh",
+    "kw": [
+      "kozh",
+      "maouez"
+    ]
+  },
+  "1f475-1f3ff": {
+    "nm": "maouez kozh : krocʼhen teñval",
+    "kw": [
+      "kozh",
+      "krocʼhen teñval",
+      "maouez"
+    ]
+  },
+  "1f476": {
+    "nm": "babig",
+    "kw": [
+      "babig",
+      "yaouank"
+    ]
+  },
+  "1f476-1f3ff": {
+    "nm": "babig : krocʼhen teñval",
+    "kw": [
+      "babig",
+      "krocʼhen teñval",
+      "yaouank"
+    ]
+  },
+  "1f478": {
+    "nm": "priñsez",
+    "kw": [
+      "priñsez"
+    ]
+  },
+  "1f478-1f3ff": {
+    "nm": "priñsez : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "priñsez"
+    ]
+  },
+  "1f479": {
+    "nm": "roñfl",
+    "kw": [
+      "euzhvil",
+      "roñfl"
+    ]
+  },
+  "1f47a": {
+    "nm": "gobilin",
+    "kw": [
+      "euzhvil",
+      "gobilin"
+    ]
+  },
+  "1f47b": {
+    "nm": "tasmant",
+    "kw": [
+      "euzhvil",
+      "tasmant"
+    ]
+  },
+  "1f47c": {
+    "nm": "babig ael",
+    "kw": [
+      "ael",
+      "babig"
+    ]
+  },
+  "1f47c-1f3ff": {
+    "nm": "babig ael : krocʼhen teñval",
+    "kw": [
+      "ael",
+      "babig",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f47d": {
+    "nm": "ezdouarad",
+    "kw": [
+      "euzhvil",
+      "ezdouarad"
+    ]
+  },
+  "1f47e": {
+    "nm": "euzhvil an egor",
+    "kw": [
+      "euzhvil",
+      "euzhvil an egor"
+    ]
+  },
+  "1f480": {
+    "nm": "klopenn",
+    "kw": [
+      "euzhvil",
+      "klopenn",
+      "marv"
+    ]
+  },
+  "1f482": {
+    "nm": "gward",
+    "kw": [
+      "gward"
+    ]
+  },
+  "1f482-1f3ff": {
+    "nm": "gward : krocʼhen teñval",
+    "kw": [
+      "gward",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f484": {
+    "nm": "ruz-muzelloù",
+    "kw": [
+      "gwezeladoù",
+      "ruz-muzelloù"
+    ]
+  },
+  "1f488": {
+    "nm": "barr-ti barver",
+    "kw": [
+      "barr-ti",
+      "barver"
+    ]
+  },
+  "1f489": {
+    "nm": "strinkell",
+    "kw": [
+      "mezegiezh",
+      "strinkell"
+    ]
+  },
+  "1f48a": {
+    "nm": "pilulenn",
+    "kw": [
+      "medisinerezh",
+      "mezegiezh",
+      "pilulenn"
+    ]
+  },
+  "1f48d": {
+    "nm": "gwalenn",
+    "kw": [
+      "diamant",
+      "gwalenn"
+    ]
+  },
+  "1f48e": {
+    "nm": "maen prizius",
+    "kw": [
+      "diamant",
+      "maen prizius"
+    ]
+  },
+  "1f490": {
+    "nm": "boked bleunioù",
+    "kw": [
+      "bleunioù",
+      "boked"
+    ]
+  },
+  "1f492": {
+    "nm": "eured",
+    "kw": [
+      "chapel",
+      "eured",
+      "karantez"
+    ]
+  },
+  "1f494": {
+    "nm": "kalon rannet",
+    "kw": [
+      "kalon",
+      "kalon rannet"
+    ]
+  },
+  "1f495": {
+    "nm": "div galon",
+    "kw": [
+      "div galon",
+      "kalon",
+      "karantez"
+    ]
+  },
+  "1f499": {
+    "nm": "kalon cʼhlas",
+    "kw": [
+      "glas",
+      "kalon cʼhlas"
+    ]
+  },
+  "1f49a": {
+    "nm": "kalon wer",
+    "kw": [
+      "gwer",
+      "kalon wer"
+    ]
+  },
+  "1f49b": {
+    "nm": "kalon velen",
+    "kw": [
+      "kalon velen",
+      "melen"
+    ]
+  },
+  "1f49c": {
+    "nm": "kalon limestra",
+    "kw": [
+      "kalon limestra",
+      "limestra"
+    ]
+  },
+  "1f4a1": {
+    "nm": "klogorenn",
+    "kw": [
+      "klogorenn",
+      "tredan"
+    ]
+  },
+  "1f4a3": {
+    "nm": "bombezenn",
+    "kw": [
+      "bombezenn",
+      "tresadenn"
+    ]
+  },
+  "1f4a4": {
+    "nm": "ZZZ",
+    "kw": [
+      "kousket",
+      "zzz"
+    ]
+  },
+  "1f4a5": {
+    "nm": "tarzhadenn",
+    "kw": [
+      "tarzhadenn",
+      "tresadenn"
+    ]
+  },
+  "1f4a7": {
+    "nm": "takenn",
+    "kw": [
+      "cʼhwez",
+      "dour",
+      "takenn"
+    ]
+  },
+  "1f4a9": {
+    "nm": "bern kaocʼh",
+    "kw": [
+      "bern kaocʼh",
+      "kaocʼh"
+    ]
+  },
+  "1f4aa": {
+    "nm": "kigenn daoubennek argrezet",
+    "kw": [
+      "kigenn",
+      "kigenn daoubennek",
+      "kigenn daoubennek argrezet"
+    ]
+  },
+  "1f4aa-1f3ff": {
+    "nm": "kigenn daoubennek argrezet : krocʼhen teñval",
+    "kw": [
+      "kigenn",
+      "kigenn daoubennek",
+      "kigenn daoubennek argrezet",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f4ae": {
+    "nm": "bleunienn wenn",
+    "kw": [
+      "bleunienn wenn",
+      "bleuñv",
+      "gwenn"
+    ]
+  },
+  "1f4af": {
+    "nm": "kant poent",
+    "kw": [
+      "100",
+      "kant",
+      "kant poent"
+    ]
+  },
+  "1f4b0": {
+    "nm": "sacʼhad moneiz",
+    "kw": [
+      "dollar",
+      "moneiz",
+      "sacʼh",
+      "sacʼhad moneiz"
+    ]
+  },
+  "1f4b3": {
+    "nm": "kartenn-vank",
+    "kw": [
+      "arcʼhant",
+      "bank",
+      "kartenn",
+      "kartenn-vank",
+      "moneiz"
+    ]
+  },
+  "1f4b4": {
+    "nm": "bilhed e yenoù",
+    "kw": [
+      "arcʼhant",
+      "bilhed",
+      "bilhed e yenoù",
+      "moneiz",
+      "unanenn",
+      "yen"
+    ]
+  },
+  "1f4b5": {
+    "nm": "bilhed e dollaroù",
+    "kw": [
+      "arcʼhant",
+      "bilhed",
+      "bilhed e dollaroù",
+      "dollar",
+      "moneiz",
+      "unanenn"
+    ]
+  },
+  "1f4b6": {
+    "nm": "bilhed en euroioù",
+    "kw": [
+      "arcʼhant",
+      "bilhed",
+      "bilhed en euroioù",
+      "euro",
+      "moneiz",
+      "unanenn"
+    ]
+  },
+  "1f4b7": {
+    "nm": "bilhed e lurioù",
+    "kw": [
+      "arcʼhant",
+      "bilhed",
+      "bilhed e lurioù",
+      "lur",
+      "moneiz",
+      "unanenn"
+    ]
+  },
+  "1f4b8": {
+    "nm": "moneiz o nijal",
+    "kw": [
+      "arcʼhant",
+      "bilhed",
+      "moneiz",
+      "moneiz o nijal",
+      "nij"
+    ]
+  },
+  "1f4b9": {
+    "nm": "krommenn kreskiñ ar yen",
+    "kw": [
+      "grafik",
+      "kreskiñ",
+      "krommenn",
+      "krommenn kreskiñ ar yen",
+      "moneiz",
+      "yen"
+    ]
+  },
+  "1f4ba": {
+    "nm": "azezenn",
+    "kw": [
+      "azezenn",
+      "kador"
+    ]
+  },
+  "1f4bb": {
+    "nm": "urzhiataer hezoug",
+    "kw": [
+      "PC",
+      "urzhiataer",
+      "urzhiataer hezoug"
+    ]
+  },
+  "1f4bc": {
+    "nm": "sakochenn",
+    "kw": [
+      "sakochenn"
+    ]
+  },
+  "1f4bd": {
+    "nm": "pladenn urzhiater",
+    "kw": [
+      "pladenn",
+      "urzhiater"
+    ]
+  },
+  "1f4be": {
+    "nm": "pladennig",
+    "kw": [
+      "pladennig",
+      "urzhiater"
+    ]
+  },
+  "1f4bf": {
+    "nm": "CD",
+    "kw": [
+      "CD",
+      "pladenn",
+      "urzhiater"
+    ]
+  },
+  "1f4c0": {
+    "nm": "DVD",
+    "kw": [
+      "DVD",
+      "pladenn",
+      "urzhiater"
+    ]
+  },
+  "1f4c1": {
+    "nm": "kleurenn",
+    "kw": [
+      "kleurenn",
+      "teuliad"
+    ]
+  },
+  "1f4c2": {
+    "nm": "kleurenn digor",
+    "kw": [
+      "digor",
+      "kleurenn",
+      "teuliad"
+    ]
+  },
+  "1f4c3": {
+    "nm": "pajenn rollet",
+    "kw": [
+      "pajenn",
+      "pajenn rollet"
+    ]
+  },
+  "1f4c4": {
+    "nm": "pajenn",
+    "kw": [
+      "pajenn",
+      "teul"
+    ]
+  },
+  "1f4c5": {
+    "nm": "deiziadur",
+    "kw": [
+      "deiziad",
+      "deiziadur"
+    ]
+  },
+  "1f4c6": {
+    "nm": "deiziadur efemerid",
+    "kw": [
+      "deiziadur",
+      "deiziadur efemerid"
+    ]
+  },
+  "1f4c7": {
+    "nm": "karned chomlecʼhioù",
+    "kw": [
+      "chomlecʼhioù",
+      "karned"
+    ]
+  },
+  "1f4c8": {
+    "nm": "krommenn kreskiñ",
+    "kw": [
+      "diagramm",
+      "grafik",
+      "kreskiñ",
+      "krommenn"
+    ]
+  },
+  "1f4c9": {
+    "nm": "krommenn digreskiñ",
+    "kw": [
+      "diagramm",
+      "digreskiñ",
+      "grafik",
+      "krommenn"
+    ]
+  },
+  "1f4ca": {
+    "nm": "diagramm barrennoù",
+    "kw": [
+      "barrennoù",
+      "diagramm",
+      "grafik"
+    ]
+  },
+  "1f4cc": {
+    "nm": "tach-meud",
+    "kw": [
+      "dafar",
+      "tach-meud"
+    ]
+  },
+  "1f4cd": {
+    "nm": "tach-meud ront",
+    "kw": [
+      "dafar",
+      "tach-meud ront"
+    ]
+  },
+  "1f4ce": {
+    "nm": "strobell",
+    "kw": [
+      "dafar",
+      "strobell"
+    ]
+  },
+  "1f4cf": {
+    "nm": "reolenn",
+    "kw": [
+      "dafar",
+      "reolenn"
+    ]
+  },
+  "1f4d0": {
+    "nm": "skouer",
+    "kw": [
+      "dafar",
+      "skouer"
+    ]
+  },
+  "1f4d1": {
+    "nm": "sinedoù",
+    "kw": [
+      "merk",
+      "sinedoù"
+    ]
+  },
+  "1f4d2": {
+    "nm": "marilh",
+    "kw": [
+      "karned",
+      "marilh"
+    ]
+  },
+  "1f4d3": {
+    "nm": "karned",
+    "kw": [
+      "karned"
+    ]
+  },
+  "1f4d4": {
+    "nm": "karned gant golo kinklet",
+    "kw": [
+      "golo",
+      "karned",
+      "karned gant golo kinklet",
+      "levr"
+    ]
+  },
+  "1f4d5": {
+    "nm": "levr serr",
+    "kw": [
+      "levr",
+      "serr"
+    ]
+  },
+  "1f4d6": {
+    "nm": "levr digor",
+    "kw": [
+      "digor",
+      "levr"
+    ]
+  },
+  "1f4d7": {
+    "nm": "levr gwer",
+    "kw": [
+      "gwer",
+      "levr"
+    ]
+  },
+  "1f4d8": {
+    "nm": "levr glas",
+    "kw": [
+      "glas",
+      "levr"
+    ]
+  },
+  "1f4d9": {
+    "nm": "levr orañjez",
+    "kw": [
+      "levr",
+      "orañjez"
+    ]
+  },
+  "1f4da": {
+    "nm": "levrioù",
+    "kw": [
+      "levr",
+      "levrioù"
+    ]
+  },
+  "1f4db": {
+    "nm": "badj-anv",
+    "kw": [
+      "anv",
+      "badj",
+      "badj-anv"
+    ]
+  },
+  "1f4dc": {
+    "nm": "parchenn",
+    "kw": [
+      "paperenn",
+      "parchenn"
+    ]
+  },
+  "1f4dd": {
+    "nm": "notennoù personel",
+    "kw": [
+      "kreion",
+      "notennoù personel"
+    ]
+  },
+  "1f4de": {
+    "nm": "yevenn bellgomz",
+    "kw": [
+      "pellgomz",
+      "pellgomzer",
+      "yevenn",
+      "yevenn bellgomz"
+    ]
+  },
+  "1f4df": {
+    "nm": "galver",
+    "kw": [
+      "galver"
+    ]
+  },
+  "1f4e0": {
+    "nm": "pelleiler",
+    "kw": [
+      "fax",
+      "pelleiler"
+    ]
+  },
+  "1f4e1": {
+    "nm": "stign loarell",
+    "kw": [
+      "loarell",
+      "stign"
+    ]
+  },
+  "1f4e2": {
+    "nm": "uhelgomzer",
+    "kw": [
+      "son",
+      "uhelgomzer"
+    ]
+  },
+  "1f4e3": {
+    "nm": "korn-mouezh",
+    "kw": [
+      "korn-mouezh",
+      "megafon"
+    ]
+  },
+  "1f4e6": {
+    "nm": "pakad",
+    "kw": [
+      "boest",
+      "pakad"
+    ]
+  },
+  "1f4e7": {
+    "nm": "postel",
+    "kw": [
+      "golo",
+      "golo-lizher",
+      "lizher",
+      "postel"
+    ]
+  },
+  "1f4ee": {
+    "nm": "boest-lizheroù ar post",
+    "kw": [
+      "boest",
+      "boest-lizheroù ar post",
+      "lizheroù",
+      "post"
+    ]
+  },
+  "1f4ef": {
+    "nm": "korn ar paotr-marc’h",
+    "kw": [
+      "korn",
+      "korn ar paotr-marc’h",
+      "paotr-marc’h"
+    ]
+  },
+  "1f4f0": {
+    "nm": "kazetenn",
+    "kw": [
+      "journal",
+      "kazetenn"
+    ]
+  },
+  "1f4f1": {
+    "nm": "pellgomzer hezoug",
+    "kw": [
+      "hezoug",
+      "pellgomz",
+      "pellgomzer"
+    ]
+  },
+  "1f4f2": {
+    "nm": "pellgomzer hezoug gant bir",
+    "kw": [
+      "bir",
+      "hezoug",
+      "pellgomz",
+      "pellgomzer",
+      "pellgomzer hezoug gant bir"
+    ]
+  },
+  "1f4f3": {
+    "nm": "mod froumer",
+    "kw": [
+      "froumer",
+      "hezoug",
+      "mod froumer",
+      "pellgomzer"
+    ]
+  },
+  "1f4f4": {
+    "nm": "pellgomzer lazhet",
+    "kw": [
+      "hezoug",
+      "lazhet",
+      "pellgomzer"
+    ]
+  },
+  "1f4f5": {
+    "nm": "pellgomzerioù difennet",
+    "kw": [
+      "berzet",
+      "difennet",
+      "pellgomzerioù"
+    ]
+  },
+  "1f4f7": {
+    "nm": "lucʼhskeudennerez",
+    "kw": [
+      "lucʼhskeudennerez",
+      "video"
+    ]
+  },
+  "1f4f8": {
+    "nm": "lucʼhskeudennerez gant lucʼheder",
+    "kw": [
+      "lucʼheder",
+      "lucʼhskeudennerez",
+      "lucʼhskeudennerez gant lucʼheder",
+      "video"
+    ]
+  },
+  "1f4f9": {
+    "nm": "kamenroller",
+    "kw": [
+      "kamenroller",
+      "video"
+    ]
+  },
+  "1f4fa": {
+    "nm": "skinwel",
+    "kw": [
+      "skinwel",
+      "video"
+    ]
+  },
+  "1f4fb": {
+    "nm": "skingomzer",
+    "kw": [
+      "skingomzer",
+      "video"
+    ]
+  },
+  "1f4fc": {
+    "nm": "kasedig-video",
+    "kw": [
+      "kasedig-video",
+      "video"
+    ]
+  },
+  "1f4fd": {
+    "nm": "lucʼhvanner",
+    "kw": [
+      "film",
+      "lucʼhvanner",
+      "sinema",
+      "video"
+    ]
+  },
+  "1f4ff": {
+    "nm": "chapeled",
+    "kw": [
+      "chapeled",
+      "greunenn",
+      "merkenn",
+      "paterenn",
+      "pedenn",
+      "relijion"
+    ]
+  },
+  "1f500": {
+    "nm": "bouton lenn mell-divell",
+    "kw": [
+      "bir",
+      "bouton",
+      "bouton lenn mell-divell",
+      "lenn mell-divell"
+    ]
+  },
+  "1f501": {
+    "nm": "bouton lenn en-dro",
+    "kw": [
+      "bir",
+      "bouton",
+      "bouton lenn en-dro",
+      "lenn en-dro"
+    ]
+  },
+  "1f507": {
+    "nm": "mut",
+    "kw": [
+      "didrouz",
+      "mut",
+      "son"
+    ]
+  },
+  "1f50b": {
+    "nm": "pil",
+    "kw": [
+      "pil"
+    ]
+  },
+  "1f50c": {
+    "nm": "sankell dredan",
+    "kw": [
+      "lugell",
+      "lugell dredan",
+      "sankell",
+      "sankell dredan",
+      "tredan"
+    ]
+  },
+  "1f50d": {
+    "nm": "gwerenn-greskiñ a-gleiz",
+    "kw": [
+      "gwerenn",
+      "gwerenn-greskiñ a-gleiz"
+    ]
+  },
+  "1f50e": {
+    "nm": "gwerenn-greskiñ a-zehoù",
+    "kw": [
+      "gwerenn",
+      "gwerenn-greskiñ a-zehoù"
+    ]
+  },
+  "1f50f": {
+    "nm": "kadranas serr gant stilo",
+    "kw": [
+      "kadranas",
+      "kadranas serr gant stilo",
+      "serr",
+      "stilo"
+    ]
+  },
+  "1f510": {
+    "nm": "kadranas serr gant alcʼhwez",
+    "kw": [
+      "alcʼhwez",
+      "kadranas",
+      "kadranas serr gant alcʼhwez",
+      "serr"
+    ]
+  },
+  "1f511": {
+    "nm": "alcʼhwez",
+    "kw": [
+      "alcʼhwez",
+      "ger-tremen"
+    ]
+  },
+  "1f512": {
+    "nm": "kadranas serr",
+    "kw": [
+      "kadranas",
+      "serr"
+    ]
+  },
+  "1f513": {
+    "nm": "kadranas digor",
+    "kw": [
+      "digor",
+      "kadranas"
+    ]
+  },
+  "1f514": {
+    "nm": "kloc’h",
+    "kw": [
+      "kloc’h"
+    ]
+  },
+  "1f516": {
+    "nm": "merk-pajenn",
+    "kw": [
+      "merk",
+      "merk-pajenn"
+    ]
+  },
+  "1f517": {
+    "nm": "mailh",
+    "kw": [
+      "ailhedenn",
+      "lagadenn",
+      "mailh",
+      "mailhon",
+      "mell"
+    ]
+  },
+  "1f518": {
+    "nm": "bouton radio",
+    "kw": [
+      "bouton radio"
+    ]
+  },
+  "1f520": {
+    "nm": "bizskriv pennlizherennoù latin",
+    "kw": [
+      "ABCD",
+      "bizskriv",
+      "latin",
+      "lizherennoù",
+      "pennlizherennoù"
+    ]
+  },
+  "1f521": {
+    "nm": "bizskriv lizherennoù bihan latin",
+    "kw": [
+      "abcd",
+      "bizskriv",
+      "bizskriv lizherennoù bihan latin",
+      "latin",
+      "lizherennoù",
+      "lizherennoù bihan"
+    ]
+  },
+  "1f522": {
+    "nm": "bizskriv niveroù",
+    "kw": [
+      "1234",
+      "bizskriv",
+      "niveroù"
+    ]
+  },
+  "1f523": {
+    "nm": "bizskriv arouezioù",
+    "kw": [
+      "arouezioù",
+      "bizskriv"
+    ]
+  },
+  "1f524": {
+    "nm": "bizskriv lizherennoù latin",
+    "kw": [
+      "abc",
+      "bizskriv",
+      "latin",
+      "lizherennoù"
+    ]
+  },
+  "1f525": {
+    "nm": "tan",
+    "kw": [
+      "flammenn",
+      "tan"
+    ]
+  },
+  "1f526": {
+    "nm": "etev-goulaouiñ",
+    "kw": [
+      "etev-goulaouiñ",
+      "tredan"
+    ]
+  },
+  "1f527": {
+    "nm": "alcʼhwez plat",
+    "kw": [
+      "alcʼhwez plat",
+      "benveg"
+    ]
+  },
+  "1f528": {
+    "nm": "morzhol",
+    "kw": [
+      "benveg",
+      "morzhol"
+    ]
+  },
+  "1f529": {
+    "nm": "biñs ha kraouenn",
+    "kw": [
+      "biñs",
+      "biñs ha kraouenn",
+      "kraouenn"
+    ]
+  },
+  "1f52a": {
+    "nm": "kontell-gegin",
+    "kw": [
+      "arm",
+      "kegin",
+      "kontell",
+      "kontell-gegin"
+    ]
+  },
+  "1f52b": {
+    "nm": "pistolenn",
+    "kw": [
+      "arm",
+      "pistolenn"
+    ]
+  },
+  "1f52c": {
+    "nm": "mikroskop",
+    "kw": [
+      "benveg",
+      "mikroskop",
+      "skiant"
+    ]
+  },
+  "1f52d": {
+    "nm": "teleskop",
+    "kw": [
+      "benveg",
+      "skiant",
+      "teleskop"
+    ]
+  },
+  "1f52e": {
+    "nm": "boulenn strink",
+    "kw": [
+      "boulenn strink",
+      "strink"
+    ]
+  },
+  "1f52f": {
+    "nm": "steredenn cʼhwecʼh brecʼh",
+    "kw": [
+      "chañs",
+      "steredenn",
+      "steredenn cʼhwecʼh brecʼh"
+    ]
+  },
+  "1f530": {
+    "nm": "arouez japanat evit an deraouidi",
+    "kw": [
+      "arouez",
+      "arouez japanat evit an deraouidi",
+      "deraouad",
+      "Japan"
+    ]
+  },
+  "1f531": {
+    "nm": "tridant",
+    "kw": [
+      "bag",
+      "benveg",
+      "eor",
+      "lestr",
+      "tridant"
+    ]
+  },
+  "1f536": {
+    "nm": "romb bras orañjez",
+    "kw": [
+      "orañjez",
+      "romb",
+      "romb bras orañjez"
+    ]
+  },
+  "1f537": {
+    "nm": "romb bras glas",
+    "kw": [
+      "glas",
+      "romb",
+      "romb bras glas"
+    ]
+  },
+  "1f538": {
+    "nm": "romb bihan orañjez",
+    "kw": [
+      "orañjez",
+      "romb",
+      "romb bihan orañjez"
+    ]
+  },
+  "1f539": {
+    "nm": "romb bihan glas",
+    "kw": [
+      "glas",
+      "romb",
+      "romb bihan glas"
+    ]
+  },
+  "1f549": {
+    "nm": "om",
+    "kw": [
+      "hindou",
+      "om",
+      "relijion"
+    ]
+  },
+  "1f54a": {
+    "nm": "koulm",
+    "kw": [
+      "evn",
+      "evnoniezh",
+      "koulm",
+      "nijal",
+      "peocʼh"
+    ]
+  },
+  "1f54b": {
+    "nm": "kaaba",
+    "kw": [
+      "islam",
+      "kaaba",
+      "muzulman",
+      "relijion"
+    ]
+  },
+  "1f54c": {
+    "nm": "moskeenn",
+    "kw": [
+      "islam",
+      "moskeenn",
+      "muzulman",
+      "relijion"
+    ]
+  },
+  "1f54d": {
+    "nm": "sinagogenn",
+    "kw": [
+      "relijion",
+      "sinagogenn",
+      "templ",
+      "yuzev"
+    ]
+  },
+  "1f54e": {
+    "nm": "menorah",
+    "kw": [
+      "menorah",
+      "relijion"
+    ]
+  },
+  "1f550": {
+    "nm": "un eur",
+    "kw": [
+      "1",
+      "1:00",
+      "un eur"
+    ]
+  },
+  "1f551": {
+    "nm": "div eur",
+    "kw": [
+      "14:00",
+      "2",
+      "2:00",
+      "div eur"
+    ]
+  },
+  "1f552": {
+    "nm": "teir eur",
+    "kw": [
+      "15:00",
+      "3",
+      "3:00",
+      "teir eur"
+    ]
+  },
+  "1f553": {
+    "nm": "peder eur",
+    "kw": [
+      "16:00",
+      "4",
+      "4:00",
+      "peder eur"
+    ]
+  },
+  "1f554": {
+    "nm": "pemp eur",
+    "kw": [
+      "17:00",
+      "5",
+      "5:00",
+      "pemp eur"
+    ]
+  },
+  "1f555": {
+    "nm": "cʼhwecʼh eur",
+    "kw": [
+      "18:00",
+      "6",
+      "6:00",
+      "cʼhwecʼh eur"
+    ]
+  },
+  "1f556": {
+    "nm": "seizh eur",
+    "kw": [
+      "19:00",
+      "7",
+      "7:00",
+      "seizh eur"
+    ]
+  },
+  "1f557": {
+    "nm": "eizh eur",
+    "kw": [
+      "20:00",
+      "8",
+      "8:00",
+      "eizh eur"
+    ]
+  },
+  "1f558": {
+    "nm": "nav eur",
+    "kw": [
+      "21:00",
+      "9",
+      "9:00",
+      "eizh eur",
+      "nav eur"
+    ]
+  },
+  "1f559": {
+    "nm": "dek eur",
+    "kw": [
+      "10",
+      "10:00",
+      "22:00",
+      "dek eur"
+    ]
+  },
+  "1f55a": {
+    "nm": "unnek eur",
+    "kw": [
+      "11",
+      "11:00",
+      "23:00",
+      "unnek eur"
+    ]
+  },
+  "1f55b": {
+    "nm": "kreisteiz/hanternoz",
+    "kw": [
+      "00",
+      "12",
+      "12:00",
+      "hanternoz",
+      "kreisteiz",
+      "kreisteiz/hanternoz"
+    ]
+  },
+  "1f55c": {
+    "nm": "un eur hanter",
+    "kw": [
+      "1:30",
+      "13:30",
+      "un eur hanter"
+    ]
+  },
+  "1f55d": {
+    "nm": "div eur hanter",
+    "kw": [
+      "14:30",
+      "2:30",
+      "div eur hanter"
+    ]
+  },
+  "1f55e": {
+    "nm": "teir eur hanter",
+    "kw": [
+      "15:30",
+      "3:30",
+      "teir eur hanter"
+    ]
+  },
+  "1f55f": {
+    "nm": "peder eur hanter",
+    "kw": [
+      "14:30",
+      "4:30",
+      "peder eur hanter"
+    ]
+  },
+  "1f560": {
+    "nm": "pemp eur hanter",
+    "kw": [
+      "17:30",
+      "5:30",
+      "pemp eur hanter"
+    ]
+  },
+  "1f561": {
+    "nm": "cʼhwecʼh eur hanter",
+    "kw": [
+      "18:30",
+      "6:30",
+      "cʼhwecʼh eur hanter"
+    ]
+  },
+  "1f562": {
+    "nm": "seizh eur hanter",
+    "kw": [
+      "19:30",
+      "7:30",
+      "seizh eur hanter"
+    ]
+  },
+  "1f563": {
+    "nm": "eizh eur hanter",
+    "kw": [
+      "20:30",
+      "8:30",
+      "eizh eur hanter"
+    ]
+  },
+  "1f564": {
+    "nm": "nav eur hanter",
+    "kw": [
+      "21:30",
+      "9:30",
+      "nav eur hanter"
+    ]
+  },
+  "1f565": {
+    "nm": "dek eur hanter",
+    "kw": [
+      "10:30",
+      "22:30",
+      "dek eur hanter"
+    ]
+  },
+  "1f566": {
+    "nm": "unnek eur hanter",
+    "kw": [
+      "11:30",
+      "23:30",
+      "unnek eur hanter"
+    ]
+  },
+  "1f567": {
+    "nm": "kreisteiz/hanternoz hanter",
+    "kw": [
+      "12:30",
+      "kreisteiz/hanternoz hanter"
+    ]
+  },
+  "1f56f": {
+    "nm": "goulaouenn",
+    "kw": [
+      "goulaouenn",
+      "gouloù"
+    ]
+  },
+  "1f570": {
+    "nm": "pandulenn",
+    "kw": [
+      "eur",
+      "eurier",
+      "pandulenn"
+    ]
+  },
+  "1f573": {
+    "nm": "toull",
+    "kw": [
+      "toull"
+    ]
+  },
+  "1f575": {
+    "nm": "igoun",
+    "kw": [
+      "enklasker",
+      "igoun",
+      "spier"
+    ]
+  },
+  "1f575-1f3ff": {
+    "nm": "igoun : krocʼhen teñval",
+    "kw": [
+      "enklasker",
+      "igoun",
+      "krocʼhen teñval",
+      "spier"
+    ]
+  },
+  "1f575-1f3ff-200d-2640": {
+    "nm": "igounierez : krocʼhen teñval",
+    "kw": [
+      "igounierez",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f575-1f3ff-200d-2642": {
+    "nm": "igounier : krocʼhen teñval",
+    "kw": [
+      "igounier",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f575-200d-2640": {
+    "nm": "igounierez",
+    "kw": [
+      "igounierez"
+    ]
+  },
+  "1f575-200d-2642": {
+    "nm": "igounier",
+    "kw": [
+      "igounier"
+    ]
+  },
+  "1f576": {
+    "nm": "lunedoù-heol",
+    "kw": [
+      "daoulagad",
+      "lunedoù",
+      "lunedoù-heol"
+    ]
+  },
+  "1f577": {
+    "nm": "kevnidenn",
+    "kw": [
+      "amprevan",
+      "kevnidenn",
+      "loen"
+    ]
+  },
+  "1f578": {
+    "nm": "gwiad-kevnid",
+    "kw": [
+      "gwiad",
+      "gwiad-kevnid",
+      "kevnid"
+    ]
+  },
+  "1f579": {
+    "nm": "lanker cʼhoari",
+    "kw": [
+      "cʼhoari",
+      "cʼhoari video",
+      "lanker cʼhoari"
+    ]
+  },
+  "1f587": {
+    "nm": "strobelloù",
+    "kw": [
+      "dafar",
+      "strobelloù"
+    ]
+  },
+  "1f58a": {
+    "nm": "stilo",
+    "kw": [
+      "boulbluenn",
+      "stilo"
+    ]
+  },
+  "1f58b": {
+    "nm": "stilo pluenn",
+    "kw": [
+      "pluenn",
+      "stilo"
+    ]
+  },
+  "1f58c": {
+    "nm": "barr-livañ",
+    "kw": [
+      "barr-livañ",
+      "livañ"
+    ]
+  },
+  "1f58d": {
+    "nm": "kreion pastel",
+    "kw": [
+      "kreion",
+      "pastel"
+    ]
+  },
+  "1f5a4": {
+    "nm": "kalon zu",
+    "kw": [
+      "du",
+      "kalon zu"
+    ]
+  },
+  "1f5a5": {
+    "nm": "urzhiataer burev",
+    "kw": [
+      "urzhiataer",
+      "urzhiataer burev"
+    ]
+  },
+  "1f5a8": {
+    "nm": "moullerez",
+    "kw": [
+      "moullerez",
+      "urzhiataer"
+    ]
+  },
+  "1f5b1": {
+    "nm": "logodenn urzhiataer",
+    "kw": [
+      "logodenn",
+      "urzhiataer"
+    ]
+  },
+  "1f5bc": {
+    "nm": "skeudenn sterniet",
+    "kw": [
+      "arz",
+      "skeudenn",
+      "skeudenn sterniet",
+      "stern"
+    ]
+  },
+  "1f5c2": {
+    "nm": "dispartier",
+    "kw": [
+      "dispartier",
+      "renkañ"
+    ]
+  },
+  "1f5d1": {
+    "nm": "kest ar paper",
+    "kw": [
+      "kest",
+      "kest ar paper",
+      "paper"
+    ]
+  },
+  "1f5d2": {
+    "nm": "blocʼh-notennoù gant troellennoù",
+    "kw": [
+      "blocʼh-notennoù",
+      "blocʼh-notennoù gant troellennoù",
+      "troellennoù"
+    ]
+  },
+  "1f5d3": {
+    "nm": "deiziadur gant troellennoù",
+    "kw": [
+      "deiziadur",
+      "deiziadur gant troellennoù"
+    ]
+  },
+  "1f5dc": {
+    "nm": "serjant",
+    "kw": [
+      "benveg",
+      "serjant"
+    ]
+  },
+  "1f5dd": {
+    "nm": "alcʼhwez kozh",
+    "kw": [
+      "alcʼhwez",
+      "kozh"
+    ]
+  },
+  "1f5de": {
+    "nm": "kazetenn rollet",
+    "kw": [
+      "journal",
+      "kazetenn",
+      "kazetenn rollet"
+    ]
+  },
+  "1f5e1": {
+    "nm": "badalenn",
+    "kw": [
+      "arm",
+      "badalenn",
+      "kontell"
+    ]
+  },
+  "1f5f3": {
+    "nm": "mouezharcʼh",
+    "kw": [
+      "boest",
+      "mouezharcʼh",
+      "mouezhiañ",
+      "votiñ"
+    ]
+  },
+  "1f5fa": {
+    "nm": "kartenn ar bed",
+    "kw": [
+      "bed",
+      "kartenn",
+      "kartenn ar bed"
+    ]
+  },
+  "1f5fb": {
+    "nm": "menez Fuji",
+    "kw": [
+      "Fuji",
+      "menez"
+    ]
+  },
+  "1f5fc": {
+    "nm": "tour Tokyo",
+    "kw": [
+      "Tokyo",
+      "tour"
+    ]
+  },
+  "1f5fd": {
+    "nm": "delwenn ar Frankiz",
+    "kw": [
+      "delwenn",
+      "delwenn ar Frankiz",
+      "Frankiz"
+    ]
+  },
+  "1f5fe": {
+    "nm": "kartenn Japan",
+    "kw": [
+      "Japan",
+      "kartenn"
+    ]
+  },
+  "1f5ff": {
+    "nm": "moai",
+    "kw": [
+      "delwenn",
+      "moai"
+    ]
+  },
+  "1f680": {
+    "nm": "fuzeenn",
+    "kw": [
+      "egor",
+      "fuzeenn"
+    ]
+  },
+  "1f681": {
+    "nm": "biñsaskell",
+    "kw": [
+      "biñsaskell"
+    ]
+  },
+  "1f682": {
+    "nm": "stlejerez",
+    "kw": [
+      "hent-houarn",
+      "stlejerez",
+      "tren"
+    ]
+  },
+  "1f683": {
+    "nm": "bagon",
+    "kw": [
+      "bagon",
+      "hent-houarn",
+      "tren"
+    ]
+  },
+  "1f684": {
+    "nm": "TTB",
+    "kw": [
+      "hent-houarn",
+      "shinkansen",
+      "tizh",
+      "tren",
+      "tren tizh bras",
+      "TTB"
+    ]
+  },
+  "1f685": {
+    "nm": "tren tizh bras",
+    "kw": [
+      "hent-houarn",
+      "shinkansen",
+      "tizh",
+      "tren",
+      "tren tizh bras",
+      "TTB"
+    ]
+  },
+  "1f686": {
+    "nm": "tren",
+    "kw": [
+      "hent-houarn",
+      "tren"
+    ]
+  },
+  "1f687": {
+    "nm": "metro",
+    "kw": [
+      "hent-houarn",
+      "metro"
+    ]
+  },
+  "1f688": {
+    "nm": "metro skañv",
+    "kw": [
+      "hent-houarn",
+      "metro skañv"
+    ]
+  },
+  "1f689": {
+    "nm": "porzh-houarn",
+    "kw": [
+      "hent-houarn",
+      "porzh-houarn",
+      "tren"
+    ]
+  },
+  "1f68a": {
+    "nm": "tramgarr",
+    "kw": [
+      "tramgarr",
+      "trollebus"
+    ]
+  },
+  "1f68b": {
+    "nm": "bagon tramgarr",
+    "kw": [
+      "bagon tramgarr",
+      "tramgarr",
+      "trollebus"
+    ]
+  },
+  "1f68c": {
+    "nm": "bus",
+    "kw": [
+      "bus",
+      "karbed"
+    ]
+  },
+  "1f68e": {
+    "nm": "trollebus",
+    "kw": [
+      "bus",
+      "tramgarr",
+      "trolle",
+      "trollebus"
+    ]
+  },
+  "1f68f": {
+    "nm": "arsav bus",
+    "kw": [
+      "arsav",
+      "bus"
+    ]
+  },
+  "1f690": {
+    "nm": "minibus",
+    "kw": [
+      "bus",
+      "minibus"
+    ]
+  },
+  "1f691": {
+    "nm": "ambulañs",
+    "kw": [
+      "ambulañs",
+      "karbed"
+    ]
+  },
+  "1f692": {
+    "nm": "sammgarr pomperien",
+    "kw": [
+      "pomper",
+      "sammgarr pomperien"
+    ]
+  },
+  "1f693": {
+    "nm": "karr polis",
+    "kw": [
+      "karr polis",
+      "polis"
+    ]
+  },
+  "1f695": {
+    "nm": "taksi",
+    "kw": [
+      "karbed",
+      "taksi"
+    ]
+  },
+  "1f697": {
+    "nm": "karr-tan",
+    "kw": [
+      "karr",
+      "karr-tan"
+    ]
+  },
+  "1f69a": {
+    "nm": "karr-samm degas",
+    "kw": [
+      "degas",
+      "karr-samm"
+    ]
+  },
+  "1f69b": {
+    "nm": "sammgarr-ramoker",
+    "kw": [
+      "sammgarr",
+      "sammgarr-ramoker"
+    ]
+  },
+  "1f69c": {
+    "nm": "traktor",
+    "kw": [
+      "karbed",
+      "traktor"
+    ]
+  },
+  "1f69d": {
+    "nm": "unroudenn",
+    "kw": [
+      "karbed",
+      "unroudenn"
+    ]
+  },
+  "1f69e": {
+    "nm": "tren ar menezioù",
+    "kw": [
+      "hent-houarn",
+      "tren ar menezioù"
+    ]
+  },
+  "1f69f": {
+    "nm": "fundren",
+    "kw": [
+      "fundren"
+    ]
+  },
+  "1f6a0": {
+    "nm": "fungarr",
+    "kw": [
+      "fundren",
+      "fungarr",
+      "funitel",
+      "funlogell",
+      "menez"
+    ]
+  },
+  "1f6a1": {
+    "nm": "fundramgarr",
+    "kw": [
+      "fundramgarr",
+      "fundren",
+      "fungarr",
+      "funitel",
+      "funlogell"
+    ]
+  },
+  "1f6a2": {
+    "nm": "lestr",
+    "kw": [
+      "bag",
+      "lestr"
+    ]
+  },
+  "1f6a4": {
+    "nm": "bag herrek",
+    "kw": [
+      "bag",
+      "bag herrek",
+      "lestr"
+    ]
+  },
+  "1f6a8": {
+    "nm": "letern-tro",
+    "kw": [
+      "karr",
+      "letern-tro",
+      "polis"
+    ]
+  },
+  "1f6a9": {
+    "nm": "banniel tricʼhornek",
+    "kw": [
+      "banniel",
+      "banniel tricʼhornek"
+    ]
+  },
+  "1f6aa": {
+    "nm": "dor",
+    "kw": [
+      "dor"
+    ]
+  },
+  "1f6ab": {
+    "nm": "berzet",
+    "kw": [
+      "berzet",
+      "difennet",
+      "tu"
+    ]
+  },
+  "1f6ac": {
+    "nm": "sigaretenn",
+    "kw": [
+      "butunat",
+      "sigaretenn"
+    ]
+  },
+  "1f6ad": {
+    "nm": "arabat butunat",
+    "kw": [
+      "arabat butunat",
+      "berzet",
+      "butunat",
+      "difennet"
+    ]
+  },
+  "1f6ae": {
+    "nm": "arlun pod-lastez",
+    "kw": [
+      "arlun pod-lastez",
+      "pod-lastez",
+      "poubelenn"
+    ]
+  },
+  "1f6af": {
+    "nm": "arabat lakaat lastez",
+    "kw": [
+      "arabat lakaat lastez",
+      "lastez"
+    ]
+  },
+  "1f6b0": {
+    "nm": "dour mat da evañ",
+    "kw": [
+      "dour",
+      "dour mat da evañ",
+      "evañ"
+    ]
+  },
+  "1f6b1": {
+    "nm": "dour fall da evañ",
+    "kw": [
+      "dour",
+      "dour fall da evañ",
+      "evañ"
+    ]
+  },
+  "1f6b3": {
+    "nm": "beloioù difennet",
+    "kw": [
+      "beloioù",
+      "berzet",
+      "difennet"
+    ]
+  },
+  "1f6b7": {
+    "nm": "difennet dʼar gerzhourien",
+    "kw": [
+      "berzet",
+      "difennet",
+      "difennet dʼar gerzhourien",
+      "kerzhourien"
+    ]
+  },
+  "1f6b8": {
+    "nm": "bugale o treuziñ",
+    "kw": [
+      "bugale o treuziñ",
+      "bugel",
+      "tremenerezh"
+    ]
+  },
+  "1f6b9": {
+    "nm": "privezioù paotred",
+    "kw": [
+      "golcʼhiri",
+      "paotred",
+      "privezioù",
+      "WC"
+    ]
+  },
+  "1f6ba": {
+    "nm": "privezioù mercʼhed",
+    "kw": [
+      "golcʼhiri",
+      "mercʼhed",
+      "privezioù",
+      "WC"
+    ]
+  },
+  "1f6bb": {
+    "nm": "golcʼhiri",
+    "kw": [
+      "golcʼhiri",
+      "privezioù",
+      "WC"
+    ]
+  },
+  "1f6bc": {
+    "nm": "arouez babig",
+    "kw": [
+      "arouez babig",
+      "babig"
+    ]
+  },
+  "1f6bd": {
+    "nm": "privezioù",
+    "kw": [
+      "privezioù"
+    ]
+  },
+  "1f6be": {
+    "nm": "WC",
+    "kw": [
+      "golcʼhiri",
+      "privezioù",
+      "WC"
+    ]
+  },
+  "1f6bf": {
+    "nm": "strinkerez",
+    "kw": [
+      "dour",
+      "strinkerez"
+    ]
+  },
+  "1f6c1": {
+    "nm": "kibell",
+    "kw": [
+      "dour",
+      "kibell"
+    ]
+  },
+  "1f6c2": {
+    "nm": "kontroll paseporzhioù",
+    "kw": [
+      "kontroll",
+      "kontroll paseporzhioù",
+      "paseporzh"
+    ]
+  },
+  "1f6c3": {
+    "nm": "maltouterezh",
+    "kw": [
+      "maltouterezh"
+    ]
+  },
+  "1f6c4": {
+    "nm": "adtapout bagajoù",
+    "kw": [
+      "adtapout",
+      "bagajoù"
+    ]
+  },
+  "1f6c5": {
+    "nm": "fizlecʼh",
+    "kw": [
+      "bagajoù",
+      "fizlecʼh"
+    ]
+  },
+  "1f6cb": {
+    "nm": "gourvezvank ha lamp",
+    "kw": [
+      "gourvezvank",
+      "gourvezvank ha lamp",
+      "kleuzeur",
+      "lamp",
+      "leti"
+    ]
+  },
+  "1f6cd": {
+    "nm": "seier kabas",
+    "kw": [
+      "sacʼh",
+      "seier kabas"
+    ]
+  },
+  "1f6ce": {
+    "nm": "sonerez kontouer",
+    "kw": [
+      "kontouer",
+      "leti",
+      "sonerez"
+    ]
+  },
+  "1f6cf": {
+    "nm": "gwele",
+    "kw": [
+      "gwele",
+      "kousket",
+      "leti"
+    ]
+  },
+  "1f6d0": {
+    "nm": "lec’h azeuliñ",
+    "kw": [
+      "azeuliñ",
+      "lec’h azeuliñ",
+      "relijion"
+    ]
+  },
+  "1f6d2": {
+    "nm": "karrigell",
+    "kw": [
+      "karrigell",
+      "paner"
+    ]
+  },
+  "1f6d5": {
+    "nm": "templ hindou",
+    "kw": [
+      "hindou",
+      "templ"
+    ]
+  },
+  "1f6d6": {
+    "nm": "foukenn",
+    "kw": [
+      "foukenn",
+      "ti",
+      "yourt"
+    ]
+  },
+  "1f6d7": {
+    "nm": "pignerez",
+    "kw": [
+      "pignerez",
+      "saverez"
+    ]
+  },
+  "1f6d8": {
+    "nm": "riskladur douar",
+    "kw": [
+      "arvar",
+      "disacʼh-ercʼh",
+      "drouziwezh",
+      "kren-douar",
+      "menez",
+      "reier",
+      "riskladur douar"
+    ]
+  },
+  "1f6e0": {
+    "nm": "morzhol hag alcʼhwez plat",
+    "kw": [
+      "alcʼhwez",
+      "benveg",
+      "morzhol",
+      "morzhol hag alcʼhwez plat"
+    ]
+  },
+  "1f6e1": {
+    "nm": "skoed",
+    "kw": [
+      "arm",
+      "skoed"
+    ]
+  },
+  "1f6e2": {
+    "nm": "barilhad tireoul",
+    "kw": [
+      "barilhad tireoul",
+      "tireoul"
+    ]
+  },
+  "1f6e3": {
+    "nm": "gourhent",
+    "kw": [
+      "gourhent",
+      "hent"
+    ]
+  },
+  "1f6e4": {
+    "nm": "hent-houarn",
+    "kw": [
+      "hent-houarn",
+      "tren"
+    ]
+  },
+  "1f6e5": {
+    "nm": "bag-a-dan",
+    "kw": [
+      "bag",
+      "bag-a-dan"
+    ]
+  },
+  "1f6e9": {
+    "nm": "karr-nij bihan",
+    "kw": [
+      "karr-nij",
+      "karr-nij bihan",
+      "nijerez"
+    ]
+  },
+  "1f6f0": {
+    "nm": "loarell",
+    "kw": [
+      "egor",
+      "loarell"
+    ]
+  },
+  "1f6f3": {
+    "nm": "mordreizher",
+    "kw": [
+      "lestr",
+      "mordreizher"
+    ]
+  },
+  "1f6f4": {
+    "nm": "troterez",
+    "kw": [
+      "karbed",
+      "troterez"
+    ]
+  },
+  "1f6f5": {
+    "nm": "skouter",
+    "kw": [
+      "karbed",
+      "skouter"
+    ]
+  },
+  "1f6f6": {
+    "nm": "kanoe",
+    "kw": [
+      "bag",
+      "kanoe"
+    ]
+  },
+  "1f6f7": {
+    "nm": "luj",
+    "kw": [
+      "luj",
+      "treinell"
+    ]
+  },
+  "1f6f8": {
+    "nm": "pladenn-nij",
+    "kw": [
+      "NIDI",
+      "pladenn-nij"
+    ]
+  },
+  "1f6f9": {
+    "nm": "plankenn-ruilh",
+    "kw": [
+      "plankenn",
+      "plankenn-ruilh"
+    ]
+  },
+  "1f6fc": {
+    "nm": "botez-ruilh",
+    "kw": [
+      "botez",
+      "botez-ruilh"
+    ]
+  },
+  "1f7e5": {
+    "nm": "karrez ruz",
+    "kw": [
+      "karrez",
+      "ruz"
+    ]
+  },
+  "1f7e6": {
+    "nm": "karrez glas",
+    "kw": [
+      "glas",
+      "karrez"
+    ]
+  },
+  "1f7e7": {
+    "nm": "karrez orañjez",
+    "kw": [
+      "karrez",
+      "orañjez"
+    ]
+  },
+  "1f7e8": {
+    "nm": "karrez melen",
+    "kw": [
+      "karrez",
+      "melen"
+    ]
+  },
+  "1f7e9": {
+    "nm": "karrez gwer",
+    "kw": [
+      "gwer",
+      "karrez"
+    ]
+  },
+  "1f7ea": {
+    "nm": "karrez limestra",
+    "kw": [
+      "karrez",
+      "limestra"
+    ]
+  },
+  "1f7eb": {
+    "nm": "karrez gell",
+    "kw": [
+      "gell",
+      "karrez"
+    ]
+  },
+  "1f90d": {
+    "nm": "kalon wenn",
+    "kw": [
+      "gwenn",
+      "kalon",
+      "kalon wenn"
+    ]
+  },
+  "1f90e": {
+    "nm": "kalon cʼhell",
+    "kw": [
+      "gell",
+      "kalon",
+      "kalon cʼhell"
+    ]
+  },
+  "1f916": {
+    "nm": "robot",
+    "kw": [
+      "euzhvil",
+      "robot"
+    ]
+  },
+  "1f921": {
+    "nm": "penn furlukin",
+    "kw": [
+      "furlukin",
+      "penn"
+    ]
+  },
+  "1f933": {
+    "nm": "emboltred",
+    "kw": [
+      "emboltred"
+    ]
+  },
+  "1f933-1f3ff": {
+    "nm": "emboltred : krocʼhen teñval",
+    "kw": [
+      "emboltred",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f934": {
+    "nm": "priñs",
+    "kw": [
+      "priñs"
+    ]
+  },
+  "1f934-1f3ff": {
+    "nm": "priñs : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "priñs"
+    ]
+  },
+  "1f936": {
+    "nm": "Mamm Nedeleg",
+    "kw": [
+      "fest",
+      "gouel",
+      "lid",
+      "mamm",
+      "Nedeleg"
+    ]
+  },
+  "1f936-1f3ff": {
+    "nm": "Mamm Nedeleg : krocʼhen teñval",
+    "kw": [
+      "fest",
+      "gouel",
+      "krocʼhen teñval",
+      "lid",
+      "mamm",
+      "Nedeleg"
+    ]
+  },
+  "1f93f": {
+    "nm": "maskl-splujañ",
+    "kw": [
+      "maskl-splujañ",
+      "splujañ",
+      "tuba"
+    ]
+  },
+  "1f940": {
+    "nm": "boked goeñvet",
+    "kw": [
+      "boked",
+      "boked goeñvet",
+      "goeñviñ"
+    ]
+  },
+  "1f941": {
+    "nm": "taboulin",
+    "kw": [
+      "benveg",
+      "sonerezh",
+      "taboulin",
+      "toumperezh"
+    ]
+  },
+  "1f944": {
+    "nm": "loa",
+    "kw": [
+      "loa"
+    ]
+  },
+  "1f945": {
+    "nm": "kaoued-pal",
+    "kw": [
+      "kaoued",
+      "kaoued-pal",
+      "pal"
+    ]
+  },
+  "1f947": {
+    "nm": "medalenn aour",
+    "kw": [
+      "aour",
+      "medalenn"
+    ]
+  },
+  "1f948": {
+    "nm": "medalenn arcʼhant",
+    "kw": [
+      "medalenn",
+      "medalenn arcʼhant"
+    ]
+  },
+  "1f949": {
+    "nm": "medalenn arem",
+    "kw": [
+      "medalenn",
+      "medalenn arem"
+    ]
+  },
+  "1f94a": {
+    "nm": "maneg boks",
+    "kw": [
+      "boks",
+      "maneg"
+    ]
+  },
+  "1f94b": {
+    "nm": "dilhad arzoù-emgannañ",
+    "kw": [
+      "dilhad arzoù-emgannañ",
+      "judo",
+      "karate",
+      "taekwondo"
+    ]
+  },
+  "1f94c": {
+    "nm": "maen curling",
+    "kw": [
+      "krogad",
+      "maen curling",
+      "match",
+      "sport"
+    ]
+  },
+  "1f94d": {
+    "nm": "cʼhoari-horell",
+    "kw": [
+      "bazh-horell",
+      "cʼhoari-horell",
+      "horell"
+    ]
+  },
+  "1f94e": {
+    "nm": "softball",
+    "kw": [
+      "polotenn",
+      "softball"
+    ]
+  },
+  "1f94f": {
+    "nm": "frizbi",
+    "kw": [
+      "frizbi",
+      "sport"
+    ]
+  },
+  "1f950": {
+    "nm": "kornegenn",
+    "kw": [
+      "bara",
+      "kornegenn",
+      "viennerezh"
+    ]
+  },
+  "1f951": {
+    "nm": "avoukez",
+    "kw": [
+      "avoukez",
+      "frouezh",
+      "legumaj"
+    ]
+  },
+  "1f952": {
+    "nm": "kokombrez",
+    "kw": [
+      "kokombrez",
+      "legumaj"
+    ]
+  },
+  "1f953": {
+    "nm": "bacon",
+    "kw": [
+      "bacon",
+      "boued",
+      "dijuniñ",
+      "kig",
+      "kig-sall"
+    ]
+  },
+  "1f954": {
+    "nm": "aval-douar",
+    "kw": [
+      "aval-douar",
+      "boued",
+      "legumaj"
+    ]
+  },
+  "1f955": {
+    "nm": "karotez",
+    "kw": [
+      "boued",
+      "karotez",
+      "legumaj"
+    ]
+  },
+  "1f956": {
+    "nm": "baget",
+    "kw": [
+      "baget",
+      "bara",
+      "boued",
+      "gall"
+    ]
+  },
+  "1f957": {
+    "nm": "saladenn",
+    "kw": [
+      "boued",
+      "saladenn"
+    ]
+  },
+  "1f958": {
+    "nm": "meuz mitonet",
+    "kw": [
+      "boued",
+      "kastelodenn",
+      "meuz mitonet",
+      "paelon"
+    ]
+  },
+  "1f959": {
+    "nm": "kebab",
+    "kw": [
+      "boued",
+      "falafel",
+      "kebab",
+      "sandwich"
+    ]
+  },
+  "1f95a": {
+    "nm": "vi",
+    "kw": [
+      "boued",
+      "dijuniñ",
+      "u",
+      "vi"
+    ]
+  },
+  "1f95b": {
+    "nm": "gwerennad laezh",
+    "kw": [
+      "evaj",
+      "gwerenn",
+      "gwerennad laezh",
+      "laezh"
+    ]
+  },
+  "1f95c": {
+    "nm": "kakaouetez",
+    "kw": [
+      "boued",
+      "kakaouetez"
+    ]
+  },
+  "1f95d": {
+    "nm": "kiwi",
+    "kw": [
+      "frouezh",
+      "kiwi"
+    ]
+  },
+  "1f95e": {
+    "nm": "krampouezh",
+    "kw": [
+      "galetez",
+      "krampouezh",
+      "pancake"
+    ]
+  },
+  "1f95f": {
+    "nm": "pouloud",
+    "kw": [
+      "gyōza",
+      "jiaozi",
+      "pierogi",
+      "pouloud"
+    ]
+  },
+  "1f962": {
+    "nm": "bizhier",
+    "kw": [
+      "bizhier"
+    ]
+  },
+  "1f963": {
+    "nm": "bolennad gant loa",
+    "kw": [
+      "bolenn",
+      "bolennad",
+      "bolennad gant loa",
+      "dijuniñ",
+      "edaj",
+      "loa"
+    ]
+  },
+  "1f964": {
+    "nm": "gobeled gant plouzenn",
+    "kw": [
+      "chug-frouezh",
+      "gobeled gant plouzenn",
+      "soda"
+    ]
+  },
+  "1f965": {
+    "nm": "kraoñ-kokoz",
+    "kw": [
+      "frouezh",
+      "kraoñ-kokoz"
+    ]
+  },
+  "1f966": {
+    "nm": "brikoli",
+    "kw": [
+      "brikoli",
+      "legumaj"
+    ]
+  },
+  "1f967": {
+    "nm": "tartezenn",
+    "kw": [
+      "avaloù",
+      "dibenn-pred",
+      "frouezh",
+      "tamm",
+      "tartezenn"
+    ]
+  },
+  "1f968": {
+    "nm": "bretzel",
+    "kw": [
+      "bara",
+      "bretzel"
+    ]
+  },
+  "1f969": {
+    "nm": "tamm kig",
+    "kw": [
+      "kostenn",
+      "kostezenn",
+      "ramskoaz",
+      "tamm kig"
+    ]
+  },
+  "1f96a": {
+    "nm": "sandwich",
+    "kw": [
+      "bara",
+      "sandwich"
+    ]
+  },
+  "1f96b": {
+    "nm": "boued-mir",
+    "kw": [
+      "boest-mir",
+      "boued-mir"
+    ]
+  },
+  "1f96c": {
+    "nm": "legumaj glas",
+    "kw": [
+      "legumaj",
+      "legumaj glas",
+      "letuz"
+    ]
+  },
+  "1f96d": {
+    "nm": "mangez",
+    "kw": [
+      "frouezh",
+      "mangez",
+      "trovanel"
+    ]
+  },
+  "1f96e": {
+    "nm": "gwastell-loar",
+    "kw": [
+      "diskaramzer",
+      "gouel",
+      "gwastell",
+      "gwastell-loar"
+    ]
+  },
+  "1f96f": {
+    "nm": "bagel",
+    "kw": [
+      "bagel",
+      "bara"
+    ]
+  },
+  "1f977": {
+    "nm": "ninja",
+    "kw": [
+      "brezelour",
+      "kuzh",
+      "ninja"
+    ]
+  },
+  "1f977-1f3ff": {
+    "nm": "ninja : krocʼhen teñval",
+    "kw": [
+      "brezelour",
+      "krocʼhen teñval",
+      "kuzh",
+      "ninja"
+    ]
+  },
+  "1f97b": {
+    "nm": "sari",
+    "kw": [
+      "dilhad",
+      "sari"
+    ]
+  },
+  "1f97c": {
+    "nm": "flotantenn wenn",
+    "kw": [
+      "doktor",
+      "flotantenn wenn",
+      "skiantour"
+    ]
+  },
+  "1f97d": {
+    "nm": "lunedoù-kouronkañ",
+    "kw": [
+      "daoulagad",
+      "lunedoù",
+      "lunedoù-kouronkañ"
+    ]
+  },
+  "1f97e": {
+    "nm": "botez bale",
+    "kw": [
+      "bale",
+      "botez",
+      "kampiñ"
+    ]
+  },
+  "1f980": {
+    "nm": "krank",
+    "kw": [
+      "krank",
+      "loen",
+      "zodiak"
+    ]
+  },
+  "1f981": {
+    "nm": "leon",
+    "kw": [
+      "leon",
+      "penn"
+    ]
+  },
+  "1f982": {
+    "nm": "krug",
+    "kw": [
+      "krug",
+      "Krug",
+      "loen",
+      "zodiak"
+    ]
+  },
+  "1f983": {
+    "nm": "kog-Spagn",
+    "kw": [
+      "evn",
+      "kog-Spagn"
+    ]
+  },
+  "1f984": {
+    "nm": "unkorneg",
+    "kw": [
+      "penn",
+      "unkorneg"
+    ]
+  },
+  "1f985": {
+    "nm": "erer",
+    "kw": [
+      "erer",
+      "evn",
+      "evnoniezh",
+      "loen"
+    ]
+  },
+  "1f986": {
+    "nm": "houad",
+    "kw": [
+      "evn",
+      "evnoniezh",
+      "houad",
+      "loen"
+    ]
+  },
+  "1f987": {
+    "nm": "logodenn-zall",
+    "kw": [
+      "loen",
+      "logodenn-zall"
+    ]
+  },
+  "1f988": {
+    "nm": "rinkin",
+    "kw": [
+      "loen",
+      "pesk",
+      "rinkin"
+    ]
+  },
+  "1f989": {
+    "nm": "kaouenn",
+    "kw": [
+      "evn",
+      "evnoniezh",
+      "fur",
+      "kaouenn",
+      "loen"
+    ]
+  },
+  "1f98a": {
+    "nm": "louarn",
+    "kw": [
+      "louarn",
+      "penn"
+    ]
+  },
+  "1f98b": {
+    "nm": "balafenn",
+    "kw": [
+      "amprevan",
+      "balafenn",
+      "brav"
+    ]
+  },
+  "1f98c": {
+    "nm": "karv",
+    "kw": [
+      "karv",
+      "loen"
+    ]
+  },
+  "1f98d": {
+    "nm": "gorilh",
+    "kw": [
+      "gorilh",
+      "loen"
+    ]
+  },
+  "1f98e": {
+    "nm": "glazard",
+    "kw": [
+      "glazard",
+      "loen",
+      "stlejvil"
+    ]
+  },
+  "1f98f": {
+    "nm": "frikorneg",
+    "kw": [
+      "frikorneg",
+      "loen"
+    ]
+  },
+  "1f990": {
+    "nm": "chevr",
+    "kw": [
+      "boued-mor",
+      "chevr",
+      "kresteneg",
+      "loen"
+    ]
+  },
+  "1f991": {
+    "nm": "stivell",
+    "kw": [
+      "blotvil",
+      "boued",
+      "stivell"
+    ]
+  },
+  "1f992": {
+    "nm": "jirafenn",
+    "kw": [
+      "jirafenn",
+      "loen"
+    ]
+  },
+  "1f993": {
+    "nm": "roudenneg",
+    "kw": [
+      "loen",
+      "roudenneg"
+    ]
+  },
+  "1f994": {
+    "nm": "heureuchin",
+    "kw": [
+      "heureuchin",
+      "loen"
+    ]
+  },
+  "1f995": {
+    "nm": "saoropod",
+    "kw": [
+      "dinosaor",
+      "saoropod"
+    ]
+  },
+  "1f996": {
+    "nm": "tiranosaor roue",
+    "kw": [
+      "dinosaor",
+      "tiranosaor roue"
+    ]
+  },
+  "1f997": {
+    "nm": "krank-raden",
+    "kw": [
+      "amprevan",
+      "krank-raden"
+    ]
+  },
+  "1f998": {
+    "nm": "kangourou",
+    "kw": [
+      "Aostralia",
+      "kangourou",
+      "loen"
+    ]
+  },
+  "1f999": {
+    "nm": "lama",
+    "kw": [
+      "lama",
+      "loen"
+    ]
+  },
+  "1f99a": {
+    "nm": "paun",
+    "kw": [
+      "evn",
+      "loen",
+      "paun"
+    ]
+  },
+  "1f99b": {
+    "nm": "dourvarc’h",
+    "kw": [
+      "dourvarc’h",
+      "loen"
+    ]
+  },
+  "1f99c": {
+    "nm": "peroked",
+    "kw": [
+      "evn",
+      "loen",
+      "peroked"
+    ]
+  },
+  "1f99d": {
+    "nm": "rakoun",
+    "kw": [
+      "loen",
+      "rakoun"
+    ]
+  },
+  "1f99e": {
+    "nm": "legestr",
+    "kw": [
+      "biskennad",
+      "boued-mor",
+      "legestr",
+      "loen",
+      "meudoù"
+    ]
+  },
+  "1f99f": {
+    "nm": "moustik",
+    "kw": [
+      "amprevan",
+      "moustik"
+    ]
+  },
+  "1f9a0": {
+    "nm": "mikrob",
+    "kw": [
+      "bakterienn",
+      "mikrob"
+    ]
+  },
+  "1f9a1": {
+    "nm": "brocʼh",
+    "kw": [
+      "brocʼh",
+      "loen"
+    ]
+  },
+  "1f9a2": {
+    "nm": "alarcʼh",
+    "kw": [
+      "alarcʼh",
+      "evn"
+    ]
+  },
+  "1f9a3": {
+    "nm": "mammout",
+    "kw": [
+      "divent",
+      "gloanek",
+      "loen",
+      "mammout",
+      "steuziadur",
+      "stilhonoù"
+    ]
+  },
+  "1f9a4": {
+    "nm": "dodo",
+    "kw": [
+      "dodo",
+      "Moris"
+    ]
+  },
+  "1f9a5": {
+    "nm": "lezireg",
+    "kw": [
+      "gorrek",
+      "lezireg",
+      "loen"
+    ]
+  },
+  "1f9a6": {
+    "nm": "dourgi",
+    "kw": [
+      "dourgi",
+      "loen"
+    ]
+  },
+  "1f9a7": {
+    "nm": "orangoutan",
+    "kw": [
+      "loen",
+      "orangoutan"
+    ]
+  },
+  "1f9a8": {
+    "nm": "skoñs",
+    "kw": [
+      "flaer",
+      "loen",
+      "skoñs"
+    ]
+  },
+  "1f9a9": {
+    "nm": "flammeg",
+    "kw": [
+      "evn",
+      "evnoniezh",
+      "flammeg",
+      "loen",
+      "trovanel"
+    ]
+  },
+  "1f9aa": {
+    "nm": "istr",
+    "kw": [
+      "istr",
+      "perlez",
+      "splujañ"
+    ]
+  },
+  "1f9ab": {
+    "nm": "avank",
+    "kw": [
+      "avank",
+      "dent",
+      "loen",
+      "stankell"
+    ]
+  },
+  "1f9ac": {
+    "nm": "bizon",
+    "kw": [
+      "bizon",
+      "loen"
+    ]
+  },
+  "1f9ad": {
+    "nm": "reunig",
+    "kw": [
+      "loen",
+      "meurvor",
+      "mor",
+      "morleon",
+      "reunig"
+    ]
+  },
+  "1f9ae": {
+    "nm": "ki-heñchañ",
+    "kw": [
+      "dall",
+      "ki-heñchañ"
+    ]
+  },
+  "1f9b0": {
+    "nm": "blev ruz",
+    "kw": [
+      "blev",
+      "ruz"
+    ]
+  },
+  "1f9b1": {
+    "nm": "blev rodellek",
+    "kw": [
+      "blev",
+      "rodellek"
+    ]
+  },
+  "1f9b2": {
+    "nm": "moal",
+    "kw": [
+      "blev",
+      "moal"
+    ]
+  },
+  "1f9b3": {
+    "nm": "blev gwenn",
+    "kw": [
+      "blev",
+      "blev gwenn"
+    ]
+  },
+  "1f9b4": {
+    "nm": "askorn",
+    "kw": [
+      "askorn",
+      "eskern",
+      "ki",
+      "skeledenn"
+    ]
+  },
+  "1f9b5": {
+    "nm": "gar",
+    "kw": [
+      "gar"
+    ]
+  },
+  "1f9b5-1f3ff": {
+    "nm": "gar : krocʼhen teñval",
+    "kw": [
+      "gar",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9b6": {
+    "nm": "troad",
+    "kw": [
+      "troad"
+    ]
+  },
+  "1f9b6-1f3ff": {
+    "nm": "troad : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "troad"
+    ]
+  },
+  "1f9b7": {
+    "nm": "dant",
+    "kw": [
+      "amailh",
+      "dant",
+      "dent",
+      "dentour",
+      "gwenn"
+    ]
+  },
+  "1f9b8": {
+    "nm": "gourharoz",
+    "kw": [
+      "gourharoz",
+      "haroz"
+    ]
+  },
+  "1f9b8-1f3ff": {
+    "nm": "gourharoz : krocʼhen teñval",
+    "kw": [
+      "gourharoz",
+      "haroz",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9ba": {
+    "nm": "jiletenn surentez",
+    "kw": [
+      "jiletenn",
+      "surentez"
+    ]
+  },
+  "1f9be": {
+    "nm": "brecʼh vekanikel",
+    "kw": [
+      "brecʼh",
+      "brecʼh vekanikel",
+      "mekanikel"
+    ]
+  },
+  "1f9bf": {
+    "nm": "gar vekanikel",
+    "kw": [
+      "gar",
+      "gar vekanikel",
+      "mekanikel",
+      "protezenn"
+    ]
+  },
+  "1f9c0": {
+    "nm": "tamm formaj-laezh",
+    "kw": [
+      "formaj-laezh",
+      "keuz",
+      "tamm formaj-laezh",
+      "tamm keuz"
+    ]
+  },
+  "1f9c1": {
+    "nm": "gwastellig",
+    "kw": [
+      "dibenn-pred",
+      "gwastellig"
+    ]
+  },
+  "1f9c2": {
+    "nm": "holen",
+    "kw": [
+      "holen",
+      "temz-boued"
+    ]
+  },
+  "1f9c3": {
+    "nm": "brikennigad evaj",
+    "kw": [
+      "brikennigad",
+      "chug-frouezh",
+      "evaj"
+    ]
+  },
+  "1f9c4": {
+    "nm": "kignen",
+    "kw": [
+      "kignen",
+      "legumaj",
+      "temz-boued"
+    ]
+  },
+  "1f9c5": {
+    "nm": "ognon",
+    "kw": [
+      "legumaj",
+      "ognon",
+      "temz-boued"
+    ]
+  },
+  "1f9c6": {
+    "nm": "falafel",
+    "kw": [
+      "falafel",
+      "piz-sisez",
+      "pouloud"
+    ]
+  },
+  "1f9c7": {
+    "nm": "galfrez",
+    "kw": [
+      "dijuniñ",
+      "galfrez",
+      "pastezerezh"
+    ]
+  },
+  "1f9c8": {
+    "nm": "amann",
+    "kw": [
+      "amann",
+      "boued-laezh"
+    ]
+  },
+  "1f9c9": {
+    "nm": "mate",
+    "kw": [
+      "evaj",
+      "mate"
+    ]
+  },
+  "1f9ca": {
+    "nm": "skornenn",
+    "kw": [
+      "skorn",
+      "skornenn",
+      "yen"
+    ]
+  },
+  "1f9d1": {
+    "nm": "den deuet",
+    "kw": [
+      "den deuet"
+    ]
+  },
+  "1f9d1-1f3ff": {
+    "nm": "den deuet : krocʼhen teñval",
+    "kw": [
+      "den deuet",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9d1-1f3ff-200d-1f3a4": {
+    "nm": "den a gan : krocʼhen teñval",
+    "kw": [
+      "den a gan",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9d1-1f3ff-200d-1f9b0": {
+    "nm": "den deuet : krocʼhen teñval, blev ruz",
+    "kw": [
+      "blev ruz",
+      "den deuet",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9d1-1f3ff-200d-1f9b1": {
+    "nm": "den deuet : krocʼhen teñval, blev rodellek",
+    "kw": [
+      "blev rodellek",
+      "den deuet",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9d1-1f3ff-200d-1f9b2": {
+    "nm": "den deuet : krocʼhen teñval, moal",
+    "kw": [
+      "den deuet",
+      "krocʼhen teñval",
+      "moal"
+    ]
+  },
+  "1f9d1-1f3ff-200d-1f9b3": {
+    "nm": "den deuet : krocʼhen teñval, blev gwenn",
+    "kw": [
+      "blev gwenn",
+      "den deuet",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9d1-200d-1f3a4": {
+    "nm": "den a gan",
+    "kw": [
+      "den a gan"
+    ]
+  },
+  "1f9d1-200d-1f9b0": {
+    "nm": "den deuet : blev ruz",
+    "kw": [
+      "blev ruz",
+      "den deuet"
+    ]
+  },
+  "1f9d1-200d-1f9b1": {
+    "nm": "den deuet : blev rodellek",
+    "kw": [
+      "blev rodellek",
+      "den deuet"
+    ]
+  },
+  "1f9d1-200d-1f9b2": {
+    "nm": "den deuet : moal",
+    "kw": [
+      "den deuet",
+      "moal"
+    ]
+  },
+  "1f9d1-200d-1f9b3": {
+    "nm": "den deuet : blev gwenn",
+    "kw": [
+      "blev gwenn",
+      "den deuet"
+    ]
+  },
+  "1f9d2": {
+    "nm": "bugel",
+    "kw": [
+      "bugel",
+      "yaouank"
+    ]
+  },
+  "1f9d2-1f3ff": {
+    "nm": "bugel : krocʼhen teñval",
+    "kw": [
+      "bugel",
+      "krocʼhen teñval",
+      "yaouank"
+    ]
+  },
+  "1f9d3": {
+    "nm": "den kozh",
+    "kw": [
+      "den",
+      "kozh"
+    ]
+  },
+  "1f9d3-1f3ff": {
+    "nm": "den kozh : krocʼhen teñval",
+    "kw": [
+      "den",
+      "kozh",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9d9": {
+    "nm": "maj",
+    "kw": [
+      "maj",
+      "sorser"
+    ]
+  },
+  "1f9d9-1f3ff": {
+    "nm": "maj : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "maj",
+      "sorser"
+    ]
+  },
+  "1f9d9-1f3ff-200d-2640": {
+    "nm": "hudourez : krocʼhen teñval",
+    "kw": [
+      "hudourez",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9d9-1f3ff-200d-2642": {
+    "nm": "hudour : krocʼhen teñval",
+    "kw": [
+      "hudour",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9d9-200d-2640": {
+    "nm": "hudourez",
+    "kw": [
+      "hudourez"
+    ]
+  },
+  "1f9d9-200d-2642": {
+    "nm": "hudour",
+    "kw": [
+      "hudour"
+    ]
+  },
+  "1f9da": {
+    "nm": "boudig",
+    "kw": [
+      "boudig",
+      "Titania"
+    ]
+  },
+  "1f9da-1f3ff": {
+    "nm": "boudig : krocʼhen teñval",
+    "kw": [
+      "boudig",
+      "krocʼhen teñval",
+      "Titania"
+    ]
+  },
+  "1f9db": {
+    "nm": "suner/ez-gwad",
+    "kw": [
+      "Dracula",
+      "suner-gwad",
+      "suner/ez-gwad"
+    ]
+  },
+  "1f9db-1f3ff": {
+    "nm": "suner/ez-gwad : krocʼhen teñval",
+    "kw": [
+      "Dracula",
+      "krocʼhen teñval",
+      "suner-gwad",
+      "suner/ez-gwad"
+    ]
+  },
+  "1f9db-1f3ff-200d-2640": {
+    "nm": "sunerez-gwad : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "sunerez-gwad"
+    ]
+  },
+  "1f9db-1f3ff-200d-2642": {
+    "nm": "suner-gwad : krocʼhen teñval",
+    "kw": [
+      "Dracula",
+      "krocʼhen teñval",
+      "suner-gwad"
+    ]
+  },
+  "1f9db-200d-2640": {
+    "nm": "sunerez-gwad",
+    "kw": [
+      "sunerez-gwad"
+    ]
+  },
+  "1f9db-200d-2642": {
+    "nm": "suner-gwad",
+    "kw": [
+      "Dracula",
+      "suner-gwad"
+    ]
+  },
+  "1f9dc-1f3ff-200d-2640": {
+    "nm": "morganez : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "morganez"
+    ]
+  },
+  "1f9dc-1f3ff-200d-2642": {
+    "nm": "morgan : krocʼhen teñval",
+    "kw": [
+      "krocʼhen teñval",
+      "morgan"
+    ]
+  },
+  "1f9dc-200d-2640": {
+    "nm": "morganez",
+    "kw": [
+      "morganez"
+    ]
+  },
+  "1f9dc-200d-2642": {
+    "nm": "morgan",
+    "kw": [
+      "morgan"
+    ]
+  },
+  "1f9dd-1f3ff-200d-2640": {
+    "nm": "elfez : krocʼhen teñval",
+    "kw": [
+      "elfez",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9dd-1f3ff-200d-2642": {
+    "nm": "elf : krocʼhen teñval",
+    "kw": [
+      "elf",
+      "krocʼhen teñval"
+    ]
+  },
+  "1f9dd-200d-2640": {
+    "nm": "elfez",
+    "kw": [
+      "elfez"
+    ]
+  },
+  "1f9dd-200d-2642": {
+    "nm": "elf",
+    "kw": [
+      "elf"
+    ]
+  },
+  "1f9df-200d-2640": {
+    "nm": "zombiez",
+    "kw": [
+      "zombiez"
+    ]
+  },
+  "1f9df-200d-2642": {
+    "nm": "zombi",
+    "kw": [
+      "zombi"
+    ]
+  },
+  "1f9e0": {
+    "nm": "empenn",
+    "kw": [
+      "empenn",
+      "speredek"
+    ]
+  },
+  "1f9e1": {
+    "nm": "kalon orañjez",
+    "kw": [
+      "kalon",
+      "orañjez"
+    ]
+  },
+  "1f9e2": {
+    "nm": "kasketenn amerikan",
+    "kw": [
+      "dilhad",
+      "kasketenn amerikan",
+      "tog"
+    ]
+  },
+  "1f9e3": {
+    "nm": "skerb",
+    "kw": [
+      "dilhad",
+      "skerb"
+    ]
+  },
+  "1f9e4": {
+    "nm": "manegoù",
+    "kw": [
+      "dilhad",
+      "manegoù"
+    ]
+  },
+  "1f9e5": {
+    "nm": "mantell",
+    "kw": [
+      "chupenn",
+      "dilhad",
+      "mantell"
+    ]
+  },
+  "1f9e6": {
+    "nm": "loeroù",
+    "kw": [
+      "dilhad",
+      "loeroù",
+      "treid"
+    ]
+  },
+  "1f9e7": {
+    "nm": "golo ruz",
+    "kw": [
+      "arcʼhant",
+      "chañs vat",
+      "golo ruz"
+    ]
+  },
+  "1f9e8": {
+    "nm": "strakerez",
+    "kw": [
+      "dinamit",
+      "strakerez",
+      "tarzhañ"
+    ]
+  },
+  "1f9e9": {
+    "nm": "miltamm",
+    "kw": [
+      "cʼhoari",
+      "miltamm"
+    ]
+  },
+  "1f9ea": {
+    "nm": "pibenn amprou",
+    "kw": [
+      "kimiezh",
+      "kimiour",
+      "pibenn amprou"
+    ]
+  },
+  "1f9eb": {
+    "nm": "boest Petri",
+    "kw": [
+      "bevoniezh",
+      "bevoniour",
+      "boest",
+      "boest Petri"
+    ]
+  },
+  "1f9ec": {
+    "nm": "TDN",
+    "kw": [
+      "bevoniour",
+      "TDN"
+    ]
+  },
+  "1f9ed": {
+    "nm": "nadoz-vor",
+    "kw": [
+      "magnetek",
+      "merdeiñ",
+      "nadoz-vor"
+    ]
+  },
+  "1f9ee": {
+    "nm": "boulaoueg",
+    "kw": [
+      "boulaoueg",
+      "jediñ"
+    ]
+  },
+  "1f9ef": {
+    "nm": "mouger-tan",
+    "kw": [
+      "mouger-tan",
+      "tan",
+      "tan-gwall"
+    ]
+  },
+  "1f9f0": {
+    "nm": "boest-ostilhoù",
+    "kw": [
+      "boest",
+      "boest-ostilhoù",
+      "ostilhoù"
+    ]
+  },
+  "1f9f1": {
+    "nm": "brikenn",
+    "kw": [
+      "brikenn",
+      "brikennoù",
+      "morter",
+      "pri"
+    ]
+  },
+  "1f9f2": {
+    "nm": "gwarell",
+    "kw": [
+      "gwarell",
+      "houarn-marcʼh",
+      "magnetek"
+    ]
+  },
+  "1f9f3": {
+    "nm": "bagaj",
+    "kw": [
+      "bagaj",
+      "malizenn",
+      "pakad"
+    ]
+  },
+  "1f9f4": {
+    "nm": "boutailhad golcʼhad",
+    "kw": [
+      "boutailhad",
+      "champouenn",
+      "golcʼhad"
+    ]
+  },
+  "1f9f5": {
+    "nm": "kanellad neud",
+    "kw": [
+      "kanell",
+      "kanellad neud",
+      "nadoz",
+      "neud"
+    ]
+  },
+  "1f9f6": {
+    "nm": "pellenn neud",
+    "kw": [
+      "nadoz",
+      "neud",
+      "pellenn"
+    ]
+  },
+  "1f9f7": {
+    "nm": "spilhenn-alcʼhwez",
+    "kw": [
+      "gwiadennoù",
+      "lienoù",
+      "spilhenn-alcʼhwez",
+      "trezenn"
+    ]
+  },
+  "1f9f8": {
+    "nm": "arzh-feur",
+    "kw": [
+      "arzh-feur",
+      "cʼhoari",
+      "cʼhoariell"
+    ]
+  },
+  "1f9f9": {
+    "nm": "skubellenn",
+    "kw": [
+      "naetaat",
+      "skubellenn"
+    ]
+  },
+  "1f9fa": {
+    "nm": "paner",
+    "kw": [
+      "paner",
+      "piknik"
+    ]
+  },
+  "1f9fb": {
+    "nm": "roll paper",
+    "kw": [
+      "paper privezioù",
+      "roll paper"
+    ]
+  },
+  "1f9fc": {
+    "nm": "soavon",
+    "kw": [
+      "kibellañ",
+      "soavon"
+    ]
+  },
+  "1f9fd": {
+    "nm": "spoueenn",
+    "kw": [
+      "naetaat",
+      "spoueenn"
+    ]
+  },
+  "1f9fe": {
+    "nm": "skrid-degemer",
+    "kw": [
+      "prouenn",
+      "skrid-degemer"
+    ]
+  },
+  "1f9ff": {
+    "nm": "amuzetez nazar",
+    "kw": [
+      "amuzetez",
+      "drougaviz",
+      "gwall lagad",
+      "nazar",
+      "tilsam"
+    ]
+  },
+  "1fa71": {
+    "nm": "sae-gouronkañ unpezh",
+    "kw": [
+      "dilhad-kouronkañ",
+      "sae-gouronkañ",
+      "unpezh"
+    ]
+  },
+  "1fa72": {
+    "nm": "slip",
+    "kw": [
+      "dilhad-dindan",
+      "dilhad-kouronkañ",
+      "slip",
+      "unpezh"
+    ]
+  },
+  "1fa73": {
+    "nm": "bragoù-berr",
+    "kw": [
+      "bragoù-berr",
+      "dilhad-kouronkañ",
+      "unpezh"
+    ]
+  },
+  "1fa74": {
+    "nm": "tong",
+    "kw": [
+      "sandalenn",
+      "soledenn",
+      "solenn",
+      "tong"
+    ]
+  },
+  "1fa78": {
+    "nm": "takenn wad",
+    "kw": [
+      "gwad",
+      "medisinerezh",
+      "mezegiezh",
+      "takenn",
+      "takenn wad"
+    ]
+  },
+  "1fa79": {
+    "nm": "lienad-peg",
+    "kw": [
+      "bandenn",
+      "lienad",
+      "lienad-peg",
+      "lienenn",
+      "sparadrap"
+    ]
+  },
+  "1fa7a": {
+    "nm": "stetoskop",
+    "kw": [
+      "doktor",
+      "medisinerezh",
+      "mezegiezh",
+      "stetoskop"
+    ]
+  },
+  "1fa80": {
+    "nm": "pun-dibun",
+    "kw": [
+      "cʼhoariell",
+      "pun-dibun"
+    ]
+  },
+  "1fa81": {
+    "nm": "sarpant-nij",
+    "kw": [
+      "nijal",
+      "sarpant-nij"
+    ]
+  },
+  "1fa82": {
+    "nm": "harz-lamm",
+    "kw": [
+      "bolcʼhaskell",
+      "harz-lamm"
+    ]
+  },
+  "1fa83": {
+    "nm": "boumerang",
+    "kw": [
+      "Aostralia",
+      "boumerang"
+    ]
+  },
+  "1fa84": {
+    "nm": "gwialenn-hud",
+    "kw": [
+      "gwialenn-hud",
+      "hud",
+      "sorser",
+      "sorserez"
+    ]
+  },
+  "1fa85": {
+    "nm": "piñata",
+    "kw": [
+      "fest",
+      "gouel",
+      "piñata"
+    ]
+  },
+  "1fa86": {
+    "nm": "matriochka",
+    "kw": [
+      "matriochka",
+      "rusian"
+    ]
+  },
+  "1fa8a": {
+    "nm": "trombon",
+    "kw": [
+      "benveg",
+      "jazz",
+      "laton",
+      "sonerezh",
+      "trist",
+      "trombon"
+    ]
+  },
+  "1fa90": {
+    "nm": "planedenn gant gwalennoù",
+    "kw": [
+      "gwalenn",
+      "planedenn",
+      "planedenn gant gwalennoù",
+      "Sadorn"
+    ]
+  },
+  "1fa91": {
+    "nm": "kador",
+    "kw": [
+      "azezenn",
+      "kador"
+    ]
+  },
+  "1fa92": {
+    "nm": "aotenn",
+    "kw": [
+      "aotenn",
+      "aotenniñ"
+    ]
+  },
+  "1fa93": {
+    "nm": "boucʼhal",
+    "kw": [
+      "benveg",
+      "boucʼhal",
+      "boucʼhalig",
+      "koad"
+    ]
+  },
+  "1fa94": {
+    "nm": "diya",
+    "kw": [
+      "diya",
+      "eoul",
+      "lamp"
+    ]
+  },
+  "1fa95": {
+    "nm": "banjo",
+    "kw": [
+      "banjo",
+      "benveg",
+      "sonerezh"
+    ]
+  },
+  "1fa96": {
+    "nm": "tokarn soudard",
+    "kw": [
+      "arme",
+      "soudard",
+      "tokarn"
+    ]
+  },
+  "1fa97": {
+    "nm": "akordeoñs",
+    "kw": [
+      "akordeoñs",
+      "benveg",
+      "sonerezh"
+    ]
+  },
+  "1fa98": {
+    "nm": "djembe",
+    "kw": [
+      "benveg",
+      "djembe",
+      "sonerezh"
+    ]
+  },
+  "1fa99": {
+    "nm": "pezh moneiz",
+    "kw": [
+      "aour",
+      "arcʼhant",
+      "moneiz",
+      "pezh"
+    ]
+  },
+  "1fa9a": {
+    "nm": "heskenn",
+    "kw": [
+      "benveg",
+      "heskenn"
+    ]
+  },
+  "1fa9b": {
+    "nm": "troer-biñsoù",
+    "kw": [
+      "benveg",
+      "biñs",
+      "troer-biñsoù"
+    ]
+  },
+  "1fa9c": {
+    "nm": "skeul",
+    "kw": [
+      "skabell",
+      "skeul"
+    ]
+  },
+  "1fa9d": {
+    "nm": "krog",
+    "kw": [
+      "higennañ",
+      "krog"
+    ]
+  },
+  "1fa9e": {
+    "nm": "melezour",
+    "kw": [
+      "melezour"
+    ]
+  },
+  "1fa9f": {
+    "nm": "prenestr",
+    "kw": [
+      "framm",
+      "gweled",
+      "prenestr",
+      "stern",
+      "treuzwelus"
+    ]
+  },
+  "1faa0": {
+    "nm": "mandoz",
+    "kw": [
+      "mandoz",
+      "plomer",
+      "privezioù"
+    ]
+  },
+  "1faa1": {
+    "nm": "nadoz da wriat",
+    "kw": [
+      "broderezh",
+      "gwriat",
+      "nadoz",
+      "nadoz da wriat"
+    ]
+  },
+  "1faa2": {
+    "nm": "skoulm",
+    "kw": [
+      "kordenn",
+      "skoulm"
+    ]
+  },
+  "1faa3": {
+    "nm": "sailh",
+    "kw": [
+      "kelorn",
+      "sailh"
+    ]
+  },
+  "1faa4": {
+    "nm": "logotouer",
+    "kw": [
+      "logod",
+      "logotouer"
+    ]
+  },
+  "1faa5": {
+    "nm": "broust-dent",
+    "kw": [
+      "broust",
+      "broust-dent",
+      "dent",
+      "sal-dour",
+      "yecʼhederezh"
+    ]
+  },
+  "1faa6": {
+    "nm": "maen-bez",
+    "kw": [
+      "bered",
+      "bez",
+      "maen-bez",
+      "maen-kañv",
+      "maen-koun",
+      "maen-sav"
+    ]
+  },
+  "1faa8": {
+    "nm": "rocʼh",
+    "kw": [
+      "maen",
+      "rocʼh"
+    ]
+  },
+  "1fab0": {
+    "nm": "kelienenn",
+    "kw": [
+      "kelienenn",
+      "kleñved"
+    ]
+  },
+  "1fab1": {
+    "nm": "buzhugenn",
+    "kw": [
+      "buzhugenn",
+      "loen"
+    ]
+  },
+  "1fab2": {
+    "nm": "cʼhwil",
+    "kw": [
+      "amprevan",
+      "cʼhwil",
+      "loen"
+    ]
+  },
+  "1fab3": {
+    "nm": "cʼhwil-du",
+    "kw": [
+      "amprevan",
+      "cʼhwil-du",
+      "kloreg",
+      "loen"
+    ]
+  },
+  "1fab4": {
+    "nm": "plantenn podet",
+    "kw": [
+      "plantenn",
+      "plantenn podet",
+      "pod",
+      "ti"
+    ]
+  },
+  "1fab5": {
+    "nm": "koad",
+    "kw": [
+      "kef",
+      "keuneud",
+      "koad"
+    ]
+  },
+  "1fab6": {
+    "nm": "pluenn",
+    "kw": [
+      "evn",
+      "pluenn"
+    ]
+  },
+  "1fac0": {
+    "nm": "kalon korfadurel",
+    "kw": [
+      "kalon"
+    ]
+  },
+  "1fac1": {
+    "nm": "skevent",
+    "kw": [
+      "skevent"
+    ]
+  },
+  "1facd": {
+    "nm": "skoazog",
+    "kw": [
+      "meurvor",
+      "mor",
+      "skoazog"
+    ]
+  },
+  "1fad0": {
+    "nm": "lus",
+    "kw": [
+      "frouezh",
+      "lus"
+    ]
+  },
+  "1fad1": {
+    "nm": "skilbebr",
+    "kw": [
+      "legumaj",
+      "skilbebr"
+    ]
+  },
+  "1fad2": {
+    "nm": "olivez",
+    "kw": [
+      "boued",
+      "olivez"
+    ]
+  },
+  "1fad3": {
+    "nm": "galetez",
+    "kw": [
+      "bara",
+      "galetez"
+    ]
+  },
+  "1fad4": {
+    "nm": "tamal",
+    "kw": [
+      "mecʼhikan",
+      "tamal"
+    ]
+  },
+  "1fad5": {
+    "nm": "teuzadell",
+    "kw": [
+      "chokolad",
+      "darbod",
+      "formaj-laezh",
+      "keuz",
+      "teuzadell"
+    ]
+  },
+  "1fad6": {
+    "nm": "pod-te",
+    "kw": [
+      "boued",
+      "evaj",
+      "glecʼhiañ",
+      "pod-te",
+      "te",
+      "tomm"
+    ]
+  },
+  "203c": {
+    "nm": "pik-estlamm doubl",
+    "kw": [
+      "!",
+      "!!",
+      "pik-estlamm",
+      "pik-estlamm doubl"
+    ]
+  },
+  "2049": {
+    "nm": "pik-goulenn estlamm",
+    "kw": [
+      "!",
+      "!?",
+      "?",
+      "estlamm",
+      "goulenn",
+      "pik-goulenn estlamm",
+      "poentadur"
+    ]
+  },
+  "2122": {
+    "nm": "merk kenwerzhel marilhet",
+    "kw": [
+      "merk kenwerzhel marilhet",
+      "tm"
+    ]
+  },
+  "2139": {
+    "nm": "titouroù",
+    "kw": [
+      "i",
+      "titouroù"
+    ]
+  },
+  "231a": {
+    "nm": "montr",
+    "kw": [
+      "eur",
+      "eurier",
+      "montr"
+    ]
+  },
+  "231b": {
+    "nm": "eurier-traezh",
+    "kw": [
+      "eurier",
+      "eurier-traezh",
+      "traezh"
+    ]
+  },
+  "2328": {
+    "nm": "klavier",
+    "kw": [
+      "klavier",
+      "urzhiataer"
+    ]
+  },
+  "23f0": {
+    "nm": "dihuner",
+    "kw": [
+      "alarm",
+      "dihuner",
+      "eur",
+      "eurier"
+    ]
+  },
+  "23f1": {
+    "nm": "kronometr",
+    "kw": [
+      "eur",
+      "eurier",
+      "kronometr"
+    ]
+  },
+  "23f2": {
+    "nm": "horolaj",
+    "kw": [
+      "eur",
+      "eurier",
+      "horolaj"
+    ]
+  },
+  "24c2": {
+    "nm": "M kelcʼhiet",
+    "kw": [
+      "kelcʼh",
+      "M",
+      "M kelcʼhiet"
+    ]
+  },
+  "25aa": {
+    "nm": "karrez bihan du",
+    "kw": [
+      "du",
+      "karrez",
+      "karrez bihan du"
+    ]
+  },
+  "25ab": {
+    "nm": "karrez bihan gwenn",
+    "kw": [
+      "gwenn",
+      "karrez",
+      "karrez bihan gwenn"
+    ]
+  },
+  "25b6": {
+    "nm": "bouton lenn",
+    "kw": [
+      "bouton",
+      "lenn"
+    ]
+  },
+  "25fb": {
+    "nm": "karrez etre gwenn",
+    "kw": [
+      "gwenn",
+      "karrez",
+      "karrez etre gwenn"
+    ]
+  },
+  "25fc": {
+    "nm": "karrez etre du",
+    "kw": [
+      "etre",
+      "karrez",
+      "karrez etre du"
+    ]
+  },
+  "2600": {
+    "nm": "heol",
+    "kw": [
+      "heol",
+      "skin"
+    ]
+  },
+  "2601": {
+    "nm": "koumoulenn",
+    "kw": [
+      "amzer",
+      "koumoulenn"
+    ]
+  },
+  "2602": {
+    "nm": "disglavier",
+    "kw": [
+      "disglavier",
+      "glav"
+    ]
+  },
+  "2603": {
+    "nm": "boulom ercʼh gant ercʼh",
+    "kw": [
+      "boulom",
+      "boulom ercʼh gant ercʼh",
+      "ercʼh"
+    ]
+  },
+  "2604": {
+    "nm": "kometenn",
+    "kw": [
+      "egor",
+      "kometenn"
+    ]
+  },
+  "260e": {
+    "nm": "pellgomzer",
+    "kw": [
+      "pellgomz",
+      "pellgomzer"
+    ]
+  },
+  "2611": {
+    "nm": "log asket",
+    "kw": [
+      "✓",
+      "ask",
+      "log asket"
+    ]
+  },
+  "2614": {
+    "nm": "disglavier gant glav",
+    "kw": [
+      "disglavier",
+      "disglavier gant glav",
+      "glav"
+    ]
+  },
+  "2615": {
+    "nm": "evaj tomm",
+    "kw": [
+      "evaj",
+      "kafe",
+      "te",
+      "tomm"
+    ]
+  },
+  "2618": {
+    "nm": "melchon",
+    "kw": [
+      "iwerzhonat",
+      "melchon",
+      "plant"
+    ]
+  },
+  "2622": {
+    "nm": "skinoberiek",
+    "kw": [
+      "arouez",
+      "skinoberiek"
+    ]
+  },
+  "2623": {
+    "nm": "riskl bevoniel",
+    "kw": [
+      "arouez",
+      "riskl",
+      "riskl bevoniel"
+    ]
+  },
+  "2626": {
+    "nm": "kroaz ortodoks",
+    "kw": [
+      "kristen",
+      "kroaz ortodoks",
+      "relijion"
+    ]
+  },
+  "262a": {
+    "nm": "steredenn ha kreskenn",
+    "kw": [
+      "islam",
+      "muzulman",
+      "relijion",
+      "steredenn ha kreskenn"
+    ]
+  },
+  "262e": {
+    "nm": "arouez ar peocʼh",
+    "kw": [
+      "arouez ar peocʼh",
+      "peocʼh"
+    ]
+  },
+  "262f": {
+    "nm": "yin yang",
+    "kw": [
+      "relijion",
+      "tao",
+      "yang",
+      "yin"
+    ]
+  },
+  "2638": {
+    "nm": "rod an dharma",
+    "kw": [
+      "boudaat",
+      "relijion",
+      "rod an dharma"
+    ]
+  },
+  "2640": {
+    "nm": "arouez ar mercʼhed",
+    "kw": [
+      "arouez",
+      "arouez ar mercʼhed",
+      "mercʼhed"
+    ]
+  },
+  "2642": {
+    "nm": "arouez ar paotred",
+    "kw": [
+      "arouez",
+      "arouez ar paotred",
+      "paotred"
+    ]
+  },
+  "2648": {
+    "nm": "an Tourz",
+    "kw": [
+      "an Tourz",
+      "Ari",
+      "Tourz",
+      "zodiak"
+    ]
+  },
+  "2649": {
+    "nm": "an Tarv",
+    "kw": [
+      "an Tarv",
+      "Tarv",
+      "Tau",
+      "zodiak"
+    ]
+  },
+  "264a": {
+    "nm": "ar Gevelled",
+    "kw": [
+      "ar Gevelled",
+      "Gem",
+      "Gevelled",
+      "zodiak"
+    ]
+  },
+  "264b": {
+    "nm": "ar Cʼhrank",
+    "kw": [
+      "ar Cʼhrank",
+      "Cnc",
+      "Krank",
+      "zodiak"
+    ]
+  },
+  "264c": {
+    "nm": "al Leon",
+    "kw": [
+      "al Leon",
+      "Leo",
+      "Leon",
+      "zodiak"
+    ]
+  },
+  "264d": {
+    "nm": "ar Wercʼhez",
+    "kw": [
+      "ar Wercʼhez",
+      "Gwercʼhez",
+      "Vir",
+      "zodiak"
+    ]
+  },
+  "264e": {
+    "nm": "ar Balañsoù",
+    "kw": [
+      "ar Balañsoù",
+      "Balañsoù",
+      "Lib",
+      "zodiak"
+    ]
+  },
+  "264f": {
+    "nm": "ar Grug",
+    "kw": [
+      "ar Grug",
+      "Krug",
+      "Sco",
+      "zodiak"
+    ]
+  },
+  "2650": {
+    "nm": "ar Saezhataer",
+    "kw": [
+      "ar Saezhataer",
+      "Saezhataer",
+      "Sgr",
+      "zodiak"
+    ]
+  },
+  "2651": {
+    "nm": "ar Cʼhavr",
+    "kw": [
+      "ar Cʼhavr",
+      "Cap",
+      "Gavr",
+      "zodiak"
+    ]
+  },
+  "2652": {
+    "nm": "ar Skuilher-dour",
+    "kw": [
+      "Aqr",
+      "ar Skuilher-dour",
+      "Skuilher-dour",
+      "zodiak"
+    ]
+  },
+  "2653": {
+    "nm": "ar Pesked",
+    "kw": [
+      "ar Pesked",
+      "Pesked",
+      "Psc",
+      "zodiak"
+    ]
+  },
+  "265f": {
+    "nm": "pezh echedoù",
+    "kw": [
+      "echedoù",
+      "pezh"
+    ]
+  },
+  "2660": {
+    "nm": "pikez",
+    "kw": [
+      "kartenn",
+      "pikez",
+      "pikezenn"
+    ]
+  },
+  "2663": {
+    "nm": "treflez",
+    "kw": [
+      "kartenn",
+      "treflez",
+      "treflezenn"
+    ]
+  },
+  "2665": {
+    "nm": "keur",
+    "kw": [
+      "kartenn",
+      "keur",
+      "keurenn"
+    ]
+  },
+  "2666": {
+    "nm": "karo",
+    "kw": [
+      "karo",
+      "karoenn",
+      "kartenn"
+    ]
+  },
+  "2668": {
+    "nm": "andon tomm",
+    "kw": [
+      "andon",
+      "tomm"
+    ]
+  },
+  "267b": {
+    "nm": "arouez adaozañ",
+    "kw": [
+      "adaozañ",
+      "arouez adaozañ"
+    ]
+  },
+  "267e": {
+    "nm": "anfin",
+    "kw": [
+      "anfin",
+      "arouezenn",
+      "matematikoù"
+    ]
+  },
+  "267f": {
+    "nm": "arouez kador-ruilh",
+    "kw": [
+      "arouez kador-ruilh",
+      "kador-ruilh",
+      "moned"
+    ]
+  },
+  "2692": {
+    "nm": "morzhol ha pig",
+    "kw": [
+      "benveg",
+      "morzhol",
+      "morzhol ha pig",
+      "pig"
+    ]
+  },
+  "2693": {
+    "nm": "eor",
+    "kw": [
+      "bag",
+      "eor",
+      "lestr"
+    ]
+  },
+  "2694": {
+    "nm": "klezeier kroaziet",
+    "kw": [
+      "arm",
+      "kleze",
+      "klezeier",
+      "klezeier kroaziet"
+    ]
+  },
+  "2695": {
+    "nm": "naerwialenn",
+    "kw": [
+      "medisinerezh",
+      "mezegiezh",
+      "naerwialenn"
+    ]
+  },
+  "2696": {
+    "nm": "balañs",
+    "kw": [
+      "balañs",
+      "mentel",
+      "pouezerez"
+    ]
+  },
+  "2697": {
+    "nm": "lambig",
+    "kw": [
+      "benveg",
+      "kimiezh",
+      "lambig"
+    ]
+  },
+  "2699": {
+    "nm": "rod dantek",
+    "kw": [
+      "benveg",
+      "rod dantek"
+    ]
+  },
+  "269b": {
+    "nm": "arouez an atom",
+    "kw": [
+      "arouez an atom",
+      "atom",
+      "dizoue"
+    ]
+  },
+  "269c": {
+    "nm": "flourdiliz",
+    "kw": [
+      "flourdiliz"
+    ]
+  },
+  "26a0": {
+    "nm": "diwall",
+    "kw": [
+      "diwall"
+    ]
+  },
+  "26a1": {
+    "nm": "tredanvarr uhel",
+    "kw": [
+      "tredan",
+      "tredanvarr uhel"
+    ]
+  },
+  "26a7": {
+    "nm": "arouez treuzjener",
+    "kw": [
+      "arouez",
+      "treuzjener"
+    ]
+  },
+  "26b0": {
+    "nm": "charke",
+    "kw": [
+      "charke",
+      "marv"
+    ]
+  },
+  "26b1": {
+    "nm": "jarl-kañv",
+    "kw": [
+      "jarl",
+      "jarl-kañv",
+      "ludu",
+      "marv"
+    ]
+  },
+  "26bd": {
+    "nm": "mell fobal",
+    "kw": [
+      "mell",
+      "mell fobal"
+    ]
+  },
+  "26be": {
+    "nm": "baseball",
+    "kw": [
+      "baseball",
+      "polotenn"
+    ]
+  },
+  "26c4": {
+    "nm": "boulom ercʼh hep ercʼh",
+    "kw": [
+      "boulom",
+      "boulom ercʼh hep ercʼh",
+      "ercʼh"
+    ]
+  },
+  "26c5": {
+    "nm": "heol a-dreñv dʼar cʼhoumoul",
+    "kw": [
+      "heol",
+      "heol a-dreñv dʼar cʼhoumoul",
+      "koumoul"
+    ]
+  },
+  "26c8": {
+    "nm": "koumoulenn gant lucʼhedenn ha glav",
+    "kw": [
+      "glav",
+      "koumoul",
+      "koumoulenn gant lucʼhedenn ha glav",
+      "lucʼhed"
+    ]
+  },
+  "26ce": {
+    "nm": "Naeretaer",
+    "kw": [
+      "Naeretaer",
+      "Oph",
+      "zodiak"
+    ]
+  },
+  "26cf": {
+    "nm": "pigell",
+    "kw": [
+      "benveg",
+      "pigell"
+    ]
+  },
+  "26d1": {
+    "nm": "tokarn sikourer",
+    "kw": [
+      "sikourer",
+      "tokarn"
+    ]
+  },
+  "26d3": {
+    "nm": "chadennoù",
+    "kw": [
+      "chadenn",
+      "chadennoù"
+    ]
+  },
+  "26d4": {
+    "nm": "tu berzet",
+    "kw": [
+      "berzet",
+      "difennet",
+      "tu"
+    ]
+  },
+  "26e9": {
+    "nm": "santual shinto",
+    "kw": [
+      "relijion",
+      "santual",
+      "shinto"
+    ]
+  },
+  "26ea": {
+    "nm": "iliz",
+    "kw": [
+      "iliz",
+      "kristen",
+      "kroaz",
+      "relijion"
+    ]
+  },
+  "26f0": {
+    "nm": "menez",
+    "kw": [
+      "menez"
+    ]
+  },
+  "26f1": {
+    "nm": "disheolier",
+    "kw": [
+      "disglavier",
+      "disheolier",
+      "glav",
+      "heol"
+    ]
+  },
+  "26f2": {
+    "nm": "feunteun",
+    "kw": [
+      "feunteun"
+    ]
+  },
+  "26f3": {
+    "nm": "bannielig golf",
+    "kw": [
+      "bannielig",
+      "golf"
+    ]
+  },
+  "26f4": {
+    "nm": "lestr-treizh",
+    "kw": [
+      "bag",
+      "lestr-treizh"
+    ]
+  },
+  "26f5": {
+    "nm": "gouelier",
+    "kw": [
+      "bag",
+      "gouelier",
+      "lestr"
+    ]
+  },
+  "26f8": {
+    "nm": "botez-ruzikat",
+    "kw": [
+      "botez-ruzikat",
+      "skorn"
+    ]
+  },
+  "26fa": {
+    "nm": "teltenn",
+    "kw": [
+      "kampiñ",
+      "teltenn"
+    ]
+  },
+  "26fd": {
+    "nm": "plomenn strilheoul",
+    "kw": [
+      "plomenn",
+      "porzh-servij",
+      "strilheoul"
+    ]
+  },
+  "2702": {
+    "nm": "sizailhoù",
+    "kw": [
+      "dafar",
+      "sizailhoù"
+    ]
+  },
+  "2705": {
+    "nm": "bouton askañ",
+    "kw": [
+      "✓",
+      "ask",
+      "bouton askañ"
+    ]
+  },
+  "2708": {
+    "nm": "karr-nij",
+    "kw": [
+      "karr-nij",
+      "nijerez"
+    ]
+  },
+  "2709": {
+    "nm": "golo-lizher",
+    "kw": [
+      "golo",
+      "golo-lizher",
+      "lizher"
+    ]
+  },
+  "270f": {
+    "nm": "kreion",
+    "kw": [
+      "kreion"
+    ]
+  },
+  "2712": {
+    "nm": "stilo pluenn du",
+    "kw": [
+      "du",
+      "pluenn",
+      "stilo"
+    ]
+  },
+  "2714": {
+    "nm": "ask",
+    "kw": [
+      "✓",
+      "ask"
+    ]
+  },
+  "2716": {
+    "nm": "liesaat",
+    "kw": [
+      "×",
+      "arouezenn",
+      "beskroaz",
+      "liesaat",
+      "matematikoù"
+    ]
+  },
+  "271d": {
+    "nm": "kroaz latin",
+    "kw": [
+      "kristen",
+      "kroaz latin",
+      "relijion"
+    ]
+  },
+  "2721": {
+    "nm": "steredenn David",
+    "kw": [
+      "relijion",
+      "steredenn David",
+      "yuzev"
+    ]
+  },
+  "2728": {
+    "nm": "fulennoù",
+    "kw": [
+      "*",
+      "fulennoù",
+      "steredenn"
+    ]
+  },
+  "2733": {
+    "nm": "steredennig eizh brecʼh",
+    "kw": [
+      "*",
+      "steredennig",
+      "steredennig eizh brecʼh"
+    ]
+  },
+  "2734": {
+    "nm": "steredenn eizh brecʼh",
+    "kw": [
+      "*",
+      "steredenn",
+      "steredenn eizh brecʼh"
+    ]
+  },
+  "2744": {
+    "nm": "malzenn ercʼh",
+    "kw": [
+      "ercʼh",
+      "malzenn"
+    ]
+  },
+  "2747": {
+    "nm": "strinkad",
+    "kw": [
+      "*",
+      "strinkad"
+    ]
+  },
+  "274c": {
+    "nm": "kroaz",
+    "kw": [
+      "×",
+      "kroaz"
+    ]
+  },
+  "274e": {
+    "nm": "bouton kroaz",
+    "kw": [
+      "×",
+      "bouton kroaz",
+      "kroaz"
+    ]
+  },
+  "2753": {
+    "nm": "pik-goulenn ruz",
+    "kw": [
+      "?",
+      "goulenn",
+      "pik-goulenn",
+      "poentadur",
+      "ruz"
+    ]
+  },
+  "2754": {
+    "nm": "pik-goulenn gwenn",
+    "kw": [
+      "?",
+      "goulenn",
+      "gwenn",
+      "pik-goulenn",
+      "poentadur"
+    ]
+  },
+  "2755": {
+    "nm": "pik-estlamm gwenn",
+    "kw": [
+      "!",
+      "estlamm",
+      "gwenn",
+      "pik-estlamm",
+      "poentadur"
+    ]
+  },
+  "2757": {
+    "nm": "pik-estlamm ruz",
+    "kw": [
+      "!",
+      "estlamm",
+      "pik-estlamm",
+      "poentadur",
+      "ruz"
+    ]
+  },
+  "2764": {
+    "nm": "kalon ruz",
+    "kw": [
+      "kalon ruz",
+      "ruz"
+    ]
+  },
+  "2795": {
+    "nm": "mui",
+    "kw": [
+      "+",
+      "arouezenn",
+      "matematikoù",
+      "mui"
+    ]
+  },
+  "2796": {
+    "nm": "nemet",
+    "kw": [
+      "-",
+      "arouezenn",
+      "matematikoù",
+      "nemet"
+    ]
+  },
+  "2797": {
+    "nm": "rannañ",
+    "kw": [
+      "÷",
+      "arouezenn",
+      "matematikoù",
+      "rannañ"
+    ]
+  },
+  "27b0": {
+    "nm": "boukl",
+    "kw": [
+      "boukl"
+    ]
+  },
+  "27bf": {
+    "nm": "boukl doubl",
+    "kw": [
+      "boukl",
+      "boukl doubl"
+    ]
+  },
+  "2b1b": {
+    "nm": "karrez bras du",
+    "kw": [
+      "bras",
+      "karrez",
+      "karrez bras du"
+    ]
+  },
+  "2b1c": {
+    "nm": "karrez bras gwenn",
+    "kw": [
+      "gwenn",
+      "karrez",
+      "karrez bras gwenn"
+    ]
+  },
+  "2b50": {
+    "nm": "steredenn",
+    "kw": [
+      "steredenn"
+    ]
+  },
+  "2b55": {
+    "nm": "kelcʼh ruz",
+    "kw": [
+      "kelcʼh",
+      "o",
+      "ruz"
+    ]
+  },
+  "303d": {
+    "nm": "pebeilad",
+    "kw": [
+      "arouez",
+      "pebeilad"
+    ]
+  },
+  "3297": {
+    "nm": "bouton \"gourcʼhemennoù\" e japaneg",
+    "kw": [
+      "bouton \"gourcʼhemennoù\" e japaneg"
+    ]
+  }
+}

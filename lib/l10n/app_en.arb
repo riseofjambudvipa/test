@@ -1,0 +1,89 @@
+{
+  "@@locale": "en",
+  "appName": "CapStudio",
+  "dashboardTitle": "My Projects",
+  "dashboardSubtitle": "Offline AI Captioning & Subtitle Studio",
+  "importVideo": "Import Video",
+  "dragDropText": "Drag and drop your video file here",
+  "clickBrowse": "or click to browse local files",
+  "demoMode": "DEMO MODE",
+  "demoModeDesc": "Load a demo project to try out styling and editor features.",
+  "warningAssets": "Assets Folder Recovery Required",
+  "warningAssetsDesc": "Bundled assets were not found in the app support folder. Double-click here to restore or change the assets directory.",
+  "deleteProjectTitle": "Delete Project",
+  "deleteProjectConfirm": "Are you sure you want to permanently delete \"{projectName}\"? This action cannot be undone.",
+  "@deleteProjectConfirm": {
+    "placeholders": {
+      "projectName": {
+        "type": "String"
+      }
+    }
+  },
+  "renameProjectTitle": "Rename Project",
+  "projectNameLabel": "Project Name",
+  "btnCancel": "CANCEL",
+  "btnDelete": "DELETE",
+  "btnRename": "RENAME",
+  "btnSave": "SAVE",
+  "btnConfirm": "CONFIRM",
+  "btnExport": "EXPORT",
+  "btnUndo": "Undo",
+  "btnRedo": "Redo",
+  "statusDraft": "Draft",
+  "statusCompleted": "Completed",
+  "createdLabel": "Created:",
+  "durationLabel": "Duration:",
+  "statusLabel": "Status:",
+  
+  "settingsTitle": "Settings",
+  "settingsGeneral": "General Settings",
+  "settingsTheme": "App Theme Theme",
+  "themeSystem": "System Default",
+  "themeLight": "Light Mode",
+  "themeDark": "Dark Mode",
+  "settingsLanguage": "App UI Language",
+  
+  "settingsTranscription": "Transcription Settings",
+  "settingsWhisperModel": "Whisper Model",
+  "settingsWhisperModelDesc": "Select a model for transcription. Smaller is faster; larger is more accurate.",
+  "settingsTranscribeLang": "Transcription Language",
+  "settingsAutoDetect": "Auto-detect Language",
+  "settingsGPU": "GPU Acceleration (CUDA)",
+  "settingsVAD": "VAD Threshold (Voice Activity)",
+  
+  "settingsExport": "Export Settings",
+  "settingsExportDest": "Default Export Directory",
+  "settingsBrowse": "Browse",
+  
+  "settingsEmojiPacks": "Emoji & Style Packs",
+  "settingsEmojiPacksDesc": "Customize emoji rendering styles and active subtitle assets.",
+  "settingsEmojiSearchLang": "Emoji Search Language",
+  "settingsBtnManagePacks": "MANAGE EMOJI PACKS",
+  
+  "systemTitle": "System Info",
+  "systemVersion": "Version",
+  "systemReset": "Reset Defaults",
+  
+  "editorTabCaptions": "Captions",
+  "editorTabStyles": "Styles",
+  "editorTabTrim": "Trim",
+  "editorTabAudio": "Audio",
+  "editorTabTranscription": "Transcription",
+  "editorTabShortcuts": "Shortcuts",
+  "editorTabDebug": "Debug",
+  
+  "editorHeaderBack": "Back",
+  "editorKeyboardShortcuts": "Keyboard Shortcuts",
+  
+  "dialogAnalyzing": "Analyzing video...",
+  "dialogTranscribing": "Transcribing audio...",
+  "dialogExtracting": "Extracting audio...",
+  "dialogWait": "This may take a moment. Please wait.",
+  "dialogError": "Error",
+  "dialogImportFailed": "Failed to import video.",
+  "noProjects": "No projects created yet",
+  "aboutApp": "About CapStudio",
+  "aboutAppDesc": "Tell about CapStudio, credits, and open-source licenses.",
+  "aboutAppThanks": "Special thanks to the open-source projects that make CapStudio possible:",
+  "btnViewAllLicenses": "VIEW ALL PACKAGES LICENSES"
+}

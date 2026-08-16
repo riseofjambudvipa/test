@@ -1,0 +1,1682 @@
+{
+  "0023-20e3": {
+    "nm": "tecles: #",
+    "kw": [
+      "tecles"
+    ]
+  },
+  "002a-20e3": {
+    "nm": "tecles: *",
+    "kw": [
+      "tecles"
+    ]
+  },
+  "0030-20e3": {
+    "nm": "tecles: 0"
+  },
+  "0031-20e3": {
+    "nm": "tecles: 1"
+  },
+  "0032-20e3": {
+    "nm": "tecles: 2"
+  },
+  "0033-20e3": {
+    "nm": "tecles: 3"
+  },
+  "0034-20e3": {
+    "nm": "tecles: 4"
+  },
+  "0035-20e3": {
+    "nm": "tecles: 5"
+  },
+  "0036-20e3": {
+    "nm": "tecles: 6"
+  },
+  "0037-20e3": {
+    "nm": "tecles: 7"
+  },
+  "0038-20e3": {
+    "nm": "tecles: 8"
+  },
+  "0039-20e3": {
+    "nm": "tecles: 9"
+  },
+  "1f1e6-1f1e8": {
+    "nm": "bandera: Islla Ascensión",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1e9": {
+    "nm": "bandera: Andorra",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1ea": {
+    "nm": "bandera: Emiratos Árabes Xuníos",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1eb": {
+    "nm": "bandera: Afganistán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1ec": {
+    "nm": "bandera: Antigua y Barbuda",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1ee": {
+    "nm": "bandera: Anguila",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1f1": {
+    "nm": "bandera: Albania",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1f2": {
+    "nm": "bandera: Armenia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1f4": {
+    "nm": "bandera: Angola",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1f6": {
+    "nm": "bandera: L’Antártida",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1f7": {
+    "nm": "bandera: Arxentina",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1f8": {
+    "nm": "bandera: Samoa Americana",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1f9": {
+    "nm": "bandera: Austria",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1fa": {
+    "nm": "bandera: Australia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1fc": {
+    "nm": "bandera: Aruba",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1fd": {
+    "nm": "bandera: Islles Aland",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e6-1f1ff": {
+    "nm": "bandera: Azerbaixán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1e6": {
+    "nm": "bandera: Bosnia y Herzegovina",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1e7": {
+    "nm": "bandera: Barbados",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1e9": {
+    "nm": "bandera: Bangladex",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1ea": {
+    "nm": "bandera: Bélxica",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1eb": {
+    "nm": "bandera: Burkina Fasu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1ec": {
+    "nm": "bandera: Bulgaria",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1ed": {
+    "nm": "bandera: Baḥréin",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1ee": {
+    "nm": "bandera: Burundi",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1ef": {
+    "nm": "bandera: Benín",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1f1": {
+    "nm": "bandera: San Bartolomé",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1f2": {
+    "nm": "bandera: Les Bermudes",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1f3": {
+    "nm": "bandera: Brunéi",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1f4": {
+    "nm": "bandera: Bolivia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1f6": {
+    "nm": "bandera: Caribe neerlandés",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1f7": {
+    "nm": "bandera: Brasil",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1f8": {
+    "nm": "bandera: Les Bahames",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1f9": {
+    "nm": "bandera: Bután",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1fb": {
+    "nm": "bandera: Islla Bouvet",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1fc": {
+    "nm": "bandera: Botsuana",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1fe": {
+    "nm": "bandera: Bielorrusia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e7-1f1ff": {
+    "nm": "bandera: Belize",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1e6": {
+    "nm": "bandera: Canadá",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1e8": {
+    "nm": "bandera: Islles Cocos (Keeling)",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1e9": {
+    "nm": "bandera: Congu - Kinxasa",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1eb": {
+    "nm": "bandera: República Centroafricana",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1ec": {
+    "nm": "bandera: Congu - Brazzaville",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1ed": {
+    "nm": "bandera: Suiza",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1ee": {
+    "nm": "bandera: Costa de Marfil",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1f0": {
+    "nm": "bandera: Islles Cook",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1f1": {
+    "nm": "bandera: Chile",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1f2": {
+    "nm": "bandera: Camerún",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1f3": {
+    "nm": "bandera: China",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1f4": {
+    "nm": "bandera: Colombia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1f5": {
+    "nm": "bandera: Islla Clipperton",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1f7": {
+    "nm": "bandera: Costa Rica",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1fa": {
+    "nm": "bandera: Cuba",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1fb": {
+    "nm": "bandera: Cabu Verde",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1fc": {
+    "nm": "bandera: Curaçao",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1fd": {
+    "nm": "bandera: Islla Christmas",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1fe": {
+    "nm": "bandera: Xipre",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e8-1f1ff": {
+    "nm": "bandera: Chequia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e9-1f1ea": {
+    "nm": "bandera: Alemaña",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e9-1f1ec": {
+    "nm": "bandera: Diego Garcia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e9-1f1ef": {
+    "nm": "bandera: Xibuti",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e9-1f1f0": {
+    "nm": "bandera: Dinamarca",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e9-1f1f2": {
+    "nm": "bandera: Dominica",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e9-1f1f4": {
+    "nm": "bandera: República Dominicana",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1e9-1f1ff": {
+    "nm": "bandera: Arxelia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ea-1f1e6": {
+    "nm": "bandera: Ceuta y Melilla",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ea-1f1e8": {
+    "nm": "bandera: Ecuador",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ea-1f1ea": {
+    "nm": "bandera: Estonia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ea-1f1ec": {
+    "nm": "bandera: Exiptu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ea-1f1ed": {
+    "nm": "bandera: Sáḥara Occidental",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ea-1f1f7": {
+    "nm": "bandera: Eritrea",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ea-1f1f8": {
+    "nm": "bandera: España",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ea-1f1f9": {
+    "nm": "bandera: Etiopía",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ea-1f1fa": {
+    "nm": "bandera: Xunión Europea",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1eb-1f1ee": {
+    "nm": "bandera: Finlandia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1eb-1f1ef": {
+    "nm": "bandera: Islles Fixi",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1eb-1f1f0": {
+    "nm": "bandera: Falkland Islands",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1eb-1f1f2": {
+    "nm": "bandera: Micronesia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1eb-1f1f4": {
+    "nm": "bandera: Islles Feroe",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1eb-1f1f7": {
+    "nm": "bandera: Francia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1e6": {
+    "nm": "bandera: Gabón",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1e7": {
+    "nm": "bandera: Reinu Xuníu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1e9": {
+    "nm": "bandera: Granada",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1ea": {
+    "nm": "bandera: Xeorxa",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1eb": {
+    "nm": "bandera: Guyana Francesa",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1ec": {
+    "nm": "bandera: Guernsey",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1ed": {
+    "nm": "bandera: Ghana",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1ee": {
+    "nm": "bandera: Xibraltar",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1f1": {
+    "nm": "bandera: Groenlandia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1f2": {
+    "nm": "bandera: Gambia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1f3": {
+    "nm": "bandera: Guinea",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1f5": {
+    "nm": "bandera: Guadalupe",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1f6": {
+    "nm": "bandera: Guinea Ecuatorial",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1f7": {
+    "nm": "bandera: Grecia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1f8": {
+    "nm": "bandera: Islles Xeorxa del Sur y Sandwich del Sur",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1f9": {
+    "nm": "bandera: Guatemala",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1fa": {
+    "nm": "bandera: Guam",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1fc": {
+    "nm": "bandera: Guinea-Bisáu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ec-1f1fe": {
+    "nm": "bandera: Guyana",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ed-1f1f0": {
+    "nm": "bandera: ARE China de Ḥong Kong",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ed-1f1f2": {
+    "nm": "bandera: Islles Heard y McDonald",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ed-1f1f3": {
+    "nm": "bandera: Hondures",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ed-1f1f7": {
+    "nm": "bandera: Croacia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ed-1f1f9": {
+    "nm": "bandera: Haití",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ed-1f1fa": {
+    "nm": "bandera: Hungría",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ee-1f1e8": {
+    "nm": "bandera: Islles Canaries",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ee-1f1e9": {
+    "nm": "bandera: Indonesia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ee-1f1ea": {
+    "nm": "bandera: Irlanda",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ee-1f1f1": {
+    "nm": "bandera: Israel",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ee-1f1f2": {
+    "nm": "bandera: Islla de Man",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ee-1f1f3": {
+    "nm": "bandera: India",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ee-1f1f4": {
+    "nm": "bandera: Territoriu Británicu del Océanu Índicu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ee-1f1f6": {
+    "nm": "bandera: Iraq",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ee-1f1f7": {
+    "nm": "bandera: Irán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ee-1f1f8": {
+    "nm": "bandera: Islandia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ee-1f1f9": {
+    "nm": "bandera: Italia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ef-1f1ea": {
+    "nm": "bandera: Jersey",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ef-1f1f2": {
+    "nm": "bandera: Xamaica",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ef-1f1f4": {
+    "nm": "bandera: Xordania",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ef-1f1f5": {
+    "nm": "bandera: Xapón",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f0-1f1ea": {
+    "nm": "bandera: Kenia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f0-1f1ec": {
+    "nm": "bandera: Kirguistán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f0-1f1ed": {
+    "nm": "bandera: Camboya",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f0-1f1ee": {
+    "nm": "bandera: Kiribati",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f0-1f1f2": {
+    "nm": "bandera: Les Comores",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f0-1f1f3": {
+    "nm": "bandera: Saint Kitts y Nevis",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f0-1f1f5": {
+    "nm": "bandera: Corea del Norte",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f0-1f1f7": {
+    "nm": "bandera: Corea del Sur",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f0-1f1fc": {
+    "nm": "bandera: Kuwait",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f0-1f1fe": {
+    "nm": "bandera: Islles Caimán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f0-1f1ff": {
+    "nm": "bandera: Kazakstán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f1-1f1e6": {
+    "nm": "bandera: Laos",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f1-1f1e7": {
+    "nm": "bandera: Líbanu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f1-1f1e8": {
+    "nm": "bandera: Santa Llucía",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f1-1f1ee": {
+    "nm": "bandera: Liechtenstein",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f1-1f1f0": {
+    "nm": "bandera: Sri Lanka",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f1-1f1f7": {
+    "nm": "bandera: Liberia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f1-1f1f8": {
+    "nm": "bandera: Lesothu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f1-1f1f9": {
+    "nm": "bandera: Lituania",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f1-1f1fa": {
+    "nm": "bandera: Luxemburgu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f1-1f1fb": {
+    "nm": "bandera: Letonia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f1-1f1fe": {
+    "nm": "bandera: Libia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1e6": {
+    "nm": "bandera: Marruecos",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1e8": {
+    "nm": "bandera: Mónacu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1e9": {
+    "nm": "bandera: Moldavia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1ea": {
+    "nm": "bandera: Montenegru",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1eb": {
+    "nm": "bandera: Saint Martin",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1ec": {
+    "nm": "bandera: Madagascar",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1ed": {
+    "nm": "bandera: Islles Marshall",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1f1": {
+    "nm": "bandera: Malí",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1f2": {
+    "nm": "bandera: Myanmar (Birmania)",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1f3": {
+    "nm": "bandera: Mongolia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1f4": {
+    "nm": "bandera: ARE China de Macáu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1f5": {
+    "nm": "bandera: Islles Marianes del Norte",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1f6": {
+    "nm": "bandera: La Martinica",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1f7": {
+    "nm": "bandera: Mauritania",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1f8": {
+    "nm": "bandera: Montserrat",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1f9": {
+    "nm": "bandera: Malta",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1fa": {
+    "nm": "bandera: Mauriciu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1fb": {
+    "nm": "bandera: Les Maldives",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1fc": {
+    "nm": "bandera: Malaui",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1fd": {
+    "nm": "bandera: Méxicu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1fe": {
+    "nm": "bandera: Malasia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f2-1f1ff": {
+    "nm": "bandera: Mozambique",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1e6": {
+    "nm": "bandera: Namibia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1e8": {
+    "nm": "bandera: Nueva Caledonia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1ea": {
+    "nm": "bandera: El Níxer",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1eb": {
+    "nm": "bandera: Islla Norfolk",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1ec": {
+    "nm": "bandera: Nixeria",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1ee": {
+    "nm": "bandera: Nicaragua",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1f1": {
+    "nm": "bandera: Países Baxos",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1f4": {
+    "nm": "bandera: Noruega",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1f5": {
+    "nm": "bandera: Nepal",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1f7": {
+    "nm": "bandera: Nauru",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1fa": {
+    "nm": "bandera: Niue",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f3-1f1ff": {
+    "nm": "bandera: Nueva Zelanda",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f4-1f1f2": {
+    "nm": "bandera: Omán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1e6": {
+    "nm": "bandera: Panamá",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1ea": {
+    "nm": "bandera: Perú",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1eb": {
+    "nm": "bandera: Polinesia Francesa",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1ec": {
+    "nm": "bandera: Papúa Nueva Guinea",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1ed": {
+    "nm": "bandera: Filipines",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1f0": {
+    "nm": "bandera: Paquistán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1f1": {
+    "nm": "bandera: Polonia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1f2": {
+    "nm": "bandera: Saint Pierre y Miquelon",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1f3": {
+    "nm": "bandera: Islles Pitcairn",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1f7": {
+    "nm": "bandera: Puertu Ricu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1f8": {
+    "nm": "bandera: Territorios Palestinos",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1f9": {
+    "nm": "bandera: Portugal",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1fc": {
+    "nm": "bandera: Paláu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f5-1f1fe": {
+    "nm": "bandera: Paraguái",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f6-1f1e6": {
+    "nm": "bandera: Qatar",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f7-1f1ea": {
+    "nm": "bandera: Reunión",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f7-1f1f4": {
+    "nm": "bandera: Rumanía",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f7-1f1f8": {
+    "nm": "bandera: Serbia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f7-1f1fa": {
+    "nm": "bandera: Rusia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f7-1f1fc": {
+    "nm": "bandera: Ruanda",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1e6": {
+    "nm": "bandera: Arabia Saudita",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1e7": {
+    "nm": "bandera: Islles Salomón",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1e8": {
+    "nm": "bandera: Les Seixeles",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1e9": {
+    "nm": "bandera: Sudán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1ea": {
+    "nm": "bandera: Suecia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1ec": {
+    "nm": "bandera: Singapur",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1ed": {
+    "nm": "bandera: Santa Helena",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1ee": {
+    "nm": "bandera: Eslovenia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1ef": {
+    "nm": "bandera: Svalbard ya Islla Jan Mayen",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1f0": {
+    "nm": "bandera: Eslovaquia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1f1": {
+    "nm": "bandera: Sierra Lleona",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1f2": {
+    "nm": "bandera: San Marín",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1f3": {
+    "nm": "bandera: Senegal",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1f4": {
+    "nm": "bandera: Somalia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1f7": {
+    "nm": "bandera: Surinam",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1f8": {
+    "nm": "bandera: Sudán del Sur",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1f9": {
+    "nm": "bandera: Santu Tomé y Príncipe",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1fb": {
+    "nm": "bandera: El Salvador",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1fd": {
+    "nm": "bandera: Sint Maarten",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1fe": {
+    "nm": "bandera: Siria",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f8-1f1ff": {
+    "nm": "bandera: Suazilandia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1e6": {
+    "nm": "bandera: Tristán da Cunha",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1e8": {
+    "nm": "bandera: Islles Turques y Caicos",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1e9": {
+    "nm": "bandera: Chad",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1eb": {
+    "nm": "bandera: Tierres Australes Franceses",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1ec": {
+    "nm": "bandera: Togu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1ed": {
+    "nm": "bandera: Tailandia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1ef": {
+    "nm": "bandera: Taxiquistán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1f0": {
+    "nm": "bandera: Tokeláu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1f1": {
+    "nm": "bandera: Timor Oriental",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1f2": {
+    "nm": "bandera: Turkmenistán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1f3": {
+    "nm": "bandera: Tunicia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1f4": {
+    "nm": "bandera: Tonga",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1f7": {
+    "nm": "bandera: Turquía",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1f9": {
+    "nm": "bandera: Trinidá y Tobagu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1fb": {
+    "nm": "bandera: Tuvalu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1fc": {
+    "nm": "bandera: Taiwán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1f9-1f1ff": {
+    "nm": "bandera: Tanzania",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fa-1f1e6": {
+    "nm": "bandera: Ucraína",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fa-1f1ec": {
+    "nm": "bandera: Uganda",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fa-1f1f2": {
+    "nm": "bandera: Islles Perifériques Menores de los EE.XX.",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fa-1f1f3": {
+    "nm": "bandera: Naciones Xuníes",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fa-1f1f8": {
+    "nm": "bandera: Estaos Xuníos",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fa-1f1fe": {
+    "nm": "bandera: Uruguái",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fa-1f1ff": {
+    "nm": "bandera: Uzbequistán",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fb-1f1e6": {
+    "nm": "bandera: Ciudá del Vaticanu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fb-1f1e8": {
+    "nm": "bandera: San Vicente y Granadines",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fb-1f1ea": {
+    "nm": "bandera: Venezuela",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fb-1f1ec": {
+    "nm": "bandera: Islles Vírxenes Britániques",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fb-1f1ee": {
+    "nm": "bandera: Islles Vírxenes Americanes",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fb-1f1f3": {
+    "nm": "bandera: Vietnam",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fb-1f1fa": {
+    "nm": "bandera: Vanuatu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fc-1f1eb": {
+    "nm": "bandera: Wallis y Futuna",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fc-1f1f8": {
+    "nm": "bandera: Samoa",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fd-1f1f0": {
+    "nm": "bandera: Kosovu",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fe-1f1ea": {
+    "nm": "bandera: Yemen",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1fe-1f1f9": {
+    "nm": "bandera: Mayotte",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ff-1f1e6": {
+    "nm": "bandera: Sudáfrica",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ff-1f1f2": {
+    "nm": "bandera: Zambia",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f1ff-1f1fc": {
+    "nm": "bandera: Zimbabue",
+    "kw": [
+      "bandera"
+    ]
+  },
+  "1f444": {
+    "nm": "boca",
+    "kw": [
+      "boca",
+      "llabios"
+    ]
+  },
+  "1f445": {
+    "nm": "llingua",
+    "kw": [
+      "cuerpu",
+      "llingua"
+    ]
+  },
+  "1f46a": {
+    "nm": "familia",
+    "kw": [
+      "familia"
+    ]
+  },
+  "1f48d": {
+    "nm": "aniellu",
+    "kw": [
+      "aniellu",
+      "diamante"
+    ]
+  },
+  "1f48e": {
+    "nm": "piedra preciosa",
+    "kw": [
+      "diamante",
+      "piedra preciosa",
+      "xema",
+      "xoya"
+    ]
+  },
+  "1f48f": {
+    "nm": "besu",
+    "kw": [
+      "besu"
+    ]
+  },
+  "1f51f": {
+    "nm": "tecles: 10",
+    "kw": [
+      "tecles"
+    ]
+  },
+  "1f602": {
+    "nm": "cara llorando d’allegría",
+    "kw": [
+      "allegría",
+      "cara",
+      "cara llorando d’allegría",
+      "llárima",
+      "risa"
+    ]
+  },
+  "1f617": {
+    "nm": "cara besando",
+    "kw": [
+      "besu",
+      "cara",
+      "cara besando"
+    ]
+  },
+  "1f618": {
+    "nm": "cara tirando un besu",
+    "kw": [
+      "besu",
+      "cara",
+      "cara tirando un besu"
+    ]
+  },
+  "1f923": {
+    "nm": "rodando pel suelu de risa",
+    "kw": [
+      "cara",
+      "risa",
+      "rodando",
+      "rodando pel suelu de risa",
+      "suelu"
+    ]
+  },
+  "1f933": {
+    "nm": "selfie",
+    "kw": [
+      "selfie"
+    ]
+  },
+  "263a": {
+    "nm": "cara sorriendo",
+    "kw": [
+      "cara sorriendo"
+    ]
+  }
+}

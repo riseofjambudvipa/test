@@ -1,0 +1,135 @@
+import 'dart:io';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'native_helper.dart' as native_helper;
+
+/// Central source of truth for all CapStudio data directories.
+///
+/// On Windows, [getApplicationSupportDirectory] returns
+/// `AppData\Roaming\<CompanyName>\<ProductName>`. When both are set to
+/// "CapStudio" (Runner.rc default) the result is the ugly double-nested
+/// `AppData\Roaming\CapStudio\CapStudio`. This helper normalises it to the
+/// clean single-level `AppData\Roaming\CapStudio\`.
+///
+/// All services should call [AppDirs.support] instead of calling
+/// [getApplicationSupportDirectory] directly.
+class AppDirs {
+  AppDirs._();
+
+  static String? _supportPath;
+  static String? _logsPath;
+  static double? _mockAvailableDiskSpaceMB;
+
+  /// Override the support path for testing to prevent locking production AppData files.
+  static void setSupportPathForTesting(String path) {
+    _supportPath = path;
+    _logsPath = p.join(path, 'logs');
+  }
+
+  /// Override the available disk space for testing.
+  static void setMockAvailableDiskSpaceMB(double? mb) {
+    _mockAvailableDiskSpaceMB = mb;
+  }
+
+  /// Initialise once at startup (called from main.dart before runApp).
+  static Future<void> init() async {
+    if (_supportPath != null) return;
+
+    if (!kIsWeb && Platform.isWindows) {
+      // Build `%APPDATA%\CapStudio` directly — single, clean folder.
+      final appData = Platform.environment['APPDATA'];
+      if (appData != null && appData.isNotEmpty && Directory(appData).existsSync()) {
+        _supportPath = p.join(appData, 'CapStudio');
+      }
+    }
+
+    // Fallback for non-Windows or if APPDATA is missing: use path_provider.
+    if (_supportPath == null) {
+      if (kIsWeb) {
+        _supportPath = 'web_support';
+      } else {
+        final dir = await getApplicationSupportDirectory();
+        _supportPath = dir.path;
+      }
+    }
+
+    if (!kIsWeb) {
+      // Ensure the root support dir exists.
+      await Directory(_supportPath!).create(recursive: true);
+
+      // Logs sub-directory.
+      _logsPath = p.join(_supportPath!, 'logs');
+      await Directory(_logsPath!).create(recursive: true);
+    } else {
+      _logsPath = p.join(_supportPath!, 'logs');
+    }
+  }
+
+  /// `AppData\Roaming\CapStudio\` on Windows, platform equivalent elsewhere.
+  static String get support {
+    if (_supportPath == null) {
+      throw StateError('AppDirs.init() has not been called or failed. '
+          'Ensure AppDirs.init() completes successfully before accessing AppDirs.support.');
+    }
+    return _supportPath!;
+  }
+
+  /// `AppData\Roaming\CapStudio\logs\`
+  static String get logs {
+    if (_logsPath == null) {
+      throw StateError('AppDirs.init() has not been called or failed. '
+          'Ensure AppDirs.init() completes successfully before accessing AppDirs.logs.');
+    }
+    return _logsPath!;
+  }
+
+  /// `AppData\Roaming\CapStudio\bin\`
+  static String get bin => p.join(support, 'bin');
+
+  /// `AppData\Roaming\CapStudio\assets\`
+  static String get assets => p.join(support, 'assets');
+
+  /// `AppData\Roaming\CapStudio\fonts\`
+  static String get fonts => p.join(support, 'fonts');
+
+  /// Probe if the Microsoft Visual C++ Redistributable is installed on Windows.
+  /// Checks for the presence of `vcruntime140.dll` in System32 or SysWOW64.
+  static bool isWindowsVcRuntimeInstalled() {
+    return native_helper.isWindowsVcRuntimeInstalled();
+  }
+
+  // ─── CPU Feature Detection ───────────────────────────────────────────────
+
+  static bool? _hasAvx;
+
+  /// Override the CPU AVX capability runtime cache.
+  /// Clear the cache by passing null.
+  static void setHasAvx(bool? value) {
+    _hasAvx = value;
+  }
+
+  /// Returns true if the CPU supports AVX/AVX2 (Advanced Vector Extensions).
+  static Future<bool> cpuSupportsAvx() async {
+    if (kIsWeb) return false;
+    if (_hasAvx != null) return _hasAvx!;
+    _hasAvx = await native_helper.cpuSupportsAvx();
+    return _hasAvx!;
+  }
+
+  // ─── Disk Space Caching ──────────────────────────────────────────────────
+
+  /// Returns the available space on the disk partition of the given [path] in megabytes (MB).
+  static Future<double> getAvailableDiskSpaceMB(String path) async {
+    if (kIsWeb) return -1.0;
+    if (_mockAvailableDiskSpaceMB != null) return _mockAvailableDiskSpaceMB!;
+    return native_helper.getAvailableDiskSpaceMB(path);
+  }
+
+  /// Checks if there is at least [requiredMB] available disk space.
+  static Future<bool> hasAvailableSpace(String path, double requiredMB) async {
+    final available = await getAvailableDiskSpaceMB(path);
+    if (available < 0.0) return true; // Fail-open: if check failed, assume enough space
+    return available >= requiredMB;
+  }
+}

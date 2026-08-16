@@ -1,0 +1,160 @@
+# ==============================================================================
+# CapStudio Modernized .gitignore
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Operating System & System Junk
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+*.swp
+*.bak
+*.tmp
+*.temp
+.history/
+.svn/
+.buildlog/
+
+# ------------------------------------------------------------------------------
+# IDEs & Code Editors
+# ------------------------------------------------------------------------------
+# IntelliJ / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/
+
+# Eclipse / Xcode / Others
+.project
+.classpath
+.settings/
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+
+# ------------------------------------------------------------------------------
+# Flutter, Dart & Pub Dependencies
+# ------------------------------------------------------------------------------
+.dart_tool/
+.pub/
+.pub-cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+coverage/
+doc/api/
+
+# ------------------------------------------------------------------------------
+# Obfuscation & Symbolication Artifacts
+# ------------------------------------------------------------------------------
+debug-info/
+app.*.symbols
+app.*.map.json
+
+# ------------------------------------------------------------------------------
+# Android Platform
+# ------------------------------------------------------------------------------
+.gradle/
+android/.gradle/
+android/app/build/
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/local.properties
+android/key.properties
+**/android/local.properties
+**/android/key.properties
+*.keystore
+*.jks
+
+# ------------------------------------------------------------------------------
+# iOS & macOS Ephemeral & Build Files
+# ------------------------------------------------------------------------------
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/App.framework
+**/ios/Flutter/App.xcframework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/ephemeral/
+**/macos/Flutter/ephemeral/
+Pods/
+Podfile.lock
+
+# ------------------------------------------------------------------------------
+# Windows & Linux Build Artifacts
+# ------------------------------------------------------------------------------
+**/windows/flutter/ephemeral/
+**/linux/flutter/ephemeral/
+*.vcxproj.user
+*.vcxproj.fileList
+*.dir/
+*.suo
+
+# ------------------------------------------------------------------------------
+# Temp Directories & Scratch Files
+# ------------------------------------------------------------------------------
+scratch/
+test/.temp/
+installer_resources/
+
+# ------------------------------------------------------------------------------
+# Code Signing Certificates & Keys (DO NOT COMMIT PRIVATE KEYS)
+# ------------------------------------------------------------------------------
+*.pfx
+*.p12
+*.pem
+*.key
+scripts/certificate/windows/*.pfx
+
+# ------------------------------------------------------------------------------
+# Native Binaries & Libraries
+# ------------------------------------------------------------------------------
+*.dll
+*.so
+*.dylib
+*.a
+*.exe
+isar.dll
+android/app/src/main/jniLibs/
+ios/whisper_xcframework/
+ios/Runner/whisper_xcframework/
+third_party/whisper.cpp/build_*/
+
+# ------------------------------------------------------------------------------
+# CapStudio App Assets & Downloader Bundles
+# ------------------------------------------------------------------------------
+# Native CLI binaries
+assets/bin/*.bin
+assets/bin/*.bin.lzma
+assets/bin/*.exe
+assets/bin/ffmpeg
+assets/bin/whisper-cli
+
+# Downloadable Whisper AI models (Keep default tiny model tracked)
+assets/models/*.bin
+!assets/models/ggml-tiny.bin
+
+# Downloadable Emoji Packs (zip files & extracted folders)
+assets/emojis/*.zip
+assets/emojis/google_noto_emojis_animated_pack/
+assets/emojis/google_noto_emojis_non_animated_pack/
+assets/emojis/microsoft_fluentui_emoji_animated_pack/
+assets/emojis/microsoft_fluentui_emoji_non_animated_pack/
+assets/emojis/openmoji_non_animated_pack/
+
+# Custom user stickers and temporary processing assets
+assets/custom_stickers/
+assets/temp/

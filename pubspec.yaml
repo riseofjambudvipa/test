@@ -1,0 +1,381 @@
+name: capstudio
+description: "CapStudio — Free offline AI caption studio for video creators."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+  crypto: ^3.0.3
+  flutter_riverpod: ^2.5.1
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  meta: ^1.11.0
+  ffi: ^2.1.2
+  media_kit: ^1.2.6
+  media_kit_video: ^2.0.1
+  media_kit_libs_video: ^1.0.7
+  just_audio: ^0.10.5
+  just_audio_windows: ^0.2.3
+  go_router: ^17.3.0
+  uuid: ^4.5.3
+  path_provider: ^2.1.5
+  file_picker: ^12.0.0-beta.7
+  path: ^1.9.0
+  collection: ^1.18.0
+  archive: ^4.0.9
+  shared_preferences: ^2.5.5
+  http: ^1.2.1
+  ffmpeg_kit_flutter_new: ^4.2.1
+  desktop_drop: ^0.7.1
+  window_manager: ^0.5.1
+  package_info_plus: ^10.1.0
+  url_launcher: ^6.3.2
+  flutter_animate: ^4.5.0
+  web: ^1.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  isar_generator: ^3.1.0+1
+  build_runner: ^2.4.9
+  flutter_launcher_icons: ^0.14.4
+  mocktail: ^1.0.4
+  msix: ^3.18.0
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo.png"
+  windows:
+    generate: true
+    image_path: "assets/images/logo.png"
+  macos:
+    generate: true
+    image_path: "assets/images/logo.png"
+  web:
+    generate: true
+    image_path: "assets/images/logo.png"
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+  generate: true
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/demo/landscape/demo.mp4
+    - assets/demo/landscape/demo_subtitles.srt
+    - assets/demo/protrait/demo.mp4
+    - assets/demo/protrait/demo_subtitles.srt
+    - assets/images/logo.png
+    - assets/fonts/design/
+    - assets/fonts/languages/
+    - assets/fonts/emoji/
+    - assets/fonts/LICENSE.txt
+    - assets/sfx/
+    - assets/models/ggml-tiny.bin
+    - assets/emojis/emoji_base.json
+    - assets/emojis/locales_manifest.json
+    - assets/emojis/langs/
+
+  fonts:
+    - family: Noto Color Emoji
+      fonts:
+        - asset: assets/fonts/emoji/NotoColorEmoji.ttf
+
+    # ── Template fonts (22 families) ─────────────────────────────────────────
+    #
+    # Variable fonts contain ALL weights in a single file.
+    # Flutter uses them natively — no need for weight: entries.
+    #
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/design/Montserrat-Variable.ttf
+
+    - family: Anton
+      fonts:
+        - asset: assets/fonts/design/Anton-Regular.ttf
+
+    - family: Bebas Neue
+      fonts:
+        - asset: assets/fonts/design/BebasNeue-Regular.ttf
+
+    - family: Bangers
+      fonts:
+        - asset: assets/fonts/design/Bangers-Regular.ttf
+
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/design/Poppins-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/design/Poppins-ExtraBold.ttf
+          weight: 800
+
+    - family: Outfit
+      fonts:
+        - asset: assets/fonts/design/Outfit-Variable.ttf
+
+    - family: Raleway
+      fonts:
+        - asset: assets/fonts/design/Raleway-Variable.ttf
+
+    - family: Orbitron
+      fonts:
+        - asset: assets/fonts/design/Orbitron-Variable.ttf
+
+    - family: Urbanist
+      fonts:
+        - asset: assets/fonts/design/Urbanist-Variable.ttf
+
+    - family: DM Serif Display
+      fonts:
+        - asset: assets/fonts/design/DMSerifDisplay-Regular.ttf
+
+    - family: Comic Neue
+      fonts:
+        - asset: assets/fonts/design/ComicNeue-Bold.ttf
+          weight: 700
+
+    - family: Fraunces
+      fonts:
+        - asset: assets/fonts/design/Fraunces-Variable.ttf
+
+    - family: Gabarito
+      fonts:
+        - asset: assets/fonts/design/Gabarito-Variable.ttf
+
+    - family: Rubik Glitch
+      fonts:
+        - asset: assets/fonts/design/RubikGlitch-Regular.ttf
+
+    - family: Pacifico
+      fonts:
+        - asset: assets/fonts/design/Pacifico-Regular.ttf
+
+    - family: Black Han Sans
+      fonts:
+        - asset: assets/fonts/design/BlackHanSans-Regular.ttf
+
+    - family: Oswald
+      fonts:
+        - asset: assets/fonts/design/Oswald-Variable.ttf
+
+    - family: Righteous
+      fonts:
+        - asset: assets/fonts/design/Righteous-Regular.ttf
+
+    - family: Caveat
+      fonts:
+        - asset: assets/fonts/design/Caveat-Variable.ttf
+
+    - family: Exo 2
+      fonts:
+        - asset: assets/fonts/design/Exo2-Variable.ttf
+
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/design/Nunito-Variable.ttf
+
+    - family: Space Grotesk
+      fonts:
+        - asset: assets/fonts/design/SpaceGrotesk-Variable.ttf
+
+    # ── Additional creative fonts (5 families) ─────────────────────────────
+    - family: Playfair Display
+      fonts:
+        - asset: assets/fonts/design/PlayfairDisplay-Variable.ttf
+
+    - family: Dancing Script
+      fonts:
+        - asset: assets/fonts/design/DancingScript-Variable.ttf
+
+    - family: Lobster
+      fonts:
+        - asset: assets/fonts/design/Lobster-Regular.ttf
+
+    - family: Press Start 2P
+      fonts:
+        - asset: assets/fonts/design/PressStart2P-Regular.ttf
+
+    # ── Language fonts — Noto (21 families, all scripts) ────────────────────
+    - family: Noto Sans
+      fonts:
+        - asset: assets/fonts/languages/NotoSans-Variable.ttf
+
+    - family: Noto Sans Devanagari
+      fonts:
+        - asset: assets/fonts/languages/NotoSansDevanagari-Variable.ttf
+
+    - family: Noto Sans Arabic
+      fonts:
+        - asset: assets/fonts/languages/NotoSansArabic-Variable.ttf
+
+    - family: Noto Sans Thai
+      fonts:
+        - asset: assets/fonts/languages/NotoSansThai-Variable.ttf
+
+    - family: Noto Sans Hebrew
+      fonts:
+        - asset: assets/fonts/languages/NotoSansHebrew-Variable.ttf
+
+    - family: Noto Sans Tamil
+      fonts:
+        - asset: assets/fonts/languages/NotoSansTamil-Variable.ttf
+
+    - family: Noto Sans Telugu
+      fonts:
+        - asset: assets/fonts/languages/NotoSansTelugu-Variable.ttf
+
+    - family: Noto Sans Bengali
+      fonts:
+        - asset: assets/fonts/languages/NotoSansBengali-Variable.ttf
+
+    - family: Noto Sans Gujarati
+      fonts:
+        - asset: assets/fonts/languages/NotoSansGujarati-Variable.ttf
+
+    - family: Noto Sans Kannada
+      fonts:
+        - asset: assets/fonts/languages/NotoSansKannada-Variable.ttf
+
+    - family: Noto Sans Malayalam
+      fonts:
+        - asset: assets/fonts/languages/NotoSansMalayalam-Variable.ttf
+
+    - family: Noto Sans Gurmukhi
+      fonts:
+        - asset: assets/fonts/languages/NotoSansGurmukhi-Variable.ttf
+
+    - family: Noto Sans Oriya
+      fonts:
+        - asset: assets/fonts/languages/NotoSansOriya-Variable.ttf
+
+    - family: Noto Sans Sinhala
+      fonts:
+        - asset: assets/fonts/languages/NotoSansSinhala-Variable.ttf
+
+    - family: Noto Sans Myanmar
+      fonts:
+        - asset: assets/fonts/languages/NotoSansMyanmar-Variable.ttf
+
+    - family: Noto Sans Khmer
+      fonts:
+        - asset: assets/fonts/languages/NotoSansKhmer-Variable.ttf
+
+    - family: Noto Sans Lao
+      fonts:
+        - asset: assets/fonts/languages/NotoSansLao-Variable.ttf
+
+    - family: Noto Sans Georgian
+      fonts:
+        - asset: assets/fonts/languages/NotoSansGeorgian-Variable.ttf
+
+    - family: Noto Sans Armenian
+      fonts:
+        - asset: assets/fonts/languages/NotoSansArmenian-Variable.ttf
+
+    - family: Noto Sans Ethiopic
+      fonts:
+        - asset: assets/fonts/languages/NotoSansEthiopic-Variable.ttf
+
+    - family: Noto Nastaliq Urdu
+      fonts:
+        - asset: assets/fonts/languages/NotoNastaliqUrdu-Variable.ttf
+
+    - family: Noto Sans SC
+      fonts:
+        - asset: assets/fonts/languages/NotoSansSC-Bold.ttf
+          weight: 700
+
+    - family: Noto Sans JP
+      fonts:
+        - asset: assets/fonts/languages/NotoSansJP-Bold.ttf
+          weight: 700
+
+    - family: Noto Sans KR
+      fonts:
+        - asset: assets/fonts/languages/NotoSansKR-Bold.ttf
+          weight: 700
+
+    - family: Noto Sans TC
+      fonts:
+        - asset: assets/fonts/languages/NotoSansTC-Bold.ttf
+          weight: 700
+
+msix_config:
+  display_name: CapStudio
+  publisher_display_name: Local AI
+
+  # ---------------------------------------------------------------
+  # DEV/SIDELOAD BUILD (current - uses local self-signed cert)
+  # ---------------------------------------------------------------
+  publisher: CN=CapStudio, O=Local AI, C=IN
+  identity_name: com.capstudio
+  certificate_path: scripts/certificate/windows/capstudio_cert.pfx
+  # FIX (Issue #10, CapStudio 1.0 audit): certificate_password was
+  # previously hardcoded here in plaintext. Do NOT hardcode it back — pass
+  # it at build time instead, so it never sits in a tracked file:
+  #   flutter pub run msix:create --password $env:CAPSTUDIO_CERT_PASSWORD
+  # (the msix package explicitly supports --password as an override for
+  # this field). Use the same env var when running create_cert.ps1.
+  install_certificate: false
+
+  # ---------------------------------------------------------------
+  # MICROSOFT STORE BUILD — uncomment these and comment out the
+  # DEV block above when submitting to the Windows Store.
+  # Replace the values below with what Partner Center gives you.
+  # Then run: dart run msix:create --store
+  # ---------------------------------------------------------------
+  # publisher: CN=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+  # identity_name: 12345LocalAI.CapStudio
+  # store: true
+  # sign_msix: false   # Partner Center re-signs it for you
+
+  # msix_version is intentionally omitted — auto-derived from pubspec.yaml version field
+  logo_path: assets/images/logo.png
+  # capabilities MUST be a comma-separated string (not a YAML list)
+  capabilities: internetClient,runFullTrust
+  languages: en-us
+  architecture: x64
+  build_windows: true
+  windows_build_args: --obfuscate --split-debug-info=./debug-info/windows
+

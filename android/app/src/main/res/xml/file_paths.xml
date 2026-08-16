@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Scoped paths for app-specific exports and temp directories -->
+    <files-path name="internal_temp" path="CapStudio/assets/temp" />
+    <files-path name="internal_exports" path="CapStudio/assets/exports" />
+    <cache-path name="cache_root" path="." />
+    <cache-path name="cache_temp" path="temp" />
+    <cache-path name="cache_exports" path="exports" />
+    
+    <external-files-path name="external_temp" path="CapStudio/assets/temp" />
+    <external-files-path name="external_exports" path="CapStudio/assets/exports" />
+    <external-cache-path name="external_cache_temp" path="temp" />
+    <external-cache-path name="external_cache_exports" path="exports" />
+</paths>

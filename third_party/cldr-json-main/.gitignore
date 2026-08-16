@@ -1,0 +1,12 @@
+/bower_components/
+/node_modules/
+
+.DS_Store
+*.zip
+*.asc
+/dist
+local-config.sh
+target
+
+# this is an ephemeral copy for the zip
+/cldr-json/LICENSE

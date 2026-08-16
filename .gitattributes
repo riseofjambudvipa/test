@@ -1,0 +1,86 @@
+# ==============================================================================
+# CapStudio Modernized .gitattributes
+# ==============================================================================
+
+# Set default behavior to automatically handle line endings for all text files
+* text=auto eol=lf
+
+# ------------------------------------------------------------------------------
+# Source Code & Text Config Files (Force LF line endings)
+# ------------------------------------------------------------------------------
+*.dart text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.arb text eol=lf
+*.xml text eol=lf
+*.kt text eol=lf
+*.java text eol=lf
+*.swift text eol=lf
+*.m text eol=lf
+*.mm text eol=lf
+*.h text eol=lf
+*.c text eol=lf
+*.cpp text eol=lf
+*.hpp text eol=lf
+*.gradle text eol=lf
+*.properties text eol=lf
+*.cmake text eol=lf
+CMakeLists.txt text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.sh text eol=lf
+*.iss text eol=lf
+
+# ------------------------------------------------------------------------------
+# Windows Command Scripts (Force CRLF line endings)
+# ------------------------------------------------------------------------------
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# ------------------------------------------------------------------------------
+# Binary Assets & Non-Text Media (Prevent git corruption and diffing)
+# ------------------------------------------------------------------------------
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.svg binary
+*.ico binary
+*.bmp binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.mp3 binary
+*.wav binary
+*.aac binary
+*.flac binary
+*.mp4 binary
+*.mov binary
+*.webm binary
+*.zip binary
+*.tar binary
+*.gz binary
+*.7z binary
+*.bin binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.a binary
+*.lib binary
+*.msix binary
+*.apk binary
+*.aab binary
+*.pfx binary
+*.cer binary
+*.crt binary
+*.keystore binary
+*.jks binary
+*.xcframework binary
