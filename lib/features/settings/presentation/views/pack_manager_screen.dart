@@ -47,7 +47,8 @@ class _PackManagerScreenState extends ConsumerState<PackManagerScreen> {
           _calculatingDisk = false;
         });
       }
-    } catch (_) {
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'PackManager', 'Failed to calculate disk usage: $e');
       if (mounted) {
         setState(() => _calculatingDisk = false);
       }

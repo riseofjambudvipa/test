@@ -3,6 +3,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../app/theme.dart';
+import '../../../../../core/logger/logger_service.dart';
 
 class AboutAppScreen extends StatefulWidget {
   const AboutAppScreen({super.key});
@@ -28,7 +29,9 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
           _appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
         });
       }
-    } catch (_) {}
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'AboutApp', 'Failed to load app version: $e');
+    }
   }
 
   Future<void> _launchUrl(String urlString) async {
@@ -37,7 +40,9 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       }
-    } catch (_) {}
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'AboutApp', 'Failed to open URL $urlString: $e');
+    }
   }
 
   Widget _buildSectionHeader(String title) {

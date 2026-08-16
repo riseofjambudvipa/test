@@ -215,7 +215,9 @@ class _WordPanelState extends ConsumerState<WordPanel> {
                           ref.read(editorProvider.notifier).setCurrentTime(start);
                           LoggerService.instance.log(LogLevel.action, 'WordPanel', 'Jumped to uncertain word at ${start.toStringAsFixed(2)}s');
                         }
-                      } catch (_) {}
+                      } catch (e) {
+                        LoggerService.instance.log(LogLevel.warning, 'WordPanel', 'Failed to jump to uncertain word: $e');
+                      }
                     },
                   ),
                   const SizedBox(width: 12),

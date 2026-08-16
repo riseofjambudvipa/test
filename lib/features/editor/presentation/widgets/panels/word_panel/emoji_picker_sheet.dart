@@ -469,7 +469,9 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
         _favoriteGlyphs = favorites.toSet();
         _updateFilteredData();
       });
-    } catch (_) {}
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'EmojiPicker', 'Failed to load emoji recents/favorites: $e');
+    }
   }
 
   Future<void> _addToRecent(String glyph) async {
@@ -481,7 +483,9 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setStringList(_prefKeyRecent, _recentGlyphs);
-    } catch (_) {}
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'EmojiPicker', 'Failed to save recent glyphs: $e');
+    }
     if (mounted) setState(_updateFilteredData);
   }
 
@@ -494,7 +498,9 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setStringList(_prefKeyFavorites, _favoriteGlyphs.toList());
-    } catch (_) {}
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'EmojiPicker', 'Failed to save favorite glyphs: $e');
+    }
     if (mounted) setState(_updateFilteredData);
   }
 

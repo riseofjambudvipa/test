@@ -59,9 +59,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         setState(() {
           _appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
         });
-      }
-    } catch (_) {}
+      }    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'SettingsScreen', 'Failed to load app version: $e');
+    }
   }
+
+
+
 
   Future<void> _resetToDefaults() async {
     final l10n = AppLocalizations.of(context)!;

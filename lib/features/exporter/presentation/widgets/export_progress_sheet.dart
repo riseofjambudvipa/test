@@ -223,7 +223,9 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
             _saveToAndroidDownloads(widget.outputFilePath);
           }
         }
-      } catch (_) {}
+      } catch (e) {
+        LoggerService.instance.log(LogLevel.error, 'ExportProgress', 'Failed to verify/save exported file: $e');
+      }
 
       setState(() {
         _progress = 1.0;
