@@ -74,12 +74,8 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>CapStudio may access your microphone in future versions for direct audio recording.</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
+		<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>CapStudio does not track you.</string>
 </dict>
 </plist>
 
