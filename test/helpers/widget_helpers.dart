@@ -8,6 +8,7 @@ Future<void> pumpTestWidget(
   Widget child, {
   List<Override> overrides = const [],
   Size size = const Size(1280, 800),
+  ProviderContainer? container,
 }) async {
   // Set screen size for responsive design testing
   tester.view.physicalSize = size * tester.view.devicePixelRatio;
@@ -16,17 +17,30 @@ Future<void> pumpTestWidget(
   });
 
   await tester.pumpWidget(
-    ProviderScope(
-      overrides: overrides,
-      child: MaterialApp(
-        theme: ThemeData.dark(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('en'),
-        home: Scaffold(
-          body: child,
-        ),
-      ),
-    ),
+    container != null
+        ? UncontrolledProviderScope(
+            container: container,
+            child: MaterialApp(
+              theme: ThemeData.dark(),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: const Locale('en'),
+              home: Scaffold(
+                body: child,
+              ),
+            ),
+          )
+        : ProviderScope(
+            overrides: overrides,
+            child: MaterialApp(
+              theme: ThemeData.dark(),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: const Locale('en'),
+              home: Scaffold(
+                body: child,
+              ),
+            ),
+          ),
   );
 }
