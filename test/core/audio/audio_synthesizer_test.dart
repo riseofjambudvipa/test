@@ -20,6 +20,17 @@ void main() {
       expect(String.fromCharCodes(bytes.sublist(36, 40)), 'data');
     });
 
+    test('produces exact header sizes and sample amplitudes', () {
+      // Regression guard for the WAV header math: chunk size must be
+      // 36 + subchunk2Size, and a 0.5 constant maps to 0.5 * 32767 = 16384.
+      final wav = AudioSynthesizer.generateWavBytes(100, 44100, (t) => 0.5);
+      final bd = ByteData.sublistView(Uint8List.fromList(wav));
+
+      expect(bd.getUint32(4, Endian.little), 236); // 36 + 100*2
+      expect(bd.getUint32(40, Endian.little), 200); // subchunk2Size
+      expect(bd.getInt16(44, Endian.little), 16384);
+    });
+
     test('synthesizes a sine wave into clamped 16-bit samples', () {
       final bytes = AudioSynthesizer.generateWavBytes(
         2000,
