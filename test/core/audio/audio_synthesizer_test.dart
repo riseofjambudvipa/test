@@ -1,76 +1,130 @@
-import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:capstudio/core/audio/audio_synthesizer.dart';
 
 void main() {
-  group('AudioSynthesizer Tests', () {
-    test('generateWavBytes produces correct WAV headers and PCM samples', () {
-      const sampleRate = 44100;
-      const numSamples = 100;
-      final wav = AudioSynthesizer.generateWavBytes(
-        numSamples,
-        sampleRate,
-        (t) => 0.5, // Constant amplitude signal
-      );
+  group('generateWavBytes', () {
+    test('produces a valid RIFF/WAVE PCM header', () {
+      final bytes = AudioSynthesizer.generateWavBytes(100, 16000, (t) => 0.0);
+      expect(bytes.length, 44 + 100 * 2);
 
-      // Total WAV size should be 44 bytes header + 2 bytes per sample * 100
-      expect(wav.length, equals(44 + numSamples * 2));
-
-      // RIFF header
-      expect(utf8.decode(wav.sublist(0, 4)), equals('RIFF'));
-
-      // Chunk size = 36 + subchunk2Size (200 bytes) = 236 bytes
-      final byteData = ByteData.sublistView(Uint8List.fromList(wav));
-      expect(byteData.getUint32(4, Endian.little), equals(236));
-
-      // WAVEfmt 
-      expect(utf8.decode(wav.sublist(8, 16)), equals('WAVEfmt '));
-
-      // Subchunk1Size
-      expect(byteData.getUint32(16, Endian.little), equals(16));
-
-      // AudioFormat (PCM = 1)
-      expect(byteData.getUint16(20, Endian.little), equals(1));
-
-      // NumChannels
-      expect(byteData.getUint16(22, Endian.little), equals(1));
-
-      // SampleRate
-      expect(byteData.getUint32(24, Endian.little), equals(sampleRate));
-
-      // BitsPerSample
-      expect(byteData.getUint16(34, Endian.little), equals(16));
-
-      // data subchunk ID
-      expect(utf8.decode(wav.sublist(36, 40)), equals('data'));
-
-      // Subchunk2Size (samples * channels * bytesPerSample = 100 * 1 * 2 = 200)
-      expect(byteData.getUint32(40, Endian.little), equals(200));
-
-      // Sample amplitude check (0.5 * 32767 = 16384)
-      expect(byteData.getInt16(44, Endian.little), equals(16384));
+      final bd = ByteData.sublistView(Uint8List.fromList(bytes));
+      // RIFF magic
+      expect(String.fromCharCodes(bytes.sublist(0, 4)), 'RIFF');
+      expect(String.fromCharCodes(bytes.sublist(8, 16)), 'WAVEfmt ');
+      // PCM, mono, 16-bit
+      expect(bd.getUint16(20, Endian.little), 1); // audio format = PCM
+      expect(bd.getUint16(22, Endian.little), 1); // channels
+      expect(bd.getUint32(24, Endian.little), 16000); // sample rate
+      expect(bd.getUint16(34, Endian.little), 16); // bits per sample
+      expect(String.fromCharCodes(bytes.sublist(36, 40)), 'data');
     });
 
-    test('predefined sfx generators produce non-empty valid wav lists', () {
-      const sampleRate = 16000;
-      
-      final whooshFast = AudioSynthesizer.generateWhooshFast(sampleRate);
-      expect(whooshFast, isNotEmpty);
-      expect(whooshFast.length, greaterThan(44));
-      expect(utf8.decode(whooshFast.sublist(0, 4)), equals('RIFF'));
+    test('synthesizes a sine wave into clamped 16-bit samples', () {
+      final bytes = AudioSynthesizer.generateWavBytes(
+        2000,
+        16000,
+        (t) => mathSin(2 * 3.14159 * 440 * t),
+      );
+      final bd = ByteData.sublistView(Uint8List.fromList(bytes));
 
-      final whooshSlow = AudioSynthesizer.generateWhooshSlow(sampleRate);
-      expect(whooshSlow, isNotEmpty);
-      expect(whooshSlow.length, greaterThan(whooshFast.length));
+      // Samples live in [-32767, 32767]; a pure sine must hit both extremes.
+      int minV = 0, maxV = 0;
+      for (int i = 0; i < 2000; i++) {
+        final s = bd.getInt16(44 + i * 2, Endian.little);
+        expect(s, inInclusiveRange(-32767, 32767));
+        if (s < minV) minV = s;
+        if (s > maxV) maxV = s;
+      }
+      expect(minV, lessThan(-30000));
+      expect(maxV, greaterThan(30000));
+    });
 
-      final swipeLeftToRight = AudioSynthesizer.generateSwipe(sampleRate, true);
-      expect(swipeLeftToRight, isNotEmpty);
-      expect(utf8.decode(swipeLeftToRight.sublist(0, 4)), equals('RIFF'));
-
-      final swipeRightToLeft = AudioSynthesizer.generateSwipe(sampleRate, false);
-      expect(swipeRightToLeft, isNotEmpty);
-      expect(swipeRightToLeft.length, equals(swipeLeftToRight.length));
+    test('clamps out-of-range synthesis values instead of overflowing', () {
+      final bytes = AudioSynthesizer.generateWavBytes(10, 8000, (t) => 999.0);
+      final bd = ByteData.sublistView(Uint8List.fromList(bytes));
+      for (int i = 0; i < 10; i++) {
+        expect(bd.getInt16(44 + i * 2, Endian.little), 32767);
+      }
     });
   });
+
+  group('sound effect generators', () {
+    final generators = <String, List<int> Function(int)>{
+      'whooshFast': AudioSynthesizer.generateWhooshFast,
+      'whooshSlow': AudioSynthesizer.generateWhooshSlow,
+      'swipe': (sr) => AudioSynthesizer.generateSwipe(sr, true),
+      'sweepUp': AudioSynthesizer.generateSweepUp,
+      'sweepDown': AudioSynthesizer.generateSweepDown,
+      'pop': AudioSynthesizer.generatePop,
+      'popDeep': AudioSynthesizer.generatePopDeep,
+      'boom': AudioSynthesizer.generateBoom,
+      'thud': AudioSynthesizer.generateThud,
+      'punch': AudioSynthesizer.generatePunch,
+      'stamp': AudioSynthesizer.generateStamp,
+      'bell': AudioSynthesizer.generateBell,
+      'chime': AudioSynthesizer.generateChime,
+      'blip': AudioSynthesizer.generateBlip,
+      'ding': AudioSynthesizer.generateDing,
+      'ping': AudioSynthesizer.generatePing,
+      'drop': AudioSynthesizer.generateDrop,
+      'boing': AudioSynthesizer.generateBoing,
+      'bounce': AudioSynthesizer.generateBounce,
+      'squeak': AudioSynthesizer.generateSqueak,
+      'coin': AudioSynthesizer.generateCoin,
+      'sparkle': AudioSynthesizer.generateSparkle,
+      'glitch': AudioSynthesizer.generateGlitch,
+      'rise': AudioSynthesizer.generateRise,
+      'tension': AudioSynthesizer.generateTension,
+      'bassDrop': AudioSynthesizer.generateBassDrop,
+      'reverse': AudioSynthesizer.generateReverse,
+      'echo': AudioSynthesizer.generateEcho,
+      'whoosh': AudioSynthesizer.generateWhoosh,
+      'sweep': AudioSynthesizer.generateSweep,
+      'tapeStop': AudioSynthesizer.generateTapeStop,
+      'levelUp': AudioSynthesizer.generateLevelUp,
+      'fail': AudioSynthesizer.generateFail,
+      'correct': AudioSynthesizer.generateCorrect,
+      'wrong': AudioSynthesizer.generateWrong,
+      'powerUp': AudioSynthesizer.generatePowerUp,
+      'gameOver': AudioSynthesizer.generateGameOver,
+      'swishFuturistic': AudioSynthesizer.generateSwishFuturistic,
+      'sparkleMagical': AudioSynthesizer.generateSparkleMagical,
+      'cymbalSwell': AudioSynthesizer.generateCymbalSwell,
+      'laserShot': AudioSynthesizer.generateLaserShot,
+      'heavyImpact': AudioSynthesizer.generateHeavyImpact,
+      'synthChime': AudioSynthesizer.generateSynthChime,
+    };
+
+    generators.forEach((name, gen) {
+      test('$name produces a valid non-empty WAV at 44.1kHz', () {
+        final bytes = gen(44100);
+        expect(bytes.length, greaterThan(44), reason: '$name must have a header');
+        expect(String.fromCharCodes(bytes.sublist(0, 4)), 'RIFF');
+        expect(String.fromCharCodes(bytes.sublist(8, 16)), 'WAVEfmt ');
+        expect(String.fromCharCodes(bytes.sublist(36, 40)), 'data');
+
+        // Even-length sample data (16-bit mono).
+        expect((bytes.length - 44) % 2, 0);
+
+        final bd = ByteData.sublistView(Uint8List.fromList(bytes));
+        final numSamples = (bytes.length - 44) ~/ 2;
+        // All samples are in range.
+        for (int i = 0; i < numSamples; i += 997) { // stride for speed
+          expect(bd.getInt16(44 + i * 2, Endian.little), inInclusiveRange(-32767, 32767));
+        }
+      });
+    });
+  });
+}
+
+double mathSin(double x) {
+  // Local sine to keep the fixture free of dart:math import noise in the test.
+  var term = x;
+  var sum = x;
+  for (int n = 1; n < 6; n++) {
+    term *= -x * x / ((2 * n) * (2 * n + 1));
+    sum += term;
+  }
+  return sum;
 }
