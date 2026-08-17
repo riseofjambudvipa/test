@@ -136,6 +136,62 @@ void main() {
       await subscription.cancel();
     });
 
+    test('should fail closed and refuse install when no checksum can be fetched', () async {
+      // Regression guard for the supply-chain hardening: when no checksum is
+      // configured (e.g. the remote .sha256 fetch fails), the download must
+      // REFUSE to install — the old behavior logged a warning and passed,
+      // silently installing an unverified binary.
+      service.verifyChecksumsEnabled = true;
+
+      // Make the checksum fetch for ffmpeg's .sha256 companion fail, so
+      // expectedChecksum stays empty and fail-closed verification kicks in.
+      when(() => mockClient.getUrl(any(
+            that: predicate((Uri u) => u.toString().endsWith('.sha256')),
+          )))
+          .thenThrow(Exception('checksum server unreachable'));
+
+      // Valid zip payload for the download itself (mocked stream).
+      final archive = Archive();
+      final mockData = List<int>.generate(4 * 1024 * 1024, (i) => (i * 17 + 3) & 0xFF);
+      archive.addFile(ArchiveFile('ffmpeg.exe', mockData.length, mockData));
+      final zipBytes = ZipEncoder().encode(archive);
+
+      final byteStream = Stream<List<int>>.fromIterable([zipBytes]);
+      when(() => mockResponse.contentLength).thenReturn(zipBytes.length);
+      when(() => mockResponse.listen(
+        any(),
+        onError: any(named: 'onError'),
+        onDone: any(named: 'onDone'),
+        cancelOnError: any(named: 'cancelOnError'),
+      )).thenAnswer((invocation) {
+        return byteStream.listen(
+          invocation.positionalArguments[0] as void Function(List<int>)?,
+          onError: invocation.namedArguments[#onError] as Function?,
+          onDone: invocation.namedArguments[#onDone] as void Function()?,
+          cancelOnError: invocation.namedArguments[#cancelOnError] as bool?,
+        );
+      });
+
+      final progressList = <BinaryDownloadProgress>[];
+      final subscription = service.stream('ffmpeg').listen((event) {
+        progressList.add(event);
+      });
+
+      await service.download('ffmpeg');
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      // Must end in failure with the integrity message, NOT complete.
+      expect(progressList.last.status, BinaryDownloadStatus.failed);
+      expect(progressList.last.error, contains('integrity check failed'));
+      expect(progressList.any((p) => p.status == BinaryDownloadStatus.complete), isFalse);
+
+      // No unverified binary may be installed.
+      expect(File(p.join(AppDirs.bin, 'ffmpeg.exe')).existsSync(), isFalse);
+      expect(File(p.join(AppDirs.bin, 'ffmpeg')).existsSync(), isFalse);
+
+      await subscription.cancel();
+    });
+
     test('should prevent extraction and abort when Zip Slip traversal is found in binary archive', () async {
       AppDirs.setHasAvx(true);
 

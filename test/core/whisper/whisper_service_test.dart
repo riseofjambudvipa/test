@@ -40,6 +40,35 @@ void main() {
       expect(service.ffmpegCliPath, 'custom-ffmpeg');
       expect(service.modelPath, 'models/ggml-medium.bin');
     });
+
+    test('should discover a bundled FFmpeg binary (bundle-relative lookup)', () {
+      // Regression guard for the platform-gap fix: the getter previously only
+      // checked `Directory.current`-relative paths, so a binary bundled into a
+      // packaged app (whose cwd is NOT the bundle) could never be found.
+      // It must now find a binary in the bundle-relative candidate paths.
+      final exe = Platform.isWindows ? 'ffmpeg.exe' : 'ffmpeg';
+      final binDir = Directory(p.join(Directory.current.path, 'assets', 'bin'));
+      binDir.createSync(recursive: true);
+      final bundled = File(p.join(binDir.path, exe))..writeAsBytesSync([0x4D, 0x5A]);
+
+      try {
+        // Reset to a pristine instance so `_ffmpegCliPath` is the default
+        // and `_cachedFfmpegPath` is empty — forcing the discovery path.
+        WhisperService.resetForTesting();
+        final fresh = WhisperService.instance;
+        fresh.configureFfmpeg('ffmpeg');
+
+        expect(fresh.ffmpegCliPath, bundled.path);
+        // Cache hit returns the same path without re-scanning.
+        expect(fresh.ffmpegCliPath, bundled.path);
+      } finally {
+        bundled.deleteSync();
+        try {
+          binDir.deleteSync();
+        } catch (_) {}
+        WhisperService.resetForTesting();
+      }
+    });
   });
 
   group('WhisperService Audio Extraction', () {

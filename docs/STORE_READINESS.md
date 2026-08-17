@@ -124,8 +124,10 @@ MSIX packaging is already configured in `pubspec.yaml`.
 
 Not a store target, but if you publish it:
 - [ ] The PWA manifest (`web/manifest.json`) is complete.
-- [ ] The web build needs internet (CDN scripts + model downloads) — make the
-      landing page say so.
+- [ ] The app shell (UI + FFmpeg.wasm + transformers.js) is **vendored
+      locally** and works offline; only whisper model weights (75MB–1.5GB,
+      fetched on demand from HuggingFace) need internet. If you ship the web
+      app, be aware a model download will be the only network call.
 
 ## 7. Release checklist (all platforms)
 
