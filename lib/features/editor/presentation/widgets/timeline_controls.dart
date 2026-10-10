@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme.dart';
 import '../../../../core/database/schemas/word.dart';
 import '../../../../l10n/app_localizations.dart';
+export 'timeline_track_headers.dart';
 
 /// WordEdgeHit coordinate lookup model for timeline edge dragging
 class WordEdgeHit {
@@ -17,8 +18,8 @@ class TimelineHitTester {
   const TimelineHitTester._();
 
   static bool isLocalYInWordTrack(double localY, double widgetHeight) {
-    final trackTop = widgetHeight - 32.0;
-    final trackBottom = widgetHeight - 8.0;
+    final trackTop = math.max(38.0, widgetHeight - 32.0);
+    final trackBottom = trackTop + 24.0;
     return localY >= trackTop && localY <= trackBottom;
   }
 
@@ -324,8 +325,8 @@ class _TimelineHorizontalScrollbarState
         _isHoveringScrollbar || _isDraggingScrollbar ? 13.0 : 10.0;
 
     return Container(
-      height: 24,
-      margin: const EdgeInsets.only(bottom: 4, left: 16, right: 16),
+      height: 18,
+      margin: const EdgeInsets.only(bottom: 2, left: 16, right: 16),
       alignment: Alignment.center,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,

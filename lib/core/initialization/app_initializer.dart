@@ -217,10 +217,11 @@ class AppInitializer {
       );
     }
 
-    // Initialize Window Manager close prevention
+    // Initialize Window Manager close prevention and minimum desktop window bounds
     if (isDesktop) {
       try {
         await windowManager.ensureInitialized();
+        await windowManager.setMinimumSize(const Size(860, 560));
         await windowManager.setPreventClose(true);
         LoggerService.instance.log(LogLevel.info, 'WindowManager', 'Window Manager successfully initialized.');
       } catch (e) {

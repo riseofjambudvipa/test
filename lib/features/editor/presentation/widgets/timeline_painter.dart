@@ -43,6 +43,8 @@ class TimelineWaveformPainter extends CustomPainter {
   final List<WordSchema>? words;
   final List<VideoChapter>? chapters;
   final AppThemeData theme;
+  final bool isAudioMuted;
+  final bool isCaptionsVisible;
 
   TimelineWaveformPainter({
     required this.duration,
@@ -57,6 +59,8 @@ class TimelineWaveformPainter extends CustomPainter {
     this.bRollClips,
     this.words,
     this.chapters,
+    this.isAudioMuted = false,
+    this.isCaptionsVisible = true,
   });
 
   @override
@@ -69,13 +73,19 @@ class TimelineWaveformPainter extends CustomPainter {
     final bgPaint = Paint()..color = theme.background;
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), bgPaint);
 
-    final captionTrackTop = size.height - trackBottomMargin;
-    final captionTrackBg = Paint()..color = theme.cardBg.withValues(alpha: 0.35);
-    canvas.drawRect(Rect.fromLTWH(0, captionTrackTop, size.width, trackBottomMargin), captionTrackBg);
+    final captionTrackTop = math.max(rulerHeight + 14.0, size.height - trackBottomMargin);
+    final captionTrackBg = Paint()
+      ..color = theme.cardBg.withValues(alpha: isCaptionsVisible ? 0.35 : 0.15);
+    canvas.drawRect(
+      Rect.fromLTWH(0, captionTrackTop, size.width, math.max(0.0, size.height - captionTrackTop)),
+      captionTrackBg,
+    );
 
     final hasMusic = backgroundMusic != null && backgroundMusic!.hasMusic;
     const double musicLaneHeight = 20.0;
-    final double musicLaneTop = hasMusic ? (captionTrackTop - musicLaneHeight) : captionTrackTop;
+    final double musicLaneTop = hasMusic
+        ? math.max(rulerHeight + 10.0, captionTrackTop - musicLaneHeight)
+        : captionTrackTop;
 
     // Track lane divider lines
     final laneDividerPaint = Paint()
@@ -91,24 +101,7 @@ class TimelineWaveformPainter extends CustomPainter {
       );
       canvas.drawLine(Offset(0, musicLaneTop), Offset(size.width, musicLaneTop), laneDividerPaint);
 
-      final musicPath = backgroundMusic!.musicPath ?? '';
-      final bgmTitle = musicPath.split(RegExp(r'[/\\]')).last;
-      final volPercent = (backgroundMusic!.volume * 100).round();
-      final duckLabel = backgroundMusic!.enableDucking ? ' • -12dB Duck' : '';
-
-      _rulerTextPainter.text = TextSpan(
-        text: 'M1 • MUSIC ($bgmTitle • $volPercent%$duckLabel)',
-        style: TextStyle(
-          fontSize: 8,
-          fontWeight: FontWeight.w800,
-          color: theme.accentCyan.withValues(alpha: 0.45),
-          letterSpacing: 0.8,
-        ),
-      );
-      _rulerTextPainter.layout();
-      _rulerTextPainter.paint(canvas, Offset(8, musicLaneTop + 3));
-
-      // Draw subtle background music rhythm bars in M1 lane
+      // Draw subtle background music rhythm bars in A2 music lane
       final musicCenterY = musicLaneTop + musicLaneHeight / 2;
       final musicPaint = Paint()
         ..color = theme.accentCyan.withValues(alpha: 0.35)
@@ -150,31 +143,6 @@ class TimelineWaveformPainter extends CustomPainter {
         );
       }
     }
-
-    // Track lane watermark labels
-    _rulerTextPainter.text = TextSpan(
-      text: 'A1 • AUDIO',
-      style: TextStyle(
-        fontSize: 8,
-        fontWeight: FontWeight.w800,
-        color: theme.mutedText.withValues(alpha: 0.22),
-        letterSpacing: 1.0,
-      ),
-    );
-    _rulerTextPainter.layout();
-    _rulerTextPainter.paint(canvas, const Offset(8, rulerHeight + 4));
-
-    _rulerTextPainter.text = TextSpan(
-      text: 'T1 • CAPTIONS',
-      style: TextStyle(
-        fontSize: 8,
-        fontWeight: FontWeight.w800,
-        color: theme.mutedText.withValues(alpha: 0.22),
-        letterSpacing: 1.0,
-      ),
-    );
-    _rulerTextPainter.layout();
-    _rulerTextPainter.paint(canvas, Offset(8, captionTrackTop + 2));
 
     // Draw B-roll overlay indicators beneath ruler
     final clips = bRollClips;
@@ -306,7 +274,7 @@ class TimelineWaveformPainter extends CustomPainter {
       canvas.drawPath(
         untrimmedPath,
         Paint()
-          ..color = theme.mutedText.withValues(alpha: 0.35)
+          ..color = theme.mutedText.withValues(alpha: isAudioMuted ? 0.15 : 0.35)
           ..strokeCap = StrokeCap.round
           ..strokeWidth = 2.0
           ..style = PaintingStyle.stroke,
@@ -315,7 +283,9 @@ class TimelineWaveformPainter extends CustomPainter {
       canvas.drawPath(
         upcomingPath,
         Paint()
-          ..color = theme.accentPrimary.withValues(alpha: 0.5) // Static color for active region
+          ..color = isAudioMuted
+              ? theme.mutedText.withValues(alpha: 0.22)
+              : theme.accentPrimary.withValues(alpha: 0.5)
           ..strokeCap = StrokeCap.round
           ..strokeWidth = 2.0
           ..style = PaintingStyle.stroke,
@@ -455,6 +425,8 @@ class TimelineWaveformPainter extends CustomPainter {
         oldDelegate.words != words ||
         oldDelegate.chapters != chapters ||
         oldDelegate.waveformAmplitudes != waveformAmplitudes ||
+        oldDelegate.isAudioMuted != isAudioMuted ||
+        oldDelegate.isCaptionsVisible != isCaptionsVisible ||
         oldDelegate.theme != theme;
   }
 }
@@ -491,6 +463,7 @@ class TimelinePlayheadPainter extends CustomPainter {
   final AppThemeData theme;
   final bool wordsAreOrdered;
   final List<VideoSegmentSchema>? segments;
+  final bool isCaptionsVisible;
 
   TimelinePlayheadPainter({
     required this.words,
@@ -502,6 +475,7 @@ class TimelinePlayheadPainter extends CustomPainter {
     this.hoveredWordId,
     this.wordsAreOrdered = true,
     this.segments,
+    this.isCaptionsVisible = true,
   });
 
   @override
@@ -512,7 +486,7 @@ class TimelinePlayheadPainter extends CustomPainter {
 
     final startVisibleTime = scrollOffset / pixelsPerSecond;
     final endVisibleTime = (scrollOffset + size.width) / pixelsPerSecond;
-    final trackTop = size.height - trackBottomMargin;
+    final trackTop = math.max(TimelineWaveformPainter.rulerHeight + 14.0, size.height - trackBottomMargin);
 
     int startIndex = words.length;
     int endIndex = words.length - 1;
@@ -719,7 +693,7 @@ class TimelinePlayheadPainter extends CustomPainter {
       if (word.className == 'thirdColor') blockColor = theme.accentQuaternary.withValues(alpha: 0.08);
     }
 
-    if (isHidden) {
+    if (isHidden || !isCaptionsVisible) {
       blockColor = blockColor.withValues(alpha: 0.02);
       textColor = textColor.withValues(alpha: 0.2);
     }
@@ -835,6 +809,7 @@ class TimelinePlayheadPainter extends CustomPainter {
         oldDelegate.segments != segments ||
         oldDelegate.hoveredWordId != hoveredWordId ||
         oldDelegate.wordsAreOrdered != wordsAreOrdered ||
+        oldDelegate.isCaptionsVisible != isCaptionsVisible ||
         oldDelegate.theme != theme;
   }
 }

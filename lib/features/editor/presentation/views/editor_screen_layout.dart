@@ -46,15 +46,16 @@ extension _EditorScreenLayout on _EditorScreenState {
                                           config: retentionConfig,
                                           scale: 1.8,
                                         ),
-                                        CaptionOverlay(
-                                          chunks: chunks,
-                                          currentTime: currentTime,
-                                          config: project.config,
-                                          scale: 1.8,
-                                          videoWidth: project.width.toDouble(),
-                                          videoHeight: project.height.toDouble(),
-                                          isControlsVisible: _controlsVisible,
-                                        ),
+                                        if (_captionsVisible)
+                                          CaptionOverlay(
+                                            chunks: chunks,
+                                            currentTime: currentTime,
+                                            config: project.config,
+                                            scale: 1.8,
+                                            videoWidth: project.width.toDouble(),
+                                            videoHeight: project.height.toDouble(),
+                                            isControlsVisible: _controlsVisible,
+                                          ),
                                       ],
                                     );
                                   },
@@ -164,16 +165,50 @@ extension _EditorScreenLayout on _EditorScreenState {
     );
   }
 
+  double _computeMinSidebarWidth(double screenWidth) {
+    if (screenWidth >= 1366.0) return 528.0;
+    return (screenWidth * 0.3865).clamp(280.0, 528.0);
+  }
+
+  double _computeMaxSidebarWidth(double screenWidth, double minSidebarW) {
+    final targetMax = screenWidth >= 1366.0
+        ? math.min(840.0, screenWidth * 0.615)
+        : screenWidth * 0.56;
+    return targetMax.clamp(
+      minSidebarW + 24.0,
+      math.max(minSidebarW + 24.0, screenWidth - 320.0),
+    );
+  }
+
+  double _computeMinTimelineHeight(double screenHeight) {
+    if (screenHeight < 520) return 124.0;
+    return (screenHeight * 0.24).clamp(148.0, 210.0);
+  }
+
+  double _computeMaxTimelineHeight(double screenHeight, double minTimelineH) {
+    if (screenHeight < 520) {
+      return (screenHeight * 0.34).clamp(minTimelineH + 16.0, 175.0);
+    }
+    return (screenHeight * 0.31).clamp(minTimelineH + 36.0, 290.0);
+  }
+
   // --- LANDSCAPE LAYOUT (side-by-side, resizable) ---
   Widget _buildLandscapeLayout(Project project, List<Chunk> chunks, double aspectRatio, AssetVerificationResult verification) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final minTimelineH = (screenHeight < 500)
-        ? 110.0
-        : (screenHeight * 0.24).clamp(160.0, 220.0);
-    final maxTimelineH = (screenHeight < 500)
-        ? (screenHeight * 0.36).clamp(minTimelineH, 180.0)
-        : (screenHeight * 0.31).clamp(minTimelineH + 36.0, 290.0);
-    final effectiveTimelineHeight = _timelineHeight.clamp(minTimelineH, maxTimelineH);
+    final mediaSize = MediaQuery.of(context).size;
+    final screenWidth = mediaSize.width;
+    final screenHeight = mediaSize.height;
+
+    final minTimelineH = _computeMinTimelineHeight(screenHeight);
+    final maxTimelineH = _computeMaxTimelineHeight(screenHeight, minTimelineH);
+    final timelineSpan = math.max(1.0, maxTimelineH - minTimelineH);
+    final effectiveTimelineHeight =
+        minTimelineH + (_timelineResizeFactor.clamp(0.0, 1.0) * timelineSpan);
+
+    final minSidebarWidth = _computeMinSidebarWidth(screenWidth);
+    final maxSidebarWidth = _computeMaxSidebarWidth(screenWidth, minSidebarWidth);
+    final sidebarSpan = math.max(1.0, maxSidebarWidth - minSidebarWidth);
+    final effectiveSidebarWidth =
+        minSidebarWidth + (_sidebarResizeFactor.clamp(0.0, 1.0) * sidebarSpan);
 
     return Row(
       children: [
@@ -189,31 +224,34 @@ extension _EditorScreenLayout on _EditorScreenState {
                 behavior: HitTestBehavior.translucent,
                 onVerticalDragUpdate: (details) {
                   _updateLayout(() {
-                    _timelineHeight = (_effectiveOrCurrent(_timelineHeight, minTimelineH, maxTimelineH) - details.delta.dy).clamp(minTimelineH, maxTimelineH);
+                    final nextH = (effectiveTimelineHeight - details.delta.dy)
+                        .clamp(minTimelineH, maxTimelineH);
+                    _timelineResizeFactor =
+                        ((nextH - minTimelineH) / timelineSpan).clamp(0.0, 1.0);
                   });
                 },
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.resizeUpDown,
-                    child: Container(
-                      height: 12,
-                      color: Colors.transparent,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(height: 1, color: AppTheme.borderGlass),
-                          Container(
-                            width: 24,
-                            height: 3,
-                            decoration: BoxDecoration(
-                              color: AppTheme.mutedText.withValues(alpha: 0.35),
-                              borderRadius: BorderRadius.circular(1.5),
-                            ),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.resizeUpDown,
+                  child: Container(
+                    height: 12,
+                    color: Colors.transparent,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(height: 1, color: AppTheme.borderGlass),
+                        Container(
+                          width: 24,
+                          height: 3,
+                          decoration: BoxDecoration(
+                            color: AppTheme.mutedText.withValues(alpha: 0.35),
+                            borderRadius: BorderRadius.circular(1.5),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
+              ),
               SizedBox(
                 height: effectiveTimelineHeight,
                 child: Consumer(
@@ -232,6 +270,14 @@ extension _EditorScreenLayout on _EditorScreenState {
                       backgroundMusic: bgmConfig,
                       bRollClips: bRollClips,
                       chapters: chapters,
+                      isAudioMuted: _isMuted,
+                      onToggleAudioMute: _toggleMute,
+                      isCaptionsVisible: _captionsVisible,
+                      onToggleCaptionsVisible: () {
+                        _updateLayout(() {
+                          _captionsVisible = !_captionsVisible;
+                        });
+                      },
                     );
                   }
                 ),
@@ -242,71 +288,47 @@ extension _EditorScreenLayout on _EditorScreenState {
         // Right area: Sidebar panel (resizable)
         if (_desktopSidebarOpen) ...[
           // Vertical Resizable Divider (Timeline/Video <-> Sidebar)
-          Builder(
-            builder: (context) {
-              final double screenWidth = MediaQuery.of(context).size.width;
-              final double minSidebarWidth = math.min(528.0, screenWidth * 0.44);
-              final double maxSidebarWidth = math.max(
-                minSidebarWidth,
-                math.min(840.0, screenWidth * 0.615),
-              );
-
-              return GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onHorizontalDragUpdate: (details) {
-                  _updateLayout(() {
-                    _sidebarWidth = (_effectiveOrCurrent(_sidebarWidth, minSidebarWidth, maxSidebarWidth) - details.delta.dx).clamp(minSidebarWidth, maxSidebarWidth);
-                  });
-                },
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.resizeLeftRight,
-                  child: Container(
-                    width: 12,
-                    color: Colors.transparent,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(width: 1, color: AppTheme.borderGlass),
-                        Container(
-                          width: 3,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: AppTheme.mutedText.withValues(alpha: 0.35),
-                            borderRadius: BorderRadius.circular(1.5),
-                          ),
-                        ),
-                      ],
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onHorizontalDragUpdate: (details) {
+              _updateLayout(() {
+                final nextW = (effectiveSidebarWidth - details.delta.dx)
+                    .clamp(minSidebarWidth, maxSidebarWidth);
+                _sidebarResizeFactor =
+                    ((nextW - minSidebarWidth) / sidebarSpan).clamp(0.0, 1.0);
+              });
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.resizeLeftRight,
+              child: Container(
+                width: 12,
+                color: Colors.transparent,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(width: 1, color: AppTheme.borderGlass),
+                    Container(
+                      width: 3,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: AppTheme.mutedText.withValues(alpha: 0.35),
+                        borderRadius: BorderRadius.circular(1.5),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              );
-            }
+              ),
+            ),
           ),
-          Builder(
-            builder: (context) {
-              final double screenWidth = MediaQuery.of(context).size.width;
-              final double minSidebarWidth = math.min(528.0, screenWidth * 0.44);
-              final double maxSidebarWidth = math.max(
-                minSidebarWidth,
-                math.min(840.0, screenWidth * 0.615),
-              );
-              final double effectiveSidebarWidth = _sidebarWidth.clamp(minSidebarWidth, maxSidebarWidth);
-
-              return SizedBox(
-                width: effectiveSidebarWidth,
-                child: EditorSidebar(
-                  onRetranscribe: executeRetranscribe,
-                ),
-              );
-            }
+          SizedBox(
+            width: effectiveSidebarWidth,
+            child: EditorSidebar(
+              onRetranscribe: executeRetranscribe,
+            ),
           ),
         ],
       ],
     );
-  }
-
-  double _effectiveOrCurrent(double value, double minVal, double maxVal) {
-    return value.clamp(minVal, maxVal);
   }
 
   // --- PORTRAIT LAYOUT (embedded, resizable, no overlays) ---
@@ -315,6 +337,20 @@ extension _EditorScreenLayout on _EditorScreenState {
       builder: (context, ref, child) {
         final activeTab = ref.watch(editorProvider.select((s) => s.activeTab));
         final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+        final screenHeight = MediaQuery.of(context).size.height;
+        final minTimelineH = (screenHeight < 600)
+            ? 120.0
+            : (screenHeight * 0.22).clamp(148.0, 184.0);
+        final maxTimelineH = (screenHeight * 0.30).clamp(minTimelineH + 30.0, 238.0);
+        final timelineSpan = math.max(1.0, maxTimelineH - minTimelineH);
+        final effectiveTimelineH =
+            minTimelineH + (_timelineResizeFactor.clamp(0.0, 1.0) * timelineSpan);
+
+        final minPortraitH = (screenHeight * 0.25).clamp(160.0, 220.0);
+        final maxPortraitH = (screenHeight * 0.42).clamp(minPortraitH + 40.0, 340.0);
+        final portraitSpan = math.max(1.0, maxPortraitH - minPortraitH);
+        final effectivePortraitH =
+            minPortraitH + (_portraitSidebarResizeFactor.clamp(0.0, 1.0) * portraitSpan);
 
         return Column(
           children: [
@@ -324,50 +360,42 @@ extension _EditorScreenLayout on _EditorScreenState {
             ),
             if (!isKeyboardOpen) ...[
               // Horizontal Divider 1 (Video <-> Timeline)
-              Builder(
-                builder: (context) {
-                  final screenHeight = MediaQuery.of(context).size.height;
-                  final minTimelineH = (screenHeight < 600)
-                      ? 120.0
-                      : (screenHeight * 0.22).clamp(150.0, 184.0);
-                  final maxTimelineH = (screenHeight * 0.30).clamp(minTimelineH + 30.0, 238.0);
-
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onVerticalDragUpdate: (details) {
-                          _updateLayout(() {
-                            _timelineHeight = (_effectiveOrCurrent(_timelineHeight, minTimelineH, maxTimelineH) - details.delta.dy).clamp(minTimelineH, maxTimelineH);
-                          });
-                        },
-                        child: MouseRegion(
-                          cursor: SystemMouseCursors.resizeUpDown,
-                          child: Container(
-                            height: 12,
-                            color: Colors.transparent,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Container(height: 1, color: AppTheme.borderGlass),
-                                Container(
-                                  width: 24,
-                                  height: 3,
-                                  decoration: BoxDecoration(
-                                    color: AppTheme.mutedText.withValues(alpha: 0.35),
-                                    borderRadius: BorderRadius.circular(1.5),
-                                  ),
-                                ),
-                              ],
-                            ),
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onVerticalDragUpdate: (details) {
+                  _updateLayout(() {
+                    final nextH = (effectiveTimelineH - details.delta.dy)
+                        .clamp(minTimelineH, maxTimelineH);
+                    _timelineResizeFactor =
+                        ((nextH - minTimelineH) / timelineSpan).clamp(0.0, 1.0);
+                  });
+                },
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.resizeUpDown,
+                  child: Container(
+                    height: 12,
+                    color: Colors.transparent,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(height: 1, color: AppTheme.borderGlass),
+                        Container(
+                          width: 24,
+                          height: 3,
+                          decoration: BoxDecoration(
+                            color: AppTheme.mutedText.withValues(alpha: 0.35),
+                            borderRadius: BorderRadius.circular(1.5),
                           ),
                         ),
-                      ),
-                      // Timeline
-                      SizedBox(
-                        height: _timelineHeight.clamp(minTimelineH, maxTimelineH),
-                        child: Consumer(
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Timeline
+              SizedBox(
+                height: effectiveTimelineH,
+                child: Consumer(
                   builder: (context, ref, child) {
                     final currentTime = ref.watch(editorProvider.select((s) => s.currentTime));
                     final bgmConfig = ref.watch(editorProvider.select((s) => s.backgroundMusicConfig));
@@ -383,13 +411,17 @@ extension _EditorScreenLayout on _EditorScreenState {
                       backgroundMusic: bgmConfig,
                       bRollClips: bRollClips,
                       chapters: chapters,
+                      isAudioMuted: _isMuted,
+                      onToggleAudioMute: _toggleMute,
+                      isCaptionsVisible: _captionsVisible,
+                      onToggleCaptionsVisible: () {
+                        _updateLayout(() {
+                          _captionsVisible = !_captionsVisible;
+                        });
+                      },
                     );
                   }
                 ),
-              ),
-                    ],
-                  );
-                },
               ),
             ],
             // Embedded Sidebar (only if open!)
@@ -399,11 +431,11 @@ extension _EditorScreenLayout on _EditorScreenState {
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onVerticalDragUpdate: (details) {
-                    final screenHeight = MediaQuery.of(context).size.height;
-                    final minPortraitH = (screenHeight * 0.25).clamp(160.0, 220.0);
-                    final maxPortraitH = (screenHeight * 0.42).clamp(minPortraitH + 40.0, 340.0);
                     _updateLayout(() {
-                      _portraitSidebarHeight = (_effectiveOrCurrent(_portraitSidebarHeight, minPortraitH, maxPortraitH) - details.delta.dy).clamp(minPortraitH, maxPortraitH);
+                      final nextH = (effectivePortraitH - details.delta.dy)
+                          .clamp(minPortraitH, maxPortraitH);
+                      _portraitSidebarResizeFactor =
+                          ((nextH - minPortraitH) / portraitSpan).clamp(0.0, 1.0);
                     });
                   },
                   child: MouseRegion(
@@ -431,13 +463,10 @@ extension _EditorScreenLayout on _EditorScreenState {
               ],
               Builder(
                 builder: (context) {
-                  final screenHeight = MediaQuery.of(context).size.height;
-                  final minPortraitH = (screenHeight * 0.25).clamp(160.0, 220.0);
-                  final maxPortraitH = (screenHeight * 0.42).clamp(minPortraitH + 40.0, 340.0);
                   return SizedBox(
                     height: isKeyboardOpen
-                        ? _portraitSidebarHeight.clamp(120.0, 200.0)
-                        : _portraitSidebarHeight.clamp(minPortraitH, maxPortraitH),
+                        ? effectivePortraitH.clamp(120.0, 200.0)
+                        : effectivePortraitH,
                     child: Container(
                   decoration: AppTheme.glassDecoration(
                     color: AppTheme.cardBg.withValues(alpha: 0.55),
@@ -579,7 +608,7 @@ extension _EditorScreenLayout on _EditorScreenState {
                                             config: retentionConfig,
                                             scale: 1.2,
                                           ),
-                                          if (config != null)
+                                          if (config != null && _captionsVisible)
                                             CaptionOverlay(
                                               chunks: chunks,
                                               currentTime: currentTime,

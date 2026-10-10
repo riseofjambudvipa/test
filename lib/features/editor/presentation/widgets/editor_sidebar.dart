@@ -42,7 +42,15 @@ class EditorSidebar extends ConsumerWidget {
     final isDesktop = isLandscape || MediaQuery.of(context).size.width >= 600;
 
     return LayoutBuilder(builder: (context, constraints) {
-      final isNarrow = constraints.maxWidth < 300;
+      final maxW = constraints.maxWidth;
+      final isNarrow = maxW < 340;
+      final double tabHPad = maxW >= 520
+          ? 18.0
+          : (maxW >= 360
+              ? ((maxW - 360.0) / 160.0 * 10.0 + 8.0).clamp(8.0, 18.0)
+              : 7.0);
+      final double tabFontSize = maxW >= 480 ? 13.0 : (maxW >= 360 ? 11.5 : 10.5);
+      final double tabIconSize = maxW >= 480 ? 18.0 : (maxW >= 360 ? 16.0 : 14.0);
       return RepaintBoundary(
           child: Container(
         decoration: AppTheme.glassDecoration(
@@ -80,7 +88,9 @@ class EditorSidebar extends ConsumerWidget {
                             ? 'CC'
                             : (l10n?.editorTabCaptions ?? 'Captions'),
                         currentTab: currentTab,
-                        isNarrow: isNarrow,
+                        horizontalPadding: tabHPad,
+                        fontSize: tabFontSize,
+                        iconSize: tabIconSize,
                       ),
                       _TabButton(
                         tabId: EditorTab.style,
@@ -89,7 +99,9 @@ class EditorSidebar extends ConsumerWidget {
                             ? 'Style'
                             : (l10n?.editorTabStyles ?? 'Styles'),
                         currentTab: currentTab,
-                        isNarrow: isNarrow,
+                        horizontalPadding: tabHPad,
+                        fontSize: tabFontSize,
+                        iconSize: tabIconSize,
                       ),
                       _TabButton(
                         tabId: EditorTab.clipping,
@@ -98,24 +110,28 @@ class EditorSidebar extends ConsumerWidget {
                             ? (l10n?.editorTabClips ?? 'Clips')
                             : (l10n?.editorTabShorts ?? 'Shorts'),
                         currentTab: currentTab,
-                        isNarrow: isNarrow,
+                        horizontalPadding: tabHPad,
+                        fontSize: tabFontSize,
+                        iconSize: tabIconSize,
                       ),
                       _TabButton(
                         tabId: EditorTab.transcription,
                         icon: Icons.translate_outlined,
-                        label: isNarrow ? 'STT' : 'STT',
+                        label: 'STT',
                         currentTab: currentTab,
-                        isNarrow: isNarrow,
+                        horizontalPadding: tabHPad,
+                        fontSize: tabFontSize,
+                        iconSize: tabIconSize,
                       ),
                       if (kDebugMode)
                         _TabButton(
                           tabId: EditorTab.debug,
                           icon: Icons.terminal_outlined,
-                          label: isNarrow
-                              ? 'Logs'
-                              : (l10n?.editorTabDebug ?? 'Logs'),
+                          label: l10n?.editorTabDebug ?? 'Logs',
                           currentTab: currentTab,
-                          isNarrow: isNarrow,
+                          horizontalPadding: tabHPad,
+                          fontSize: tabFontSize,
+                          iconSize: tabIconSize,
                         ),
                     ],
                   ),
@@ -178,14 +194,18 @@ class _TabButton extends ConsumerStatefulWidget {
   final IconData icon;
   final String label;
   final EditorTab currentTab;
-  final bool isNarrow;
+  final double horizontalPadding;
+  final double fontSize;
+  final double iconSize;
 
   const _TabButton({
     required this.tabId,
     required this.icon,
     required this.label,
     required this.currentTab,
-    this.isNarrow = false,
+    this.horizontalPadding = 18.0,
+    this.fontSize = 13.0,
+    this.iconSize = 18.0,
   });
 
   @override
@@ -215,7 +235,7 @@ class _TabButtonState extends ConsumerState<_TabButton> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 180),
             padding: EdgeInsets.symmetric(
-              horizontal: widget.isNarrow ? 12 : 20,
+              horizontal: widget.horizontalPadding,
               vertical: 12,
             ),
             decoration: AppTheme.glassDecoration(
@@ -241,16 +261,16 @@ class _TabButtonState extends ConsumerState<_TabButton> {
               children: [
                 Icon(
                   widget.icon,
-                  size: 18,
+                  size: widget.iconSize,
                   color:
                       isActive ? AppTheme.accentOrange : AppTheme.secondaryText,
                 ),
                 if (widget.label.isNotEmpty) ...[
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 5),
                   Text(
                     widget.label,
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: widget.fontSize,
                       fontWeight: FontWeight.w900,
                       color: isActive
                           ? AppTheme.primaryText

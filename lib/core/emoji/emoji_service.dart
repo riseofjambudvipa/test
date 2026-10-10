@@ -127,7 +127,11 @@ class EmojiService {
     if (fileMap == null) return false;
     // Strip any directory path prefix (e.g. "618x618/") from the mapping before checking disk cache
     final cleanFilename = p.basename(filename).toLowerCase();
-    return fileMap.containsKey(cleanFilename);
+    if (fileMap.containsKey(cleanFilename)) return true;
+    final nameWithoutExt = p.basenameWithoutExtension(cleanFilename);
+    return fileMap.containsKey('$nameWithoutExt.png') ||
+        fileMap.containsKey('$nameWithoutExt.gif') ||
+        fileMap.containsKey('$nameWithoutExt.webp');
   }
 
   static Future<Map<String, Map<String, String>>> _scanExistingFilesIsolate(String assetsBaseDir) async {
@@ -678,7 +682,13 @@ class EmojiService {
     // Look up the relative subpath (e.g. 'Smileys & Emotion/1f600.png') from the scan cache.
     // This handles the category-subfolder layout introduced after the emoji reorganization.
     final fileMap = _existingPackFiles[packId];
-    final relSubPath = fileMap?[cleanFilename.toLowerCase()];
+    var relSubPath = fileMap?[cleanFilename.toLowerCase()];
+    if (relSubPath == null && fileMap != null) {
+      final nameWithoutExt = p.basenameWithoutExtension(cleanFilename).toLowerCase();
+      relSubPath = fileMap['$nameWithoutExt.png'] ??
+          fileMap['$nameWithoutExt.gif'] ??
+          fileMap['$nameWithoutExt.webp'];
+    }
 
     String targetPath;
     if (relSubPath != null) {

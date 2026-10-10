@@ -67,18 +67,24 @@ class EditorVideoControls extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Seek bar only in fullscreen mode (in editor mode, the main timeline below is the scrubber)
-          if (isFullscreen)
-            SliderTheme(
-              data: AppTheme.premiumSliderTheme(context),
+          // Video playback seek bar (always visible across editor and fullscreen modes)
+          SizedBox(
+            height: 20,
+            child: SliderTheme(
+              data: AppTheme.premiumSliderTheme(context).copyWith(
+                trackHeight: 3.0,
+                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5.5),
+                overlayShape: const RoundSliderOverlayShape(overlayRadius: 10.0),
+              ),
               child: Slider(
-                value: currentTime.clamp(0.0, project.duration),
+                value: currentTime.clamp(0.0, project.duration > 0 ? project.duration : 1.0),
                 min: 0,
-                max: project.duration > 0 ? project.duration : 1,
+                max: project.duration > 0 ? project.duration : 1.0,
                 onChanged: onSeek,
                 onChangeEnd: onSeekEnd,
               ),
             ),
+          ),
           // Controls row
           LayoutBuilder(
             builder: (context, constraints) {

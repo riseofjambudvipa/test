@@ -16,6 +16,7 @@ void main() {
     late String mockAssetsDir;
 
     setUp(() {
+      EmojiService.instance.resetForTesting();
       // Locate the mock JSON file inside the test directory
       mockMetadataPath = 'test/mock_metadata.json';
       
@@ -41,8 +42,8 @@ void main() {
         if (pack == 'googleAnimated') {
           final catDir = Directory(p.join(mockAssetsDir, pack, 'Activities'))
             ..createSync(recursive: true);
-          File(p.join(catDir.path, '1f381.gif')).writeAsStringSync('dummy_anim');
-          File(p.join(catDir.path, '1f389.gif')).writeAsStringSync('dummy_anim_2');
+          File(p.join(catDir.path, '1f381.png')).writeAsStringSync('dummy_anim');
+          File(p.join(catDir.path, '1f389.png')).writeAsStringSync('dummy_anim_2');
         } else if (pack == 'googleNonAnimated') {
           final catDir = Directory(p.join(mockAssetsDir, pack, 'Activities'))
             ..createSync(recursive: true);
@@ -125,11 +126,11 @@ void main() {
       // 1. Google Animated path resolution
       final animAsset = service.getAssetPath(presentEmoji, 'googleAnimated');
       expect(animAsset, isNotNull);
-      expect(animAsset!.filename, '1f381.gif');
+      expect(animAsset!.filename, '1f381.png');
       // Path uses the mapped pack folder (google_noto_emojis_animated_pack/512x512)
       // and includes the category subfolder (Activities/) after reorganisation.
       final animPath = animAsset.absolutePath.replaceAll('\\', '/');
-      expect(animPath, contains('1f381.gif'));
+      expect(animPath, contains('1f381.png'));
       expect(animPath, contains('Activities'));
 
       // 2. Google Non-Animated path resolution

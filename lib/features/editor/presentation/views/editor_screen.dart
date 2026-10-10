@@ -108,10 +108,11 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
   // Mobile sidebar bottom sheet state
   bool _mobileSidebarOpen = false;
 
-  // Draggable/Resizable panel dimensions
-  double _sidebarWidth = 528.0;
-  double _timelineHeight = 184.0;
-  double _portraitSidebarHeight = 240.0;
+  // Normalized draggable panel resize factors (0.0 = min default, 1.0 = max)
+  double _sidebarResizeFactor = 0.0;
+  double _timelineResizeFactor = 0.0;
+  double _portraitSidebarResizeFactor = 0.35;
+  bool _captionsVisible = true;
 
   @override
   void initState() {

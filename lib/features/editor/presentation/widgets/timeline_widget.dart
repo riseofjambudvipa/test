@@ -32,6 +32,10 @@ class TimelineWidget extends ConsumerStatefulWidget {
   final BackgroundMusicConfig? backgroundMusic;
   final List<BRollClip>? bRollClips;
   final List<VideoChapter>? chapters;
+  final bool? isAudioMuted;
+  final VoidCallback? onToggleAudioMute;
+  final bool? isCaptionsVisible;
+  final VoidCallback? onToggleCaptionsVisible;
 
   const TimelineWidget({
     super.key,
@@ -44,6 +48,10 @@ class TimelineWidget extends ConsumerStatefulWidget {
     this.backgroundMusic,
     this.bRollClips,
     this.chapters,
+    this.isAudioMuted,
+    this.onToggleAudioMute,
+    this.isCaptionsVisible,
+    this.onToggleCaptionsVisible,
   });
 
   @override
@@ -62,6 +70,8 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget>
   double _baseZoomLevel = 3.0;
   Offset? _lastFocalPoint;
   int _waveformLoadCounter = 0;
+  bool _localAudioMuted = false;
+  bool _localCaptionsVisible = true;
 
   double _getPixelsPerSecond(double width) {
     return 100.0 * _zoomLevel;
@@ -624,6 +634,8 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget>
   @override
   Widget build(BuildContext context) {
     final theme = ref.watch(themeProvider);
+    final effectiveAudioMuted = widget.isAudioMuted ?? _localAudioMuted;
+    final effectiveCaptionsVisible = widget.isCaptionsVisible ?? _localCaptionsVisible;
     double activeDuration = 0.0;
     if (widget.segments != null && widget.segments!.isNotEmpty) {
       for (final seg in widget.segments!) {
@@ -636,14 +648,32 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget>
       if (activeDuration <= 0.0) activeDuration = widget.duration;
     }
 
-    final durationString =
+    final fullDurationString =
         '${widget.currentTime.toStringAsFixed(3)}s / ${widget.duration.toStringAsFixed(3)}s (Active: ${activeDuration.toStringAsFixed(3)}s)';
+    final conciseDurationString =
+        '${widget.currentTime.toStringAsFixed(2)}s / ${widget.duration.toStringAsFixed(2)}s';
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
         final height = constraints.maxHeight;
-        final pixelsPerSecond = _getPixelsPerSecond(width);
+        final showTrackHeaders = width >= 400 && height >= 85;
+        final trackHeaderWidth = showTrackHeaders ? (width >= 720 ? 78.0 : 62.0) : 0.0;
+        final canvasAreaWidth = math.max(100.0, width - trackHeaderWidth);
+        final pixelsPerSecond = _getPixelsPerSecond(canvasAreaWidth);
+        final displayDurationText = width >= 600 ? fullDurationString : conciseDurationString;
+
+        Widget buildZoom() => TimelineZoomControls(
+              zoomLevel: _zoomLevel,
+              timelineWidth: canvasAreaWidth,
+              onZoomChanged: (newZoom) => _setZoomLevel(newZoom, canvasAreaWidth),
+              onZoomIn: () => _setZoomLevel(_zoomLevel + 0.5, canvasAreaWidth),
+              onZoomOut: () => _setZoomLevel(_zoomLevel - 0.5, canvasAreaWidth),
+              onZoomFit: () => setState(() {
+                _zoomLevel = _getFitZoomLevel(canvasAreaWidth);
+                _scrollOffset = 0.0;
+              }),
+            );
 
         return Container(
           height: height,
@@ -664,119 +694,73 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget>
               // Zoom Controller & Timing Indicator Bar
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: width >= 600 ? 16.0 : 8.0,
-                  vertical: height < 110 ? 2.0 : (width >= 600 ? 8.0 : 4.0),
+                  horizontal: width >= 600 ? 12.0 : 8.0,
+                  vertical: height < 110 ? 2.0 : 4.0,
                 ),
-                child: height < 110
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              durationString,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    fontFamily: 'monospace',
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 10,
-                                  ),
+                child: height < 105
+                    ? Text(
+                        displayDurationText,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontFamily: 'monospace',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
                             ),
-                          ),
-                        ],
                       )
-                    : (width >= 1080
+                    : (width >= 820 && height < 155
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
                                 child: Text(
-                                  durationString,
+                                  displayDurationText,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                         fontFamily: 'monospace',
                                         fontWeight: FontWeight.bold,
+                                        fontSize: width >= 1050 ? 12 : 11,
                                       ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 6),
                               TimelineTrimActionButtons(
-                                isCompact: width < 750,
+                                isCompact: width < 1050,
                                 onSplit: _splitClip,
                                 onToggleExclusion: _toggleExclusion,
                                 onRippleDelete: _rippleDeleteGaps,
                                 onReset: _resetSplits,
                               ),
-                              const SizedBox(width: 8),
-                              TimelineZoomControls(
-                                zoomLevel: _zoomLevel,
-                                timelineWidth: width,
-                                onZoomChanged: (newZoom) =>
-                                    _setZoomLevel(newZoom, width),
-                                onZoomIn: () =>
-                                    _setZoomLevel(_zoomLevel + 0.5, width),
-                                onZoomOut: () =>
-                                    _setZoomLevel(_zoomLevel - 0.5, width),
-                                onZoomFit: () {
-                                  setState(() {
-                                    _zoomLevel = _getFitZoomLevel(width);
-                                    _scrollOffset = 0.0;
-                                  });
-                                },
-                              ),
+                              const SizedBox(width: 6),
+                              buildZoom(),
                             ],
                           )
                         : Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      durationString,
+                                      displayDurationText,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                             fontFamily: 'monospace',
                                             fontWeight: FontWeight.bold,
-                                            fontSize: width >= 600 ? 14 : 11,
+                                            fontSize: 11,
                                           ),
                                     ),
                                   ),
-                                  if (width >= 600)
-                                    TimelineZoomControls(
-                                      zoomLevel: _zoomLevel,
-                                      timelineWidth: width,
-                                      onZoomChanged: (newZoom) =>
-                                          _setZoomLevel(newZoom, width),
-                                      onZoomIn: () =>
-                                          _setZoomLevel(_zoomLevel + 0.5, width),
-                                      onZoomOut: () =>
-                                          _setZoomLevel(_zoomLevel - 0.5, width),
-                                      onZoomFit: () {
-                                        setState(() {
-                                          _zoomLevel = _getFitZoomLevel(width);
-                                          _scrollOffset = 0.0;
-                                        });
-                                      },
-                                    ),
+                                  const SizedBox(width: 6),
+                                  buildZoom(),
                                 ],
                               ),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 3),
                               TimelineTrimActionButtons(
-                                isCompact: width < 550,
+                                isCompact: width < 600,
                                 onSplit: _splitClip,
                                 onToggleExclusion: _toggleExclusion,
                                 onRippleDelete: _rippleDeleteGaps,
@@ -786,78 +770,108 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget>
                           )),
               ),
 
-              // Interactive Canvas area with mouse wheel horizontal scrolling
+              // Pinned Track Headers + Interactive Canvas Area
               Expanded(
                 child: LayoutBuilder(
-                  builder: (context, canvasConstraints) {
-                    final canvasWidth = canvasConstraints.maxWidth;
-                    final canvasHeight = canvasConstraints.maxHeight;
+                  builder: (context, rowConstraints) {
+                    final totalRowHeight = rowConstraints.maxHeight;
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (showTrackHeaders)
+                          TimelineTrackHeaderColumn(
+                            width: trackHeaderWidth,
+                            canvasHeight: totalRowHeight,
+                            isAudioMuted: effectiveAudioMuted,
+                            isCaptionsVisible: effectiveCaptionsVisible,
+                            backgroundMusic: widget.backgroundMusic,
+                            onToggleAudioMute: _toggleAudioMute,
+                            onToggleCaptionsVisible: _toggleCaptionsVisible,
+                            onAddCaptionAtPlayhead: () => ref
+                                .read(editorProvider.notifier)
+                                .addCaptionAtPlayhead(atTime: widget.currentTime),
+                            onOpenAudioManager: () =>
+                                _openAudioManager(effectiveAudioMuted),
+                          ),
+                        Expanded(
+                          child: LayoutBuilder(
+                            builder: (context, canvasConstraints) {
+                              final canvasWidth = canvasConstraints.maxWidth;
+                              final canvasHeight = canvasConstraints.maxHeight;
 
-                    return MouseRegion(
-                      cursor: _cursor,
-                      onHover: (event) =>
-                          _handleHover(event, canvasWidth, canvasHeight),
-                      onExit: (event) {
-                        setState(() {
-                          _hoveredWordId = null;
-                        });
-                      },
-                      child: Listener(
-                        onPointerSignal: (event) {
-                          if (event is PointerScrollEvent) {
-                            _handlePointerScroll(event, canvasWidth);
-                          }
-                        },
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTapUp: (details) =>
-                              _handleTap(details, canvasWidth, canvasHeight),
-                          onScaleStart: (details) => _handleScaleStart(
-                              details, canvasWidth, canvasHeight),
-                          onScaleUpdate: (details) => _handleScaleUpdate(
-                              details, canvasWidth, canvasHeight),
-                          onScaleEnd: _handleScaleEnd,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              RepaintBoundary(
-                                child: CustomPaint(
-                                  size: Size(canvasWidth, canvasHeight),
-                                  painter: TimelineWaveformPainter(
-                                    duration: widget.duration,
-                                    pixelsPerSecond: pixelsPerSecond,
-                                    scrollOffset: _scrollOffset,
-                                    waveformAmplitudes:
-                                        _waveformAmplitudes ?? const [],
-                                    trimStart: widget.trimStart,
-                                    trimEnd: widget.trimEnd,
-                                    theme: theme,
-                                    segments: widget.segments,
-                                    backgroundMusic: widget.backgroundMusic,
-                                    bRollClips: widget.bRollClips,
-                                    words: widget.words,
-                                    chapters: widget.chapters,
+                              return MouseRegion(
+                                cursor: _cursor,
+                                onHover: (event) =>
+                                    _handleHover(event, canvasWidth, canvasHeight),
+                                onExit: (event) {
+                                  setState(() {
+                                    _hoveredWordId = null;
+                                  });
+                                },
+                                child: Listener(
+                                  onPointerSignal: (event) {
+                                    if (event is PointerScrollEvent) {
+                                      _handlePointerScroll(event, canvasWidth);
+                                    }
+                                  },
+                                  child: GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTapUp: (details) =>
+                                        _handleTap(details, canvasWidth, canvasHeight),
+                                    onScaleStart: (details) => _handleScaleStart(
+                                        details, canvasWidth, canvasHeight),
+                                    onScaleUpdate: (details) => _handleScaleUpdate(
+                                        details, canvasWidth, canvasHeight),
+                                    onScaleEnd: _handleScaleEnd,
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        RepaintBoundary(
+                                          child: CustomPaint(
+                                            size: Size(canvasWidth, canvasHeight),
+                                            painter: TimelineWaveformPainter(
+                                              duration: widget.duration,
+                                              pixelsPerSecond: pixelsPerSecond,
+                                              scrollOffset: _scrollOffset,
+                                              waveformAmplitudes:
+                                                  _waveformAmplitudes ?? const [],
+                                              trimStart: widget.trimStart,
+                                              trimEnd: widget.trimEnd,
+                                              theme: theme,
+                                              segments: widget.segments,
+                                              backgroundMusic: widget.backgroundMusic,
+                                              bRollClips: widget.bRollClips,
+                                              words: widget.words,
+                                              chapters: widget.chapters,
+                                              isAudioMuted: effectiveAudioMuted,
+                                              isCaptionsVisible: effectiveCaptionsVisible,
+                                            ),
+                                          ),
+                                        ),
+                                        CustomPaint(
+                                          size: Size(canvasWidth, canvasHeight),
+                                          painter: TimelinePlayheadPainter(
+                                            words: widget.words,
+                                            currentTime: widget.currentTime,
+                                            duration: widget.duration,
+                                            pixelsPerSecond: pixelsPerSecond,
+                                            scrollOffset: _scrollOffset,
+                                            theme: theme,
+                                            hoveredWordId: _hoveredWordId,
+                                            wordsAreOrdered: _wordsAreOrdered,
+                                            segments: widget.segments,
+                                            isCaptionsVisible: effectiveCaptionsVisible,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              CustomPaint(
-                                size: Size(canvasWidth, canvasHeight),
-                                painter: TimelinePlayheadPainter(
-                                  words: widget.words,
-                                  currentTime: widget.currentTime,
-                                  duration: widget.duration,
-                                  pixelsPerSecond: pixelsPerSecond,
-                                  scrollOffset: _scrollOffset,
-                                  theme: theme,
-                                  hoveredWordId: _hoveredWordId,
-                                  wordsAreOrdered: _wordsAreOrdered,
-                                  segments: widget.segments,
-                                ),
-                              ),
-                            ],
+                              );
+                            },
                           ),
                         ),
-                      ),
+                      ],
                     );
                   },
                 ),
@@ -868,7 +882,7 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget>
                 width: width,
                 timelineHeight: height,
                 scrollOffset: _scrollOffset,
-                maxScroll: (widget.duration * pixelsPerSecond) - width,
+                maxScroll: (widget.duration * pixelsPerSecond) - canvasAreaWidth,
                 totalContentWidth: widget.duration * pixelsPerSecond,
                 onScrollOffsetChanged: (newOffset) {
                   setState(() {
@@ -883,6 +897,33 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget>
     );
   }
 
+  void _toggleAudioMute() {
+    if (widget.onToggleAudioMute != null) {
+      widget.onToggleAudioMute!();
+    } else {
+      setState(() => _localAudioMuted = !_localAudioMuted);
+    }
+  }
+
+  void _toggleCaptionsVisible() {
+    if (widget.onToggleCaptionsVisible != null) {
+      widget.onToggleCaptionsVisible!();
+    } else {
+      setState(() => _localCaptionsVisible = !_localCaptionsVisible);
+    }
+  }
+
+  void _openAudioManager(bool effectiveAudioMuted) {
+    showTimelineAudioManagerDialog(
+      context: context,
+      isAudioMuted: effectiveAudioMuted,
+      onToggleAudioMute: _toggleAudioMute,
+      currentConfig: widget.backgroundMusic ?? const BackgroundMusicConfig(),
+      onUpdateMusicConfig: (newConfig) =>
+          ref.read(editorProvider.notifier).setBackgroundMusicConfig(newConfig),
+    );
+  }
+
   void _splitClip() {
     final l10n = AppLocalizations.of(context);
     final curr = widget.currentTime;
@@ -890,20 +931,14 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget>
       ref.read(editorProvider.notifier).splitSegmentAtTime(curr);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            l10n?.splitTimelineAt(curr.toStringAsFixed(2)) ??
-                'Split timeline at ${curr.toStringAsFixed(2)}s.',
-          ),
+          content: Text(l10n?.splitTimelineAt(curr.toStringAsFixed(2)) ?? 'Split timeline at ${curr.toStringAsFixed(2)}s.'),
           duration: const Duration(seconds: 2),
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            l10n?.splitTimelineError ??
-                'Playhead must be inside the active region to split.',
-          ),
+          content: Text(l10n?.splitTimelineError ?? 'Playhead must be inside the active region to split.'),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -912,15 +947,10 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget>
 
   void _toggleExclusion() {
     final l10n = AppLocalizations.of(context);
-    ref
-        .read(editorProvider.notifier)
-        .toggleSegmentDeleted(widget.currentTime);
+    ref.read(editorProvider.notifier).toggleSegmentDeleted(widget.currentTime);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          l10n?.exclusionToggled ??
-              'Toggled segment exclusion under playhead.',
-        ),
+        content: Text(l10n?.exclusionToggled ?? 'Toggled segment exclusion under playhead.'),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -931,10 +961,7 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget>
     ref.read(editorProvider.notifier).resetSegments();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          l10n?.splitsReset ??
-              'Reset all timeline splits and exclusions.',
-        ),
+        content: Text(l10n?.splitsReset ?? 'Reset all timeline splits and exclusions.'),
         duration: const Duration(seconds: 2),
       ),
     );
