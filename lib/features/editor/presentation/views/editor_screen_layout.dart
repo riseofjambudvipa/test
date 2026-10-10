@@ -167,8 +167,12 @@ extension _EditorScreenLayout on _EditorScreenState {
   // --- LANDSCAPE LAYOUT (side-by-side, resizable) ---
   Widget _buildLandscapeLayout(Project project, List<Chunk> chunks, double aspectRatio, AssetVerificationResult verification) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final minTimelineH = (screenHeight < 600) ? 120.0 : 150.0;
-    final maxTimelineH = (screenHeight * 0.42).clamp(minTimelineH, 380.0);
+    final minTimelineH = (screenHeight < 500)
+        ? 110.0
+        : (screenHeight * 0.24).clamp(160.0, 220.0);
+    final maxTimelineH = (screenHeight < 500)
+        ? (screenHeight * 0.36).clamp(minTimelineH, 180.0)
+        : (screenHeight * 0.31).clamp(minTimelineH + 36.0, 290.0);
     final effectiveTimelineHeight = _timelineHeight.clamp(minTimelineH, maxTimelineH);
 
     return Row(
@@ -185,7 +189,7 @@ extension _EditorScreenLayout on _EditorScreenState {
                 behavior: HitTestBehavior.translucent,
                 onVerticalDragUpdate: (details) {
                   _updateLayout(() {
-                    _timelineHeight = (_timelineHeight - details.delta.dy).clamp(minTimelineH, maxTimelineH);
+                    _timelineHeight = (_effectiveOrCurrent(_timelineHeight, minTimelineH, maxTimelineH) - details.delta.dy).clamp(minTimelineH, maxTimelineH);
                   });
                 },
                   child: MouseRegion(
@@ -241,14 +245,17 @@ extension _EditorScreenLayout on _EditorScreenState {
           Builder(
             builder: (context) {
               final double screenWidth = MediaQuery.of(context).size.width;
-              final double minSidebarWidth = math.min(400.0, screenWidth * 0.5);
-              final double maxSidebarWidth = math.max(minSidebarWidth, screenWidth - 300.0);
+              final double minSidebarWidth = math.min(528.0, screenWidth * 0.44);
+              final double maxSidebarWidth = math.max(
+                minSidebarWidth,
+                math.min(840.0, screenWidth * 0.615),
+              );
 
               return GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onHorizontalDragUpdate: (details) {
                   _updateLayout(() {
-                    _sidebarWidth = (_sidebarWidth - details.delta.dx).clamp(minSidebarWidth, maxSidebarWidth);
+                    _sidebarWidth = (_effectiveOrCurrent(_sidebarWidth, minSidebarWidth, maxSidebarWidth) - details.delta.dx).clamp(minSidebarWidth, maxSidebarWidth);
                   });
                 },
                 child: MouseRegion(
@@ -278,8 +285,11 @@ extension _EditorScreenLayout on _EditorScreenState {
           Builder(
             builder: (context) {
               final double screenWidth = MediaQuery.of(context).size.width;
-              final double minSidebarWidth = math.min(400.0, screenWidth * 0.5);
-              final double maxSidebarWidth = math.max(minSidebarWidth, screenWidth - 300.0);
+              final double minSidebarWidth = math.min(528.0, screenWidth * 0.44);
+              final double maxSidebarWidth = math.max(
+                minSidebarWidth,
+                math.min(840.0, screenWidth * 0.615),
+              );
               final double effectiveSidebarWidth = _sidebarWidth.clamp(minSidebarWidth, maxSidebarWidth);
 
               return SizedBox(
@@ -293,6 +303,10 @@ extension _EditorScreenLayout on _EditorScreenState {
         ],
       ],
     );
+  }
+
+  double _effectiveOrCurrent(double value, double minVal, double maxVal) {
+    return value.clamp(minVal, maxVal);
   }
 
   // --- PORTRAIT LAYOUT (embedded, resizable, no overlays) ---
@@ -313,8 +327,10 @@ extension _EditorScreenLayout on _EditorScreenState {
               Builder(
                 builder: (context) {
                   final screenHeight = MediaQuery.of(context).size.height;
-                  final minTimelineH = (screenHeight < 600) ? 120.0 : 150.0;
-                  final maxTimelineH = (screenHeight * 0.40).clamp(minTimelineH, 360.0);
+                  final minTimelineH = (screenHeight < 600)
+                      ? 120.0
+                      : (screenHeight * 0.22).clamp(150.0, 184.0);
+                  final maxTimelineH = (screenHeight * 0.30).clamp(minTimelineH + 30.0, 238.0);
 
                   return Column(
                     mainAxisSize: MainAxisSize.min,
@@ -323,7 +339,7 @@ extension _EditorScreenLayout on _EditorScreenState {
                         behavior: HitTestBehavior.translucent,
                         onVerticalDragUpdate: (details) {
                           _updateLayout(() {
-                            _timelineHeight = (_timelineHeight - details.delta.dy).clamp(minTimelineH, maxTimelineH);
+                            _timelineHeight = (_effectiveOrCurrent(_timelineHeight, minTimelineH, maxTimelineH) - details.delta.dy).clamp(minTimelineH, maxTimelineH);
                           });
                         },
                         child: MouseRegion(
@@ -383,8 +399,11 @@ extension _EditorScreenLayout on _EditorScreenState {
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onVerticalDragUpdate: (details) {
+                    final screenHeight = MediaQuery.of(context).size.height;
+                    final minPortraitH = (screenHeight * 0.25).clamp(160.0, 220.0);
+                    final maxPortraitH = (screenHeight * 0.42).clamp(minPortraitH + 40.0, 340.0);
                     _updateLayout(() {
-                      _portraitSidebarHeight = (_portraitSidebarHeight - details.delta.dy).clamp(120.0, 360.0);
+                      _portraitSidebarHeight = (_effectiveOrCurrent(_portraitSidebarHeight, minPortraitH, maxPortraitH) - details.delta.dy).clamp(minPortraitH, maxPortraitH);
                     });
                   },
                   child: MouseRegion(
@@ -410,9 +429,16 @@ extension _EditorScreenLayout on _EditorScreenState {
                   ),
                 ),
               ],
-              SizedBox(
-                height: isKeyboardOpen ? _portraitSidebarHeight.clamp(120.0, 200.0) : _portraitSidebarHeight,
-                child: Container(
+              Builder(
+                builder: (context) {
+                  final screenHeight = MediaQuery.of(context).size.height;
+                  final minPortraitH = (screenHeight * 0.25).clamp(160.0, 220.0);
+                  final maxPortraitH = (screenHeight * 0.42).clamp(minPortraitH + 40.0, 340.0);
+                  return SizedBox(
+                    height: isKeyboardOpen
+                        ? _portraitSidebarHeight.clamp(120.0, 200.0)
+                        : _portraitSidebarHeight.clamp(minPortraitH, maxPortraitH),
+                    child: Container(
                   decoration: AppTheme.glassDecoration(
                     color: AppTheme.cardBg.withValues(alpha: 0.55),
                     borderRadius: 0,
@@ -468,6 +494,8 @@ extension _EditorScreenLayout on _EditorScreenState {
                     ],
                   ),
                 ),
+                  );
+                },
               ),
             ],
           ],

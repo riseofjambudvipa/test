@@ -109,8 +109,8 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
   bool _mobileSidebarOpen = false;
 
   // Draggable/Resizable panel dimensions
-  double _sidebarWidth = 420.0;
-  double _timelineHeight = 210.0;
+  double _sidebarWidth = 528.0;
+  double _timelineHeight = 184.0;
   double _portraitSidebarHeight = 240.0;
 
   @override
