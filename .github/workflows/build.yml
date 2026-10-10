@@ -153,7 +153,7 @@ jobs:
       - name: Setup NDK
         uses: nttld/setup-ndk@v1
         with:
-          ndk-version: r27
+          ndk-version: r28b
 
       - name: Setup signing
         env:
@@ -174,18 +174,18 @@ jobs:
       - name: Build Android APK (Universal & Per-ABI Splits)
         run: |
           # 1. Build Universal FAT APK (runs on all architectures)
-          flutter build apk --release
+          flutter build apk --release --no-pub
           mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/CapStudio-Android-Universal.apk
 
           # 2. Build Per-ABI Architecture-specific APKs
-          flutter build apk --release --split-per-abi
+          flutter build apk --release --split-per-abi --no-pub
           [ -f build/app/outputs/flutter-apk/app-arm64-v8a-release.apk ] && mv build/app/outputs/flutter-apk/app-arm64-v8a-release.apk build/app/outputs/flutter-apk/CapStudio-Android-arm64-v8a.apk
           [ -f build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk ] && mv build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk build/app/outputs/flutter-apk/CapStudio-Android-armeabi-v7a.apk
           [ -f build/app/outputs/flutter-apk/app-x86_64-release.apk ] && mv build/app/outputs/flutter-apk/app-x86_64-release.apk build/app/outputs/flutter-apk/CapStudio-Android-x86_64.apk
 
       - name: Build Android App Bundle (AAB)
         run: |
-          flutter build appbundle --release
+          flutter build appbundle --release --no-pub
           mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/CapStudio-Android.aab
 
       - name: Upload Android Artifacts
@@ -218,8 +218,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ~/.pub-cache
-            ${{ env.LOCALAPPDATA }}\Pub\Cache
+            ~\AppData\Local\Pub\Cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: pub-${{ runner.os }}-
 
@@ -241,7 +240,7 @@ jobs:
           flutter pub get
 
       - name: Build Windows
-        run: flutter build windows --release
+        run: flutter build windows --release --no-pub
 
       - name: Bundle FFmpeg into Windows release
         shell: pwsh
@@ -312,10 +311,11 @@ jobs:
       - run: flutter pub get
 
       - name: Build Web
-        run: flutter build web --release --no-wasm-dry-run
+        run: flutter build web --release --no-pub --no-wasm-dry-run
 
       - name: Compress Web Distribution
         run: |
+          rm -rf build/web/assets/assets/models/
           cd build/web && zip -r ../../CapStudio-Web.zip . && cd ../..
 
       - name: Upload Web Artifact
@@ -375,7 +375,7 @@ jobs:
           xattr -crs ~/.pub-cache macos 2>/dev/null || true
 
       - name: Build macOS
-        run: flutter build macos --release
+        run: flutter build macos --release --no-pub
 
       - name: Bundle FFmpeg into macOS app
         run: |
@@ -464,7 +464,7 @@ jobs:
           flutter pub get
 
       - name: Build Linux
-        run: flutter build linux --release
+        run: flutter build linux --release --no-pub
 
       - name: Bundle FFmpeg into Linux bundle
         run: |
@@ -563,6 +563,7 @@ jobs:
               <binary>capstudio</binary>
             </provides>
           </component>
+          EOF
           curl -fsSL --retry 5 -o /tmp/appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
           chmod +x /tmp/appimagetool
           ARCH=x86_64 /tmp/appimagetool --no-appstream --appimage-extract-and-run "$APPDIR" "$GITHUB_WORKSPACE/CapStudio-Linux-x86_64.AppImage"
@@ -615,7 +616,7 @@ jobs:
         run: cd ios && pod install && cd ..
 
       - name: Build iOS (no-codesign)
-        run: flutter build ios --release --no-codesign
+        run: flutter build ios --release --no-codesign --no-pub
 
       - name: Package iOS Runner as tar
         run: |
@@ -650,6 +651,8 @@ jobs:
         shell: pwsh
         run: |
           cmake -S whisper_src -B build_avx `
+            -DCMAKE_POLICY_DEFAULT_CMP0194=NEW `
+            -DCMAKE_CXX_FLAGS="/wd4068" `
             -DCMAKE_BUILD_TYPE=Release `
             -DGGML_AVX2=ON `
             -DGGML_AVX=ON `
@@ -676,6 +679,8 @@ jobs:
         shell: pwsh
         run: |
           cmake -S whisper_src -B build_noavx `
+            -DCMAKE_POLICY_DEFAULT_CMP0194=NEW `
+            -DCMAKE_CXX_FLAGS="/wd4068" `
             -DCMAKE_BUILD_TYPE=Release `
             -DGGML_AVX2=OFF `
             -DGGML_AVX=OFF `
@@ -703,6 +708,8 @@ jobs:
         run: |
           cmake -S whisper_src -B build_win_arm64 `
             -A ARM64 `
+            -DCMAKE_POLICY_DEFAULT_CMP0194=NEW `
+            -DCMAKE_CXX_FLAGS="/wd4068" `
             -DCMAKE_BUILD_TYPE=Release `
             -DGGML_NATIVE=ON `
             -DBUILD_SHARED_LIBS=OFF `
@@ -748,6 +755,7 @@ jobs:
       - name: Build macOS Binary (Metal Accelerated Universal)
         run: |
           cmake -S whisper_src -B build_mac \
+            -DGGML_CCACHE=OFF \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
             -DGGML_METAL=ON \
@@ -797,6 +805,7 @@ jobs:
       - name: Build Linux x64 Binary
         run: |
           cmake -S whisper_src -B build_linux_x64 \
+            -DGGML_CCACHE=OFF \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
             -DWHISPER_BUILD_TESTS=OFF \
@@ -818,6 +827,7 @@ jobs:
         run: |
           export SOURCE_DATE_EPOCH=1234567890
           cmake -S whisper_src -B build_linux_arm64 \
+            -DGGML_CCACHE=OFF \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc \
             -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ \
@@ -883,7 +893,7 @@ jobs:
         run: |
           mkdir -p ffmpeg_win_arm64/dist ffmpeg_win_arm64/extracted dist
           echo "Packaging Windows ARM64 FFmpeg..."
-          if curl -fsSL --retry 3 -o dist/ffmpeg-windows-arm64.zip "https://github.com/riseofjambudvipa/test/releases/download/test/ffmpeg-windows-arm64.zip"; then
+          if curl -fsSL -o dist/ffmpeg-windows-arm64.zip "https://github.com/riseofjambudvipa/test/releases/download/test/ffmpeg-windows-arm64.zip" 2>/dev/null; then
             echo "Successfully retrieved ffmpeg-windows-arm64.zip from GitHub Release."
           else
             curl -fsSL --retry 5 --retry-connrefused -o ffmpeg_win_arm64/ffmpeg.zip "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-winarm64-gpl.zip"
@@ -921,7 +931,7 @@ jobs:
           mkdir -p ffmpeg_linux_amd64/dist ffmpeg_linux_amd64/extracted dist
           echo "Packaging Linux amd64 static FFmpeg..."
           # Try download directly from verified GitHub Release test repository first
-          if curl -fsSL --retry 3 -o dist/ffmpeg-linux.zip "https://github.com/riseofjambudvipa/test/releases/download/test/ffmpeg-linux.zip"; then
+          if curl -fsSL -o dist/ffmpeg-linux.zip "https://github.com/riseofjambudvipa/test/releases/download/test/ffmpeg-linux.zip" 2>/dev/null; then
             echo "Successfully retrieved ffmpeg-linux.zip from GitHub Release."
           else
             echo "Falling back to BtbN Linux 64 GPL build..."
@@ -942,7 +952,7 @@ jobs:
 
           mkdir -p ffmpeg_linux_arm64/dist ffmpeg_linux_arm64/extracted
           echo "Packaging Linux arm64 static FFmpeg..."
-          if curl -fsSL --retry 3 -o dist/ffmpeg-linux-arm64.zip "https://github.com/riseofjambudvipa/test/releases/download/test/ffmpeg-linux-arm64.zip"; then
+          if curl -fsSL -o dist/ffmpeg-linux-arm64.zip "https://github.com/riseofjambudvipa/test/releases/download/test/ffmpeg-linux-arm64.zip" 2>/dev/null; then
             echo "Successfully retrieved ffmpeg-linux-arm64.zip from GitHub Release."
           else
             echo "Falling back to BtbN Linux ARM64 GPL build..."

@@ -166,3 +166,12 @@ gradlew text eol=lf
 *.keystore binary
 *.jks binary
 *.key binary
+
+# ------------------------------------------------------------------------------
+# 4. Git Archive Export Exclusions (reduce source archive size)
+# ------------------------------------------------------------------------------
+# Exclude large binary demo assets and AI models from `git archive` output.
+# These are runtime downloads, not required for building from source.
+assets/assets/demo/** export-ignore
+assets/assets/models/** export-ignore
+assets/assets/sfx/** export-ignore

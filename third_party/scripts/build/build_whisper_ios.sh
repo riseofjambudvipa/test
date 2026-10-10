@@ -37,7 +37,7 @@ cmake -G Xcode \
 
 cmake --build "$WHISPER_ROOT/build_ios_device" \
     --config Release \
-    -- -sdk iphoneos
+    -- -sdk iphoneos -quiet
 
 # Build for simulator
 echo "Building for iOS simulator (arm64 + x86_64)..."
@@ -56,7 +56,7 @@ cmake -G Xcode \
 
 cmake --build "$WHISPER_ROOT/build_ios_sim" \
     --config Release \
-    -- -sdk iphonesimulator
+    -- -sdk iphonesimulator -quiet
 
 # Create xcframework
 echo "Creating xcframework..."

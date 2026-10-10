@@ -22,6 +22,9 @@ class AppDirs {
   static String? _logsPath;
   static double? _mockAvailableDiskSpaceMB;
 
+  /// Whether [AppDirs.init] or [setSupportPathForTesting] has completed.
+  static bool get isInitialized => _supportPath != null;
+
   /// Override the support path for testing to prevent locking production AppData files.
   static void setSupportPathForTesting(String path) {
     _supportPath = path;

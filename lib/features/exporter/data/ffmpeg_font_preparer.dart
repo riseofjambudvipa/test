@@ -132,13 +132,14 @@ mixin FfmpegFontPreparation {
   }
 
   String? getSafeAppDirsFonts() {
+    if (!AppDirs.isInitialized) {
+      return null;
+    }
     try {
       return AppDirs.fonts;
     } catch (e) {
-      // AppDirs may not be initialized in test/web environments — this is
-      // expected and harmless; log at debug to avoid CI test noise.
       LoggerService.instance.log(LogLevel.debug, 'FfmpegFontPreparer',
-          'AppDirs fonts unavailable (not initialized): $e');
+          'AppDirs fonts unavailable: $e');
       return null;
     }
   }
