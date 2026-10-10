@@ -232,9 +232,7 @@ assets/emojis/microsoft_fluentui_emoji_animated_pack/
 assets/emojis/microsoft_fluentui_emoji_non_animated_pack/
 assets/emojis/openmoji_non_animated_pack/
 
-# Custom user stickers and temporary processing assets
-assets/custom_stickers/*
-!assets/custom_stickers/.gitkeep
+# Temporary processing assets
 assets/temp/
 
 # Large offline binary archives & asset pack bundles (Keep companion .sha256 tracked)

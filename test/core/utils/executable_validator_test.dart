@@ -173,13 +173,32 @@ void main() {
       });
     });
 
+    File createMockExecutable(
+      String name, {
+      String output = '',
+      int exitCode = 0,
+      bool triggerSigill = false,
+    }) {
+      final ext = Platform.isWindows ? '.bat' : '.sh';
+      final file = File(p.join(env.tempDir.path, '$name$ext'));
+      if (Platform.isWindows) {
+        final exitStatement = triggerSigill ? 'exit /b -4' : 'exit /b $exitCode';
+        file.writeAsStringSync('@echo off\r\necho $output\r\n$exitStatement\r\n');
+      } else {
+        final exitStatement = triggerSigill ? 'kill -4 \$\$' : 'exit $exitCode';
+        file.writeAsStringSync('#!/bin/sh\necho "$output"\n$exitStatement\n');
+        Process.runSync('chmod', ['+x', file.path]);
+      }
+      return file;
+    }
+
     group('FFmpeg Validation (-version check)', () {
       test('returns true when exit code is 0 and output contains ffmpeg', () async {
         bool avxCalled = false;
-        final args = ['-version', ...shellArgs('echo ffmpeg version 6.1.1-full_build')];
+        final mock = createMockExecutable('mock_ffmpeg_valid', output: 'ffmpeg version 6.1.1-full_build');
         final isValid = await validateExecutable(
-          shell,
-          args,
+          mock.path,
+          ['-version'],
           onAvxDetected: () async => avxCalled = true,
         );
 
@@ -189,10 +208,10 @@ void main() {
 
       test('returns false when output does not contain ffmpeg', () async {
         bool avxCalled = false;
-        final args = ['-version', ...shellArgs('echo some_other_utility v1.0.0')];
+        final mock = createMockExecutable('mock_non_ffmpeg', output: 'some_other_utility v1.0.0');
         final isValid = await validateExecutable(
-          shell,
-          args,
+          mock.path,
+          ['-version'],
           onAvxDetected: () async => avxCalled = true,
         );
 
@@ -202,14 +221,10 @@ void main() {
 
       test('returns false when output contains ffmpeg but exit code is non-zero', () async {
         bool avxCalled = false;
-        // Output contains ffmpeg but exit code is 2
-        final cmd = Platform.isWindows
-            ? 'echo ffmpeg version && exit 2'
-            : 'echo ffmpeg version && exit 2';
-        final args = ['-version', ...shellArgs(cmd)];
+        final mock = createMockExecutable('mock_ffmpeg_err', output: 'ffmpeg version', exitCode: 2);
         final isValid = await validateExecutable(
-          shell,
-          args,
+          mock.path,
+          ['-version'],
           onAvxDetected: () async => avxCalled = true,
         );
 
@@ -221,10 +236,10 @@ void main() {
     group('Whisper Validation (--help and -h check)', () {
       test('returns true when --help output contains usage', () async {
         bool avxCalled = false;
-        final args = ['--help', ...shellArgs('echo usage: whisper [options]')];
+        final mock = createMockExecutable('mock_whisper_usage', output: 'usage: whisper [options]');
         final isValid = await validateExecutable(
-          shell,
-          args,
+          mock.path,
+          ['--help'],
           onAvxDetected: () async => avxCalled = true,
         );
 
@@ -234,13 +249,10 @@ void main() {
 
       test('returns true when -h output contains whisper keyword and exit code is 1', () async {
         bool avxCalled = false;
-        final cmd = Platform.isWindows
-            ? 'echo whisper cli options && exit 1'
-            : 'echo whisper cli options && exit 1';
-        final args = ['-h', ...shellArgs(cmd)];
+        final mock = createMockExecutable('mock_whisper_h', output: 'whisper cli options', exitCode: 1);
         final isValid = await validateExecutable(
-          shell,
-          args,
+          mock.path,
+          ['-h'],
           onAvxDetected: () async => avxCalled = true,
         );
 
@@ -250,10 +262,10 @@ void main() {
 
       test('returns true when output contains model keyword', () async {
         bool avxCalled = false;
-        final args = ['--help', ...shellArgs('echo available ggml model options')];
+        final mock = createMockExecutable('mock_whisper_model', output: 'available ggml model options');
         final isValid = await validateExecutable(
-          shell,
-          args,
+          mock.path,
+          ['--help'],
           onAvxDetected: () async => avxCalled = true,
         );
 
@@ -263,10 +275,10 @@ void main() {
 
       test('returns false when help output does not contain usage, whisper, or model', () async {
         bool avxCalled = false;
-        final args = ['--help', ...shellArgs('echo unrelated generic output')];
+        final mock = createMockExecutable('mock_whisper_generic', output: 'unrelated generic output');
         final isValid = await validateExecutable(
-          shell,
-          args,
+          mock.path,
+          ['--help'],
           onAvxDetected: () async => avxCalled = true,
         );
 
@@ -276,13 +288,10 @@ void main() {
 
       test('returns false when help output has keywords but exit code is > 1', () async {
         bool avxCalled = false;
-        final cmd = Platform.isWindows
-            ? 'echo usage whisper model && exit 2'
-            : 'echo usage whisper model && exit 2';
-        final args = ['--help', ...shellArgs(cmd)];
+        final mock = createMockExecutable('mock_whisper_err2', output: 'usage whisper model', exitCode: 2);
         final isValid = await validateExecutable(
-          shell,
-          args,
+          mock.path,
+          ['--help'],
           onAvxDetected: () async => avxCalled = true,
         );
 
@@ -293,33 +302,28 @@ void main() {
 
     group('AVX Crash Detection and Auto-Recovery', () {
       test('detects STATUS_ILLEGAL_INSTRUCTION (-1073741795 / 0xC000001D) and triggers onAvxDetected', () async {
+        if (!Platform.isWindows) return;
         bool avxCalled = false;
-        final cmd = Platform.isWindows
-            ? 'exit -1073741795'
-            : 'exit 255'; // on Linux, test with negative code simulation
-        final args = shellArgs(cmd);
+        final mock = createMockExecutable('mock_avx_status', exitCode: -1073741795);
 
-        if (Platform.isWindows) {
-          final isValid = await validateExecutable(
-            shell,
-            args,
-            onAvxDetected: () async => avxCalled = true,
-          );
+        final isValid = await validateExecutable(
+          mock.path,
+          [],
+          onAvxDetected: () async => avxCalled = true,
+        );
 
-          expect(isValid, isFalse);
-          expect(avxCalled, isTrue);
-          expect(SettingsService.instance.forceNoAvx, isTrue);
-        }
+        expect(isValid, isFalse);
+        expect(avxCalled, isTrue);
+        expect(SettingsService.instance.forceNoAvx, isTrue);
       });
 
       test('detects SIGILL (-4) exit code and triggers onAvxDetected', () async {
         bool avxCalled = false;
-        final cmd = 'exit -4';
-        final args = shellArgs(cmd);
+        final mock = createMockExecutable('mock_sigill', triggerSigill: true);
 
         final isValid = await validateExecutable(
-          shell,
-          args,
+          mock.path,
+          [],
           onAvxDetected: () async => avxCalled = true,
         );
 

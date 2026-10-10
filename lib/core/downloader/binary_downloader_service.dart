@@ -217,8 +217,10 @@ class BinaryDownloaderService {
           '$releaseBase/ffmpeg-linux.zip',
           if (arch == 'arm64')
             'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linuxarm64-gpl.tar.xz'
-          else
+          else ...[
             'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz',
+            'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz',
+          ],
         ];
       }
     }

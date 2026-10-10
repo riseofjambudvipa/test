@@ -550,7 +550,7 @@ jobs:
           cmake -S whisper_src -B build_win_arm64 `
             -A ARM64 `
             -DCMAKE_BUILD_TYPE=Release `
-            -DGGML_NATIVE=OFF `
+            -DGGML_NATIVE=ON `
             -DBUILD_SHARED_LIBS=OFF `
             -DWHISPER_BUILD_TESTS=OFF `
             -DWHISPER_BUILD_EXAMPLES=ON

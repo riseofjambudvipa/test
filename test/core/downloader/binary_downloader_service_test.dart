@@ -82,7 +82,10 @@ void main() {
       } else if (Platform.isMacOS) {
         expect(mirrors.any((m) => m.contains('evermeet.cx')), isTrue);
       } else {
-        expect(mirrors.any((m) => m.contains('johnvansickle.com')), isTrue);
+        expect(
+          mirrors.any((m) => m.contains('johnvansickle.com') || m.contains('BtbN')),
+          isTrue,
+        );
       }
     });
 
