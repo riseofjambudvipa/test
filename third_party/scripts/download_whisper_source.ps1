@@ -1,12 +1,12 @@
 # CapStudio - Download whisper.cpp Source
-# Downloads whisper.cpp v1.9.4 (certified version for CapStudio) into third_party/whisper.cpp
+# Downloads whisper.cpp v1.9.5 (certified version for CapStudio) into third_party/whisper.cpp
 # Run this if you don't have git or the submodule is missing.
 #
 # Usage: .\scripts\download_whisper_source.ps1
-#        .\scripts\download_whisper_source.ps1 -Version v1.9.4
+#        .\scripts\download_whisper_source.ps1 -Version v1.9.5
 
 param(
-    [string]$Version = "v1.9.4"
+    [string]$Version = "v1.9.5"
 )
 
 $ErrorActionPreference = "Stop"

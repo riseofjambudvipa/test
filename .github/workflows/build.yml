@@ -59,10 +59,10 @@ on:
         type: boolean
         default: true
       whisper_tag:
-        description: 'Whisper.cpp Git Tag / Version (e.g. v1.9.4)'
+        description: 'Whisper.cpp Git Tag / Version (e.g. v1.9.5)'
         required: false
         type: string
-        default: 'v1.9.4'
+        default: 'v1.9.5'
       pack_ffmpeg:
         description: 'Package FFmpeg Binaries (Windows, macOS, Linux)'
         required: true
@@ -636,10 +636,8 @@ jobs:
 
           cd dist/mac
           zip -r ../whisper-cli-mac-universal.zip *
-          cp ../whisper-cli-mac-universal.zip ../whisper-macos.zip
           cd ../..
           shasum -a 256 dist/whisper-cli-mac-universal.zip > dist/whisper-cli-mac-universal.zip.sha256
-          shasum -a 256 dist/whisper-macos.zip > dist/whisper-macos.zip.sha256
 
       - name: Upload macOS Whisper Artifacts
         uses: actions/upload-artifact@v4
@@ -684,10 +682,8 @@ jobs:
 
           cd dist/linux_x64
           zip -r ../whisper-cli-linux-x64.zip *
-          cp ../whisper-cli-linux-x64.zip ../whisper-linux.zip
           cd ../..
           sha256sum dist/whisper-cli-linux-x64.zip > dist/whisper-cli-linux-x64.zip.sha256
-          sha256sum dist/whisper-linux.zip > dist/whisper-linux.zip.sha256
 
       - name: Build Linux ARM64 (aarch64) Binary
         run: |
@@ -712,10 +708,8 @@ jobs:
 
           cd dist/linux_arm64
           zip -r ../whisper-cli-linux-arm64.zip *
-          cp ../whisper-cli-linux-arm64.zip ../whisper-linux-arm64.zip
           cd ../..
           sha256sum dist/whisper-cli-linux-arm64.zip > dist/whisper-cli-linux-arm64.zip.sha256
-          sha256sum dist/whisper-linux-arm64.zip > dist/whisper-linux-arm64.zip.sha256
 
       - name: Upload Linux Whisper Artifacts
         uses: actions/upload-artifact@v4
@@ -778,7 +772,6 @@ jobs:
           # Try download directly from verified GitHub Release test repository first
           if curl -fsSL --retry 3 -o dist/ffmpeg-linux.zip "https://github.com/riseofjambudvipa/test/releases/download/test/ffmpeg-linux.zip"; then
             echo "Successfully retrieved ffmpeg-linux.zip from GitHub Release."
-            cp dist/ffmpeg-linux.zip dist/ffmpeg-linux-amd64.zip
           else
             echo "Falling back to BtbN Linux 64 GPL build..."
             curl -fsSL --retry 5 --retry-connrefused -o ffmpeg_linux_amd64/ffmpeg.tar.xz "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz"
@@ -792,11 +785,9 @@ jobs:
             chmod +x ffmpeg_linux_amd64/dist/*
             cd ffmpeg_linux_amd64/dist
             zip -r ../../dist/ffmpeg-linux.zip ./*
-            cp ../../dist/ffmpeg-linux.zip ../../dist/ffmpeg-linux-amd64.zip
             cd ../..
           fi
           sha256sum dist/ffmpeg-linux.zip > dist/ffmpeg-linux.zip.sha256
-          sha256sum dist/ffmpeg-linux-amd64.zip > dist/ffmpeg-linux-amd64.zip.sha256
 
           mkdir -p ffmpeg_linux_arm64/dist ffmpeg_linux_arm64/extracted
           echo "Packaging Linux arm64 static FFmpeg..."
