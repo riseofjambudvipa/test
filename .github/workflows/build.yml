@@ -344,32 +344,31 @@ jobs:
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: pub-${{ runner.os }}-
 
+      - run: flutter config --no-enable-swift-package-manager
       - run: flutter pub get
 
-      - name: Prepare macOS Pods & Strip AppleDouble Resource Forks
+      - name: Patch FFmpegKit macOS Frameworks & Strip AppleDouble Resource Forks
         run: |
-          flutter build macos --config-only
-          cd macos && pod install && cd ..
-          dot_clean -m macos/Pods 2>/dev/null || true
-          find macos/Pods -name '._*' -delete 2>/dev/null || true
-          find macos/Pods -name '_CodeSignature' -type d -exec rm -rf {} + 2>/dev/null || true
-          xattr -cr macos/Pods 2>/dev/null || true
+          echo "COPYFILE_DISABLE=1" >> $GITHUB_ENV
+          echo "COPY_EXTENDED_ATTRIBUTES_DISABLE=1" >> $GITHUB_ENV
+          export COPYFILE_DISABLE=1
+          export COPY_EXTENDED_ATTRIBUTES_DISABLE=1
+
+          # 1. Patch setup_macos.sh in pub-cache to strip ._* AppleDouble files upon extraction
+          for script in $(find ~/.pub-cache -name "setup_macos.sh" 2>/dev/null); do
+            echo "Patching $script..."
+            sed -i '' 's|rm -rf "\$WORK/extract/__MACOSX"|rm -rf "\$WORK/extract/__MACOSX"; find "\$WORK/extract" -name "._*" -delete 2>/dev/null || true; xattr -crs "\$WORK/extract" 2>/dev/null || true|g' "$script"
+            PLUGIN_MACOS_DIR="$(cd "$(dirname "$script")/../macos" && pwd)"
+            (cd "$PLUGIN_MACOS_DIR" && rm -rf Frameworks && chmod +x ../scripts/setup_macos.sh && ../scripts/setup_macos.sh)
+          done
+
+          # 2. Clean any ._* files or extended attributes across pub-cache and macos directory (following symlinks)
+          find -L ~/.pub-cache macos -name '._*' -delete 2>/dev/null || true
+          find -L ~/.pub-cache macos -name '_CodeSignature' -type d -exec rm -rf {} + 2>/dev/null || true
+          xattr -crs ~/.pub-cache macos 2>/dev/null || true
 
       - name: Build macOS
         run: flutter build macos --release
-
-      - name: Ad-hoc CodeSign app bundle
-        run: |
-          APP="build/macos/Build/Products/Release/CapStudio.app"
-          if [ -d "$APP" ]; then
-            echo "Cleaning extended attributes and stale framework signatures..."
-            dot_clean -m "$APP" 2>/dev/null || true
-            find "$APP" -name "._*" -delete 2>/dev/null || true
-            find "$APP/Contents/Frameworks" -name "_CodeSignature" -type d -exec rm -rf {} + 2>/dev/null || true
-            xattr -cr "$APP" 2>/dev/null || true
-            echo "Applying ad-hoc code signature..."
-            codesign --force --deep --sign - "$APP" 2>/dev/null || true
-          fi
 
       - name: Bundle FFmpeg into macOS app
         run: |
@@ -382,6 +381,19 @@ jobs:
           cp /tmp/ffmpeg-mac/ffmpeg "$RES_DIR/bin/ffmpeg"
           chmod +x "$RES_DIR/bin/ffmpeg"
           echo "Bundled FFmpeg 7.1 into CapStudio.app/Contents/Resources/bin/"
+
+      - name: Ad-hoc CodeSign app bundle
+        run: |
+          APP="build/macos/Build/Products/Release/CapStudio.app"
+          if [ -d "$APP" ]; then
+            echo "Cleaning extended attributes and stale framework signatures..."
+            dot_clean -m "$APP" 2>/dev/null || true
+            find -L "$APP" -name "._*" -delete 2>/dev/null || true
+            find "$APP/Contents/Frameworks" -name "_CodeSignature" -type d -exec rm -rf {} + 2>/dev/null || true
+            xattr -crs "$APP" 2>/dev/null || true
+            echo "Applying ad-hoc code signature..."
+            codesign --force --deep --sign - "$APP"
+          fi
 
       - name: Package macOS DMG
         run: |
@@ -549,6 +561,7 @@ jobs:
           chmod +x third_party/scripts/build/build_whisper_ios.sh
           ./third_party/scripts/build/build_whisper_ios.sh
 
+      - run: flutter config --no-enable-swift-package-manager
       - run: flutter pub get
 
       - name: Install CocoaPods
