@@ -172,18 +172,22 @@ jobs:
       - run: flutter pub get
 
       - name: Build Android APK
-        run: flutter build apk --release
+        run: |
+          flutter build apk --release
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/CapStudio-Android-arm64.apk
 
       - name: Build Android App Bundle (AAB)
-        run: flutter build appbundle --release
+        run: |
+          flutter build appbundle --release
+          mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/CapStudio-Android.aab
 
       - name: Upload Android Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: android-release
           path: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
+            build/app/outputs/flutter-apk/CapStudio-Android-arm64.apk
+            build/app/outputs/bundle/release/CapStudio-Android.aab
 
   # =========================================================================
   # 2. WINDOWS DESKTOP
@@ -206,7 +210,9 @@ jobs:
       - name: Cache pub packages
         uses: actions/cache@v4
         with:
-          path: ~/.pub-cache
+          path: |
+            ~/.pub-cache
+            ${{ env.LOCALAPPDATA }}\Pub\Cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: pub-${{ runner.os }}-
 
@@ -251,13 +257,15 @@ jobs:
           Write-Host "Built CapStudio-Windows-x64.zip"
 
           # 2. Windows UWP / MSIX App Package
+          # A fresh self-signed cert is generated each CI run (PFX is gitignored as a secret).
+          # To install the resulting MSIX locally, run third_party/scripts/install_msix_cert.ps1 first.
           $env:CAPSTUDIO_CERT_PASSWORD = "capstudio-release-cert"
           .\third_party\scripts\certificate\windows\create_cert.ps1
           dart run msix:create --build-windows false --certificate-password $env:CAPSTUDIO_CERT_PASSWORD --install-certificate false --output-path build/windows/x64/runner --output-name CapStudio-Windows-x64
           Write-Host "Built CapStudio-Windows-x64.msix"
 
           # 3. Windows Inno Setup Installer (.exe)
-          iscc "/Obuild\windows\x64\runner" "/FCapStudio-Setup-Windows-x64" "scripts\capstudio_setup.iss"
+          iscc "/Obuild\windows\x64\runner" "/FCapStudio-Setup-Windows-x64" "third_party\scripts\capstudio_setup.iss"
           Write-Host "Built CapStudio-Setup-Windows-x64.exe"
 
       - name: Upload Windows Artifacts
@@ -389,13 +397,13 @@ jobs:
 
       - name: Package macOS DMG
         run: |
-          hdiutil create -format UDZO -srcfolder build/macos/Build/Products/Release/CapStudio.app build/macos/Build/Products/Release/CapStudio.dmg
+          hdiutil create -format UDZO -srcfolder build/macos/Build/Products/Release/CapStudio.app build/macos/Build/Products/Release/CapStudio-macOS-arm64.dmg
 
       - name: Upload macOS Artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos-release
-          path: build/macos/Build/Products/Release/CapStudio.dmg
+          path: build/macos/Build/Products/Release/CapStudio-macOS-arm64.dmg
 
   # =========================================================================
   # 5. LINUX PACKAGES (.deb, .tar.gz, .AppImage)
@@ -471,8 +479,8 @@ jobs:
 
       - name: Build Debian Package (.deb)
         run: |
-          chmod +x scripts/create_deb.sh
-          ./scripts/create_deb.sh
+          chmod +x third_party/scripts/create_deb.sh
+          ./third_party/scripts/create_deb.sh
 
       - name: Build Portable Tarball (.tar.gz) & Universal AppImage (.AppImage)
         run: |
@@ -521,6 +529,26 @@ jobs:
           Type=Application
           Terminal=false
           Categories=AudioVideo;Video;
+          EOF
+
+          mkdir -p "$APPDIR/usr/share/metainfo"
+          cat > "$APPDIR/usr/share/metainfo/capstudio.appdata.xml" << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <component type="desktop-application">
+            <id>com.capstudio.app</id>
+            <metadata_license>CC0-1.0</metadata_license>
+            <project_license>GPL-3.0-only</project_license>
+            <name>CapStudio</name>
+            <summary>Free offline AI caption studio</summary>
+            <description>
+              <p>CapStudio is an offline AI caption and subtitle studio powered by Whisper and FFmpeg.</p>
+            </description>
+            <launchable type="desktop-id">capstudio.desktop</launchable>
+            <url type="homepage">https://github.com/riseofjambudvipa/test</url>
+            <provides>
+              <binary>capstudio</binary>
+            </provides>
+          </component>
           EOF
 
           curl -fsSL --retry 5 -o /tmp/appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
@@ -577,15 +605,15 @@ jobs:
       - name: Build iOS (no-codesign)
         run: flutter build ios --release --no-codesign
 
-      - name: Package Runner.app as tar
+      - name: Package iOS Runner as tar
         run: |
-          tar -czf ios-runner.tar.gz -C build/ios/iphoneos Runner.app
+          tar -czf CapStudio-iOS-arm64.tar.gz -C build/ios/iphoneos Runner.app
 
       - name: Upload iOS Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-release
-          path: ios-runner.tar.gz
+          path: CapStudio-iOS-arm64.tar.gz
 
   # =========================================================================
   # 7. WHISPER CLI BINARIES (WINDOWS, MACOS, LINUX)

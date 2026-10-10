@@ -135,8 +135,10 @@ mixin FfmpegFontPreparation {
     try {
       return AppDirs.fonts;
     } catch (e) {
-      LoggerService.instance.log(LogLevel.warning, 'FfmpegFontPreparer',
-          'Failed to resolve AppDirs fonts directory: $e');
+      // AppDirs may not be initialized in test/web environments — this is
+      // expected and harmless; log at debug to avoid CI test noise.
+      LoggerService.instance.log(LogLevel.debug, 'FfmpegFontPreparer',
+          'AppDirs fonts unavailable (not initialized): $e');
       return null;
     }
   }

@@ -195,7 +195,6 @@ third_party/whisper.cpp/bin/
 *.key
 *.crt
 *.cer
-scripts/certificate/windows/*.pfx
 third_party/scripts/certificate/windows/*.pfx
 .env
 .env.*

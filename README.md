@@ -177,8 +177,7 @@ lib/
 │   ├── exporter/                    # FFmpeg rendering pipeline & batch export dialog
 │   ├── onboarding/                  # First-run setup wizard for models and tools
 │   └── settings/                    # Model manager, language picker & tool locators
-scripts/                             # First-party build orchestrators, packagers, and font/asset sync tools
-third_party/                         # Vendored third-party dependencies (isar_community, whisper.cpp, cldr-json)
+third_party/                         # Vendored dependencies + all build/package/cert scripts (third_party/scripts/)
 ```
 
 ---

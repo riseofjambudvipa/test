@@ -22,8 +22,8 @@ VersionInfoVersion=1.1.0.0
 VersionInfoCompany=CapStudio Team
 VersionInfoDescription=CapStudio Installer
 VersionInfoCopyright=Copyright (C) 2026 CapStudio
-ArchitecturesAllowed=x64
-ArchitecturesInstallIn64BitMode=x64
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
 
 [Languages]

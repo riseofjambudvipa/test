@@ -501,14 +501,16 @@ class EmojiService {
   /// Get the active search language locale.
   /// Reads manual override from settings, falling back to system locale or English.
   String get activeSearchLocale {
-    try {
-      final override = SettingsService.instance.emojiSearchLanguage;
-      if (override != 'auto' && override.isNotEmpty) {
-        return override.toLowerCase();
+    if (SettingsService.instance.isInitialized) {
+      try {
+        final override = SettingsService.instance.emojiSearchLanguage;
+        if (override != 'auto' && override.isNotEmpty) {
+          return override.toLowerCase();
+        }
+      } catch (e) {
+        LoggerService.instance.log(LogLevel.debug, 'EmojiService',
+            'Failed to read emojiSearchLanguage setting: $e');
       }
-    } catch (e) {
-      LoggerService.instance.log(LogLevel.warning, 'EmojiService',
-          'Failed to read emojiSearchLanguage setting: $e');
     }
     
     if (kIsWeb) return 'en';
