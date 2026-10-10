@@ -563,12 +563,9 @@ jobs:
               <binary>capstudio</binary>
             </provides>
           </component>
-          EOF
-          cp "$APPDIR/usr/share/metainfo/com.capstudio.app.metainfo.xml" "$APPDIR/usr/share/metainfo/capstudio.appdata.xml"
-
           curl -fsSL --retry 5 -o /tmp/appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
           chmod +x /tmp/appimagetool
-          ARCH=x86_64 NO_APPSTREAM=1 /tmp/appimagetool --appimage-extract-and-run "$APPDIR" "$GITHUB_WORKSPACE/CapStudio-Linux-x86_64.AppImage"
+          ARCH=x86_64 /tmp/appimagetool --no-appstream --appimage-extract-and-run "$APPDIR" "$GITHUB_WORKSPACE/CapStudio-Linux-x86_64.AppImage"
           chmod +x "$GITHUB_WORKSPACE/CapStudio-Linux-x86_64.AppImage"
           echo "Built CapStudio-Linux-x86_64.AppImage"
 
