@@ -149,6 +149,33 @@ flutter run
 
 ---
 
+## 🚀 Release Artifacts & Multi-Architecture Matrix
+
+CapStudio builds two distinct categories of artifacts via its unified CI/CD workflow (`.github/workflows/build.yml`):
+
+### Category A: CapStudio Applications (Installers & App Bundles)
+Complete, installable desktop and mobile applications. Desktop packages bundle FFmpeg 7.1 directly inside the application, while mobile packages compile Whisper and FFmpeg natively into the app binaries.
+
+| Platform | Target CPU Architecture | Output Artifacts | Details |
+|---|---|---|---|
+| **Android** | `Universal` (FAT)<br>`arm64-v8a`<br>`armeabi-v7a`<br>`x86_64` | `CapStudio-Android-Universal.apk`<br>`CapStudio-Android-arm64-v8a.apk`<br>`CapStudio-Android-armeabi-v7a.apk`<br>`CapStudio-Android-x86_64.apk`<br>`CapStudio-Android.aab` | Dedicated per-ABI APK splits (~100MB) for lightweight distribution, Universal APK for all devices, and Google Play Bundle (AAB). Built-in NDK FFmpegKit & JNI Whisper. |
+| **Windows** | `x64` (Intel/AMD & ARM64 emulated) | `CapStudio-Windows-x64.zip`<br>`CapStudio-Windows-x64.msix`<br>`CapStudio-Setup-Windows-x64.exe` | Portable ZIP, Windows Store UWP/MSIX package, and Inno Setup installer. Bundles static `ffmpeg.exe` and `ffprobe.exe` (7.1). |
+| **macOS** | `Universal` (`arm64` + `x86_64`) | `CapStudio-macOS-Universal.dmg` | Universal Mach-O DMG package supporting both Apple Silicon (M1–M4) and Intel Macs natively. Bundles static FFmpeg 7.1. |
+| **Linux** | `x86_64` (AMD64) | `CapStudio-Linux-x64.tar.gz`<br>`CapStudio-Linux-x86_64.AppImage`<br>`capstudio_${VERSION}_amd64.deb` | Portable tarball, Debian/Ubuntu package, and Universal AppImage with desktop and AppStream metadata. Bundles static FFmpeg. |
+| **iOS** | `arm64` | `CapStudio-iOS-arm64.tar.gz` | iOS hardware release bundle for 64-bit Apple mobile devices. Pre-compiles `whisper.xcframework`. |
+| **Web** | WebAssembly / JS | `CapStudio-Web.zip` | Architecture-independent web application distribution. |
+
+### Category B: Standalone Tool Binaries (On-Demand AI & Media Tools)
+Published in release assets for offline setups or downloaded automatically by CapStudio's in-app binary downloader service:
+
+| Platform | Whisper CLI Binaries | FFmpeg Binaries |
+|---|---|---|
+| **Windows** | • `whisper-cli-win-x64-avx.zip` (AVX2 / Modern CPUs)<br>• `whisper-cli-win-x64-noavx.zip` (Generic / Older CPUs)<br>• `whisper-cli-win-arm64.zip` (Snapdragon ARM64) | • `ffmpeg-windows.zip` (x64)<br>• `ffmpeg-windows-arm64.zip` (ARM64) |
+| **macOS** | • `whisper-cli-mac-universal.zip` (Universal binary for Apple Silicon & Intel with Metal acceleration) | • `ffmpeg-macos.zip` (Static macOS build) |
+| **Linux** | • `whisper-cli-linux-x64.zip` (x86_64)<br>• `whisper-cli-linux-arm64.zip` (aarch64) | • `ffmpeg-linux.zip` (x86_64)<br>• `ffmpeg-linux-arm64.zip` (aarch64) |
+
+---
+
 ## 📂 Codebase Architecture
 
 ```text

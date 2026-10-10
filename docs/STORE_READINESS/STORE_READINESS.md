@@ -41,7 +41,7 @@ monetization, evaluate the LGPL renderer swap as a separate project.
 
 ## 2. Google Play (Android)
 
-CI already produces `app-release.aab` (`build_android` job) and signs it via
+CI produces `CapStudio-Android.aab` (as well as split APKs: `CapStudio-Android-Universal.apk`, `CapStudio-Android-arm64-v8a.apk`, `CapStudio-Android-armeabi-v7a.apk`, `CapStudio-Android-x86_64.apk` via the `build_android` job) and signs it via
 the `KEYSTORE_*` secrets.
 
 - [ ] **App signing:** generate a release keystore (`keytool`), store it
@@ -64,7 +64,7 @@ the `KEYSTORE_*` secrets.
 
 ## 3. Apple App Store (iOS)
 
-CI produces an unsigned `Runner.app` (`build_ios` job, `--no-codesign`).
+CI produces `CapStudio-iOS-arm64.tar.gz` containing `Runner.app` (`build_ios` job, `--no-codesign`).
 Submission requires an Apple account with signing certs.
 
 - [ ] **Certificates:** create a distribution certificate + provisioning
