@@ -248,6 +248,8 @@ assets/archive/*.tar.gz
 # ------------------------------------------------------------------------------
 capstudio_*.deb
 CapStudio-*.zip
+CapStudio-*.tar.gz
+*.AppImage
 CapStudio.dmg
 ios-runner.tar.gz
 all_artifacts/

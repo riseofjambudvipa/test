@@ -44,7 +44,7 @@ on:
         type: boolean
         default: true
       build_linux:
-        description: 'Build Linux Package (.deb)'
+        description: 'Build Linux Packages (.deb, .tar.gz, .AppImage)'
         required: true
         type: boolean
         default: true
@@ -346,14 +346,25 @@ jobs:
 
       - run: flutter pub get
 
-      - name: Build macOS (no-codesign)
-        run: flutter build macos --release --no-codesign
+      - name: Prepare macOS Pods & Strip AppleDouble Resource Forks
+        run: |
+          flutter build macos --config-only
+          cd macos && pod install && cd ..
+          dot_clean -m macos/Pods 2>/dev/null || true
+          find macos/Pods -name '._*' -delete 2>/dev/null || true
+          find macos/Pods -name '_CodeSignature' -type d -exec rm -rf {} + 2>/dev/null || true
+          xattr -cr macos/Pods 2>/dev/null || true
+
+      - name: Build macOS
+        run: flutter build macos --release
 
       - name: Ad-hoc CodeSign app bundle
         run: |
           APP="build/macos/Build/Products/Release/CapStudio.app"
           if [ -d "$APP" ]; then
             echo "Cleaning extended attributes and stale framework signatures..."
+            dot_clean -m "$APP" 2>/dev/null || true
+            find "$APP" -name "._*" -delete 2>/dev/null || true
             find "$APP/Contents/Frameworks" -name "_CodeSignature" -type d -exec rm -rf {} + 2>/dev/null || true
             xattr -cr "$APP" 2>/dev/null || true
             echo "Applying ad-hoc code signature..."
@@ -383,7 +394,7 @@ jobs:
           path: build/macos/Build/Products/Release/CapStudio.dmg
 
   # =========================================================================
-  # 5. LINUX PACKAGE
+  # 5. LINUX PACKAGES (.deb, .tar.gz, .AppImage)
   # =========================================================================
   build_linux:
     name: Build Linux
@@ -414,7 +425,7 @@ jobs:
             libgtk-3-dev liblzma-dev libstdc++-12-dev \
             libgl1-mesa-dev libgles2-mesa-dev libmpv-dev \
             libvlc-dev vlc-bin libasound2-dev libpulse-dev \
-            libjson-glib-dev
+            libjson-glib-dev file desktop-file-utils
 
       - run: flutter pub get
 
@@ -439,16 +450,74 @@ jobs:
           chmod +x "$BUNDLE_BIN/ffmpeg"
           echo "Bundled static FFmpeg into bundle/bin/"
 
-      - name: Build Debian Package
+      - name: Build Debian Package (.deb)
         run: |
-          chmod +x third_party/scripts/create_deb.sh
-          ./third_party/scripts/create_deb.sh
+          chmod +x scripts/create_deb.sh
+          ./scripts/create_deb.sh
 
-      - name: Upload Linux Artifact
+      - name: Build Portable Tarball (.tar.gz) & Universal AppImage (.AppImage)
+        run: |
+          set -e
+          BUNDLE_DIR="$GITHUB_WORKSPACE/build/linux/x64/release/bundle"
+          if [ -f "$BUNDLE_DIR/CapStudio" ] && [ ! -f "$BUNDLE_DIR/capstudio" ]; then
+            cp "$BUNDLE_DIR/CapStudio" "$BUNDLE_DIR/capstudio"
+          fi
+          chmod +x "$BUNDLE_DIR/CapStudio" "$BUNDLE_DIR/capstudio" 2>/dev/null || true
+
+          # 1. Portable Linux x64 Tarball (works on Fedora, Arch, openSUSE, Ubuntu, etc.)
+          tar -czf "CapStudio-Linux-x64.tar.gz" -C "$BUNDLE_DIR" .
+          echo "Built CapStudio-Linux-x64.tar.gz"
+
+          # 2. Universal Linux x86_64 AppImage
+          APPDIR="/tmp/CapStudio.AppDir"
+          rm -rf "$APPDIR"
+          mkdir -p "$APPDIR/usr/bin" "$APPDIR/usr/share/icons/hicolor/256x256/apps"
+          cp -r "$BUNDLE_DIR/." "$APPDIR/usr/bin/"
+          if [ -f "assets/logo/logo.png" ]; then
+            cp "assets/logo/logo.png" "$APPDIR/capstudio.png"
+            cp "assets/logo/logo.png" "$APPDIR/usr/share/icons/hicolor/256x256/apps/capstudio.png"
+          fi
+
+          cat > "$APPDIR/AppRun" << 'EOF'
+          #!/bin/bash
+          SELF=$(readlink -f "$0")
+          HERE=${SELF%/*}
+          export PATH="${HERE}/usr/bin:${HERE}/usr/bin/bin:${PATH}"
+          export LD_LIBRARY_PATH="${HERE}/usr/bin/lib:${LD_LIBRARY_PATH}"
+          if [ -x "${HERE}/usr/bin/capstudio" ]; then
+            exec "${HERE}/usr/bin/capstudio" "$@"
+          else
+            exec "${HERE}/usr/bin/CapStudio" "$@"
+          fi
+          EOF
+          chmod +x "$APPDIR/AppRun"
+
+          cat > "$APPDIR/capstudio.desktop" << 'EOF'
+          [Desktop Entry]
+          Name=CapStudio
+          GenericName=Caption Studio
+          Comment=Free offline AI caption studio
+          Exec=capstudio %U
+          Icon=capstudio
+          Type=Application
+          Terminal=false
+          Categories=AudioVideo;Video;
+          EOF
+
+          curl -fsSL --retry 5 -o /tmp/appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
+          chmod +x /tmp/appimagetool
+          ARCH=x86_64 /tmp/appimagetool --appimage-extract-and-run "$APPDIR" "$GITHUB_WORKSPACE/CapStudio-Linux-x86_64.AppImage"
+          chmod +x "$GITHUB_WORKSPACE/CapStudio-Linux-x86_64.AppImage"
+          echo "Built CapStudio-Linux-x86_64.AppImage"
+
+      - name: Upload Linux Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: linux-release
-          path: capstudio_*.deb
+          path: |
+            capstudio_*.deb
+            CapStudio-Linux-x64.tar.gz
+            CapStudio-Linux-x86_64.AppImage
 
   # =========================================================================
   # 6. IOS RUNNER
@@ -859,7 +928,7 @@ jobs:
       - name: Organize Release Assets
         run: |
           mkdir -p release_assets
-          find all_artifacts/ -type f \( -name "*.zip" -o -name "*.sha256" -o -name "*.apk" -o -name "*.aab" -o -name "*.dmg" -o -name "*.deb" -o -name "*.tar.gz" \) -exec cp {} release_assets/ \;
+          find all_artifacts/ -type f \( -name "*.zip" -o -name "*.sha256" -o -name "*.apk" -o -name "*.aab" -o -name "*.dmg" -o -name "*.deb" -o -name "*.tar.gz" -o -name "*.AppImage" \) -exec cp {} release_assets/ \;
           echo "=== Release assets to be published ==="
           ls -lh release_assets/
 

@@ -8,7 +8,11 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+if [ -f "$SCRIPT_DIR/../pubspec.yaml" ]; then
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+else
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+fi
 DEB_BUILD_DIR="/tmp/capstudio_deb"
 BUNDLE_SRC="$PROJECT_ROOT/build/linux/x64/release/bundle"
 
@@ -43,14 +47,23 @@ mkdir -p "$DEB_BUILD_DIR/DEBIAN"
 # Keeps lib/ and data/ directories intact alongside the executable.
 echo "Copying compiled release bundle..."
 cp -r "$BUNDLE_SRC/." "$DEB_BUILD_DIR/opt/capstudio/"
-chmod +x "$DEB_BUILD_DIR/opt/capstudio/capstudio"
+if [ -f "$DEB_BUILD_DIR/opt/capstudio/CapStudio" ] && [ ! -f "$DEB_BUILD_DIR/opt/capstudio/capstudio" ]; then
+    cp "$DEB_BUILD_DIR/opt/capstudio/CapStudio" "$DEB_BUILD_DIR/opt/capstudio/capstudio"
+fi
+[ -f "$DEB_BUILD_DIR/opt/capstudio/capstudio" ] && chmod +x "$DEB_BUILD_DIR/opt/capstudio/capstudio"
+[ -f "$DEB_BUILD_DIR/opt/capstudio/CapStudio" ] && chmod +x "$DEB_BUILD_DIR/opt/capstudio/CapStudio"
+[ -f "$DEB_BUILD_DIR/opt/capstudio/bin/ffmpeg" ] && chmod +x "$DEB_BUILD_DIR/opt/capstudio/bin/ffmpeg"
 
 # Step 4: /usr/bin/capstudio wrapper — sets LD_LIBRARY_PATH before exec
 cat > "$DEB_BUILD_DIR/usr/bin/capstudio" << 'WRAPPER'
 #!/bin/bash
 INSTALL_DIR="/opt/capstudio"
 export LD_LIBRARY_PATH="$INSTALL_DIR/lib:$LD_LIBRARY_PATH"
-exec "$INSTALL_DIR/capstudio" "$@"
+if [ -x "$INSTALL_DIR/capstudio" ]; then
+    exec "$INSTALL_DIR/capstudio" "$@"
+else
+    exec "$INSTALL_DIR/CapStudio" "$@"
+fi
 WRAPPER
 chmod +x "$DEB_BUILD_DIR/usr/bin/capstudio"
 
@@ -78,7 +91,9 @@ EOF
 cat > "$DEB_BUILD_DIR/DEBIAN/postinst" << 'EOF'
 #!/bin/bash
 chmod -R 755 /opt/capstudio
-chmod +x /opt/capstudio/capstudio
+[ -f /opt/capstudio/capstudio ] && chmod +x /opt/capstudio/capstudio
+[ -f /opt/capstudio/CapStudio ] && chmod +x /opt/capstudio/CapStudio
+[ -f /opt/capstudio/bin/ffmpeg ] && chmod +x /opt/capstudio/bin/ffmpeg
 chmod +x /usr/bin/capstudio
 EOF
 chmod 755 "$DEB_BUILD_DIR/DEBIAN/postinst"

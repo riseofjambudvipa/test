@@ -317,7 +317,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"$PRODUCT_NAME.app\" > \"$PROJECT_DIR\"/Flutter/ephemeral/.app_filename && \"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh embed\n";
+			shellScript = "find \"$BUILT_PRODUCTS_DIR\" \"$PROJECT_DIR/Pods\" -name \"._*\" -delete 2>/dev/null || true; xattr -cr \"$BUILT_PRODUCTS_DIR\" \"$PROJECT_DIR/Pods\" 2>/dev/null || true; echo \"$PRODUCT_NAME.app\" > \"$PROJECT_DIR\"/Flutter/ephemeral/.app_filename && \"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh embed\n";
 		};
 		33CC111E2044C6BF0003C045 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -337,7 +337,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh && touch Flutter/ephemeral/tripwire";
+			shellScript = "find \"$PROJECT_DIR/Pods\" -name \"._*\" -delete 2>/dev/null || true; xattr -cr \"$PROJECT_DIR/Pods\" 2>/dev/null || true; \"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh && touch Flutter/ephemeral/tripwire";
 		};
 /* End PBXShellScriptBuildPhase section */
 

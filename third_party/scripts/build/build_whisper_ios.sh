@@ -2,7 +2,11 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+if [ -f "$SCRIPT_DIR/../../pubspec.yaml" ]; then
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+else
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+fi
 
 WHISPER_ROOT="$PROJECT_ROOT/third_party/whisper.cpp"
 OUTPUT_DIR="$PROJECT_ROOT/ios/whisper_xcframework"
@@ -24,6 +28,7 @@ cmake -G Xcode \
     -DCMAKE_OSX_ARCHITECTURES="arm64" \
     -DCMAKE_OSX_DEPLOYMENT_TARGET="16.0" \
     -DCMAKE_BUILD_TYPE=Release \
+    -DGGML_METAL=OFF \
     -DBUILD_SHARED_LIBS=OFF \
     -DWHISPER_BUILD_TESTS=OFF \
     -DWHISPER_BUILD_EXAMPLES=OFF \
@@ -41,6 +46,7 @@ cmake -G Xcode \
     -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
     -DCMAKE_OSX_DEPLOYMENT_TARGET="16.0" \
     -DCMAKE_BUILD_TYPE=Release \
+    -DGGML_METAL=OFF \
     -DBUILD_SHARED_LIBS=OFF \
     -DWHISPER_BUILD_TESTS=OFF \
     -DWHISPER_BUILD_EXAMPLES=OFF \
