@@ -9,6 +9,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:path/path.dart' as p;
 
 import '../database/isar_service.dart';
+import '../audio/audio_service.dart';
 import '../logger/logger_service.dart';
 import '../settings/settings_service.dart';
 import '../fonts/font_service.dart';
@@ -71,29 +72,38 @@ class AppInitializer {
     await SettingsService.instance.init();
     LoggerService.instance.log(LogLevel.info, 'Settings', 'SettingsService successfully initialized.');
 
+    // Initialize Asset Path Service
+    try {
+      await AssetPathService.instance.init();
+      LoggerService.instance.log(LogLevel.info, 'Assets', 'AssetPathService successfully initialized.');
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.error, 'Assets', 'AssetPathService init failed: $e');
+    }
+
     // Extract pre-packaged Whisper model from assets if it does not exist in local app support path
     if (!kIsWeb) {
       try {
-        final modelDir = Directory(p.join(AppDirs.support, 'models'));
-        if (!modelDir.existsSync()) {
-          await modelDir.create(recursive: true);
+        final modelsDir = Directory(AssetPathService.instance.modelsDir);
+        if (!modelsDir.existsSync()) {
+          await modelsDir.create(recursive: true);
         }
-        final localModelPath = p.join(modelDir.path, 'ggml-tiny.bin');
-        final localModelFile = File(localModelPath);
+        final resolvedModelPath = AssetPathService.instance.resolveModelPath('tiny');
+        final localModelFile = File(resolvedModelPath);
         if (!localModelFile.existsSync()) {
           LoggerService.instance.log(LogLevel.info, 'Settings', 'Pre-packaged tiny model not found in support path. Copying from assets...');
+          final targetPath = p.join(modelsDir.path, 'ggml-tiny.bin');
           await rootBundle.load('assets/models/ggml-tiny.bin').then((byteData) async {
             final bytes = byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
             // Write the 75MB file in a background isolate to keep UI perfectly responsive
             await Isolate.run(() async {
-              final file = File(localModelPath);
+              final file = File(targetPath);
               await file.writeAsBytes(bytes, flush: true);
             });
-            LoggerService.instance.log(LogLevel.info, 'Settings', 'Pre-packaged tiny model successfully copied to support path.');
+            LoggerService.instance.log(LogLevel.info, 'Settings', 'Pre-packaged tiny model successfully copied to models path.');
             
             // Auto-set as default model if none is selected
             if ((SettingsService.instance.whisperModelPath ?? '').isEmpty) {
-              await SettingsService.instance.setWhisperModelPath(localModelPath);
+              await SettingsService.instance.setWhisperModelPath(targetPath);
               await SettingsService.instance.setWhisperModelName('tiny');
               LoggerService.instance.log(LogLevel.info, 'Settings', 'Pre-packaged tiny model auto-configured as active Whisper model.');
             }
@@ -103,7 +113,7 @@ class AppInitializer {
         } else {
           // Model exists on disk. If settings don't point to any model, auto-point to this one!
           if ((SettingsService.instance.whisperModelPath ?? '').isEmpty) {
-            await SettingsService.instance.setWhisperModelPath(localModelPath);
+            await SettingsService.instance.setWhisperModelPath(resolvedModelPath);
             await SettingsService.instance.setWhisperModelName('tiny');
             LoggerService.instance.log(LogLevel.info, 'Settings', 'Pre-packaged tiny model auto-configured as active Whisper model (already on disk).');
           }
@@ -141,28 +151,46 @@ class AppInitializer {
     await IsarService.instance.init();
     LoggerService.instance.log(LogLevel.info, 'Database', 'Isar Database successfully initialized.');
 
-    // Initialize Asset Path Service
-    try {
-      await AssetPathService.instance.init();
-      LoggerService.instance.log(LogLevel.info, 'Assets', 'AssetPathService successfully initialized.');
-      
-      // Clean up orphaned temporary files in assets temp folder on startup
+    // Ensure default SFX are generated and registered ONCE at startup
+    if (!kIsWeb) {
       try {
-        final tempDir = Directory(AssetPathService.instance.tempDir);
-        if (tempDir.existsSync()) {
-          await for (final entity in tempDir.list(recursive: true)) {
-            if (entity is File) {
-              await entity.delete();
-            }
+        final sfxDir = AssetPathService.instance.sfxDir;
+          final sfxDirObj = Directory(sfxDir);
+          if (!sfxDirObj.existsSync()) {
+            sfxDirObj.createSync(recursive: true);
           }
-          LoggerService.instance.log(LogLevel.info, 'Initialization', 'Cleaned up orphaned temporary files in assets temp folder.');
+          await AudioService.instance.ensureDefaultSfx(sfxDir);
+        } catch (e) {
+          LoggerService.instance.log(LogLevel.error, 'SFX', 'SFX generation failed: $e');
         }
-      } catch (e) {
-        LoggerService.instance.log(LogLevel.warning, 'Initialization', 'Failed to clean up assets temp directory on boot: $e');
       }
-    } catch (e) {
-      LoggerService.instance.log(LogLevel.error, 'Assets', 'Failed to initialize asset path: $e');
-    }
+
+      // Clean up orphaned temporary files in assets temp folder on startup.
+      // Exclude recent video exports (< 24 hours old) to prevent data loss on unexpected app restarts.
+      if (!kIsWeb) {
+        try {
+          final tempDir = Directory(AssetPathService.instance.tempDir);
+          if (tempDir.existsSync()) {
+            final now = DateTime.now();
+            await for (final entity in tempDir.list(recursive: true)) {
+              if (entity is File) {
+                if (entity.path.endsWith('.mp4')) {
+                  try {
+                    final stat = await entity.stat();
+                    if (now.difference(stat.modified).inHours < 24) {
+                      continue; // Preserve recent export
+                    }
+                  } catch (_) {}
+                }
+                await entity.delete();
+              }
+            }
+            LoggerService.instance.log(LogLevel.info, 'Initialization', 'Cleaned up orphaned temporary files in assets temp folder.');
+          }
+        } catch (e) {
+          LoggerService.instance.log(LogLevel.warning, 'Initialization', 'Failed to clean up assets temp directory on boot: $e');
+        }
+      }
 
     // Load Asset Manifest
     AssetManifest manifest;

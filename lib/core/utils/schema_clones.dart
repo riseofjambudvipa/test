@@ -52,7 +52,8 @@ class SchemaClones {
             ..speed = w.emojiConfig!.speed)
           : null
       ..soundEffect = w.soundEffect
-      ..soundVolume = w.soundVolume;
+      ..soundVolume = w.soundVolume
+      ..speaker = w.speaker;
   }
 
   static StyleConfigSchema cloneStyle(StyleConfigSchema s) {
@@ -63,6 +64,7 @@ class SchemaClones {
       ..color = s.color
       ..fontSize = s.fontSize
       ..top = s.top
+      ..left = s.left
       ..highlightBackground = s.highlightBackground
       ..letterSpacing = s.letterSpacing
       ..lineHeight = s.lineHeight;

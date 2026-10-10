@@ -7,8 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import '../../../../../app/theme.dart';
 import '../../../../../app/theme_provider.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../core/logger/logger_service.dart';
 import '../../../../../core/settings/settings_service.dart';
 import '../../../../../core/whisper/whisper_service.dart';
@@ -19,8 +21,13 @@ import '../../controllers/editor_controller.dart';
 import '../../../../../core/database/schemas/project.dart';
 import '../../../../../core/utils/web_download_helper.dart';
 import '../../../../../core/utils/web_wasm_bridge.dart';
+import '../../../../../core/video/video_web_helper.dart';
 import '../../../../../core/utils/premium_blur_dialog.dart';
 import '../../../../../core/assets/asset_path_service.dart';
+import 'export_panel/subtitle_export_section.dart';
+import 'export_panel/project_bundle_card.dart';
+import 'export_panel/audio_enhancement_card.dart';
+import 'export_panel/auto_reframe_export_card.dart';
 
 class ExportPanel extends ConsumerStatefulWidget {
   const ExportPanel({super.key});
@@ -35,18 +42,112 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
   String _exportMode = 'fast';
   int _exportFps = 30;
   bool _isFastModeSupported = true;
+  bool _enableStudioSound = false;
+  AudioMasteringConfig _audioMastering = const AudioMasteringConfig();
+  bool _enableAudioCrossfade = true;
+  AspectConversionMode? _conversionMode;
+  bool _hasInitializedReframe = false;
+  BackgroundMusicConfig _backgroundMusic = const BackgroundMusicConfig();
 
   @override
   void initState() {
     super.initState();
-    // Default output directory is read from settings or the project video path's parent
+    _backgroundMusic = ref.read(editorProvider).backgroundMusicConfig;
     if (!kIsWeb) {
       final defaultFolder = SettingsService.instance.outputFolder;
-      if (defaultFolder != null && Directory(defaultFolder).existsSync()) {
+      if (defaultFolder != null && defaultFolder.isNotEmpty && Directory(defaultFolder).existsSync()) {
         _selectedDirectory = defaultFolder;
+      } else {
+        _initDefaultDirectory();
       }
       _checkFastModeSupport();
     }
+  }
+
+  Future<void> _initDefaultDirectory() async {
+    final project = ref.read(editorProvider).project;
+    if (project != null) {
+      final dir = await _resolveDefaultExportDirectory(project);
+      if (mounted && _selectedDirectory == null && dir.isNotEmpty) {
+        setState(() {
+          _selectedDirectory = dir;
+        });
+      }
+    }
+  }
+
+  Future<String> _resolveDefaultExportDirectory(Project project) async {
+    if (kIsWeb) return '';
+
+    // 1. Explicit user setting in SettingsService
+    final savedFolder = SettingsService.instance.outputFolder;
+    if (savedFolder != null && savedFolder.trim().isNotEmpty && Directory(savedFolder).existsSync()) {
+      return savedFolder;
+    }
+
+    // 2. Original video directory IF it's a real user video outside app demo/assets/temp
+    final videoPath = project.videoPath;
+    if (videoPath.isNotEmpty) {
+      final normalized = videoPath.replaceAll('\\', '/').toLowerCase();
+      final isInternal = normalized.contains('/assets/') ||
+          normalized.contains('/demo/') ||
+          normalized.contains('appdata') ||
+          normalized.contains('/temp/') ||
+          normalized.contains('/app_flutter/');
+      if (!isInternal) {
+        final dir = p.dirname(videoPath);
+        if (Directory(dir).existsSync()) return dir;
+      }
+    }
+
+    // 3. User's OS standard Videos, Downloads, or Documents directory
+    try {
+      if (!kIsWeb && Platform.isWindows) {
+        final userProfile = Platform.environment['USERPROFILE'];
+        if (userProfile != null) {
+          final videos = p.join(userProfile, 'Videos');
+          if (Directory(videos).existsSync()) return videos;
+          final downloads = p.join(userProfile, 'Downloads');
+          if (Directory(downloads).existsSync()) return downloads;
+          final docs = p.join(userProfile, 'Documents');
+          if (Directory(docs).existsSync()) return docs;
+        }
+      }
+      final downloads = await getDownloadsDirectory();
+      if (downloads != null && downloads.existsSync()) return downloads.path;
+      final docs = await getApplicationDocumentsDirectory();
+      return docs.path;
+    } catch (_) {
+      return '';
+    }
+  }
+
+  String _getEffectiveOutputDir(Project project) {
+    if (_selectedDirectory != null && _selectedDirectory!.isNotEmpty) {
+      return _selectedDirectory!;
+    }
+    final videoPath = project.videoPath;
+    if (!kIsWeb && videoPath.isNotEmpty) {
+      final normalized = videoPath.replaceAll('\\', '/').toLowerCase();
+      final isInternal = normalized.contains('/assets/') ||
+          normalized.contains('/demo/') ||
+          normalized.contains('appdata') ||
+          normalized.contains('/temp/') ||
+          normalized.contains('/app_flutter/');
+      if (!isInternal) {
+        return p.dirname(videoPath);
+      }
+    }
+    if (!kIsWeb && Platform.isWindows) {
+      final userProfile = Platform.environment['USERPROFILE'];
+      if (userProfile != null) {
+        final videos = p.join(userProfile, 'Videos');
+        if (Directory(videos).existsSync()) return videos;
+        final downloads = p.join(userProfile, 'Downloads');
+        if (Directory(downloads).existsSync()) return downloads;
+      }
+    }
+    return '';
   }
 
   Future<void> _checkFastModeSupport() async {
@@ -72,9 +173,12 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
     final state = ref.read(editorProvider);
     final project = state.project;
     if (project == null) return;
+    // Capture the localization object up front — it is safe to use after
+    // await gaps because the object is locale-scoped, not element-scoped.
+    final l10n = AppLocalizations.of(context)!;
 
     final defaultFileName = '${p.basenameWithoutExtension(project.name)}.$type';
-    
+
     try {
       String content;
       if (type == 'srt') {
@@ -92,11 +196,12 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${type.toUpperCase()} exported successfully!'),
+              content: Text(l10n.exportSuccess(type.toUpperCase())),
               backgroundColor: AppTheme.accentGreen,
             ),
           );
-          LoggerService.instance.log(LogLevel.action, 'ExportPanel', 'Exported $type via web download');
+          LoggerService.instance.log(LogLevel.action, 'ExportPanel',
+              'Exported $type via web download');
         }
         return;
       }
@@ -105,7 +210,7 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
 
       // Save file path selector
       final result = await FilePicker.saveFile(
-        dialogTitle: 'Export ${type.toUpperCase()} Subtitles',
+        dialogTitle: l10n.exportSubtitlesDialogTitle(type.toUpperCase()),
         fileName: defaultFileName,
         type: FileType.custom,
         allowedExtensions: [type],
@@ -115,8 +220,8 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
       if (result == null) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No save location selected. Please choose a file path.'),
+            SnackBar(
+              content: Text(l10n.exportNoLocation),
             ),
           );
         }
@@ -127,25 +232,27 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
       if (!kIsWeb && !(Platform.isAndroid || Platform.isIOS)) {
         await SubtitleExporter.saveToFile(content, result);
       }
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${type.toUpperCase()} exported successfully!'),
+            content: Text(l10n.exportSuccess(type.toUpperCase())),
             backgroundColor: AppTheme.accentGreen,
           ),
         );
-        LoggerService.instance.log(LogLevel.action, 'ExportPanel', 'Exported $type to $result');
+        LoggerService.instance
+            .log(LogLevel.action, 'ExportPanel', 'Exported $type to $result');
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to export: $e'),
-            backgroundColor: Colors.redAccent,
+            content: Text(l10n.exportFailed('$e')),
+            backgroundColor: AppTheme.accentRed,
           ),
         );
-        LoggerService.instance.log(LogLevel.error, 'ExportPanel', 'Failed to export $type: $e');
+        LoggerService.instance
+            .log(LogLevel.error, 'ExportPanel', 'Failed to export $type: $e');
       }
     }
   }
@@ -153,7 +260,8 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
   Future<String?> _getMobileOutputPath(Project project, String format) async {
     if (kIsWeb) return null;
     if (Platform.isAndroid || Platform.isIOS) {
-      final tempDir = Directory(p.join(AssetPathService.instance.tempDir, 'subtitles'));
+      final tempDir =
+          Directory(p.join(AssetPathService.instance.tempDir, 'subtitles'));
       if (!tempDir.existsSync()) {
         tempDir.createSync(recursive: true);
       }
@@ -167,6 +275,63 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
     final project = state.project;
     if (project == null) return;
 
+    final visibleWords = project.words.where((w) => w.hidden != true).toList();
+    if (visibleWords.isEmpty) {
+      final proceed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => PremiumBlurDialog(
+          maxWidth: 380,
+          glowColor: AppTheme.accentOrange,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.subtitles_off_rounded, color: AppTheme.accentOrange, size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    'No Captions in Project',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryText,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'This project currently has 0 captions. If you export now, the exported video will contain NO burned-in subtitles.\n\nDo you want to export the raw video anyway, or cancel and add captions first?',
+                style: TextStyle(color: AppTheme.secondaryText, fontSize: 13, height: 1.4),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, false),
+                    child: Text('Add Captions First', style: TextStyle(color: AppTheme.accentOrange, fontWeight: FontWeight.bold)),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.cardBgElevated,
+                      foregroundColor: AppTheme.secondaryText,
+                    ),
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: const Text('Export Without Captions'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+      if (proceed != true) return;
+      if (!mounted) return;
+    }
+
     if (kIsWeb) {
       await _startVideoExportWeb(project);
       return;
@@ -179,39 +344,44 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
     if (isMobile) {
       final mobilePath = await _getMobileOutputPath(project, 'mp4');
       if (mobilePath == null) return;
-      
+
       final String baseName = _outputNameController.text.trim().isNotEmpty
           ? _outputNameController.text.trim()
           : '${p.basenameWithoutExtension(project.name)}_capped';
-      
-      final String cleanBaseName = baseName.endsWith('.mp4') 
-          ? baseName.substring(0, baseName.length - 4) 
+
+      final String cleanBaseName = baseName.endsWith('.mp4')
+          ? baseName.substring(0, baseName.length - 4)
           : baseName;
-          
+
       outputFilePath = p.join(p.dirname(mobilePath), '$cleanBaseName.mp4');
     } else {
-      ffmpegPath = SettingsService.instance.ffmpegCliPath ?? WhisperService.instance.ffmpegCliPath;
+      ffmpegPath = SettingsService.instance.ffmpegCliPath ??
+          WhisperService.instance.ffmpegCliPath;
       // Accept bare command names (e.g. 'ffmpeg', 'ffmpeg.exe') that are
       // resolved via the system PATH at runtime. Only validate the filesystem
       // when the path contains a directory separator, indicating an absolute path.
-      final looksLikeAbsolutePath = ffmpegPath.contains('/') || ffmpegPath.contains('\\');
-      if (kIsWeb || ffmpegPath.isEmpty || (looksLikeAbsolutePath && !File(ffmpegPath).existsSync())) {
+      final looksLikeAbsolutePath =
+          ffmpegPath.contains('/') || ffmpegPath.contains('\\');
+      if (kIsWeb ||
+          ffmpegPath.isEmpty ||
+          (looksLikeAbsolutePath && !File(ffmpegPath).existsSync())) {
         _showFfmpegWarning();
         return;
       }
 
-      final String outputDir = _selectedDirectory ?? (!kIsWeb && project.videoPath.isNotEmpty ? p.dirname(project.videoPath) : '');
+      final String outputDir = _getEffectiveOutputDir(project);
       final String baseName = _outputNameController.text.trim().isNotEmpty
           ? _outputNameController.text.trim()
           : '${p.basenameWithoutExtension(project.name)}_capped';
-      
-      final String cleanBaseName = baseName.endsWith('.mp4') 
-          ? baseName.substring(0, baseName.length - 4) 
+
+      final String cleanBaseName = baseName.endsWith('.mp4')
+          ? baseName.substring(0, baseName.length - 4)
           : baseName;
 
       if (SettingsService.instance.alwaysAskExportPath) {
+        final l10n = AppLocalizations.of(context)!;
         final result = await FilePicker.saveFile(
-          dialogTitle: 'Export Video MP4',
+          dialogTitle: l10n.exportVideoDialogTitle,
           fileName: '$cleanBaseName.mp4',
           type: FileType.custom,
           allowedExtensions: ['mp4'],
@@ -220,8 +390,8 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
         if (result == null) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('No save location selected. Export cancelled.'),
+              SnackBar(
+                content: Text(l10n.exportNoLocationCancelled),
               ),
             );
           }
@@ -246,12 +416,20 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
           ffmpegPath: ffmpegPath,
           exportMode: _exportMode,
           exportFps: _exportFps,
+          enableStudioSound: _enableStudioSound,
+          audioMastering: _audioMastering,
+          enableAudioCrossfade: _enableAudioCrossfade,
+          progressBarConfig: ref.read(editorProvider).retentionBarConfig,
+          conversionMode: _conversionMode,
+          backgroundMusic: _backgroundMusic,
+          bRollClips: ref.read(editorProvider).bRollClips,
         );
       },
     ));
   }
 
   void _showFfmpegWarning() {
+    final l10n = AppLocalizations.of(context)!;
     showDialog<void>(
       context: context,
       builder: (context) {
@@ -264,10 +442,11 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
             children: [
               Row(
                 children: [
-                  Icon(Icons.warning_amber_rounded, color: AppTheme.accentOrange, size: 20),
+                  Icon(Icons.warning_amber_rounded,
+                      color: AppTheme.accentOrange, size: 20),
                   const SizedBox(width: 8),
                   Text(
-                    'FFmpeg Required',
+                    l10n.ffmpegRequiredTitle,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -278,7 +457,7 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
               ),
               const SizedBox(height: 12),
               Text(
-                'A local installation of FFmpeg is required to burn subtitles into a video file.\n\nPlease configure the FFmpeg path in Settings.',
+                l10n.ffmpegRequiredBody,
                 style: TextStyle(color: AppTheme.secondaryText, fontSize: 13),
               ),
               const SizedBox(height: 20),
@@ -287,7 +466,8 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text('OK', style: TextStyle(color: AppTheme.secondaryText)),
+                    child: Text(l10n.okLabel,
+                        style: TextStyle(color: AppTheme.secondaryText)),
                   ),
                 ],
               ),
@@ -299,6 +479,7 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
   }
 
   Future<void> _startVideoExportWeb(Project project) async {
+    final l10n = AppLocalizations.of(context)!;
     double progress = 0.0;
     String status = 'Initializing...';
 
@@ -318,7 +499,7 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Exporting Video (Client-Side)',
+                    l10n.exportWebTitle,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -329,10 +510,12 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                   LinearProgressIndicator(
                     value: progress,
                     color: AppTheme.accentOrange,
-                    backgroundColor: Colors.white12,
+                    backgroundColor: AppTheme.dividerColor,
                   ),
                   const SizedBox(height: 16),
-                  Text(status, style: TextStyle(color: AppTheme.secondaryText, fontSize: 12)),
+                  Text(status,
+                      style: TextStyle(
+                          color: AppTheme.secondaryText, fontSize: 12)),
                   const SizedBox(height: 8),
                   Text(
                     '${(progress * 100).toStringAsFixed(0)}%',
@@ -352,21 +535,23 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
 
     try {
       final assContent = SubtitleExporter.toAss(project);
-      
+
       final String baseName = _outputNameController.text.trim().isNotEmpty
           ? _outputNameController.text.trim()
           : '${p.basenameWithoutExtension(project.name)}_capped';
-      final String cleanName = baseName.endsWith('.mp4') ? baseName : '$baseName.mp4';
-      
+      final String cleanName =
+          baseName.endsWith('.mp4') ? baseName : '$baseName.mp4';
+
       final optionsJson = jsonEncode({
         'trimStart': project.trimStart,
         'trimEnd': project.trimEnd,
         'duration': project.duration,
         'fileName': cleanName,
+        'enableStudioSound': _enableStudioSound,
       });
 
       await WebWasmBridge.exportVideo(
-        videoUrl: project.videoPath,
+        videoUrl: resolveWebVideoUrl(project.videoPath),
         assContent: assContent,
         optionsJson: optionsJson,
         onProgress: (p, s) {
@@ -384,7 +569,7 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
       if (mounted && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Video exported successfully as $cleanName!'),
+            content: Text(l10n.exportWebSuccess(cleanName)),
             backgroundColor: AppTheme.accentGreen,
           ),
         );
@@ -396,8 +581,8 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
       if (mounted && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Rendering failed: $e'),
-            backgroundColor: Colors.redAccent,
+            content: Text(l10n.exportWebFailed('$e')),
+            backgroundColor: AppTheme.accentRed,
           ),
         );
       }
@@ -409,8 +594,15 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
     ref.watch(themeProvider);
     final project = ref.watch(editorProvider.select((s) => s.project));
     if (project == null) return const SizedBox.shrink();
+    if (!_hasInitializedReframe) {
+      _hasInitializedReframe = true;
+      if (project.height > project.width) {
+        _conversionMode = AspectConversionMode.blurPillarbox;
+      }
+    }
+    final l10n = AppLocalizations.of(context)!;
 
-    final defaultOutputDir = _selectedDirectory ?? (!kIsWeb && project.videoPath.isNotEmpty ? p.dirname(project.videoPath) : '');
+    final defaultOutputDir = _getEffectiveOutputDir(project);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -435,7 +627,7 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Client-side video export is enabled. Rendering runs locally in your browser.',
+                      l10n.exportWebEnabled,
                       style: TextStyle(
                         color: AppTheme.primaryText,
                         fontSize: 13,
@@ -473,7 +665,7 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Web export currently includes captions only — emoji and sound effects are not yet burned into the video. Export from the desktop or mobile app for the full result.',
+                      l10n.exportWebCaptionOnly,
                       style: TextStyle(
                         color: AppTheme.primaryText,
                         fontSize: 13,
@@ -486,37 +678,37 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
               ),
             ),
             const SizedBox(height: 20),
-          ] else ...[
-            _buildSectionHeader('BURN-IN VIDEO EXPORT'),
+          ],
+            _buildSectionHeader(l10n.exportBurnIn),
             const SizedBox(height: 8),
-
             GlassContainer(
               padding: const EdgeInsets.all(16),
               borderRadius: 12,
               borderOpacity: 0.08,
-              color: Colors.white.withValues(alpha: 0.02),
+              color: AppTheme.cardBg,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
                     controller: _outputNameController,
                     decoration: InputDecoration(
-                      labelText: 'Output Video Name',
-                      hintText: '${p.basenameWithoutExtension(project.name)}_capped',
+                      labelText: l10n.exportOutputName,
+                      hintText:
+                          '${p.basenameWithoutExtension(project.name)}_capped',
                       isDense: true,
                       border: const OutlineInputBorder(),
                       suffixText: '.mp4',
                     ),
                   ),
-                  const SizedBox(height: 16),
- 
-                  DropdownButtonFormField<String>(
+                  if (!kIsWeb) ...[
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
                     key: ValueKey(_exportMode),
                     initialValue: _exportMode,
-                    decoration: const InputDecoration(
-                      labelText: 'Export Mode',
+                    decoration: InputDecoration(
+                      labelText: l10n.exportMode,
                       isDense: true,
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                     dropdownColor: AppTheme.cardBg,
                     items: [
@@ -525,16 +717,16 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                         enabled: _isFastModeSupported,
                         child: Text(
                           _isFastModeSupported
-                              ? 'Fast (Native FFmpeg)'
-                              : 'Fast (Native FFmpeg) ⚠️ Unsupported',
+                              ? l10n.exportModeFast
+                              : l10n.exportModeFastUnsupported,
                           style: TextStyle(
-                            color: _isFastModeSupported ? null : Colors.white38,
+                            color: _isFastModeSupported ? null : AppTheme.mutedText,
                           ),
                         ),
                       ),
-                      const DropdownMenuItem(
+                      DropdownMenuItem(
                         value: 'slow',
-                        child: Text('Slow (1:1 Preview Render)'),
+                        child: Text(l10n.exportModeSlow),
                       ),
                     ],
                     onChanged: (val) {
@@ -549,18 +741,23 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                     const SizedBox(height: 16),
                     DropdownButtonFormField<int>(
                       initialValue: _exportFps,
-                      decoration: const InputDecoration(
-                        labelText: 'Target FPS',
+                      decoration: InputDecoration(
+                        labelText: l10n.exportTargetFps,
                         isDense: true,
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       dropdownColor: AppTheme.cardBg,
-                      items: const [
-                        DropdownMenuItem(value: 24, child: Text('24 FPS (Film)')),
-                        DropdownMenuItem(value: 25, child: Text('25 FPS (PAL)')),
-                        DropdownMenuItem(value: 30, child: Text('30 FPS (Standard)')),
-                        DropdownMenuItem(value: 50, child: Text('50 FPS')),
-                        DropdownMenuItem(value: 60, child: Text('60 FPS (Smooth)')),
+                      items: [
+                        DropdownMenuItem(
+                            value: 24, child: Text(l10n.exportFps24)),
+                        DropdownMenuItem(
+                            value: 25, child: Text(l10n.exportFps25)),
+                        DropdownMenuItem(
+                            value: 30, child: Text(l10n.exportFps30)),
+                        DropdownMenuItem(
+                            value: 50, child: Text(l10n.exportFps50)),
+                        DropdownMenuItem(
+                            value: 60, child: Text(l10n.exportFps60)),
                       ],
                       onChanged: (val) {
                         if (val != null) {
@@ -577,14 +774,15 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                       padding: const EdgeInsets.all(12),
                       borderRadius: 8,
                       borderOpacity: 0.15,
-                      color: Colors.redAccent.withValues(alpha: 0.1),
+                      color: AppTheme.accentRed.withValues(alpha: 0.1),
                       child: Row(
                         children: [
-                          const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 16),
+                          Icon(Icons.warning_amber_rounded,
+                              color: AppTheme.accentRed, size: 16),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Fast Mode is not supported on this device because the system FFmpeg build lacks subtitle rendering filters (libass). Slow Mode will be used instead.',
+                              l10n.exportFastUnsupported,
                               style: TextStyle(
                                 color: AppTheme.secondaryText,
                                 fontSize: 11,
@@ -605,11 +803,12 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                       color: AppTheme.accentOrange.withValues(alpha: 0.1),
                       child: Row(
                         children: [
-                          Icon(Icons.info_outline, color: AppTheme.accentOrange, size: 16),
+                          Icon(Icons.info_outline,
+                              color: AppTheme.accentOrange, size: 16),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Captures each frame exactly as shown in preview. This guarantees pixel-perfect captions, but renders slower.',
+                              l10n.exportSlowInfo,
                               style: TextStyle(
                                 color: AppTheme.secondaryText,
                                 fontSize: 11,
@@ -621,8 +820,50 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                       ),
                     ),
                   ],
+                  ],
                   const SizedBox(height: 16),
- 
+                  AudioEnhancementCard(
+                    enableStudioSound: _enableStudioSound,
+                    onStudioSoundChanged: (val) {
+                      setState(() {
+                        _enableStudioSound = val;
+                        _audioMastering = _audioMastering.copyWith(enableStudioSound: val);
+                      });
+                    },
+                    audioMastering: _audioMastering,
+                    onAudioMasteringChanged: (config) {
+                      setState(() {
+                        _audioMastering = config;
+                        _enableStudioSound = config.enableStudioSound;
+                      });
+                    },
+                    enableAudioCrossfade: _enableAudioCrossfade,
+                    onAudioCrossfadeChanged: (val) {
+                      setState(() {
+                        _enableAudioCrossfade = val;
+                      });
+                    },
+                    backgroundMusic: _backgroundMusic,
+                    onBackgroundMusicChanged: (config) {
+                      setState(() {
+                        _backgroundMusic = config;
+                      });
+                      ref.read(editorProvider.notifier).setBackgroundMusicConfig(config);
+                    },
+                  ),
+                  if (!kIsWeb) ...[
+                    const SizedBox(height: 16),
+                    AutoReframeExportCard(
+                      selectedMode: _conversionMode,
+                      onModeChanged: (mode) {
+                        setState(() {
+                          _conversionMode = mode;
+                        });
+                      },
+                      isLandscapeProject: project.width > project.height,
+                    ),
+                  ],
+                  const SizedBox(height: 16),
                   Row(
                     children: [
                       Expanded(
@@ -630,7 +871,7 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'DESTINATION DIRECTORY',
+                              l10n.exportDestDirectory,
                               style: TextStyle(
                                 fontSize: 9,
                                 fontWeight: FontWeight.bold,
@@ -638,28 +879,30 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                             Text(
+                            Text(
                               kIsWeb
-                                  ? 'Browser Download Location'
-                                  : Platform.isAndroid 
-                                      ? 'Downloads folder (/storage/emulated/0/Download)'
+                                  ? l10n.exportDestBrowser
+                                  : Platform.isAndroid
+                                      ? l10n.exportDestAndroid
                                       : Platform.isIOS
-                                          ? 'Application Documents (Share Sheet after export)'
+                                          ? l10n.exportDestIos
                                           : defaultOutputDir,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 11,
                                 fontFamily: 'monospace',
-                                color: Colors.white70,
+                                color: AppTheme.secondaryText,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      if (!kIsWeb && !(Platform.isAndroid || Platform.isIOS)) ...[
+                      if (!kIsWeb &&
+                          !(Platform.isAndroid || Platform.isIOS)) ...[
                         const SizedBox(width: 8),
                         IconButton(
-                          icon: const Icon(Icons.folder_open_outlined, size: 20),
-                          tooltip: 'Choose Output Folder',
+                          icon:
+                              const Icon(Icons.folder_open_outlined, size: 20),
+                          tooltip: l10n.exportChooseFolder,
                           onPressed: () async {
                             final folder = await FilePicker.getDirectoryPath();
                             if (folder != null) {
@@ -673,20 +916,21 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
                     ],
                   ),
                   const SizedBox(height: 20),
-
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.rocket_launch, size: 16),
-                      label: const Text(
-                        'START MP4 EXPORT',
-                        style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 0.8),
+                      label: Text(
+                        l10n.exportStartMp4,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, letterSpacing: 0.8),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.accentOrange,
-                        foregroundColor: Colors.white,
+                        foregroundColor: AppTheme.onAccentText,
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
                       onPressed: _startVideoExport,
                     ),
@@ -695,148 +939,15 @@ class _ExportPanelState extends ConsumerState<ExportPanel> {
               ),
             ),
             const SizedBox(height: 28),
-          ],
-          _buildSectionHeader('TIMECODE SUBTITLE FORMATS'),
+          _buildSectionHeader(l10n.exportTimecodeFormats),
           const SizedBox(height: 8),
-
-          _buildSubtitleCard(
-            title: 'SubRip Subtitles (.srt)',
-            desc: 'Universal timecoded standard. Compatible with YouTube, VLC, and Premiere Pro.',
-            icon: Icons.subtitles_outlined,
-            color: AppTheme.accentCyan,
-            onTap: () => _exportSubtitles('srt'),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.copy_rounded, color: AppTheme.mutedText, size: 18),
-                  tooltip: 'Copy SRT to clipboard',
-                  splashRadius: 18,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () async {
-                    final state = ref.read(editorProvider);
-                    final project = state.project;
-                    if (project == null) return;
-                    try {
-                      final content = SubtitleExporter.toSrt(project);
-                      await Clipboard.setData(ClipboardData(text: content));
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('SRT copied to clipboard!'),
-                            backgroundColor: AppTheme.accentGreen,
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Failed to copy SRT: $e'),
-                            backgroundColor: Colors.redAccent,
-                          ),
-                        );
-                      }
-                    }
-                  },
-                ),
-                const SizedBox(width: 12),
-                Icon(Icons.download_rounded, color: AppTheme.mutedText, size: 18),
-              ],
-            ),
+          SubtitleExportSection(
+            project: project,
+            onExportSubtitles: _exportSubtitles,
           ),
-          
           const SizedBox(height: 12),
-          _buildSubtitleCard(
-            title: 'WebVTT Subtitles (.vtt)',
-            desc: 'Web-optimized subtitle format widely used in HTML5 players and online streaming.',
-            icon: Icons.html_outlined,
-            color: AppTheme.accentPink,
-            onTap: () => _exportSubtitles('vtt'),
-          ),
-
-          const SizedBox(height: 12),
-          _buildSubtitleCard(
-            title: 'Advanced SubStation Alpha (.ass)',
-            desc: 'Professional format embedding font sizes, styles, margins, and inline highlights.',
-            icon: Icons.style_outlined,
-            color: AppTheme.accentOrange,
-            onTap: () => _exportSubtitles('ass'),
-          ),
-
-          const SizedBox(height: 12),
-          _buildSubtitleCard(
-            title: 'Plain Text Transcript (.txt)',
-            desc: 'Line-by-line transcript with timestamp prefix markers.',
-            icon: Icons.notes_outlined,
-            color: AppTheme.accentGreen,
-            onTap: () => _exportSubtitles('txt'),
-          ),
+          ProjectBundleCard(project: project),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSubtitleCard({
-    required String title,
-    required String desc,
-    required IconData icon,
-    required Color color,
-    required VoidCallback onTap,
-    Widget? trailing,
-  }) {
-    return GlassContainer(
-      borderRadius: 10,
-      borderOpacity: 0.08,
-      color: AppTheme.cardBg.withValues(alpha: 0.4),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: AppTheme.glassDecoration(
-                  color: color.withValues(alpha: 0.15),
-                  borderRadius: 8,
-                  borderOpacity: 0.2,
-                ),
-                child: Icon(icon, color: color, size: 20),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      desc,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: AppTheme.secondaryText,
-                        height: 1.3,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              trailing ?? Icon(Icons.download_rounded, color: AppTheme.mutedText, size: 18),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -92,6 +92,29 @@ void main() {
       expect(searchGato.any((e) => e.unicode == '1f431' || e.glyph == '🐱'), isTrue);
     });
 
+    test('should find all prefix matches across the sorted key range', () async {
+      final service = EmojiService.instance;
+      await service.loadMetadata(mockMetadataPath, mockAssetsDir);
+
+      // 'p' is a short prefix whose matches ('party', 'popper', 'present')
+      // are spread across the sorted keyword keyspace — the binary-search
+      // prefix range must find them all, not just keys adjacent to an exact
+      // match (regression for the old scan-every-key loop).
+      final searchP = service.search('p');
+      expect(searchP, isNotEmpty);
+      for (final e in searchP) {
+        final matches = e.name.contains('p') ||
+            e.keywords.any((k) => k.startsWith('p'));
+        expect(matches, isTrue,
+            reason: 'result "${e.name}" should match prefix "p"');
+      }
+
+      // A prefix with no matching keys returns empty without error (the
+      // binary-search "first key >= query" result is absent).
+      final searchZzz = service.search('zzzzzzzz');
+      expect(searchZzz, isEmpty);
+    });
+
     test('should resolve asset path based on pack selection', () async {
       final service = EmojiService.instance;
       await service.loadMetadata(mockMetadataPath, mockAssetsDir);

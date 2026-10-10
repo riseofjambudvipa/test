@@ -80,6 +80,22 @@ void main() {
       expect(container.read(editorProvider).project!.config.shadow, 'soft');
     });
 
+    testWidgets('selecting 3D Extruded shadow updates config.shadow to 3d', (tester) async {
+      final container = await pumpSection(tester);
+
+      await selectDropdown(tester, 'None', '3D Extruded');
+
+      expect(container.read(editorProvider).project!.config.shadow, '3d');
+    });
+
+    testWidgets('selecting Thin Outline updates config.stroke to thin', (tester) async {
+      final container = await pumpSection(tester);
+
+      await selectDropdown(tester, 'Thick Outline', 'Thin Outline');
+
+      expect(container.read(editorProvider).project!.config.stroke, 'thin');
+    });
+
     testWidgets('selecting a background color updates config.background', (tester) async {
       final container = await pumpSection(tester);
 

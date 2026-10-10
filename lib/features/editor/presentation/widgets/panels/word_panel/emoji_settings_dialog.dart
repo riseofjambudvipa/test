@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/utils/premium_blur_dialog.dart';
@@ -13,6 +15,7 @@ import '../../../../domain/caption_engine.dart';
 import '../../../controllers/editor_controller.dart';
 import 'emoji_picker_dialog.dart';
 import 'emoji_pack_meta.dart';
+import '../../../../../../l10n/app_localizations.dart';
 
 class EmojiSettingsDialog extends ConsumerStatefulWidget {
   final WordSchema word;
@@ -48,11 +51,18 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
   double _originalSpeed = 1.0;
   bool _isSaved = false;
   late final EditorController _editorController;
+  // FIX (audit, cancel-revert race): revision markers used to decide whether
+  // the dispose-revert is still safe to apply. _openRevision is captured when
+  // the dialog opens; _lastPushRevision tracks the revision after this dialog's
+  // own last live-preview push.
+  late int _openRevision;
+  int _lastPushRevision = -1;
 
   @override
   void initState() {
     super.initState();
     _editorController = ref.read(editorProvider.notifier);
+    _openRevision = _editorController.revision;
     _originalEmoji = widget.word.emoji;
     _originalX = widget.word.emojiConfig?.x ?? 0.0;
     _originalY = widget.word.emojiConfig?.y ?? 0.0;
@@ -79,9 +89,20 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
     _settingsDebounceTimer?.cancel();
     
     if (!_isSaved && widget.word.wordId != null) {
+      final wordId = widget.word.wordId!;
       Future.microtask(() {
+        // FIX (audit, cancel-revert race): only apply the revert when nothing
+        // else has edited the project since this dialog's last change. A
+        // find/replace, another dialog, or a retranscribe bumps the revision
+        // past our last push — reverting then would clobber the newer state
+        // with stale originals (or write stale emoji into a retranscribed
+        // project that reused the same wordId).
+        final currentRevision = _editorController.revision;
+        final lastKnown =
+            _lastPushRevision >= 0 ? _lastPushRevision : _openRevision;
+        if (currentRevision != lastKnown) return;
         _editorController.updateWordEmojiQuietly(
-          widget.word.wordId!,
+          wordId,
           emoji: _originalEmoji,
           emojiX: _originalX,
           emojiY: _originalY,
@@ -97,9 +118,20 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
   void _updateLivePreview() {
     final wordId = widget.word.wordId;
     if (wordId != null) {
+      final isSticker = !kIsWeb &&
+          (currentEmoji != null &&
+              (currentEmoji!.endsWith('.png') ||
+                  currentEmoji!.endsWith('.webp') ||
+                  currentEmoji!.endsWith('.jpg') ||
+                  currentEmoji!.endsWith('.jpeg') ||
+                  currentEmoji!.endsWith('.gif') ||
+                  currentEmoji!.startsWith('/') ||
+                  RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(currentEmoji!) ||
+                  EmojiService.resolveStickerPath(currentEmoji!) != null));
+      final pack = isSticker ? 'custom' : (selectedPackOverride ?? 'notoColorEmoji');
       final String finalEmoji = (currentEmoji == null || currentEmoji == 'none' || currentEmoji!.isEmpty)
           ? 'none'
-          : '$selectedPackOverride:$currentEmoji';
+          : '$pack:$currentEmoji';
 
       ref.read(editorProvider.notifier).updateWordEmojiQuietly(
         wordId,
@@ -109,6 +141,9 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
         emojiScale: emojiScale,
         emojiSpeed: emojiSpeed,
       );
+      // Remember the revision right after this dialog's own push, so the
+      // dispose-revert can detect external edits that landed afterwards.
+      _lastPushRevision = _editorController.revision;
     }
   }
 
@@ -139,7 +174,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 11,
-                color: isInstalled ? Colors.white : Colors.white38,
+                color: isInstalled ? AppTheme.primaryText : AppTheme.mutedText,
                 fontWeight: isInstalled ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
@@ -151,6 +186,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final bool isLandscape = screenWidth > screenHeight;
@@ -169,7 +205,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
             children: [
               Expanded(
                 child: Text(
-                  'EMOJI SETTINGS',
+                  l10n?.emojiSettingsTitle ?? 'EMOJI SETTINGS',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w900,
@@ -182,12 +218,12 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
               ),
               const SizedBox(width: 8),
               IconButton(
-                icon: const Icon(Icons.close, size: 20, color: Colors.white70),
+                icon: Icon(Icons.close, size: 20, color: AppTheme.secondaryText),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
           ),
-          const Divider(color: Colors.white10, height: 16),
+          Divider(color: AppTheme.dividerColor, height: 16),
           Flexible(
             child: SingleChildScrollView(
               child: Column(
@@ -197,7 +233,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                     children: [
                       if (currentEmoji != null && currentEmoji != 'none')
                         Tooltip(
-                          message: 'Change Emoji',
+                          message: l10n?.changeEmojiTooltip ?? 'Change Emoji',
                           child: InkWell(
                             onTap: () {
                               showDialog<void>(
@@ -208,9 +244,18 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                                     chunk: widget.chunk,
                                     initialPack: selectedPackOverride,
                                     onEmojiSelected: (selectedPack, selectedGlyph) {
+                                      final isSticker = !kIsWeb &&
+                                          (selectedGlyph.endsWith('.png') ||
+                                              selectedGlyph.endsWith('.webp') ||
+                                              selectedGlyph.endsWith('.jpg') ||
+                                              selectedGlyph.endsWith('.jpeg') ||
+                                              selectedGlyph.endsWith('.gif') ||
+                                              selectedGlyph.startsWith('/') ||
+                                              RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(selectedGlyph) ||
+                                              EmojiService.resolveStickerPath(selectedGlyph) != null);
                                       setState(() {
                                         currentEmoji = selectedGlyph;
-                                        selectedPackOverride = selectedPack;
+                                        selectedPackOverride = isSticker ? 'custom' : selectedPack;
                                       });
                                       _updateLivePreview();
                                       Navigator.pop(dialogContext);
@@ -227,9 +272,29 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                                 borderRadius: 6,
                                 borderOpacity: 0.25,
                               ),
-                              child: Text(
-                                currentEmoji!,
-                                style: const TextStyle(fontSize: 24, fontFamily: 'Noto Color Emoji'),
+                              child: Builder(
+                                builder: (context) {
+                                  final isSticker = !kIsWeb &&
+                                      (File(currentEmoji!).existsSync() ||
+                                          currentEmoji!.startsWith('/') ||
+                                          RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(currentEmoji!));
+                                  if (isSticker) {
+                                    return Image.file(
+                                      File(currentEmoji!),
+                                      width: 24,
+                                      height: 24,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (_, __, ___) => const Icon(
+                                        Icons.image_outlined,
+                                        size: 24,
+                                      ),
+                                    );
+                                  }
+                                  return Text(
+                                    currentEmoji!,
+                                    style: const TextStyle(fontSize: 24, fontFamily: 'Noto Color Emoji'),
+                                  );
+                                },
                               ),
                             ),
                           ),
@@ -240,7 +305,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                           controller: searchController,
                           style: TextStyle(fontSize: 12, color: AppTheme.primaryText),
                           decoration: InputDecoration(
-                            labelText: 'Search Emojis...',
+                            labelText: l10n?.searchEmojisHint ?? 'Search Emojis...',
                             isDense: true,
                             contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                             border: AppTheme.defaultBorder(radius: 8),
@@ -281,7 +346,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                       if (currentEmoji != null && currentEmoji != 'none') ...[
                         const SizedBox(width: 4),
                         IconButton(
-                          icon: const Icon(Icons.clear, color: Colors.redAccent),
+                          icon: Icon(Icons.clear, color: AppTheme.accentRed),
                           onPressed: () {
                             final wordId = widget.word.wordId;
                             if (wordId != null) {
@@ -308,7 +373,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                     Container(
                       height: 180,
                       decoration: AppTheme.glassDecoration(
-                        color: Colors.black12,
+                        color: AppTheme.surfaceDim,
                         borderRadius: 6,
                         borderOpacity: 0.08,
                       ),
@@ -336,7 +401,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                             child: Container(
                               padding: const EdgeInsets.all(4),
                               decoration: AppTheme.glassDecoration(
-                                color: Colors.white.withValues(alpha: 0.02),
+                                color: AppTheme.cardBgElevated,
                                 borderRadius: 6,
                                 borderOpacity: 0.04,
                               ),
@@ -355,7 +420,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                   ],
                   if (currentEmoji != null && currentEmoji != 'none') ...[
                     const SizedBox(height: 16),
-                    Text('Emoji Position (X Offset: ${emojiX.toStringAsFixed(0)}px)', style: Theme.of(context).textTheme.bodyMedium),
+                    Text(l10n?.emojiPosX(emojiX.toStringAsFixed(0)) ?? 'Emoji Position (X Offset: ${emojiX.toStringAsFixed(0)}px)', style: Theme.of(context).textTheme.bodyMedium),
                     SliderTheme(
                       data: AppTheme.premiumSliderTheme(context),
                       child: Slider(
@@ -371,7 +436,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                         },
                       ),
                     ),
-                    Text('Emoji Position (Y Offset: ${emojiY.toStringAsFixed(0)}px)', style: Theme.of(context).textTheme.bodyMedium),
+                    Text(l10n?.emojiPosY(emojiY.toStringAsFixed(0)) ?? 'Emoji Position (Y Offset: ${emojiY.toStringAsFixed(0)}px)', style: Theme.of(context).textTheme.bodyMedium),
                     SliderTheme(
                       data: AppTheme.premiumSliderTheme(context),
                       child: Slider(
@@ -387,7 +452,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                         },
                       ),
                     ),
-                    Text('Emoji Scale (${emojiScale.toStringAsFixed(2)}x)', style: Theme.of(context).textTheme.bodyMedium),
+                    Text(l10n?.emojiScale(emojiScale.toStringAsFixed(2)) ?? 'Emoji Scale (${emojiScale.toStringAsFixed(2)}x)', style: Theme.of(context).textTheme.bodyMedium),
                     SliderTheme(
                       data: AppTheme.premiumSliderTheme(context),
                       child: Slider(
@@ -404,7 +469,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                       ),
                     ),
                     if (selectedPackOverride == 'googleAnimated' || selectedPackOverride == 'microsoftAnimated') ...[
-                      Text('Animation Speed (${emojiSpeed.toStringAsFixed(1)}x)', style: Theme.of(context).textTheme.bodyMedium),
+                      Text(l10n?.emojiAnimSpeed(emojiSpeed.toStringAsFixed(1)) ?? 'Animation Speed (${emojiSpeed.toStringAsFixed(1)}x)', style: Theme.of(context).textTheme.bodyMedium),
                       SliderTheme(
                         data: AppTheme.premiumSliderTheme(context),
                         child: Slider(
@@ -423,12 +488,12 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                     ],
                     if (!EmojiService.instance.isCustomSticker(currentEmoji ?? '')) ...[
                       const SizedBox(height: 16),
-                      Text('Emoji Style / Pack', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                      Text(l10n?.emojiStylePack ?? 'Emoji Style / Pack', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       PopupMenuButton<String>(
                         offset: const Offset(0, 38),
                         color: AppTheme.cardBg,
-                        tooltip: 'Select Style Pack',
+                        tooltip: l10n?.selectStylePackTooltip ?? 'Select Style Pack',
                         itemBuilder: (context) => _buildPopupMenuItems(),
                         onSelected: (val) {
                           final isSpecial = val == 'systemDefault' || val == 'notoColorEmoji';
@@ -436,13 +501,13 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                           
                           if (!isInstalled) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                backgroundColor: Colors.redAccent,
+                              SnackBar(
+                                backgroundColor: AppTheme.accentRed,
                                 content: Text(
                                   'This pack is not downloaded yet. Please download it from the Settings panel to unlock it.',
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: AppTheme.onAccentText),
                                 ),
-                                duration: Duration(seconds: 3),
+                                duration: const Duration(seconds: 3),
                               ),
                             );
                             setState(() {});
@@ -459,7 +524,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
                             color: AppTheme.cardBg,
-                            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                            border: Border.all(color: AppTheme.borderGlass),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Row(
@@ -493,22 +558,28 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
             children: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('CANCEL', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
+                child: Text(l10n?.btnCancel ?? 'CANCEL', style: TextStyle(color: AppTheme.secondaryText, fontWeight: FontWeight.bold)),
               ),
               const SizedBox(width: 12),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.accentOrange,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppTheme.onAccentText,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
                 onPressed: () {
                   final wordId = widget.word.wordId;
                   if (wordId != null) {
-                    final String? finalEmoji = (currentEmoji == null || currentEmoji == 'none' || currentEmoji!.isEmpty)
-                        ? null
-                        : '$selectedPackOverride:$currentEmoji';
+                    final isSticker = !kIsWeb &&
+                        (currentEmoji != null &&
+                            (File(currentEmoji!).existsSync() ||
+                                currentEmoji!.startsWith('/') ||
+                                RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(currentEmoji!)));
+                    final pack = isSticker ? 'custom' : (selectedPackOverride ?? 'notoColorEmoji');
+                    final String finalEmoji = (currentEmoji == null || currentEmoji == 'none' || currentEmoji!.isEmpty)
+                        ? 'none'
+                        : '$pack:$currentEmoji';
 
                     setState(() {
                       _isSaved = true;
@@ -526,7 +597,7 @@ class _EmojiSettingsDialogState extends ConsumerState<EmojiSettingsDialog> {
                   }
                   Navigator.pop(context);
                 },
-                child: const Text('SAVE', style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(l10n?.btnSave ?? 'SAVE', style: const TextStyle(fontWeight: FontWeight.bold)),
               ),
             ],
           ),

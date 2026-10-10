@@ -453,6 +453,81 @@ void main() {
         tempDir.deleteSync(recursive: true);
       }
     });
+
+    test('exportVideo executes with blurPillarbox conversionMode and passes reframe filter graph', () async {
+      when(() => mockProcess.exitCode).thenAnswer((_) async => 0);
+
+      final tempDir = Directory.systemTemp.createTempSync('ffmpeg_test_reframe_');
+      final outputFilePath = p.join(tempDir.path, 'exported.mp4');
+
+      try {
+        List<String>? capturedArgs;
+        exporter.processStarter = (executable, arguments) async {
+          capturedArgs = arguments;
+          return mockProcess;
+        };
+
+        final progressStream = exporter.exportVideo(
+          project: project,
+          chunks: chunks,
+          outputFilePath: outputFilePath,
+          tempDir: tempDir.path,
+          conversionMode: AspectConversionMode.blurPillarbox,
+        );
+
+        final done = progressStream.forEach((progress) {});
+
+        await stderrController.close();
+        await done;
+
+        expect(capturedArgs, isNotNull);
+        final filterComplex = capturedArgs![capturedArgs!.indexOf('-filter_complex') + 1];
+        expect(filterComplex, contains('[v_trimmed]split=2[v_bp_bg_in][v_bp_fg_in]'));
+        expect(filterComplex, contains('[v_reframed]subtitles='));
+      } finally {
+        tempDir.deleteSync(recursive: true);
+      }
+    });
+
+    test('exportVideo with enableAudioCrossfade generates acrossfade in filter complex', () async {
+      when(() => mockProcess.exitCode).thenAnswer((_) async => 0);
+
+      final tempDir = Directory.systemTemp.createTempSync('ffmpeg_test_acrossfade_');
+      final outputFilePath = p.join(tempDir.path, 'exported.mp4');
+
+      try {
+        project.segments = [
+          VideoSegmentSchema()..start = 0.0..end = 3.0..isDeleted = false,
+          VideoSegmentSchema()..start = 4.0..end = 7.0..isDeleted = false,
+        ];
+
+        List<String>? capturedArgs;
+        exporter.processStarter = (executable, arguments) async {
+          capturedArgs = arguments;
+          return mockProcess;
+        };
+
+        final progressStream = exporter.exportVideo(
+          project: project,
+          chunks: chunks,
+          outputFilePath: outputFilePath,
+          tempDir: tempDir.path,
+          enableAudioCrossfade: true,
+          audioCrossfadeDuration: 0.05,
+        );
+
+        final done = progressStream.forEach((progress) {});
+
+        await stderrController.close();
+        await done;
+
+        expect(capturedArgs, isNotNull);
+        final filterComplex = capturedArgs![capturedArgs!.indexOf('-filter_complex') + 1];
+        expect(filterComplex, contains('acrossfade=d=0.050:c1=tri:c2=tri[a_trimmed]'));
+      } finally {
+        tempDir.deleteSync(recursive: true);
+      }
+    });
   });
 
   group('FfmpegExporter Active GPU Encoder Probing', () {

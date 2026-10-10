@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,6 +38,27 @@ class AssetPathService {
   String get sfxDir    => p.join(assetsRoot, 'sfx');
   String get tempDir   => p.join(assetsRoot, 'temp');
   String get customStickersDir => p.join(assetsRoot, 'custom_stickers');
+  String get modelsDir => hasCustomStorage ? p.join(assetsRoot, 'models') : AppDirs.models;
+  String get binDir    => hasCustomStorage ? p.join(assetsRoot, 'bin') : AppDirs.bin;
+
+  bool get hasCustomStorage {
+    final isTesting = !kIsWeb && Platform.environment.containsKey('FLUTTER_TEST');
+    return (kDebugMode || isTesting) && _assetsRoot != null && _assetsRoot != AppDirs.assets;
+  }
+
+  /// Resolves the absolute path to a GGML model file.
+  /// In release mode, strictly resolves to AppDirs.models (on C:).
+  /// In debug/test mode, checks custom models directory if configured.
+  String resolveModelPath(String modelName) {
+    final fileName = 'ggml-$modelName.bin';
+    if (hasCustomStorage) {
+      try {
+        final customFile = File(p.join(modelsDir, fileName));
+        if (customFile.existsSync()) return customFile.path;
+      } catch (_) {}
+    }
+    return p.join(AppDirs.models, fileName);
+  }
 
   String emojiPackDir(String packFolderName) => p.join(emojisDir, packFolderName);
 
@@ -99,13 +120,16 @@ class AssetPathService {
   }
 
   Future<void> _initDesktop() async {
-    final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getString(_prefKey);
-    if (saved != null && saved.isNotEmpty) {
-      _assetsRoot = saved;
-    } else {
-      _assetsRoot = AppDirs.assets;
+    final isTesting = !kIsWeb && Platform.environment.containsKey('FLUTTER_TEST');
+    if (kDebugMode || isTesting) {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString(_prefKey);
+      if (saved != null && saved.isNotEmpty) {
+        _assetsRoot = saved;
+        return;
+      }
     }
+    _assetsRoot = AppDirs.assets;
   }
 
   /// Desktop only: save user-chosen folder. Call after folder picker confirms.
@@ -165,7 +189,7 @@ class AssetPathService {
 
   Future<void> _ensureDirectories() async {
     if (kIsWeb) return;
-    for (final dir in [assetsRoot, emojisDir, fontsDir, sfxDir, tempDir, customStickersDir]) {
+    for (final dir in [assetsRoot, emojisDir, fontsDir, sfxDir, tempDir, customStickersDir, modelsDir, binDir]) {
       await Directory(dir).create(recursive: true);
     }
   }

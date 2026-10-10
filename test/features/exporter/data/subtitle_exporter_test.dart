@@ -161,5 +161,55 @@ void main() {
       final ass = SubtitleExporter.toAss(rolloverProject);
       expect(ass, contains(r'Dialogue: 0,0:01:00.00,0:01:00.10,Default,,0000,0000,0000,,{\an5\pos(960,590)}ROLLOVER'));
     });
+
+    test('toAss sanitizes word text containing braces and newlines', () {
+      final injectionProject = makeProject(
+        trimStart: 0.0,
+        trimEnd: 5.0,
+        config: makeConfig(textTransform: 'none'),
+        words: [
+          makeWord(
+            wordId: 'w1',
+            text: r'{\b1}Exploit{\b0}',
+            start: 1.0,
+            end: 2.0,
+            confidence: 0.99,
+            className: 'mainColor',
+          ),
+          makeWord(
+            wordId: 'w2',
+            text: "Line1\r\nLine2",
+            start: 2.0,
+            end: 3.0,
+            confidence: 0.99,
+          ),
+        ],
+      );
+
+      final ass = SubtitleExporter.toAss(injectionProject);
+      // Braces stripped from word text
+      expect(ass, isNot(contains(r'{\b1}')));
+      expect(ass, contains(r'\b1Exploit\b0'));
+      expect(ass, contains('Line1Line2'));
+    });
+
+    test('toAss supports 3d shadow, thin outline, and highlightBackground', () {
+      final customProject = makeProject(
+        width: 1920,
+        height: 640, // exportScale = 1.0
+        config: makeConfig(
+          stroke: 'thin', // outlineWidth = 2.5
+          shadow: '3d',   // shadowWidth = 5.0
+          highlightBackground: true, // borderStyle = 3
+        ),
+        words: [
+          makeWord(wordId: 'w1', text: 'Styling', start: 1.0, end: 2.0),
+        ],
+      );
+
+      final ass = SubtitleExporter.toAss(customProject);
+      // borderStyle 3, outline 2.5, shadow 5.0
+      expect(ass, contains(',3,2.5,5.0,'));
+    });
   });
 }

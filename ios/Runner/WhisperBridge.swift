@@ -104,10 +104,10 @@ func readWavFile(at path: String) -> [Float]? {
         }
         
         chunkData.withUnsafeBytes { rawBufferPointer in
-            let shortPointer = rawBufferPointer.bindMemory(to: Int16.self)
             let chunkSamples = chunkData.count / 2
             for i in 0..<chunkSamples {
-                floatSamples[samplesRead + i] = Float(shortPointer[i]) / 32768.0
+                let sample = rawBufferPointer.load(fromByteOffset: i * 2, as: Int16.self)
+                floatSamples[samplesRead + i] = Float(sample) / 32768.0
             }
             samplesRead += chunkSamples
         }
@@ -149,8 +149,6 @@ class WhisperLib {
         params.translate = translate
         
         let langCode = language.isEmpty ? "auto" : language
-        let cLanguage = (langCode as NSString).utf8String
-        params.language = cLanguage
         params.n_threads = Int32(threads)
         params.token_timestamps = true
         params.thold_pt = 0.01
@@ -162,7 +160,10 @@ class WhisperLib {
         }
         
         let sampleCount = Int32(pcmf32.count)
-        let result = whisper_full(ctx, params, pcmf32, sampleCount)
+        let result = langCode.withCString { cLanguage in
+            params.language = cLanguage
+            return whisper_full(ctx, params, pcmf32, sampleCount)
+        }
         if result != 0 {
             return "{\"error\":\"Transcription failed with code \(result)\"}"
         }

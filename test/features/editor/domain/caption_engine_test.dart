@@ -235,5 +235,50 @@ void main() {
       expect(chunks[1].words.length, 1);
       expect(chunks[1].words[0].text, 'CapStudio');
     });
+
+    test('should strictly clamp chunk boundaries so consecutive chunks never overlap', () {
+      final overlappingWords = [
+        WordSchema()
+          ..wordId = 'w1'
+          ..text = 'First.'
+          ..start = 0.0
+          ..end = 1.5
+          ..type = 'word',
+        WordSchema()
+          ..wordId = 'w2'
+          ..text = 'Second'
+          ..start = 1.2
+          ..end = 2.5
+          ..type = 'word',
+      ];
+
+      final chunks = CaptionEngine.buildChunks(overlappingWords, null, 0.0, 0.0, 1, 100);
+      expect(chunks.length, 2);
+      // Chunk 0's endTime must be clamped to Chunk 1's startTime (1.2), not 1.5
+      expect(chunks[0].endTime, lessThanOrEqualTo(chunks[1].startTime));
+      expect(chunks[0].endTime, 1.2);
+      expect(chunks[1].startTime, 1.2);
+    });
+
+    test('should prevent chunk time stacking when minChunkDuration would exceed next chunk start', () {
+      final tightWords = [
+        WordSchema()
+          ..wordId = 'w1'
+          ..text = 'Hey.'
+          ..start = 0.0
+          ..end = 0.05
+          ..type = 'word',
+        WordSchema()
+          ..wordId = 'w2'
+          ..text = 'There'
+          ..start = 0.08
+          ..end = 0.5
+          ..type = 'word',
+      ];
+
+      final chunks = CaptionEngine.buildChunks(tightWords, null, 0.0, 0.0, 1, 100);
+      expect(chunks.length, 2);
+      expect(chunks[0].endTime, lessThanOrEqualTo(chunks[1].startTime));
+    });
   });
 }

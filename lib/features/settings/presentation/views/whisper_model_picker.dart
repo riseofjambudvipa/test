@@ -2,22 +2,23 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/whisper/whisper_model.dart';
 import '../../../../core/settings/settings_service.dart';
 import '../../../../core/downloader/binary_downloader_service.dart';
-import '../../../../core/utils/app_dirs.dart';
+import '../../../../core/assets/asset_path_service.dart';
 import '../../../../app/theme.dart';
 import '../../../../core/utils/premium_blur_dialog.dart';
+import '../../../../l10n/app_localizations.dart';
 
-class WhisperModelPicker extends StatefulWidget {
+class WhisperModelPicker extends ConsumerStatefulWidget {
   const WhisperModelPicker({super.key});
 
   @override
-  State<WhisperModelPicker> createState() => _WhisperModelPickerState();
+  ConsumerState<WhisperModelPicker> createState() => _WhisperModelPickerState();
 }
 
-class _WhisperModelPickerState extends State<WhisperModelPicker> {
+class _WhisperModelPickerState extends ConsumerState<WhisperModelPicker> {
   String? _activeModelName;
   final Map<String, bool> _modelExists = {};
   final Map<String, BinaryDownloadProgress?> _progressMap = {};
@@ -41,16 +42,18 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
   }
 
   void _loadActiveModel() {
+    // FIX (audit, crash risk): called after awaits (delete/select flows);
+    // without a mounted guard, setState() after dispose() crashes in debug.
+    if (!mounted) return;
     setState(() {
       _activeModelName = SettingsService.instance.whisperModelName;
     });
   }
 
   Future<void> _checkDownloadedModels() async {
-    final modelsDir = p.join(AppDirs.support, 'models');
     final Map<String, bool> tempExists = {};
     for (final model in kWhisperModels) {
-      final path = p.join(modelsDir, 'ggml-${model.name}.bin');
+      final path = AssetPathService.instance.resolveModelPath(model.name);
       tempExists[model.name] = await File(path).exists();
     }
     if (mounted) {
@@ -130,10 +133,14 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
       await BinaryDownloaderService.instance.downloadWhisperModel(model.name);
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to download model ${model.displayName}: $e'),
-            backgroundColor: Colors.redAccent,
+            content: Text(
+              l10n?.errorModelDownloadFailed(model.displayName, e.toString()) ??
+                  'Failed to download model ${model.displayName}: $e',
+            ),
+            backgroundColor: AppTheme.accentRed,
           ),
         );
       }
@@ -162,7 +169,7 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
       context: context,
       builder: (ctx) => PremiumBlurDialog(
         maxWidth: 380,
-        glowColor: Colors.redAccent,
+        glowColor: AppTheme.accentRed,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,12 +198,17 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
                 const SizedBox(width: 8),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppTheme.accentRed,
+                    foregroundColor: AppTheme.onAccentText,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   onPressed: () => Navigator.pop(ctx, true),
-                  child: const Text('Delete'),
+                  child: Builder(
+                    builder: (context) {
+                      final l10n = AppLocalizations.of(context);
+                      return Text(l10n?.btnDelete ?? 'Delete');
+                    },
+                  ),
                 ),
               ],
             ),
@@ -207,7 +219,7 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
 
     if (confirmed != true) return;
 
-    final path = p.join(AppDirs.support, 'models', 'ggml-${model.name}.bin');
+    final path = AssetPathService.instance.resolveModelPath(model.name);
     final file = File(path);
     if (await file.exists()) {
       try {
@@ -216,16 +228,20 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
         } catch (_) {
           // If first delete fails (e.g. read-only file/write protection issues on Linux/Android),
           // attempt to make the file writeable/accessible and delete again.
-          if (!Platform.isWindows) {
-            await Process.run('chmod', ['777', path]);
+          if (!kIsWeb && !Platform.isWindows) {
+            await Process.run('chmod', ['644', path]);
           }
           await file.delete();
         }
         if (mounted) {
+          final l10n = AppLocalizations.of(context);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Deleted model: ${model.displayName}'),
-              backgroundColor: Colors.redAccent,
+              content: Text(
+                l10n?.modelDeleted(model.displayName) ??
+                    'Deleted model: ${model.displayName}',
+              ),
+              backgroundColor: AppTheme.accentRed,
             ),
           );
         }
@@ -237,10 +253,14 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
         await _checkDownloadedModels();
       } catch (e) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to delete model: $e'),
-              backgroundColor: Colors.redAccent,
+              content: Text(
+                l10n?.errorModelDeleteFailed(e.toString()) ??
+                    'Failed to delete model: $e',
+              ),
+              backgroundColor: AppTheme.accentRed,
             ),
           );
         }
@@ -346,18 +366,18 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: AppTheme.glassDecoration(
-                          color: Colors.blue.withValues(alpha: 0.08),
+                          color: AppTheme.accentCyan.withValues(alpha: 0.08),
                           borderRadius: 8,
                           borderOpacity: 0.2,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Row(
+                            Row(
                               children: [
-                                Icon(Icons.phone_android, size: 16, color: Colors.blue),
-                                SizedBox(width: 8),
-                                Text('📱 Mobile Recommendations', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                                Icon(Icons.phone_android, size: 16, color: AppTheme.accentCyan),
+                                const SizedBox(width: 8),
+                                Text('📱 Mobile Recommendations', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryText)),
                               ],
                             ),
                             const SizedBox(height: 6),
@@ -365,7 +385,7 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
                             Text('• Base (142MB): Best balance of speed and accuracy (2GB+ RAM).', style: TextStyle(fontSize: 11, color: AppTheme.secondaryText)),
                             Text('• Small (466MB): High accuracy, requires newer devices (2.5GB+ RAM, recommended 3GB+).', style: TextStyle(fontSize: 11, color: AppTheme.secondaryText)),
                             const SizedBox(height: 4),
-                            const Text('Warning: Medium or Large models may crash or fail to load on lower-end devices.', style: TextStyle(fontSize: 10, color: Colors.orange, fontWeight: FontWeight.bold)),
+                            Text('Warning: Medium or Large models may crash or fail to load on lower-end devices.', style: TextStyle(fontSize: 10, color: AppTheme.accentOrange, fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ),
@@ -389,7 +409,7 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
                           onTap: !isDownloaded
                               ? null
                               : () async {
-                                  final path = p.join(AppDirs.support, 'models', 'ggml-${model.name}.bin');
+                                  final path = AssetPathService.instance.resolveModelPath(model.name);
                                   await SettingsService.instance.setWhisperModelPath(path);
                                   await SettingsService.instance.setWhisperModelName(model.name);
                                   _loadActiveModel();
@@ -434,14 +454,14 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
                                                 Container(
                                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                                   decoration: AppTheme.glassDecoration(
-                                                    color: Colors.blue.withValues(alpha: 0.15),
+                                                    color: AppTheme.accentCyan.withValues(alpha: 0.15),
                                                     borderRadius: 4,
                                                     borderOpacity: 0.2,
                                                   ),
-                                                  child: const Text(
+                                                  child: Text(
                                                     'EN ONLY',
                                                     style: TextStyle(
-                                                      color: Colors.blue,
+                                                      color: AppTheme.accentCyan,
                                                       fontSize: 9,
                                                       fontWeight: FontWeight.bold,
                                                     ),
@@ -450,7 +470,7 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
                                               Container(
                                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                                 decoration: AppTheme.glassDecoration(
-                                                  color: Colors.white.withValues(alpha: 0.08),
+                                                  color: AppTheme.cardBgElevated,
                                                   borderRadius: 4,
                                                   borderOpacity: 0.06,
                                                 ),
@@ -488,7 +508,7 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
                                     borderRadius: BorderRadius.circular(4),
                                     child: LinearProgressIndicator(
                                       value: progress.downloadProgress,
-                                      backgroundColor: Colors.white.withValues(alpha: 0.05),
+                                      backgroundColor: AppTheme.dividerColor,
                                       valueColor: AlwaysStoppedAnimation<Color>(AppTheme.accentOrange),
                                       minHeight: 6,
                                     ),
@@ -512,11 +532,11 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
                                   Row(
                                     children: [
                                       Expanded(
-                                        child: _buildStatBar('Speed', model.relativeSpeed, Colors.cyan),
+                                        child: _buildStatBar('Speed', model.relativeSpeed, AppTheme.accentCyan),
                                       ),
                                       const SizedBox(width: 24),
                                       Expanded(
-                                        child: _buildStatBar('Accuracy', model.relativeAccuracy, Colors.green),
+                                        child: _buildStatBar('Accuracy', model.relativeAccuracy, AppTheme.accentGreen),
                                       ),
                                     ],
                                   ),
@@ -578,10 +598,10 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
           const SizedBox(width: 8),
           TextButton(
             onPressed: () => _deleteModel(model),
-            child: const Text(
+            child: Text(
               'REMOVE',
               style: TextStyle(
-                color: Colors.redAccent,
+                color: AppTheme.accentRed,
                 fontWeight: FontWeight.bold,
                 fontSize: 11,
                 letterSpacing: 0.5,
@@ -594,14 +614,14 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
 
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white.withValues(alpha: 0.05),
+        backgroundColor: AppTheme.cardBgElevated,
         foregroundColor: AppTheme.primaryText,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       ),
       onPressed: () => _downloadModel(model),
       icon: const Icon(Icons.download_rounded, size: 16),
-      label: const Text('Download', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+      label: Text(AppLocalizations.of(context)?.btnDownload ?? 'Download', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
     );
   }
 
@@ -620,7 +640,7 @@ class _WhisperModelPickerState extends State<WhisperModelPicker> {
             borderRadius: BorderRadius.circular(2),
             child: LinearProgressIndicator(
               value: value / 10.0,
-              backgroundColor: Colors.white.withValues(alpha: 0.03),
+              backgroundColor: AppTheme.dividerColor,
               valueColor: AlwaysStoppedAnimation<Color>(color.withValues(alpha: 0.7)),
               minHeight: 4,
             ),

@@ -157,16 +157,16 @@ void main() {
       }
     });
 
-    test('ensureDefaultSfx should synthesize exactly 44 unique WAV files and register them all', () async {
+    test('ensureDefaultSfx should synthesize exactly 45 unique WAV files and register them all', () async {
       final tempDir = Directory.systemTemp.createTempSync('capstudio_sfx_test_');
 
       try {
         await audioService.ensureDefaultSfx(tempDir.path);
 
-        // All 44 sounds are uniquely synthesized — no aliases or file copies
+        // All 45 sounds are uniquely synthesized — no aliases or file copies
         final generatedFiles = tempDir.listSync().whereType<File>().toList();
-        expect(generatedFiles.length, equals(44),
-            reason: 'Expected exactly 44 unique WAV files (42 original + whoosh + sweep)');
+        expect(generatedFiles.length, equals(45),
+            reason: 'Expected exactly 45 unique WAV files (43 original + whoosh + sweep)');
 
         // Core sounds registered and exist on disk
         for (final sfxId in ['whoosh_fast', 'whoosh_slow', 'whoosh',

@@ -2,12 +2,11 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:path/path.dart' as path;
 import '../whisper/whisper_model.dart';
 import '../downloader/binary_downloader_service.dart';
 import '../settings/settings_service.dart';
 import '../logger/logger_service.dart';
-import 'app_dirs.dart';
+import '../assets/asset_path_service.dart';
 import 'native_helper.dart';
 
 /// FIX (Issue #8, CapStudio 1.0 audit — the largest duplication found in the
@@ -95,8 +94,7 @@ mixin WhisperQualitySelectionMixin<T extends StatefulWidget> on State<T> {
   }
 
   void updateModelForSelectedQuality() {
-    final isEn = selectedLanguageForQualityPicker == 'en';
-    final modelName = isEn ? selectedQuality.modelNameEn : selectedQuality.modelName;
+    final modelName = selectedQuality.modelName;
     selectedModel = kWhisperModels.firstWhere((m) => m.name == modelName, orElse: () => kWhisperModels.first);
   }
 
@@ -113,11 +111,10 @@ mixin WhisperQualitySelectionMixin<T extends StatefulWidget> on State<T> {
       return;
     }
 
-    final modelsDir = path.join(AppDirs.support, 'models');
     final Map<String, bool> tempExists = {};
     final isTest = !kIsWeb && Platform.environment.containsKey('FLUTTER_TEST');
     for (final model in kWhisperModels) {
-      final modelPath = path.join(modelsDir, 'ggml-${model.name}.bin');
+      final modelPath = AssetPathService.instance.resolveModelPath(model.name);
       tempExists[model.name] = isTest ? File(modelPath).existsSync() : await File(modelPath).exists();
     }
 
@@ -132,18 +129,35 @@ mixin WhisperQualitySelectionMixin<T extends StatefulWidget> on State<T> {
   void listenToModelDownloads() {
     for (final model in kWhisperModels) {
       final toolId = 'model_${model.name}';
-      _qualityPickerSubscriptions[model.name] = BinaryDownloaderService.instance.stream(toolId).listen((progress) {
-        if (!mounted) return;
-        setState(() {
-          downloadProgressMap[model.name] = progress;
-          if (progress.status == BinaryDownloadStatus.complete) {
-            modelExists[model.name] = true;
-            final modelPath = path.join(AppDirs.support, 'models', 'ggml-${model.name}.bin');
-            SettingsService.instance.setWhisperModelPath(modelPath);
-            SettingsService.instance.setWhisperModelName(model.name);
-            loadModelSettings();
+      _qualityPickerSubscriptions[model.name] = BinaryDownloaderService.instance
+          .stream(toolId)
+          .listen((progress) async {
+        try {
+          if (!mounted) return;
+          setState(() {
+            downloadProgressMap[model.name] = progress;
+            if (progress.status == BinaryDownloadStatus.complete) {
+              modelExists[model.name] = true;
+            }
+          });
+          // FIX (audit, active-model hijack): only promote the completed
+          // model to the ACTIVE model when it matches the user's current
+          // selection in this picker. Previously ANY completed download
+          // (e.g. "base" downloaded from another screen) silently switched
+          // the active model away from "small" mid-work.
+          if (progress.status == BinaryDownloadStatus.complete &&
+              selectedModel?.name == model.name) {
+            final modelPath = AssetPathService.instance.resolveModelPath(model.name);
+            await SettingsService.instance.setWhisperModelPath(modelPath);
+            await SettingsService.instance.setWhisperModelName(model.name);
+            await loadModelSettings();
           }
-        });
+        } catch (e) {
+          // FIX (audit): an exception inside the stream callback previously
+          // propagated on the stream's error zone.
+          LoggerService.instance.log(LogLevel.error, 'WhisperQualitySelection',
+              'Model download stream handler failed: $e');
+        }
       });
     }
   }

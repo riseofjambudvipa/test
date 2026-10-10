@@ -203,7 +203,9 @@ class LoggerService {
     }
   }
 
-  String _scrubPii(String input) {
+  /// Scrubs personally identifiable information (PII) such as OS usernames
+  /// and home directory paths from the provided [input] string.
+  String scrubPii(String input) {
     if (kIsWeb) return input;
     var result = input;
     try {
@@ -222,9 +224,13 @@ class LoggerService {
         final escapedUser = RegExp.escape(username);
         result = result.replaceAll(RegExp(escapedUser, caseSensitive: false), '<USER>');
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Error in scrubPii: $e');
+    }
     return result;
   }
+
+  String _scrubPii(String input) => scrubPii(input);
 
   Map<String, dynamic>? _scrubMetadata(Map<String, dynamic>? meta) {
     if (meta == null) return null;
@@ -324,8 +330,13 @@ class LoggerService {
   void trace(String source, String message, {Map<String, dynamic>? meta}) =>
       log(LogLevel.trace, source, message, metadata: meta);
 
-  void debug(String source, String message, {Map<String, dynamic>? meta}) =>
-      log(LogLevel.debug, source, message, metadata: meta);
+  void debug(String messageOrSource, [String? message, Map<String, dynamic>? meta]) {
+    if (message != null) {
+      log(LogLevel.debug, messageOrSource, message, metadata: meta);
+    } else {
+      log(LogLevel.debug, 'App', messageOrSource, metadata: meta);
+    }
+  }
 
   void info(String source, String message, {Map<String, dynamic>? meta}) =>
       log(LogLevel.info, source, message, metadata: meta);

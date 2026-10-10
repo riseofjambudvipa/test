@@ -1,16 +1,20 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
 import '../../../../../../app/theme.dart';
 import '../../../../../../core/database/schemas/project.dart';
 import '../../../../../../core/database/schemas/word.dart';
 import '../../../../../../core/emoji/emoji_service.dart';
 import '../../../../../../core/audio/audio_service.dart';
 import '../../../../../../core/logger/logger_service.dart';
+import '../../../../../../core/audio/speaker_diarization_service.dart';
 import '../../../../domain/caption_engine.dart';
 import '../../../controllers/editor_controller.dart';
 import '../word_panel.dart';
 import 'word_card.dart';
+import 'speaker_diarization_dialog.dart';
 
 class ChunkRow extends ConsumerWidget {
   final Project project;
@@ -40,19 +44,24 @@ class ChunkRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isChunkActive = ref.watch(activeChunkIndexProvider.select((idx) => idx == chunk.index));
 
-    // Find if this chunk has an emoji word and its local preview asset
-    WordSchema? emojiWord;
-    String? emojiAssetPath;
+    // Find all emoji words in this chunk and their local preview assets
+    final chunkEmojiWords = <(WordSchema, String?)>[];
     for (final w in chunk.words) {
       final emoji = w.emoji;
       if (emoji != null && emoji.isNotEmpty && emoji != 'none') {
-        emojiWord = w;
+        String? emojiAssetPath;
         final parsed = EmojiPackParser.parse(emoji, config.emojiPack ?? 'notoColorEmoji');
         final activePack = (parsed.pack.isEmpty || parsed.pack == 'default')
             ? (config.emojiPack ?? 'notoColorEmoji')
             : parsed.pack;
 
-        if (activePack != 'systemDefault') {
+        final resolvedSticker = (!kIsWeb)
+            ? (EmojiService.resolveStickerPath(parsed.glyph) ??
+                EmojiService.resolveStickerPath(emoji))
+            : null;
+        if (resolvedSticker != null) {
+          emojiAssetPath = resolvedSticker;
+        } else if (activePack != 'systemDefault') {
           // Use the static equivalent of animated packs for the editor list sidebar
           final String staticPack = activePack == 'googleAnimated'
               ? 'googleNonAnimated'
@@ -69,7 +78,7 @@ class ChunkRow extends ConsumerWidget {
             }
           }
         }
-        break;
+        chunkEmojiWords.add((w, emojiAssetPath));
       }
     }
 
@@ -96,7 +105,7 @@ class ChunkRow extends ConsumerWidget {
           borderRadius: BorderRadius.circular(8),
           child: Container(
             decoration: AppTheme.glassDecoration(
-              color: isChunkActive ? Colors.white.withValues(alpha: 0.04) : AppTheme.cardBg,
+              color: isChunkActive ? AppTheme.accentOrange.withValues(alpha: 0.08) : AppTheme.cardBg,
               borderRadius: 8,
               borderOpacity: isChunkActive ? 0.2 : 0.06,
             ),
@@ -109,13 +118,66 @@ class ChunkRow extends ConsumerWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Chunk ${index + 1}',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: isChunkActive ? AppTheme.accentOrange : AppTheme.mutedText,
-                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Chunk ${index + 1}',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: isChunkActive ? AppTheme.accentOrange : AppTheme.mutedText,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          InkWell(
+                            onTap: () => showSpeakerDiarizationDialog(context, ref, targetChunk: chunk),
+                            borderRadius: BorderRadius.circular(4),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: AppTheme.glassDecoration(
+                                color: chunk.speaker != null && chunk.speaker!.isNotEmpty
+                                    ? SpeakerDiarizationService.getSpeakerColor(chunk.speaker!).withValues(alpha: 0.15)
+                                    : AppTheme.cardBg,
+                                borderRadius: 4,
+                                borderOpacity: chunk.speaker != null && chunk.speaker!.isNotEmpty ? 0.25 : 0.06,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.person_rounded,
+                                    size: 10,
+                                    color: chunk.speaker != null && chunk.speaker!.isNotEmpty
+                                        ? SpeakerDiarizationService.getSpeakerColor(chunk.speaker!)
+                                        : AppTheme.mutedText,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    chunk.speaker != null && chunk.speaker!.isNotEmpty
+                                        ? chunk.speaker!
+                                        : 'Speaker',
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w600,
+                                      color: chunk.speaker != null && chunk.speaker!.isNotEmpty
+                                          ? SpeakerDiarizationService.getSpeakerColor(chunk.speaker!)
+                                          : AppTheme.mutedText,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    size: 12,
+                                    color: chunk.speaker != null && chunk.speaker!.isNotEmpty
+                                        ? SpeakerDiarizationService.getSpeakerColor(chunk.speaker!)
+                                        : AppTheme.mutedText,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       if (isChunkActive)
                         Container(
@@ -137,7 +199,7 @@ class ChunkRow extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const Divider(height: 1, color: Colors.white12),
+                Divider(height: 1, color: AppTheme.dividerColor),
 
                 // Chunk Words Area
                 Padding(
@@ -159,7 +221,7 @@ class ChunkRow extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const Divider(height: 1, color: Colors.white12),
+                Divider(height: 1, color: AppTheme.dividerColor),
 
                 // Chunk Footer Toolbar
                 Padding(
@@ -187,11 +249,11 @@ class ChunkRow extends ConsumerWidget {
                                   const SizedBox(width: 4),
                                   Text(
                                     '${chunk.startTime.toStringAsFixed(2)}s → ${chunk.endTime.toStringAsFixed(2)}s',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 9,
                                       fontFamily: 'monospace',
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white70,
+                                      color: AppTheme.secondaryText,
                                     ),
                                   ),
                                 ],
@@ -201,42 +263,85 @@ class ChunkRow extends ConsumerWidget {
                           const SizedBox(width: 8),
 
                           // Emoji quick selector / settings
-                          IconButton(
-                            icon: emojiAssetPath != null
-                                ? Image.file(
-                                    File(emojiAssetPath),
-                                    width: 16,
-                                    height: 16,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) => Text(
-                                      emojiWord != null
-                                          ? EmojiPackParser.parse(emojiWord.emoji ?? '', '').glyph
-                                          : '😀',
+                          if (chunkEmojiWords.isEmpty) ...[
+                            IconButton(
+                              icon: Text(
+                                '😀',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppTheme.mutedText,
+                                  fontFamily: 'Noto Color Emoji',
+                                ),
+                              ),
+                              tooltip: 'Add Emoji',
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              splashRadius: 16,
+                              onPressed: onEmojiPickerTap,
+                            ),
+                          ] else ...[
+                            for (final item in chunkEmojiWords) ...[
+                              Builder(
+                                builder: (context) {
+                                  final parsed = EmojiPackParser.parse(item.$1.emoji ?? '', '');
+                                  final resolvedSticker = (!kIsWeb)
+                                      ? (EmojiService.resolveStickerPath(item.$2) ??
+                                          EmojiService.resolveStickerPath(parsed.glyph))
+                                      : null;
+                                  final isFilePath = parsed.glyph.startsWith('/') ||
+                                      RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(parsed.glyph) ||
+                                      parsed.pack == 'custom' ||
+                                      parsed.glyph.endsWith('.png') ||
+                                      parsed.glyph.endsWith('.webp') ||
+                                      parsed.glyph.endsWith('.jpg') ||
+                                      parsed.glyph.endsWith('.jpeg') ||
+                                      parsed.glyph.endsWith('.gif') ||
+                                      parsed.glyph.contains('/') ||
+                                      parsed.glyph.contains('\\');
+                                  final hasValidFile = !kIsWeb && resolvedSticker != null;
+                                  final label = (!kIsWeb && isFilePath)
+                                      ? p.basenameWithoutExtension(parsed.glyph)
+                                      : parsed.glyph;
+
+                                  Widget iconWidget;
+                                  if (hasValidFile) {
+                                    iconWidget = Image.file(
+                                      File(resolvedSticker),
+                                      width: 16,
+                                      height: 16,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (_, __, ___) => const Icon(Icons.image_outlined, size: 14),
+                                    );
+                                  } else if (isFilePath) {
+                                    iconWidget = const Icon(Icons.image_outlined, size: 14);
+                                  } else {
+                                    iconWidget = Text(
+                                      parsed.glyph,
                                       style: const TextStyle(fontSize: 12, fontFamily: 'Noto Color Emoji'),
-                                    ),
-                                  )
-                                : Text(
-                                    emojiWord != null
-                                        ? EmojiPackParser.parse(emojiWord.emoji ?? '', '').glyph
-                                        : '😀',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: emojiWord == null ? Colors.white38 : null,
-                                      fontFamily: 'Noto Color Emoji',
-                                    ),
-                                  ),
-                            tooltip: emojiWord != null ? 'Emoji Settings' : 'Add Emoji',
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            splashRadius: 16,
-                            onPressed: () {
-                              if (emojiWord != null) {
-                                onEmojiSettingsTap(chunk, emojiWord);
-                              } else {
-                                onEmojiPickerTap();
-                              }
-                            },
-                          ),
+                                    );
+                                  }
+
+                                  return IconButton(
+                                    icon: iconWidget,
+                                    tooltip: 'Emoji Settings ($label)',
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    splashRadius: 16,
+                                    onPressed: () => onEmojiSettingsTap(chunk, item.$1),
+                                  );
+                                },
+                              ),
+                              const SizedBox(width: 4),
+                            ],
+                            IconButton(
+                              icon: Icon(Icons.add_reaction_outlined, size: 14, color: AppTheme.mutedText),
+                              tooltip: 'Add Another Emoji',
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              splashRadius: 16,
+                              onPressed: onEmojiPickerTap,
+                            ),
+                          ],
                           const SizedBox(width: 8),
 
                           // Sound Quick Selector
@@ -244,7 +349,7 @@ class ChunkRow extends ConsumerWidget {
                             icon: Icon(
                               soundWord != null ? Icons.volume_up : Icons.volume_mute_outlined,
                               size: 14,
-                              color: soundWord != null ? AppTheme.accentCyan : Colors.white38,
+                              color: soundWord != null ? AppTheme.accentCyan : AppTheme.mutedText,
                             ),
                             tooltip: soundWord != null ? 'Sound: ${soundWord.soundEffect!.replaceFirst('chunk:', '')}' : 'Add Sound Effect',
                             padding: EdgeInsets.zero,
@@ -272,7 +377,7 @@ class ChunkRow extends ConsumerWidget {
                                 child: Icon(
                                   isHidden ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                                   size: 14,
-                                  color: isHidden ? Colors.redAccent : Colors.white54,
+                                  color: isHidden ? AppTheme.accentRed : AppTheme.mutedText,
                                 ),
                               ),
                             ),
@@ -306,9 +411,9 @@ class ChunkRow extends ConsumerWidget {
                                     LoggerService.instance.log(LogLevel.action, 'WordPanel', 'Split chunk at word "${bestSplitWord.text}"');
                                   }
                                 },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(6.0),
-                                  child: Icon(Icons.content_cut_rounded, size: 12, color: Colors.white54),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Icon(Icons.content_cut_rounded, size: 12, color: AppTheme.mutedText),
                                 ),
                               ),
                             ),
@@ -327,9 +432,9 @@ class ChunkRow extends ConsumerWidget {
                                   LoggerService.instance.log(LogLevel.action, 'WordPanel', 'Inserted new line after chunk $index');
                                 }
                               },
-                              child: const Padding(
-                                padding: EdgeInsets.all(6.0),
-                                child: Icon(Icons.add_circle_outline_rounded, size: 14, color: Colors.white54),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Icon(Icons.add_circle_outline_rounded, size: 14, color: AppTheme.mutedText),
                               ),
                             ),
                           ),
@@ -346,9 +451,35 @@ class ChunkRow extends ConsumerWidget {
                                   LoggerService.instance.log(LogLevel.action, 'WordPanel', 'Duplicated chunk at index $index');
                                 }
                               },
-                              child: const Padding(
-                                padding: EdgeInsets.all(6.0),
-                                child: Icon(Icons.copy_outlined, size: 13, color: Colors.white54),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Icon(Icons.copy_outlined, size: 13, color: AppTheme.mutedText),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+
+                          Tooltip(
+                            message: 'Cut Video for Chunk (Transcript Edit)',
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(4),
+                              onTap: () {
+                                ref.read(editorProvider.notifier).cutVideoSegmentForTimeRange(
+                                  chunk.startTime,
+                                  chunk.endTime,
+                                  hideWords: true,
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Cut video for chunk ${index + 1} (${chunk.startTime.toStringAsFixed(1)}s – ${chunk.endTime.toStringAsFixed(1)}s)'),
+                                    backgroundColor: AppTheme.accentOrange,
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Icon(Icons.movie_filter_outlined, size: 14, color: AppTheme.accentOrange),
                               ),
                             ),
                           ),
@@ -363,9 +494,9 @@ class ChunkRow extends ConsumerWidget {
                                 ref.read(editorProvider.notifier).deleteWords(ids);
                                 LoggerService.instance.log(LogLevel.action, 'WordPanel', 'Deleted chunk at index $index');
                               },
-                              child: const Padding(
-                                padding: EdgeInsets.all(6.0),
-                                child: Icon(Icons.delete_outline_rounded, size: 14, color: Colors.redAccent),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Icon(Icons.delete_outline_rounded, size: 14, color: AppTheme.accentRed),
                               ),
                             ),
                           ),

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import '../logger/logger_service.dart';
 import 'native_helper.dart' as native_helper;
 
 /// Central source of truth for all CapStudio data directories.
@@ -87,6 +88,9 @@ class AppDirs {
   /// `AppData\Roaming\CapStudio\bin\`
   static String get bin => p.join(support, 'bin');
 
+  /// `AppData\Roaming\CapStudio\models\`
+  static String get models => p.join(support, 'models');
+
   /// `AppData\Roaming\CapStudio\assets\`
   static String get assets => p.join(support, 'assets');
 
@@ -117,6 +121,18 @@ class AppDirs {
     return _hasAvx!;
   }
 
+  /// Returns whether the host machine is running on Apple Silicon (macOS ARM64 / Rosetta).
+  static bool isAppleSilicon() {
+    if (kIsWeb) return false;
+    return native_helper.isAppleSilicon();
+  }
+
+  /// Returns the host CPU architecture string (e.g. 'macos_arm64', 'windows_x64').
+  static String getCpuArchitecture() {
+    if (kIsWeb) return 'web';
+    return native_helper.getCpuArchitecture();
+  }
+
   // ─── Disk Space Caching ──────────────────────────────────────────────────
 
   /// Returns the available space on the disk partition of the given [path] in megabytes (MB).
@@ -129,7 +145,16 @@ class AppDirs {
   /// Checks if there is at least [requiredMB] available disk space.
   static Future<bool> hasAvailableSpace(String path, double requiredMB) async {
     final available = await getAvailableDiskSpaceMB(path);
-    if (available < 0.0) return true; // Fail-open: if check failed, assume enough space
+    if (available < 0.0) {
+      // Fail-open: on web the probe is unsupported (-1). On native, a failed
+      // probe means we cannot verify space; log it loudly so a silently full
+      // disk doesn't turn into a confusing mid-download failure.
+      if (!kIsWeb) {
+        LoggerService.instance.log(LogLevel.warning, 'AppDirs',
+            'Disk space probe failed for $path; assuming enough space.');
+      }
+      return true;
+    }
     return available >= requiredMB;
   }
 }

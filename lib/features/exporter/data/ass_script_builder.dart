@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import '../../../core/database/schemas/project.dart';
 import '../../../core/database/schemas/word.dart';
 import '../../editor/domain/caption_engine.dart';
@@ -59,13 +60,15 @@ String generateAssScript(Project project, List<Chunk> chunks) {
   final highlightColor = _toAssColor(hs.mainColor);
 
   // Outline and Back shadows
-  final outlineColor = config.stroke == 'thick' ? '&H00000000&' : '&H00FFFFFF&';
+  final outlineColor = (config.stroke == 'thick' || config.stroke == 'thin') ? '&H00000000&' : '&H00FFFFFF&';
   final shadowColor = '&H80000000&'; // 50% transparent black
 
   final double exportScale = project.height / 640.0;
   final double assFontSize = style.fontSize * exportScale;
-  final double outlineWidth = config.stroke == 'thick' ? 6.0 * exportScale : 0.0;
-  final double shadowWidth = config.shadow == 'soft' ? 2.0 * exportScale : 0.0;
+  final double outlineWidth = config.stroke == 'thick' ? 6.0 * exportScale : (config.stroke == 'thin' ? 2.5 * exportScale : 0.0);
+  final double shadowWidth = (config.shadow == '3d' || config.shadow == 'extruded')
+      ? 5.0 * exportScale
+      : (config.shadow == 'hard' ? 3.5 * exportScale : (config.shadow == 'soft' ? 2.0 * exportScale : 0.0));
 
   // Bold flag: ASS uses -1 for bold, 0 for normal.
   // Cover all font weights that render visually bold (600 = SemiBold and above).
@@ -81,16 +84,17 @@ String generateAssScript(Project project, List<Chunk> chunks) {
   final double assSpacing = (style.letterSpacing ?? 0.0) * exportScale;
 
   // Background box configuration
+  final bool hasBackgroundBox = config.background != null || style.highlightBackground == true;
   final String backColor = config.background != null
       ? _toAssColor(config.background!)
-      : shadowColor;
-  final int borderStyle = config.background != null ? 3 : 1;
+      : (style.highlightBackground == true ? highlightColor : shadowColor);
+  final int borderStyle = hasBackgroundBox ? 3 : 1;
   // For opaque box style (borderStyle = 3), use the outline width as padding.
   // If outline width is 0, provide a default padding of 6.0 * exportScale.
-  final double finalOutlineWidth = config.background != null
+  final double finalOutlineWidth = hasBackgroundBox
       ? (outlineWidth > 0 ? outlineWidth : 6.0 * exportScale)
       : outlineWidth;
-  final String finalOutlineColor = config.background != null ? backColor : outlineColor;
+  final String finalOutlineColor = hasBackgroundBox ? backColor : outlineColor;
 
   final buffer = StringBuffer()
     ..writeln('[Script Info]')
@@ -128,6 +132,7 @@ String generateAssScript(Project project, List<Chunk> chunks) {
       projectWidth: project.width.toDouble(),
       projectHeight: project.height.toDouble(),
       styleTop: style.top,
+      styleLeft: style.left,
       fontFamily: style.fontFamily,
       fontSize: style.fontSize,
       fontWeight: style.fontWeight,
@@ -196,7 +201,8 @@ String generateAssScript(Project project, List<Chunk> chunks) {
       }
     }
 
-    buffer.writeln('Dialogue: 0,$startStr,$endStr,Default,,0,0,0,,$textBuffer');
+    final speakerName = chunk.speaker ?? '';
+    buffer.writeln('Dialogue: 0,$startStr,$endStr,Default,$speakerName,0,0,0,,$textBuffer');
   }
 
   return buffer.toString();
@@ -260,10 +266,33 @@ String generateAssScript(Project project, List<Chunk> chunks) {
 }
 
 String _transformText(String s, String mode) {
-  final clean = s.replaceAll('{', '').replaceAll('}', '');
+  final clean = s.replaceAll('{', '').replaceAll('}', '').replaceAll('\r', '').replaceAll('\n', '');
   return switch (mode) {
     'uppercase'  => clean.toUpperCase(),
     'capitalize' => clean.isEmpty ? clean : clean[0].toUpperCase() + clean.substring(1),
     _            => clean,
   };
 }
+
+@visibleForTesting
+(String, String) getAnimationTagsForTesting({
+  required WordSchema word,
+  required Chunk chunk,
+  required ProjectConfigSchema config,
+  required double outlineWidth,
+  required double exportScale,
+  required int wordIndex,
+}) =>
+    _getAnimationTags(
+      word: word,
+      chunk: chunk,
+      config: config,
+      outlineWidth: outlineWidth,
+      exportScale: exportScale,
+      wordIndex: wordIndex,
+    );
+
+@visibleForTesting
+String transformTextForTesting(String s, String mode) =>
+    _transformText(s, mode);
+

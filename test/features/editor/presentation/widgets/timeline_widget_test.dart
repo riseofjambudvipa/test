@@ -5,6 +5,9 @@ import 'package:mocktail/mocktail.dart';
 import 'package:capstudio/features/editor/presentation/widgets/timeline_widget.dart';
 import 'package:capstudio/features/editor/presentation/widgets/timeline_painter.dart';
 import 'package:capstudio/core/database/schemas/word.dart';
+import 'package:capstudio/core/database/schemas/project.dart';
+import 'package:capstudio/core/video/background_music_models.dart';
+import 'package:capstudio/core/video/chapter_models.dart';
 import 'package:capstudio/features/editor/presentation/controllers/editor_controller.dart';
 import 'package:capstudio/features/editor/presentation/controllers/editor_state.dart';
 import '../../../../mocks/mocks.dart';
@@ -46,10 +49,10 @@ void main() {
 
     // Verify time indicators and zoom texts are rendered
     expect(find.text('0.500s / 10.000s (Active: 10.000s)'), findsOneWidget);
-    expect(find.text('Zoom: 3.0x'), findsOneWidget);
+    expect(find.text('3.0x'), findsOneWidget);
 
     // Find fit screen button
-    expect(find.byIcon(Icons.fit_screen), findsOneWidget);
+    expect(find.byIcon(Icons.fit_screen_rounded), findsOneWidget);
   });
 
   testWidgets('TimelineWidget tap on word with null wordId should not crash', (WidgetTester tester) async {
@@ -84,7 +87,7 @@ void main() {
     expect(find.byType(TimelineWidget), findsOneWidget);
 
     final customPaintFinder = find.byWidgetPredicate(
-      (widget) => widget is CustomPaint && widget.painter is TimelinePainter,
+      (widget) => widget is CustomPaint && widget.painter is TimelinePlayheadPainter,
     );
     expect(customPaintFinder, findsOneWidget);
 
@@ -115,14 +118,14 @@ void main() {
     );
 
     // Initial Zoom is 3.0x (300 px/s)
-    expect(find.text('Zoom: 3.0x'), findsOneWidget);
+    expect(find.text('3.0x'), findsOneWidget);
 
     // Click fit screen button
-    await tester.tap(find.byIcon(Icons.fit_screen));
+    await tester.tap(find.byIcon(Icons.fit_screen_rounded));
     await tester.pumpAndSettle();
 
     // Verify Zoom has changed (1280 width / 10s duration = 128 px/s -> Zoom: 1.3x or similar)
-    expect(find.text('Zoom: 3.0x'), findsNothing);
+    expect(find.text('3.0x'), findsNothing);
   });
 
   testWidgets('TimelineWidget action buttons trigger correct EditorController calls', (WidgetTester tester) async {
@@ -142,22 +145,37 @@ void main() {
     when(() => mockEditorController.splitSegmentAtTime(any())).thenReturn(null);
     when(() => mockEditorController.toggleSegmentDeleted(any())).thenReturn(null);
     when(() => mockEditorController.resetSegments()).thenReturn(null);
+    when(() => mockEditorController.rippleDeleteAllDeletedSegments()).thenReturn(null);
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           editorProvider.overrideWith((ref) => mockEditorController),
         ],
-        child: const MaterialApp(
+        child: MaterialApp(
           home: Scaffold(
             body: SizedBox(
               height: 200,
               child: TimelineWidget(
-                words: [],
+                words: const [],
                 currentTime: 5.0,
                 duration: 10.0,
                 trimStart: 1.0,
                 trimEnd: 9.0,
+                segments: [
+                  VideoSegmentSchema()
+                    ..start = 0.0
+                    ..end = 4.0
+                    ..isDeleted = false,
+                  VideoSegmentSchema()
+                    ..start = 4.0
+                    ..end = 6.0
+                    ..isDeleted = true,
+                  VideoSegmentSchema()
+                    ..start = 6.0
+                    ..end = 10.0
+                    ..isDeleted = false,
+                ],
               ),
             ),
           ),
@@ -175,7 +193,12 @@ void main() {
     await tester.pump();
     verify(() => mockEditorController.toggleSegmentDeleted(5.0)).called(1);
 
-    // 3. Test Reset to original button
+    // 3. Test Ripple delete gaps button
+    await tester.tap(find.text('Ripple delete gaps'));
+    await tester.pump();
+    verify(() => mockEditorController.rippleDeleteAllDeletedSegments()).called(1);
+
+    // 4. Test Reset to original button
     await tester.tap(find.text('Reset to original'));
     await tester.pump();
     verify(() => mockEditorController.resetSegments()).called(1);
@@ -201,14 +224,14 @@ void main() {
       ),
     );
 
-    expect(find.text('Zoom: 3.0x'), findsOneWidget);
+    expect(find.text('3.0x'), findsOneWidget);
 
     final zoomInBtn = find.byTooltip('Zoom In');
     expect(zoomInBtn, findsOneWidget);
     await tester.tap(zoomInBtn);
     await tester.pump();
 
-    expect(find.text('Zoom: 3.5x'), findsOneWidget);
+    expect(find.text('3.5x'), findsOneWidget);
   });
 
   testWidgets('TimelineWidget Zoom Out button decreases zoom scale', (WidgetTester tester) async {
@@ -236,10 +259,10 @@ void main() {
     await tester.tap(zoomOutBtn);
     await tester.pump();
 
-    expect(find.text('Zoom: 2.5x'), findsOneWidget);
+    expect(find.text('2.5x'), findsOneWidget);
   });
 
-  testWidgets('TimelineWidget Zoom In clamps at 10.0x maximum zoom', (WidgetTester tester) async {
+  testWidgets('TimelineWidget Zoom In clamps at 5.0x maximum zoom', (WidgetTester tester) async {
     await tester.pumpWidget(
       const ProviderScope(
         child: MaterialApp(
@@ -265,7 +288,7 @@ void main() {
     }
     await tester.pump();
 
-    expect(find.text('Zoom: 10.0x'), findsOneWidget);
+    expect(find.text('5.0x'), findsOneWidget);
   });
 
   testWidgets('TimelineWidget Zoom Out clamps at 0.5x minimum zoom', (WidgetTester tester) async {
@@ -294,7 +317,7 @@ void main() {
     }
     await tester.pump();
 
-    expect(find.text('Zoom: 0.5x'), findsOneWidget);
+    expect(find.text('0.5x'), findsOneWidget);
   });
 
   testWidgets('TimelineWidget single tap on ruler seeks playback time', (WidgetTester tester) async {
@@ -344,7 +367,7 @@ void main() {
     );
 
     final paintFinder = find.byWidgetPredicate(
-      (widget) => widget is CustomPaint && widget.painter is TimelinePainter,
+      (widget) => widget is CustomPaint && widget.painter is TimelinePlayheadPainter,
     );
     expect(paintFinder, findsOneWidget);
 
@@ -402,7 +425,7 @@ void main() {
     );
 
     final paintFinder = find.byWidgetPredicate(
-      (widget) => widget is CustomPaint && widget.painter is TimelinePainter,
+      (widget) => widget is CustomPaint && widget.painter is TimelinePlayheadPainter,
     );
     final paintTopLeft = tester.getTopLeft(paintFinder);
     final rulerCenter = paintTopLeft.translate(500.0, 40.0);
@@ -460,7 +483,7 @@ void main() {
     );
 
     final paintFinder = find.byWidgetPredicate(
-      (widget) => widget is CustomPaint && widget.painter is TimelinePainter,
+      (widget) => widget is CustomPaint && widget.painter is TimelinePlayheadPainter,
     );
     final paintTopLeft = tester.getTopLeft(paintFinder);
     
@@ -518,7 +541,7 @@ void main() {
     );
 
     final paintFinder = find.byWidgetPredicate(
-      (widget) => widget is CustomPaint && widget.painter is TimelinePainter,
+      (widget) => widget is CustomPaint && widget.painter is TimelinePlayheadPainter,
     );
     final paintTopLeft = tester.getTopLeft(paintFinder);
     
@@ -527,5 +550,105 @@ void main() {
     await tester.pump();
 
     verify(() => mockEditorController.setTrim(any(), any())).called(greaterThanOrEqualTo(1));
+  });
+
+  testWidgets('TimelineWidget renders and repaints with active background music track', (WidgetTester tester) async {
+    const bgm = BackgroundMusicConfig(
+      musicPath: '/assets/audio/lofi_beat.mp3',
+      volume: 0.25,
+      loop: true,
+      enableDucking: true,
+      duckingRatio: 4.0,
+    );
+
+    final mockWords = [
+      WordSchema()
+        ..wordId = 'w1'
+        ..text = 'Hello'
+        ..start = 1.0
+        ..end = 2.0,
+    ];
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              height: 200,
+              width: 800,
+              child: TimelineWidget(
+                words: mockWords,
+                currentTime: 1.5,
+                duration: 10.0,
+                trimStart: 0.0,
+                trimEnd: 10.0,
+                backgroundMusic: bgm,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(TimelineWidget), findsOneWidget);
+
+    final waveformFinder = find.byWidgetPredicate(
+      (w) => w is CustomPaint && w.painter is TimelineWaveformPainter,
+    );
+    expect(waveformFinder, findsOneWidget);
+
+    final customPaint = tester.widget<CustomPaint>(waveformFinder);
+    final painter = customPaint.painter as TimelineWaveformPainter;
+    expect(painter.backgroundMusic, equals(bgm));
+    expect(painter.words, equals(mockWords));
+  });
+
+  testWidgets('TimelineWidget renders with chapter markers and passes chapters to painter', (WidgetTester tester) async {
+    final List<WordSchema> mockWords = [
+      WordSchema()
+        ..wordId = 'w1'
+        ..text = 'Introduction'
+        ..start = 0.0
+        ..end = 1.0
+        ..type = 'word',
+    ];
+
+    const chapters = [
+      VideoChapter(id: 'c1', startTime: 0.0, title: 'Introduction'),
+      VideoChapter(id: 'c2', startTime: 4.0, title: 'Deep Dive'),
+    ];
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              height: 200,
+              width: 800,
+              child: TimelineWidget(
+                words: mockWords,
+                currentTime: 0.0,
+                duration: 10.0,
+                trimStart: 0.0,
+                trimEnd: 10.0,
+                chapters: chapters,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(TimelineWidget), findsOneWidget);
+
+    final waveformFinder = find.byWidgetPredicate(
+      (w) => w is CustomPaint && w.painter is TimelineWaveformPainter,
+    );
+    expect(waveformFinder, findsOneWidget);
+
+    final customPaint = tester.widget<CustomPaint>(waveformFinder);
+    final painter = customPaint.painter as TimelineWaveformPainter;
+    expect(painter.chapters, equals(chapters));
+    expect(painter.chapters?.length, equals(2));
   });
 }

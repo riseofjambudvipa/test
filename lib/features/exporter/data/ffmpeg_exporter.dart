@@ -6,6 +6,11 @@ import 'ffmpeg_execution.dart';
 // existing imports of this library keep working:
 export 'ass_script_builder.dart' show generateAssScript;
 export 'ffmpeg_execution.dart' show probeAvailableEncoders;
+export 'ffmpeg_filters.dart' show FfmpegFilterBuilder;
+export '../../../core/video/aspect_ratio_converter.dart' show AspectRatioConverter;
+export '../../../core/video/viral_clip_models.dart' show AspectConversionMode;
+export '../../../core/video/background_music_models.dart' show BackgroundMusicConfig;
+export '../../../core/audio/audio_mastering_models.dart' show AudioMasteringConfig, AudioMasteringPlatform;
 
 class ExportProgress {
   final double progress; // 0.0 to 1.0

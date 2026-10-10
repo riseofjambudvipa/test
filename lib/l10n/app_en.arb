@@ -3,7 +3,7 @@
   "appName": "CapStudio",
   "dashboardTitle": "My Projects",
   "dashboardSubtitle": "Offline AI Captioning & Subtitle Studio",
-  "importVideo": "Import Video",
+  "importVideo": "Import New Video",
   "dragDropText": "Drag and drop your video file here",
   "clickBrowse": "or click to browse local files",
   "demoMode": "DEMO MODE",
@@ -37,7 +37,7 @@
   
   "settingsTitle": "Settings",
   "settingsGeneral": "General Settings",
-  "settingsTheme": "App Theme Theme",
+  "settingsTheme": "App Theme",
   "themeSystem": "System Default",
   "themeLight": "Light Mode",
   "themeDark": "Dark Mode",
@@ -85,5 +85,714 @@
   "aboutApp": "About CapStudio",
   "aboutAppDesc": "Tell about CapStudio, credits, and open-source licenses.",
   "aboutAppThanks": "Special thanks to the open-source projects that make CapStudio possible:",
-  "btnViewAllLicenses": "VIEW ALL PACKAGES LICENSES"
+  "btnViewAllLicenses": "VIEW ALL PACKAGES LICENSES",
+
+  "exportBurnIn": "BURN-IN VIDEO EXPORT",
+  "exportTimecodeFormats": "TIMECODE SUBTITLE FORMATS",
+  "exportWebEnabled": "Client-side video export is enabled. Rendering runs locally in your browser.",
+  "exportWebCaptionOnly": "Web export currently includes captions only — emoji and sound effects are not yet burned into the video. Export from the desktop or mobile app for the full result.",
+  "exportOutputName": "Output Video Name",
+  "exportMode": "Export Mode",
+  "exportModeFast": "Fast (Native FFmpeg)",
+  "exportModeFastUnsupported": "Fast (Native FFmpeg) ⚠️ Unsupported",
+  "exportModeSlow": "Slow (1:1 Preview Render)",
+  "exportTargetFps": "Target FPS",
+  "exportFps24": "24 FPS (Film)",
+  "exportFps25": "25 FPS (PAL)",
+  "exportFps30": "30 FPS (Standard)",
+  "exportFps50": "50 FPS",
+  "exportFps60": "60 FPS (Smooth)",
+  "exportFastUnsupported": "Fast Mode is not supported on this device because the system FFmpeg build lacks subtitle rendering filters (libass). Slow Mode will be used instead.",
+  "exportSlowInfo": "Captures each frame exactly as shown in preview. This guarantees pixel-perfect captions, but renders slower.",
+  "exportDestDirectory": "DESTINATION DIRECTORY",
+  "exportDestBrowser": "Browser Download Location",
+  "exportDestAndroid": "Downloads folder (/storage/emulated/0/Download)",
+  "exportDestIos": "Application Documents (Share Sheet after export)",
+  "exportChooseFolder": "Choose Output Folder",
+  "exportStartMp4": "START MP4 EXPORT",
+  "exportSrtTitle": "SubRip Subtitles (.srt)",
+  "exportSrtDesc": "Universal timecoded standard. Compatible with YouTube, VLC, and Premiere Pro.",
+  "exportVttTitle": "WebVTT Subtitles (.vtt)",
+  "exportVttDesc": "Web-optimized subtitle format widely used in HTML5 players and online streaming.",
+  "exportAssTitle": "Advanced SubStation Alpha (.ass)",
+  "exportAssDesc": "Professional format embedding font sizes, styles, margins, and inline highlights.",
+  "exportTxtTitle": "Plain Text Transcript (.txt)",
+  "exportTxtDesc": "Line-by-line transcript with timestamp prefix markers.",
+  "exportSuccess": "{type} exported successfully!",
+  "@exportSuccess": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "exportNoLocation": "No save location selected. Please choose a file path.",
+  "exportNoLocationCancelled": "No save location selected. Export cancelled.",
+  "exportFailed": "Failed to export: {error}",
+  "@exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "exportCopySrtTooltip": "Copy SRT to clipboard",
+  "exportCopiedSrt": "SRT copied to clipboard!",
+  "exportCopyFailedSrt": "Failed to copy SRT: {error}",
+  "@exportCopyFailedSrt": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "exportSubtitlesDialogTitle": "Export {type} Subtitles",
+  "@exportSubtitlesDialogTitle": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "exportVideoDialogTitle": "Export Video MP4",
+  "ffmpegRequiredTitle": "FFmpeg Required",
+  "ffmpegRequiredBody": "A local installation of FFmpeg is required to burn subtitles into a video file.\n\nPlease configure the FFmpeg path in Settings.",
+  "okLabel": "OK",
+  "exportWebTitle": "Exporting Video (Client-Side)",
+  "exportWebSuccess": "Video exported successfully as {fileName}!",
+  "@exportWebSuccess": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "exportWebFailed": "Rendering failed: {error}",
+  "@exportWebFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "viralShortsTitle": "VIRAL SHORTS STUDIO",
+  "viralShortsSubtitle": "9:16 Vertical Reframe, Silence Jump-Cuts & AI Hook Detector",
+  "viralReframeTitle": "1. VERTICAL 9:16 REFRAME",
+  "viralSilenceTitle": "2. SILENCE REMOVAL (JUMP-CUTS)",
+  "viralHooksTitle": "3. AI VIRAL HOOK DETECTOR",
+  "btnFindViralMoments": "FIND VIRAL MOMENTS",
+  "btnScanSilences": "SCAN FOR SILENCES",
+  "btnApplyJumpCuts": "APPLY JUMP-CUTS",
+  "editorTabShorts": "Shorts",
+  "editorTabClips": "Clips",
+
+  "captionList": "CAPTION LIST",
+  "uncertainLabel": "Uncertain (<40%)",
+  "mediumConfidenceLabel": "Medium (40-60%)",
+  "jumpToUncertain": "Jump to next uncertain word",
+  "noUncertainWords": "No uncertain words found.",
+  "findAndReplace": "Find & Replace",
+  "addWordTitle": "Add Word",
+  "editWordTitle": "Edit Word",
+  "wordTextLabel": "Word Text",
+  "startTimeLabel": "Start Time (s)",
+  "endTimeLabel": "End Time (s)",
+  "splitChunk": "Split Chunk",
+  "insertLineAfter": "Insert Line After",
+  "duplicateLine": "Duplicate Line",
+  "deleteLine": "Delete Line",
+  "chooseSfxTitle": "Choose Sound Effect",
+  "searchSfxPlaceholder": "Search SFX...",
+  "noSfxFound": "No sound effects found",
+  "emojiSearch": "Emoji Search",
+  "noEmojisFound": "No emojis found",
+
+  "mySavedPresets": "MY SAVED PRESETS",
+  "btnImport": "IMPORT",
+  "btnExportCaps": "EXPORT",
+  "btnSaveCurrent": "SAVE CURRENT",
+  "resetToDefault": "Reset to Default",
+  "resetConfirmBody": "This will reset all caption styles to default. Cannot be undone.",
+  "btnReset": "Reset",
+  "wordHighlightBox": "Word Highlight Box",
+  "wordHighlightBoxDesc": "Colored pill background behind active spoken words",
+  "maxWordsPerChunk": "Max Words per Subtitle Chunk",
+  "maxCharsPerLine": "Max Characters per Subtitle Line",
+  "fontSettings": "Font Settings",
+  "colorSettings": "Color Settings",
+  "borderSettings": "Border & Shadow Settings",
+
+  "speechToTextTitle": "SPEECH-TO-TEXT TRANSCRIPTION",
+  "speechToTextDesc": "Re-run local Speech-to-Text transcription. Any manual edits or timing offsets will be replaced.",
+  "useLocalAi": "Use Local AI Transcription",
+  "runOnDeviceDesc": "Run speech-to-text directly on this device",
+  "offlineDemoModeActive": "Offline Demo mode is active. Local Whisper AI transcription is not supported on Web.",
+  "demoModeNote": "Demo mode instantly generates highly realistic transcript tokens. Perfect for testing styles, templates, and timeline operations without setup.",
+  "transcriptionQuality": "Transcription Quality",
+  "advancedSettings": "Advanced Settings",
+  "cpuThreadsLabel": "CPU Threads",
+  "vadSensitivity": "VAD Sensitivity",
+  "translateToEnglish": "Translate to English",
+  "startTranscriptionBtn": "START TRANSCRIPTION",
+  "hardwareLocked": "Hardware Locked",
+  "btnDownload": "Download",
+
+  "welcomeTitle": "Welcome to CapStudio",
+  "welcomeSubtitle": "High-precision captions and viral shorts, 100% offline.",
+  "setupAssetDirTitle": "Choose Asset Directory",
+  "setupAssetDirDesc": "Select a directory to store models, fonts, and emoji packs.",
+  "downloadPacksTitle": "Download Content Packs (Optional)",
+  "downloadPacksDesc": "Optional fonts and sound effects for your video projects.",
+  "setupCompleteTitle": "Setup Complete",
+  "setupCompleteDesc": "You are ready to create stunning captioned videos.",
+  "btnGetStarted": "Get Started",
+  "btnNext": "NEXT",
+  "btnSkip": "SKIP",
+
+  "onboardingFeaturePrivacy": "100% Privacy",
+  "onboardingFeaturePrivacyDesc": "Your files never leave your device. All AI models run locally.",
+  "onboardingFeatureGpu": "GPU Accelerated Playback",
+  "onboardingFeatureGpuDesc": "High performance video editing using hardware decoding.",
+  "onboardingFeatureAssets": "Offline Sidecar Assets",
+  "onboardingFeatureAssetsDesc": "Download rich emoji packs once and run completely offline.",
+  "onboardingReadyTitle": "You're Ready to Roll!",
+  "onboardingConfigDetails": "Configuration Details:",
+  "btnLaunchCapStudio": "Launch CapStudio",
+  "assetVerificationFailed": "Asset verification failed. Please ensure assets downloaded properly.",
+  "assetsFolderNotFound": "Assets Folder Not Found",
+  "assetsFolderNotFoundDesc": "CapStudio could not locate the assets folder at the configured location. If the folder is on an external drive, please connect it.",
+  "expectedPathLabel": "EXPECTED PATH:",
+  "browseNewLocation": "Browse New Location",
+  "resetToDefaultPath": "Reset to Default Path",
+  "retryVerification": "Retry Verification",
+  "storagePathFolder": "Storage Path Folder",
+  "tipWindowsDrive": "Tip: If C: drive is small, choose a path on D: or E: for more space.",
+  "tipGeneralDrive": "Tip: You can select an external drive path if your root volume is full.",
+  "confirmLocation": "Confirm Location",
+  "requiredBadge": "REQUIRED",
+  "emojiPacksHeader": "EMOJI PACKS",
+  "fontPacksHeader": "FONT PACKS",
+  "connectCliTitle": "Connect Local CLI Tools",
+  "connectCliDesc": "CapStudio needs whisper.cpp and FFmpeg binaries to perform transcription and export videos locally.",
+  "skipSetup": "Skip setup for now",
+  "btnValidate": "Validate",
+  "autoDetectAndValidate": "Auto-detect & Validate",
+  "whisperCliPathLabel": "Whisper CLI Executable Path",
+  "ffmpegCliPathLabel": "FFmpeg CLI Executable Path",
+
+  "newProject": "New Project",
+  "searchProjects": "Search projects...",
+  "filterAll": "All",
+  "sortByRecent": "Most Recent",
+  "sortByDuration": "Duration",
+  "noMatchingProjects": "No projects match your search",
+
+  "btnEdit": "EDIT",
+  "btnDuplicate": "DUPLICATE",
+  "tooltipEdit": "Edit",
+  "tooltipRename": "Rename",
+  "tooltipDuplicate": "Duplicate",
+  "tooltipDelete": "Delete",
+  "tooltipTheme": "Theme",
+  "tooltipSettings": "Settings",
+  "selectDemoFormat": "SELECT DEMO FORMAT",
+  "selectDemoDesc": "Select a layout format to preview CapStudio's high-fidelity caption engine, live word-level animations, and audio waveforms instantly.",
+  "landscapeDemo": "Landscape Demo",
+  "landscapeDemoDesc": "Perfect for YouTube, desktop & presentations.",
+  "portraitDemo": "Portrait Demo",
+  "portraitDemoDesc": "Ideal for TikTok, Shorts, Reels & mobile.",
+  "format16x9": "16:9 Format",
+  "format9x16": "9:16 Format",
+  "dropVideoHere": "DROP VIDEO HERE",
+  "dropVideoSupported": "Supports MP4, MOV, AVI, etc.",
+  "statusLocalOffline": "LOCAL OFFLINE",
+
+  "speechModelTitle": "Speech Recognition Model",
+  "hardwareUpgradesTitle": "Hardware Performance Upgrades",
+  "showAdvancedPaths": "SHOW ADVANCED PATH CONFIGURATION",
+  "hideAdvancedPaths": "HIDE ADVANCED PATH CONFIGURATION",
+  "autoDownload": "AUTO DOWNLOAD",
+  "gpuAcceleratedTranscription": "GPU Accelerated Transcription (CUDA)",
+  "gpuRequiresNvidia": "Requires NVIDIA GPU with CUDA compatibility",
+  "gpuExportEncoder": "GPU Export Encoder",
+  "gpuExportEncoderDesc": "Hardware acceleration for MP4 video export",
+
+  "defaultLanguage": "Default Language",
+  "vadTitle": "Voice Activity Detection (VAD)",
+  "vadDesc": "Skips silent regions during processing",
+  "vadThreshold": "VAD Threshold",
+  "autoSaveTitle": "Automatic Auto-Save",
+  "autoSaveDesc": "Automatically save project edits to database every 3 seconds",
+
+  "defaultOutputsTitle": "Default Outputs",
+  "defaultExportFolder": "Default Export Folder",
+  "alwaysAskExportPath": "Always Ask for Export Path",
+  "alwaysAskExportPathDesc": "Prompts for output path on each export (Desktop)",
+  "performanceTitle": "Performance",
+  "exportCpuThreads": "Export CPU Threads",
+  "exportCpuThreadsDesc": "Processor threads to use for rendering (Auto scales safely per device)",
+
+  "aboutAppSubtitle": "100% Offline, Privacy-First AI Captioning & Subtitle Studio",
+  "openSourceLicenses": "Open Source Licenses",
+  "openSourceComplianceDesc": "CapStudio relies on many other open-source libraries. A complete registry of all Dart packages, transitive dependencies, and full license texts is compiled below for legal store compliance.",
+  "visitWebsite": "Visit Website",
+  "btnContinue": "Continue",
+  "btnBack": "Back",
+  "editTiming": "Edit Timing",
+  "wordSettingsTitle": "Word Settings",
+
+  "emojiSettingsTitle": "EMOJI SETTINGS",
+  "changeEmojiTooltip": "Change Emoji",
+  "searchEmojisHint": "Search Emojis...",
+  "emojiPosX": "Emoji Position (X Offset: {offset}px)",
+  "@emojiPosX": {
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "emojiPosY": "Emoji Position (Y Offset: {offset}px)",
+  "@emojiPosY": {
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "emojiScale": "Emoji Scale ({scale}x)",
+  "@emojiScale": {
+    "placeholders": {
+      "scale": {
+        "type": "String"
+      }
+    }
+  },
+  "emojiAnimSpeed": "Animation Speed ({speed}x)",
+  "@emojiAnimSpeed": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "emojiStylePack": "Emoji Style / Pack",
+  "selectStylePackTooltip": "Select Style Pack",
+  "selectEmojiTitle": "SELECT EMOJI",
+  "stylePackLabel": "STYLE PACK",
+  "searchHint": "Search...",
+  "noEmojisFound": "No emojis found.",
+
+  "btnCreateProject": "CREATE PROJECT",
+  "btnChooseFile": "CHOOSE FILE",
+  "selectSubtitleFile": "Select Subtitle File",
+  "selectTranscriptionQuality": "SELECT TRANSCRIPTION QUALITY",
+  "translateToEnglish": "Translate captions to English",
+  "translateToEnglishDesc": "Convert foreign speech directly into English subtitles",
+  "hardwareSettings": "HARDWARE & PERFORMANCE SETTINGS",
+
+  "styleTemplatesHeader": "STYLE TEMPLATES",
+  "resetToDefaultStyle": "Reset to default style",
+  "resetStylingTitle": "Reset Styling?",
+  "resetStylingDesc": "This will reset all caption styles to default. Cannot be undone.",
+  "btnReset": "Reset",
+  "sizeAndPosition": "SIZE & POSITION",
+  "verticalYPos": "Vertical Y Position (%)",
+
+  "fontConfigHeader": "FONT CONFIGURATION",
+  "fontFamilyLabel": "Font Family",
+  "btnImportCustomFont": "IMPORT CUSTOM FONT (.ttf / .otf)",
+  "fontWeightLabel": "Font Weight",
+  "textCaseLabel": "Text Case",
+  "fontSizeLabel": "Font Size",
+  "letterSpacingLabel": "Letter Spacing",
+  "lineHeightLabel": "Line Height",
+
+  "onboardingAppTagline": "100% Offline Local AI Caption Editor",
+  "configLabelWhisperCli": "Whisper CLI",
+  "configValueDemoMode": "Demo Mode (Mock)",
+  "configLabelFfmpegCli": "FFmpeg CLI",
+  "configValueSystemPathDefault": "System PATH default",
+  "configLabelAssetsLocation": "Assets Location",
+
+  "filePickerAssetsDialogTitle": "Select CapStudio Assets Folder",
+  "errorSelectFolderFailed": "Failed to select folder: {error}",
+  "@errorSelectFolderFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "errorResetFailed": "Failed to reset: {error}",
+  "@errorResetFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "errorVerificationFailed": "Verification failed: {error}",
+  "@errorVerificationFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "errorAssetsFolderStillMissing": "Assets folder still not found at: {path}",
+  "@errorAssetsFolderStillMissing": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+
+  "dbRecoveredTitle": "Database Automatically Recovered",
+  "dbRecoveredBody": "A database schema mismatch or corruption was detected. The database was reset, and your previous data was backed up to:\n\n{backupPath}",
+  "@dbRecoveredBody": {
+    "placeholders": { "backupPath": { "type": "String" } }
+  },
+  "errorDemoLoadFailed": "Failed to load demo video: {error}",
+  "@errorDemoLoadFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "importProgressPercent": "{percent}% Completed",
+  "@importProgressPercent": {
+    "placeholders": { "percent": { "type": "int" } }
+  },
+  "errorInvalidDropFileFormat": "Invalid file format. Please drop a video file.",
+
+  "findTextLabel": "Find text",
+  "replaceWithLabel": "Replace with",
+  "findReplaceSuccessCount": "Replaced {count} occurrences!",
+  "@findReplaceSuccessCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "btnReplaceAll": "REPLACE ALL",
+
+  "errorVideoFileNotFound": "Video file not found:\n{path}\nPlease re-link the video file.",
+  "@errorVideoFileNotFound": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "errorTranscriptionFailed": "Transcription failed. Please try again.",
+  "transcriptionActiveModel": "Active: {quality} ({model})",
+  "@transcriptionActiveModel": {
+    "placeholders": {
+      "quality": { "type": "String" },
+      "model": { "type": "String" }
+    }
+  },
+  "badgeRecommended": "REC",
+  "languageLabel": "Language",
+  "warningEnglishOnlyModel": "Warning: The selected model ({model}) is English-only. Transcribing in \"{language}\" will fail or produce English captions. Please select a Multilingual model (e.g. Tiny or Base).",
+  "@warningEnglishOnlyModel": {
+    "placeholders": {
+      "model": { "type": "String" },
+      "language": { "type": "String" }
+    }
+  },
+  "tipAutoDetectMixedLanguage": "Tip: Auto-detect is not recommended for mixed languages (like Hinglish). Explicitly selecting your spoken language (e.g. Hindi or English) will provide much more accurate captions.",
+  "detectedHardwareLabel": "Detected System Hardware:",
+  "hardwareRamSize": "RAM Size: {ramGB} GB",
+  "@hardwareRamSize": {
+    "placeholders": { "ramGB": { "type": "String" } }
+  },
+  "hardwareCpuCores": "CPU Logical Cores: {cores}",
+  "@hardwareCpuCores": {
+    "placeholders": { "cores": { "type": "int" } }
+  },
+  "hardwareGpuDevice": "GPU Device: {gpu}",
+  "@hardwareGpuDevice": {
+    "placeholders": { "gpu": { "type": "String" } }
+  },
+  "hardwareDetecting": "Detecting hardware stats...",
+  "btnStartReTranscribe": "START RE-TRANSCRIBE",
+  "btnImportSrtVtt": "IMPORT SRT/VTT FILE",
+  "importedSubtitleWords": "Imported {count} words from subtitle file.",
+  "@importedSubtitleWords": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "errorImportSubtitleFailed": "Failed to import subtitle file. Please check the file format.",
+
+  "noProjectLoaded": "No project loaded",
+  "badge916Vertical": "9:16 VERTICAL",
+  "badge169Landscape": "16:9 LANDSCAPE",
+  "reframeTargetCanvas": "Target canvas: 1080 × 1920 (TikTok, YouTube Shorts, Instagram Reels)",
+  "reframeModeLabel": "Reframe Mode:",
+  "reframeModeBlurPillarbox": "Blur Pillarbox (Recommended)",
+  "reframeModeBlurPillarboxDesc": "Scales & blurs video in the background to fill 9:16, keeping the centered video crisp.",
+  "reframeModeCenterCrop": "Center Smart Crop",
+  "reframeModeCenterCropDesc": "Fills the full 9:16 screen by cropping the left and right edges.",
+  "reframeModeSplitScreen": "Split Screen / Dual Layer",
+  "reframeModeSplitScreenDesc": "Stacks two video windows vertically (ideal for reactions and podcast dialogue).",
+  "btnResetTo169": "CURRENTLY 9:16 (RESET TO 16:9)",
+  "btnSetCanvas916": "SET PROJECT CANVAS TO 9:16",
+  "silenceRemovalDesc": "Automatically cuts out dead pauses and breathing gaps to maximize video retention.",
+  "silenceAggressivenessLabel": "Cut Aggressiveness:",
+  "silenceNoiseGateLabel": "Silence Noise Gate: {db} dB",
+  "@silenceNoiseGateLabel": {
+    "placeholders": { "db": { "type": "int" } }
+  },
+  "silenceMinPauseLabel": "Min Pause: {duration}s",
+  "@silenceMinPauseLabel": {
+    "placeholders": { "duration": { "type": "String" } }
+  },
+  "btnScanning": "SCANNING...",
+  "silenceNoneFound": "No silence gaps found exceeding {duration}s.",
+  "@silenceNoneFound": {
+    "placeholders": { "duration": { "type": "String" } }
+  },
+  "silenceFoundCount": "Found {count} silences ({totalSecs}s dead air saved)!",
+  "@silenceFoundCount": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "totalSecs": { "type": "String" }
+    }
+  },
+  "errorScanningAudio": "Error scanning audio: {error}",
+  "@errorScanningAudio": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "jumpCutsApplied": "Applied {count} jump-cuts to project timeline!",
+  "@jumpCutsApplied": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "viralHooksDesc": "Scans transcription words for 80+ viral hooks, pacing (120–170 WPM), questions, energy density & clip boundaries.",
+  "btnAnalyzingTranscript": "ANALYZING TRANSCRIPT...",
+  "selectAllLabel": "Select All",
+  "selectedCountOf": "{selected} of {total} selected",
+  "@selectedCountOf": {
+    "placeholders": {
+      "selected": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "btnSelectClipsToBatchExport": "SELECT CLIPS TO BATCH EXPORT",
+  "btnBatchExportCount": "BATCH EXPORT {count} CLIP(S)",
+  "@btnBatchExportCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "viralNoClipsDetected": "No high-scoring viral clips detected in this video duration range.",
+  "badgeCleanCut": "CLEAN CUT",
+  "badgeFirst5s": "FIRST 5s",
+  "btnPreview": "Preview",
+  "btnTrim": "Trim",
+  "tooltipForkAs916": "Fork as New 9:16 Short Project",
+  "wpmLabelOk": "{wpm} WPM ✓",
+  "@wpmLabelOk": {
+    "placeholders": { "wpm": { "type": "int" } }
+  },
+  "wpmLabelFast": "{wpm} WPM FAST",
+  "@wpmLabelFast": {
+    "placeholders": { "wpm": { "type": "int" } }
+  },
+  "wpmLabelSlow": "{wpm} WPM SLOW",
+  "@wpmLabelSlow": {
+    "placeholders": { "wpm": { "type": "int" } }
+  },
+  "hookScoreLabel": "Hook {score}/40",
+  "@hookScoreLabel": {
+    "placeholders": { "score": { "type": "int" } }
+  },
+  "energyScoreLabel": "Energy {score}/20",
+  "@energyScoreLabel": {
+    "placeholders": { "score": { "type": "int" } }
+  },
+  "filePickerClipsFolderTitle": "Choose folder to save clips",
+  "errorChooseOutputFolderFirst": "Please choose an output folder first.",
+  "batchExportSheetTitle": "BATCH EXPORT {count} CLIP(S)",
+  "@batchExportSheetTitle": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "tapToChooseOutputFolder": "Tap to choose output folder…",
+  "burnCaptionsOnClipsLabel": "Burn Dynamic Captions on Clips",
+  "burnCaptionsOnClipsDesc": "Burns styled animated subtitles synchronized to clip audio",
+  "exportCancelledProgress": "Export cancelled. {done}/{total} done.",
+  "@exportCancelledProgress": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "exportProgressSummary": "{done}/{total} exported · {failed} failed",
+  "@exportProgressSummary": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" },
+      "failed": { "type": "int" }
+    }
+  },
+  "btnExporting": "EXPORTING…",
+  "btnExportComplete": "EXPORT COMPLETE ✓",
+  "btnStartExport": "START EXPORT",
+  "exportClipSavedAt": "✓ Saved: {path}",
+  "@exportClipSavedAt": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "projectTrimmedToClip": "Project trimmed to viral clip #{rank} ({start} - {end})!",
+  "@projectTrimmedToClip": {
+    "placeholders": {
+      "rank": { "type": "int" },
+      "start": { "type": "String" },
+      "end": { "type": "String" }
+    }
+  },
+  "shortProjectCreated": "Created 9:16 Short: \"{name}\"",
+  "@shortProjectCreated": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "btnOpen": "OPEN",
+  "errorCreateShortProjectFailed": "Failed to create short project: {error}",
+  "@errorCreateShortProjectFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "hardwareLocked": "Hardware Locked",
+  "btnDownload": "Download",
+  "autoDetect": "Auto Detect",
+  "btnExport": "Export",
+  "btnCancel": "CANCEL",
+
+  "presetSaved": "Saved style preset \"{name}\" successfully!",
+  "@presetSaved": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "presetDeleted": "Preset deleted successfully.",
+  "presetExported": "Style presets exported successfully!",
+  "errorPresetExportFailed": "Failed to export presets: {error}",
+  "@errorPresetExportFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "presetImported": "Imported style presets successfully!",
+  "errorPresetImportFailed": "Failed to import presets: {error}",
+  "@errorPresetImportFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "selectFontFileDialogTitle": "Select TTF or OTF Font File",
+  "fontWeightThin": "Thin",
+  "fontWeightExtraLight": "Extra Light",
+  "fontWeightLight": "Light",
+  "fontWeightNormal": "Normal",
+  "fontWeightMedium": "Medium",
+  "fontWeightSemiBold": "Semi Bold",
+  "fontWeightBold": "Bold",
+  "fontWeightExtraBold": "Extra Bold",
+  "fontWeightBlack": "Black",
+  "fontCaseNormal": "Normal",
+  "fontCaseUppercase": "UPPERCASE",
+  "fontCaseCapitalize": "Capitalize",
+
+  "strokeStyleThickOutline": "Thick Outline",
+  "strokeStyleNoneFlat": "None (Flat)",
+  "shadowStyleSoft": "Soft Shadow",
+  "shadowStyleNone": "None",
+  "animStyleActivePop": "Active Pop",
+  "animStyleActiveBounce": "Active Bounce Jump",
+  "animStyleKineticTilt": "Kinetic Bouncy Tilt",
+  "animStyleGlowPulse": "Glowing Active Pulse",
+  "animStyleWordReveal": "Word Reveal Stagger",
+  "animStyleNoneStatic": "None (Static)",
+
+  "fontImportedSuccess": "Successfully imported and applied custom font: \"{name}\"",
+  "@fontImportedSuccess": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "errorFontImportFailed": "Failed to load font file. Invalid data.",
+
+  "invalidTimingError": "Invalid start/end timings. Start must be >= 0, and end must be >= start and <= video duration.",
+
+  "projectSavedSuccess": "Project saved successfully.",
+  "wordDeletedSuccess": "Deleted word: \"{text}\"",
+  "@wordDeletedSuccess": {
+    "placeholders": { "text": { "type": "String" } }
+  },
+  "splitClip": "Split clip",
+  "removeClip": "Remove clip",
+  "resetToOriginal": "Reset to original",
+  "splitTimelineAt": "Split timeline at {time}s.",
+  "@splitTimelineAt": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+  "splitTimelineError": "Playhead must be inside the active region to split.",
+  "exclusionToggled": "Toggled segment exclusion under playhead.",
+  "splitsReset": "Reset all timeline splits and exclusions.",
+
+  "shareVideo": "Share Video",
+  "openOutputFolder": "Open output folder",
+
+  "errorLogCopied": "Error log copied to clipboard.",
+  "diagnosticsExported": "Filtered diagnostic report opened in share sheet.",
+  "errorDiagnosticsFailed": "Failed to export diagnostics report: {error}",
+  "@errorDiagnosticsFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "logLineCopied": "Copied log line to clipboard: \"{message}\"",
+  "@logLineCopied": {
+    "placeholders": { "message": { "type": "String" } }
+  },
+  "commandCopied": "Copied: \"{command}\"",
+  "@commandCopied": {
+    "placeholders": { "command": { "type": "String" } }
+  },
+
+  "settingsRestored": "Settings restored to defaults.",
+  "gpuEncoderNoneCpu": "None (CPU)",
+  "gpuEncoderNvidia": "NVIDIA NVENC",
+  "gpuEncoderAmd": "AMD AMF",
+  "gpuEncoderIntel": "Intel QSV",
+  "gpuEncoderApple": "Apple VideoToolbox",
+  "btnDownloadVcRedist": "DOWNLOAD VC++ REDISTRIBUTABLE",
+  "errorDownloadToolFailed": "Failed to download tool: {error}",
+  "@errorDownloadToolFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "errorFolderNotAccessible": "Selected folder does not exist or is not accessible.",
+
+  "modelDeleted": "Deleted model: {name}",
+  "@modelDeleted": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "errorModelDeleteFailed": "Failed to delete model: {error}",
+  "@errorModelDeleteFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "errorModelDownloadFailed": "Failed to download model {name}: {error}",
+  "@errorModelDownloadFailed": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "error": { "type": "String" }
+    }
+  },
+
+  "errorOpenFolderFailed": "Could not open folder automatically. Path: {path}",
+  "@errorOpenFolderFailed": {
+    "placeholders": { "path": { "type": "String" } }
+  },
+  "errorDownloadPackFailed": "Failed to download pack: {error}",
+  "@errorDownloadPackFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "errorPackDownloadNamedFailed": "Failed to download pack {name}: {error}",
+  "@errorPackDownloadNamedFailed": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "error": { "type": "String" }
+    }
+  },
+  "stickersIndexRefreshed": "Custom stickers index refreshed successfully!",
+  "errorChangeAssetFolderFailed": "Failed to change assets folder: {error}",
+  "@errorChangeAssetFolderFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "errorSetAssetFolderFailed": "Failed to set assets folder: {error}",
+  "@errorSetAssetFolderFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "warningNoAvx": "Missing AVX support detected! Downloading compatible whisper-cli (no-AVX)...",
+  "errorAutoDetectWhisper": "Could not auto-detect whisper-cli. Please browse manually.",
+  "errorAutoDetectFfmpeg": "Could not auto-detect ffmpeg. Please browse manually.",
+  "errorToolDownloadFailed": "Failed to download tool: {error}",
+  "@errorToolDownloadFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "returnToDashboard": "Return to Dashboard",
+  "errorImportVideoFailed": "Import failed: {error}",
+  "@errorImportVideoFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "videoRelinkedSuccess": "Video relinked successfully!",
+  "errorRelinkVideoFailed": "Failed to relink video.",
+  "retranscriptionSuccess": "Re-transcription successful!",
+  "retranscriptionFailed": "Re-transcription failed."
 }

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../app/theme.dart';
+import '../../../../../app/theme_provider.dart';
 import '../../../../../core/logger/logger_service.dart';
 import '../../../../../core/settings/settings_service.dart';
 import '../../../../../core/widgets/whisper_threads_slider.dart';
@@ -15,6 +16,7 @@ import '../manual_install_banner.dart';
 import '../whisper_model_picker.dart';
 import '../../../../../core/utils/native_helper.dart';
 import '../../../../../core/utils/executable_validator.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 class GeneralSettingsSection extends ConsumerStatefulWidget {
   const GeneralSettingsSection({super.key});
@@ -112,12 +114,13 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
       onAvxDetected: () async {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              'Missing AVX support detected! Automatically downloading compatible whisper-cli (no-AVX)...',
+              AppLocalizations.of(context)?.warningNoAvx ??
+                  'Missing AVX support detected! Automatically downloading compatible whisper-cli (no-AVX)...',
             ),
-            backgroundColor: Colors.orangeAccent,
-            duration: Duration(seconds: 5),
+            backgroundColor: AppTheme.accentOrange,
+            duration: const Duration(seconds: 5),
           ),
         );
         unawaited(downloadNoAvxWhisperAndRevalidate(
@@ -135,7 +138,9 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
     if (!mounted) return;
     setState(() => _validatingWhisper = true);
     final ok = await _validateExecutable(_whisperController.text.trim(), ['--help']);
-    _checkVcRuntime();
+    // FIX (audit, crash risk): _checkVcRuntime() calls setState; guard it so a
+    // user leaving the screen mid-validation can't hit setState after dispose.
+    if (mounted) _checkVcRuntime();
     if (mounted) {
       setState(() {
         _validatingWhisper = false;
@@ -156,15 +161,43 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
     }
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w900,
-        color: Colors.white,
-        letterSpacing: 1.0,
-      ),
+  Widget _buildSectionHeader(String title, IconData icon, [AppThemeData? themeData]) {
+    final primaryColor = themeData?.primaryText ?? AppTheme.primaryText;
+    final accentColor = themeData?.accentOrange ?? AppTheme.accentOrange;
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: accentColor),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+            color: primaryColor,
+            letterSpacing: 0.8,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWebFeatureRow(IconData icon, String title, String subtitle) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 16, color: AppTheme.accentOrange),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.primaryText)),
+              const SizedBox(height: 1),
+              Text(subtitle, style: TextStyle(fontSize: 10, color: AppTheme.secondaryText)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -199,7 +232,7 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                 Expanded(
                   child: Text(
                     label,
-                    style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white70, fontSize: 12),
+                    style: TextStyle(fontWeight: FontWeight.w600, color: AppTheme.primaryText, fontSize: 12),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -208,6 +241,7 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                   TextButton.icon(
                     onPressed: () {
                       final scaffoldMessenger = ScaffoldMessenger.of(context);
+                      final l10n = AppLocalizations.of(context);
                       setState(() => _whisperManualException = null);
                       BinaryDownloaderService.instance.download(toolId).then((_) {
                         if (!mounted) return;
@@ -221,14 +255,29 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                       }).catchError((Object e) {
                         if (mounted) {
                           if (e is ManualInstallRequiredException) {
-                            setState(() {
-                              _whisperManualException = e;
-                            });
+                            if (e.toolId == 'whisper') {
+                              setState(() => _whisperManualException = e);
+                            } else {
+                              // FIX (audit, cross-tool mislabel): an FFmpeg
+                              // manual-install failure was previously stored
+                              // in _whisperManualException and rendered inside
+                              // the whisper-branded banner. Show it as a
+                              // snackbar instead.
+                              scaffoldMessenger.showSnackBar(
+                                SnackBar(
+                                  content: Text('${e.toolId} requires manual installation (${e.platform}).'),
+                                  backgroundColor: AppTheme.accentRed,
+                                ),
+                              );
+                            }
                           } else {
                             scaffoldMessenger.showSnackBar(
                               SnackBar(
-                                content: Text('Failed to download tool: $e'),
-                                backgroundColor: Colors.redAccent,
+                                content: Text(
+                                  l10n?.errorDownloadToolFailed(e.toString()) ??
+                                      'Failed to download tool: $e',
+                                ),
+                                backgroundColor: AppTheme.accentRed,
                               ),
                             );
                           }
@@ -237,7 +286,7 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                     },
                     icon: Icon(Icons.download_for_offline, size: 14, color: AppTheme.accentOrange),
                     label: Text(
-                      'AUTO DOWNLOAD',
+                      AppLocalizations.of(context)?.autoDownload ?? 'AUTO DOWNLOAD',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -258,9 +307,9 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: AppTheme.glassDecoration(
-                  color: AppTheme.cardBg.withValues(alpha: 0.2),
+                  color: AppTheme.cardBg,
                   borderRadius: 8,
-                  borderOpacity: 0.06,
+                  borderOpacity: 0.08,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,7 +320,7 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                         Expanded(
                           child: Text(
                             progress.label,
-                            style: const TextStyle(fontSize: 11, color: Colors.white70, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 11, color: AppTheme.secondaryText, fontWeight: FontWeight.bold),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -279,14 +328,14 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                         if (progress.speedBytesPerSec > 0 && isDownloading)
                           Text(
                             '${(progress.speedBytesPerSec / (1024 * 1024)).toStringAsFixed(1)} MB/s',
-                            style: const TextStyle(fontSize: 10, color: Colors.white30, fontFamily: 'monospace'),
+                            style: TextStyle(fontSize: 10, color: AppTheme.mutedText, fontFamily: 'monospace'),
                           ),
                       ],
                     ),
                     const SizedBox(height: 8),
                     LinearProgressIndicator(
                       value: progress.overall,
-                      backgroundColor: Colors.white10,
+                      backgroundColor: AppTheme.dividerColor,
                       color: AppTheme.accentOrange,
                       borderRadius: BorderRadius.circular(2),
                     ),
@@ -299,11 +348,12 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                   Expanded(
                     child: TextField(
                       controller: controller,
-                      style: const TextStyle(fontSize: 12, color: Colors.white70),
+                      style: TextStyle(fontSize: 12, color: AppTheme.primaryText),
                       decoration: InputDecoration(
                         hintText: hint,
+                        hintStyle: TextStyle(color: AppTheme.mutedText),
                         filled: true,
-                        fillColor: AppTheme.cardBg.withValues(alpha: 0.6),
+                        fillColor: AppTheme.cardBg,
                         border: AppTheme.defaultBorder(radius: 6),
                         focusedBorder: AppTheme.focusedBorder(radius: 6),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -311,7 +361,7 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                             ? null
                             : Icon(
                                 isValid ? Icons.check_circle_outline : Icons.error_outline,
-                                color: isValid ? Colors.greenAccent : Colors.redAccent,
+                                color: isValid ? AppTheme.accentGreen : AppTheme.accentRed,
                                 size: 18,
                               ),
                       ),
@@ -319,22 +369,47 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.folder_open),
+                    icon: Icon(Icons.folder_open, color: AppTheme.secondaryText),
                     onPressed: onBrowse,
                     tooltip: 'Browse',
                   ),
                   IconButton(
                     icon: isValidating
-                        ? const SizedBox(
+                        ? SizedBox(
                             width: 16,
                             height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white60),
+                            child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.accentOrange),
                           )
-                        : const Icon(Icons.refresh),
+                        : Icon(Icons.refresh, color: AppTheme.secondaryText),
                     onPressed: onValidate,
                     tooltip: 'Validate Path',
                   ),
                 ],
+              ),
+            ],
+            if (isFailed && progress.error != null && progress.error!.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppTheme.accentRed.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: AppTheme.accentRed.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.error_outline, size: 14, color: AppTheme.accentRed),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        progress.error!,
+                        style: TextStyle(fontSize: 10, color: AppTheme.accentRed, fontWeight: FontWeight.w500),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
             const SizedBox(height: 16),
@@ -355,32 +430,39 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.warning_amber_rounded, color: Colors.orangeAccent, size: 20),
-              SizedBox(width: 8),
+              Icon(Icons.warning_amber_rounded, color: AppTheme.accentOrange, size: 20),
+              const SizedBox(width: 8),
               Text(
                 'Microsoft VC++ Runtime Missing',
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orangeAccent),
+                style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.accentOrange),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Whisper JNI requires the MSVC++ 2015-2022 redistributable. Without it, local speech transcription will crash.',
-            style: TextStyle(fontSize: 12, color: Colors.white70, height: 1.4),
+            style: TextStyle(fontSize: 12, color: AppTheme.secondaryText, height: 1.4),
           ),
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white10,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                backgroundColor: AppTheme.accentOrange.withValues(alpha: 0.12),
+                foregroundColor: AppTheme.accentOrange,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                  side: BorderSide(color: AppTheme.accentOrange.withValues(alpha: 0.3)),
+                ),
               ),
               icon: const Icon(Icons.launch, size: 16),
-              label: const Text('DOWNLOAD VC++ REDISTRIBUTABLE'),
+              label: Text(
+                AppLocalizations.of(context)?.btnDownloadVcRedist ??
+                    'DOWNLOAD VC++ REDISTRIBUTABLE',
+              ),
               onPressed: () async {
                 final uri = Uri.parse('https://aka.ms/vs/17/release/vc_redist.x64.exe');
                 if (await canLaunchUrl(uri)) {
@@ -404,17 +486,90 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
 
   @override
   Widget build(BuildContext context) {
+    final themeData = ref.watch(themeProvider);
     final isCompactWidth = MediaQuery.of(context).size.width < 600;
+    final l10n = AppLocalizations.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (!kIsWeb) ...[
-          _buildSectionHeader('🧠 Speech Recognition Model'),
+        if (kIsWeb) ...[
+          _buildSectionHeader('In-Browser Speech & Video Engine', Icons.cloud_done_rounded, themeData),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: AppTheme.glassDecoration(
+              color: AppTheme.cardBg,
+              borderRadius: 12,
+              borderOpacity: 0.12,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: AppTheme.glassDecoration(
+                        color: AppTheme.accentGreen.withValues(alpha: 0.15),
+                        borderRadius: 8,
+                        borderOpacity: 0.2,
+                      ),
+                      child: Icon(Icons.check_circle_outline, color: AppTheme.accentGreen, size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Client-Side WASM & AI Active',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.primaryText,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'CapStudio runs 100% locally in your browser sandbox. No videos or audio are uploaded to any server.',
+                            style: TextStyle(fontSize: 11, color: AppTheme.secondaryText, height: 1.3),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Divider(color: AppTheme.borderGlass, height: 1),
+                const SizedBox(height: 14),
+                _buildWebFeatureRow(
+                  Icons.psychology_rounded,
+                  'AI Transcription Engine',
+                  'Transformers.js (ONNX Runtime Web / WebAssembly)',
+                ),
+                const SizedBox(height: 10),
+                _buildWebFeatureRow(
+                  Icons.movie_creation_outlined,
+                  'Video & Subtitle Burning',
+                  'FFmpeg.wasm (Multi-threaded WebAssembly)',
+                ),
+                const SizedBox(height: 10),
+                _buildWebFeatureRow(
+                  Icons.security_rounded,
+                  'Multi-threading & Isolation',
+                  'Cross-Origin Isolated (COOP/COEP & SharedArrayBuffer)',
+                ),
+              ],
+            ),
+          ),
+          Divider(color: AppTheme.borderGlass, height: 32),
+        ] else ...[
+          _buildSectionHeader(l10n?.speechModelTitle ?? 'Speech Recognition Model', Icons.psychology_outlined, themeData),
           const SizedBox(height: 16),
           const WhisperModelPicker(),
           
-          if (!Platform.isAndroid && !Platform.isIOS) ...[
+          if (!kIsWeb && !Platform.isAndroid && !Platform.isIOS) ...[
             const SizedBox(height: 16),
             InkWell(
               onTap: () => setState(() => _showAdvancedPaths = !_showAdvancedPaths),
@@ -427,15 +582,17 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                     Icon(
                       _showAdvancedPaths ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
                       size: 16,
-                      color: Colors.white30,
+                      color: AppTheme.mutedText,
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      _showAdvancedPaths ? 'HIDE ADVANCED PATH CONFIGURATION' : 'SHOW ADVANCED PATH CONFIGURATION',
-                      style: const TextStyle(
+                      _showAdvancedPaths
+                          ? (l10n?.hideAdvancedPaths ?? 'HIDE ADVANCED PATH CONFIGURATION')
+                          : (l10n?.showAdvancedPaths ?? 'SHOW ADVANCED PATH CONFIGURATION'),
+                      style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white30,
+                        color: AppTheme.mutedText,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -476,8 +633,9 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
             ],
           ],
           
-          const Divider(color: Colors.white10, height: 40),
-               InkWell(
+          if (!kIsWeb && !Platform.isAndroid && !Platform.isIOS) ...[
+            Divider(color: AppTheme.borderGlass, height: 32),
+            InkWell(
           onTap: () {
             setState(() {
               _hardwareExpanded = !_hardwareExpanded;
@@ -489,7 +647,7 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildSectionHeader('🚀 Hardware Performance Upgrades'),
+                _buildSectionHeader(l10n?.hardwareUpgradesTitle ?? 'Hardware Performance Upgrades', Icons.speed_rounded, themeData),
                 Icon(
                   _hardwareExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                   color: AppTheme.accentOrange,
@@ -515,9 +673,9 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                         padding: const EdgeInsets.all(12),
                         margin: const EdgeInsets.only(bottom: 20),
                         decoration: AppTheme.glassDecoration(
-                          color: AppTheme.cardBg.withValues(alpha: 0.25),
+                          color: AppTheme.cardBg,
                           borderRadius: 8,
-                          borderOpacity: 0.06,
+                          borderOpacity: 0.08,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -530,7 +688,7 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                             if (_hardwareInfo != null) ...[
                               Row(
                                 children: [
-                                  const Icon(Icons.memory, size: 12, color: Colors.white38),
+                                  Icon(Icons.memory, size: 12, color: AppTheme.mutedText),
                                   const SizedBox(width: 6),
                                   Expanded(
                                     child: Text(
@@ -545,7 +703,7 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  const Icon(Icons.speed, size: 12, color: Colors.white38),
+                                  Icon(Icons.speed, size: 12, color: AppTheme.mutedText),
                                   const SizedBox(width: 6),
                                   Expanded(
                                     child: Text(
@@ -560,7 +718,7 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  const Icon(Icons.developer_board, size: 12, color: Colors.white38),
+                                  Icon(Icons.developer_board, size: 12, color: AppTheme.mutedText),
                                   const SizedBox(width: 6),
                                   Expanded(
                                     child: Text(
@@ -578,17 +736,23 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                           ],
                         ),
                       ),
-                      if (!Platform.isAndroid && !Platform.isIOS) ...[
+                      if (!kIsWeb && !Platform.isAndroid && !Platform.isIOS) ...[
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Expanded(
+                            Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('GPU Accelerated Transcription (CUDA)', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white70)),
-                                  SizedBox(height: 4),
-                                  Text('Requires NVIDIA GPU with CUDA compatibility', style: TextStyle(fontSize: 11, color: Colors.white30)),
+                                  Text(
+                                    l10n?.gpuAcceleratedTranscription ?? 'GPU Accelerated Transcription (CUDA)',
+                                    style: TextStyle(fontWeight: FontWeight.w600, color: AppTheme.primaryText),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    l10n?.gpuRequiresNvidia ?? 'Requires NVIDIA GPU with CUDA compatibility',
+                                    style: TextStyle(fontSize: 11, color: AppTheme.mutedText),
+                                  ),
                                 ],
                               ),
                             ),
@@ -607,13 +771,19 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Expanded(
+                            Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('GPU Export Encoder', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white70)),
-                                  SizedBox(height: 4),
-                                  Text('Hardware acceleration for MP4 video export', style: TextStyle(fontSize: 11, color: Colors.white30)),
+                                  Text(
+                                    l10n?.gpuExportEncoder ?? 'GPU Export Encoder',
+                                    style: TextStyle(fontWeight: FontWeight.w600, color: AppTheme.primaryText),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    l10n?.gpuExportEncoderDesc ?? 'Hardware acceleration for MP4 video export',
+                                    style: TextStyle(fontSize: 11, color: AppTheme.mutedText),
+                                  ),
                                 ],
                               ),
                             ),
@@ -625,12 +795,12 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                                 dropdownColor: AppTheme.cardBg,
                                 underline: const SizedBox.shrink(),
                                 isExpanded: true,
-                                items: const [
-                                  DropdownMenuItem(value: 'none', child: Text('None (CPU)')),
-                                  DropdownMenuItem(value: 'h264_nvenc', child: Text('NVIDIA NVENC')),
-                                  DropdownMenuItem(value: 'h264_amf', child: Text('AMD AMF')),
-                                  DropdownMenuItem(value: 'h264_qsv', child: Text('Intel QSV')),
-                                  DropdownMenuItem(value: 'h264_videotoolbox', child: Text('Apple VideoToolbox')),
+                                items: [
+                                  DropdownMenuItem(value: 'none', child: Text(l10n?.gpuEncoderNoneCpu ?? 'None (CPU)', style: TextStyle(color: AppTheme.primaryText))),
+                                  DropdownMenuItem(value: 'h264_nvenc', child: Text(l10n?.gpuEncoderNvidia ?? 'NVIDIA NVENC', style: TextStyle(color: AppTheme.primaryText))),
+                                  DropdownMenuItem(value: 'h264_amf', child: Text(l10n?.gpuEncoderAmd ?? 'AMD AMF', style: TextStyle(color: AppTheme.primaryText))),
+                                  DropdownMenuItem(value: 'h264_qsv', child: Text(l10n?.gpuEncoderIntel ?? 'Intel QSV', style: TextStyle(color: AppTheme.primaryText))),
+                                  DropdownMenuItem(value: 'h264_videotoolbox', child: Text(l10n?.gpuEncoderApple ?? 'Apple VideoToolbox', style: TextStyle(color: AppTheme.primaryText))),
                                 ],
                                 onChanged: (val) {
                                   if (val != null) {
@@ -654,13 +824,15 @@ class _GeneralSettingsSectionState extends ConsumerState<GeneralSettingsSection>
                             ? WhisperThreadsSliderLayout.compact
                             : WhisperThreadsSliderLayout.wide,
                         showDescription: true,
-                        titleStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white70),
-                        descriptionStyle: const TextStyle(fontSize: 11, color: Colors.white30),
+                        titleStyle: TextStyle(fontWeight: FontWeight.w600, color: AppTheme.primaryText),
+                        descriptionStyle: TextStyle(fontSize: 11, color: AppTheme.mutedText),
                       ),
                     ],
                   ],
                 ),
-        ),          const Divider(color: Colors.white10, height: 40),
+          ),
+          Divider(color: AppTheme.borderGlass, height: 32),
+        ],
         ],
       ],
     );

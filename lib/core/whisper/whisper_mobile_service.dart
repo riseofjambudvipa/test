@@ -24,8 +24,10 @@ class WhisperMobileService {
   String? _loadedModelPath;
   bool _isModelLoaded = false;
   bool _isLoading = false;
+  bool _isTranscribing = false;
 
   bool get isModelLoaded => _isModelLoaded;
+  bool get isTranscribing => _isTranscribing;
 
   /// Load the whisper model into memory.
   /// Call once. Model stays in memory until freeModel() or app exit.
@@ -79,6 +81,7 @@ class WhisperMobileService {
     if (kIsWeb) {
       throw UnsupportedError('Mobile transcription is not supported on Web.');
     }
+    _isTranscribing = true;
     try {
       if (!_isModelLoaded) {
         final modelPath = SettingsService.instance.whisperModelPath;
@@ -127,12 +130,15 @@ class WhisperMobileService {
         jsonString = utf8.decode(bytes, allowMalformed: true);
         try {
           file.deleteSync();
-        } catch (_) {}
+        } catch (e) {
+          LoggerService.instance.debug('Failed to delete mobile transcription temp file: $e');
+        }
       }
 
       // Reuse desktop JSON parser — JNI outputs same format as whisper-cli -oj
       return WhisperService.instance.parseTranscriptionJson(jsonString, expectedDuration);
     } finally {
+      _isTranscribing = false;
       // Auto-free Whisper model after transcription completes to keep RAM completely clean!
       await freeModel();
     }
@@ -140,6 +146,10 @@ class WhisperMobileService {
 
   Future<void> freeModel() async {
     if (kIsWeb) return;
+    if (_isTranscribing) {
+      LoggerService.instance.log(LogLevel.warning, 'WhisperMobile', 'Cannot free Whisper model while transcription is in progress');
+      return;
+    }
     if (!_isModelLoaded) return;
     try {
       await _channel.invokeMethod('freeModel');

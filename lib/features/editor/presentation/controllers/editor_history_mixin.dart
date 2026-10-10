@@ -21,9 +21,48 @@ class HistoryEntry {
 mixin EditorHistoryMixin on EditorCoreMixin {
   // --- History Management (Undo / Redo) ---
 
+  /// Depth counter for continuous gestures (slider/trim-handle drags). While
+  /// > 0, [_recordChange] still bumps the revision so the UI previews live,
+  /// but suppresses per-tick history entries — the gesture end collapses the
+  /// whole drag into a single undo step instead of dozens.
+  int _historyBatchDepth = 0;
+
+  /// Begin a continuous gesture (e.g. a slider or trim-handle drag). Every
+  /// change during the gesture keeps updating state and revision for live
+  /// preview, but per-tick history entries are suppressed. Pair with
+  /// [endHistoryBatch] — a drag is one undo step, not one per tick.
+  void beginHistoryBatch() {
+    _historyBatchDepth++;
+  }
+
+  /// End a continuous gesture begun with [beginHistoryBatch]. When the last
+  /// nested batch ends, records a single history entry and triggers the
+  /// debounced auto-save.
+  void endHistoryBatch() {
+    if (_historyBatchDepth <= 0) return;
+    _historyBatchDepth--;
+    if (_historyBatchDepth == 0) {
+      _recordChange();
+      _autoSave();
+      LoggerService.instance.action('EditorController', 'Committed gesture changes to history and triggered auto-save.');
+    }
+  }
+
   void _recordChange() {
     final project = state.project;
     if (project == null) return;
+
+    // During a continuous gesture, skip per-tick history entries — the batch
+    // end records one entry for the whole drag. Revision still bumps so
+    // providers rebuild for live preview.
+    if (_historyBatchDepth > 0) {
+      state = state.copyWith(
+        revision: state.revision + 1,
+        canUndo: _historyIndex > 0,
+        canRedo: _historyIndex < _history.length - 1,
+      );
+      return;
+    }
 
     // Remove any redo history beyond the current index
     if (_historyIndex < _history.length - 1) {

@@ -92,7 +92,7 @@ void main() {
       expect(ffmpegText, 'C:\\bin\\ffmpeg.exe');
 
       // Expand Hardware Performance Upgrades
-      final hardwareHeader = find.text('🚀 Hardware Performance Upgrades');
+      final hardwareHeader = find.text('Hardware Performance Upgrades');
       expect(hardwareHeader, findsOneWidget);
       await tester.ensureVisible(hardwareHeader);
       await tester.tap(hardwareHeader);
@@ -116,7 +116,7 @@ void main() {
       );
 
       // Expand Hardware Performance Upgrades
-      final hardwareHeader = find.text('🚀 Hardware Performance Upgrades');
+      final hardwareHeader = find.text('Hardware Performance Upgrades');
       expect(hardwareHeader, findsOneWidget);
       await tester.ensureVisible(hardwareHeader);
       await tester.tap(hardwareHeader);
@@ -202,7 +202,7 @@ void main() {
       );
 
       // Expand Hardware Performance Upgrades
-      final hardwareHeader = find.text('🚀 Hardware Performance Upgrades');
+      final hardwareHeader = find.text('Hardware Performance Upgrades');
       expect(hardwareHeader, findsOneWidget);
       await tester.ensureVisible(hardwareHeader);
       await tester.tap(hardwareHeader);

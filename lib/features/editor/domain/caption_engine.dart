@@ -8,12 +8,14 @@ class Chunk {
   final double startTime;
   final double endTime;
   final List<WordSchema> words;
+  final String? speaker;
 
   const Chunk({
     required this.index,
     required this.startTime,
     required this.endTime,
     required this.words,
+    this.speaker,
   });
 }
 
@@ -64,12 +66,31 @@ class CaptionEngine {
           final lastWord = filtered[lastIdx];
           final cloned = _cloneWord(lastWord);
           final puncText = w.text ?? '';
-          cloned.text = (cloned.text ?? '') + puncText;
+          final existing = cloned.text ?? '';
+          // FIX (audit, CRITICAL data corruption): the merge happens on a
+          // clone, and saving that merged word via Word Settings persists the
+          // merged text while the separate punctuation word still exists in
+          // the DB. Without this guard the next buildChunks would merge the
+          // punctuation again ("Hello." -> "Hello.."). Detect the already-
+          // absorbed case: the previous word's text already ends with the
+          // punctuation AND its end time already covers this punctuation word
+          // (the merge also extends the previous word's end). A bare endsWith
+          // check is not enough — "this" + "is" is a legitimate merge.
+          final alreadyAbsorbed = existing.endsWith(puncText) &&
+              cloned.end != null &&
+              w.end != null &&
+              cloned.end! >= w.end!;
+          if (!alreadyAbsorbed) {
+            cloned.text = existing + puncText;
+          }
           if (w.end != null && (cloned.end == null || w.end! > cloned.end!)) {
             cloned.end = w.end;
           }
           filtered[lastIdx] = cloned;
         }
+        // A punctuation word with no merge target (caption start / only
+        // punctuation) is intentionally dropped — matches existing behavior
+        // and tests; the chunking flushes on sentence-ending punctuation.
       } else {
         filtered.add(w);
       }
@@ -84,6 +105,13 @@ class CaptionEngine {
 
     void flush() {
       if (current.isEmpty) return;
+      String? chunkSpeaker;
+      for (final w in current) {
+        if (w.speaker != null && w.speaker!.isNotEmpty) {
+          chunkSpeaker = w.speaker;
+          break;
+        }
+      }
       chunks.add(Chunk(
         index: chunkIdx++,
         startTime: current.first.start ?? 0.0,
@@ -92,6 +120,7 @@ class CaptionEngine {
           (current.first.start ?? 0.0) + minChunkDuration,
         ),
         words: List.from(current),
+        speaker: chunkSpeaker,
       ));
       current = [];
       charCount = 0;
@@ -104,6 +133,16 @@ class CaptionEngine {
 
       // 1. Force split flag set by user
       if (word.splitBefore == true && current.isNotEmpty) flush();
+
+      // 1b. Speaker turn boundary (different speaker starting)
+      if (current.isNotEmpty &&
+          word.speaker != null &&
+          word.speaker!.isNotEmpty &&
+          current.last.speaker != null &&
+          current.last.speaker!.isNotEmpty &&
+          word.speaker != current.last.speaker) {
+        flush();
+      }
 
       // 2. Natural pause gap
       if (current.isNotEmpty && i > 0) {
@@ -131,6 +170,24 @@ class CaptionEngine {
       charCount += (charCount == 0 ? 0 : 1) + text.length;
 
       if (isLast) flush();
+    }
+
+    // Enforce strict monotonic non-overlapping chunk time boundaries.
+    // Overlapping chunks cause subtitles and emojis to render simultaneously
+    // on top of each other at identical screen coordinates.
+    for (int i = 0; i < chunks.length - 1; i++) {
+      final currentChunk = chunks[i];
+      final nextChunk = chunks[i + 1];
+      if (currentChunk.endTime > nextChunk.startTime) {
+        final clampedEnd = math.max(currentChunk.startTime + 0.01, nextChunk.startTime);
+        chunks[i] = Chunk(
+          index: currentChunk.index,
+          startTime: currentChunk.startTime,
+          endTime: math.min(currentChunk.endTime, clampedEnd),
+          words: currentChunk.words,
+          speaker: currentChunk.speaker,
+        );
+      }
     }
 
     return chunks;

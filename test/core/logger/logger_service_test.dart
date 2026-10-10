@@ -148,5 +148,22 @@ void main() {
         }
       }
     });
+
+    test('scrubPii removes username and user profile paths from strings', () {
+      final username = Platform.environment['USERNAME'] ?? Platform.environment['USER'];
+      final homeDir = Platform.environment['USERPROFILE'] ?? Platform.environment['HOME'];
+
+      if (username != null && username.length > 2) {
+        final scrubbed = logger.scrubPii('Error occurred for user $username at runtime');
+        expect(scrubbed, contains('<USER>'));
+        expect(scrubbed, isNot(contains(username)));
+      }
+
+      if (homeDir != null && homeDir.isNotEmpty) {
+        final scrubbed = logger.scrubPii('Failed to open file at $homeDir/project.json');
+        expect(scrubbed, contains('<USER_HOME>'));
+        expect(scrubbed, isNot(contains(homeDir)));
+      }
+    });
   });
 }

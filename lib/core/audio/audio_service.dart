@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, visibleForTesting;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
@@ -152,7 +154,7 @@ class AudioService {
   /// Registers a sound effect mapping (e.g. 'whoosh' -> 'path/to/whoosh.wav')
   void registerSfx(String sfxId, String filePathOrAsset) {
     _sfxPathCache[sfxId] = filePathOrAsset;
-    LoggerService.instance.log(LogLevel.info, 'AudioService', 'Registered SFX: $sfxId -> $filePathOrAsset');
+    LoggerService.instance.log(LogLevel.debug, 'AudioService', 'Registered SFX: $sfxId -> $filePathOrAsset');
   }
 
   /// Get registered SFX path
@@ -287,6 +289,52 @@ class AudioService {
     }
   }
 
+  Future<String> _computeFileSha256(File file) async {
+    final digest = await sha256.bind(file.openRead()).first;
+    return digest.toString();
+  }
+
+  Future<Set<String>> _verifySfxManifest(String sfxDirPath, Map<String, List<int> Function(int)> generators) async {
+    final manifestFile = File(p.join(sfxDirPath, '.sfx_manifest.json'));
+    Map<String, dynamic> manifest = {};
+    if (await manifestFile.exists()) {
+      try {
+        final content = await manifestFile.readAsString();
+        manifest = jsonDecode(content) as Map<String, dynamic>;
+      } catch (e) {
+        LoggerService.instance.log(LogLevel.warning, 'AudioService', 'Failed to read SFX manifest: $e');
+      }
+    }
+
+    final filesMap = (manifest['files'] as Map<String, dynamic>?) ?? {};
+    final needsRegeneration = <String>{};
+
+    for (final sfxId in generators.keys) {
+      final file = File(p.join(sfxDirPath, '$sfxId.wav'));
+      if (!await file.exists()) {
+        needsRegeneration.add(sfxId);
+        continue;
+      }
+      
+      final expectedHash = filesMap[sfxId] as String?;
+      if (expectedHash == null) {
+        needsRegeneration.add(sfxId);
+        continue;
+      }
+
+      try {
+        final actualHash = await _computeFileSha256(file);
+        if (actualHash != expectedHash) {
+          needsRegeneration.add(sfxId);
+        }
+      } catch (e) {
+        needsRegeneration.add(sfxId);
+      }
+    }
+
+    return needsRegeneration;
+  }
+
   /// Synthesizes and writes default SFX files offline if they do not exist.
   /// Generates sound effects based on the configuration and registers them.
   Future<void> ensureDefaultSfx(String sfxDirPath) async {
@@ -352,34 +400,86 @@ class AudioService {
     };
     // All 44 sounds are uniquely synthesized — no aliases needed.
 
-    LoggerService.instance.log(LogLevel.info, 'AudioService', 'Verifying default SFX files: $sfxDirPath');
-    for (final entry in generators.entries) {
-      final sfxId = entry.key;
-      try {
-        if (kIsWeb) {
+    if (kIsWeb) {
+      for (final entry in generators.entries) {
+        final sfxId = entry.key;
+        try {
+          final byteData = await rootBundle.load('assets/sfx/$sfxId.wav');
+          final bytes = byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
+          _sfxBytesCache[sfxId] = bytes;
+          registerSfx(sfxId, 'memory://$sfxId');
+        } catch (_) {
           final bytes = entry.value(sampleRate);
           _sfxBytesCache[sfxId] = bytes;
           registerSfx(sfxId, 'memory://$sfxId');
-          continue;
         }
-        final file = File(p.join(sfxDirPath, '$sfxId.wav'));
-        if (!await file.exists()) {
-          try {
-            // Attempt to load from pre-bundled assets first (incredibly fast, zero startup lag)
-            final byteData = await rootBundle.load('assets/sfx/$sfxId.wav');
-            final bytes = byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
-            await file.writeAsBytes(bytes);
-            LoggerService.instance.log(LogLevel.info, 'AudioService', 'Copied pre-bundled SFX from assets: $sfxId');
-          } catch (e) {
-            // Fallback to dynamic mathematical wave synthesis if the asset is missing
-            LoggerService.instance.log(LogLevel.warning, 'AudioService', 'Pre-bundled asset not found for $sfxId. Synthesizing...');
-            final bytes = entry.value(sampleRate);
-            await file.writeAsBytes(bytes);
+      }
+      return;
+    }
+
+    final needsRegeneration = await _verifySfxManifest(sfxDirPath, generators);
+    
+    LoggerService.instance.log(
+      LogLevel.info, 
+      'AudioService', 
+      'Verifying default SFX files: ${needsRegeneration.length} need regeneration out of ${generators.length}'
+    );
+
+    final manifestFile = File(p.join(sfxDirPath, '.sfx_manifest.json'));
+    Map<String, dynamic> manifest = {'version': 1, 'files': <String, dynamic>{}};
+    if (await manifestFile.exists()) {
+      try {
+        manifest = jsonDecode(await manifestFile.readAsString()) as Map<String, dynamic>;
+        manifest['files'] ??= <String, dynamic>{};
+      } catch (e) {
+        LoggerService.instance.log(LogLevel.error, 'AudioService', 'Failed to parse manifest: $e');
+      }
+    } else {
+      manifest['files'] = <String, dynamic>{};
+    }
+
+    for (final entry in generators.entries) {
+      final sfxId = entry.key;
+      final file = File(p.join(sfxDirPath, '$sfxId.wav'));
+      
+      try {
+        if (needsRegeneration.contains(sfxId)) {
+          if (!await file.exists()) {
+             try {
+                final byteData = await rootBundle.load('assets/sfx/$sfxId.wav');
+                final bytes = byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
+                await file.writeAsBytes(bytes);
+                LoggerService.instance.log(LogLevel.info, 'AudioService', 'Copied pre-bundled SFX from assets: $sfxId');
+             } catch (e) {
+                LoggerService.instance.log(LogLevel.warning, 'AudioService', 'Pre-bundled asset not found for $sfxId. Synthesizing...');
+                final bytes = entry.value(sampleRate);
+                await file.writeAsBytes(bytes);
+             }
+          } else {
+             try {
+                final byteData = await rootBundle.load('assets/sfx/$sfxId.wav');
+                final bytes = byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
+                await file.writeAsBytes(bytes);
+             } catch (e) {
+                final bytes = entry.value(sampleRate);
+                await file.writeAsBytes(bytes);
+             }
           }
+          
+          (manifest['files'] as Map<String, dynamic>)[sfxId] = await _computeFileSha256(file);
         }
+        
         registerSfx(sfxId, file.path);
       } catch (e, stackTrace) {
         LoggerService.instance.log(LogLevel.error, 'AudioService', 'Failed to generate default SFX $sfxId: $e', stackTrace: stackTrace);
+      }
+    }
+    
+    if (needsRegeneration.isNotEmpty) {
+      try {
+        await manifestFile.writeAsString(jsonEncode(manifest));
+      } catch (e) {
+        LoggerService.instance.log(LogLevel.error, 'AudioService', 'Failed to write SFX manifest: $e');
       }
     }
   }

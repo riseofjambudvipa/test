@@ -7,11 +7,15 @@ class SystemHardwareInfo {
   final int cpuCores;
   final String gpuInfo;
   final bool hasGpu;
+  final bool isAppleSilicon;
+  final String cpuArchitecture;
 
   const SystemHardwareInfo({
     required this.ramGB,
     required this.cpuCores,
     required this.gpuInfo,
     required this.hasGpu,
+    this.isAppleSilicon = false,
+    this.cpuArchitecture = 'unknown',
   });
 }

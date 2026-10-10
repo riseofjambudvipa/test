@@ -1,9 +1,12 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../app/theme.dart';
 import '../../../../../../core/database/schemas/project.dart';
 import '../../../../../../core/database/schemas/word.dart';
+import '../../../../../../core/emoji/emoji_service.dart';
 import '../../../../../../core/logger/logger_service.dart';
 import '../../../../../../core/audio/audio_service.dart';
 import '../../../controllers/editor_controller.dart';
@@ -50,6 +53,11 @@ class WordCard extends ConsumerWidget {
             }
             if (event.logicalKey == LogicalKeyboardKey.delete ||
                 event.logicalKey == LogicalKeyboardKey.backspace) {
+              // FIX (audit): holding Delete/Backspace fires auto-repeated
+              // KeyRepeatEvent instances that deleted several words in a burst
+              // with no confirmation. Swallow repeats so only deliberate
+              // presses act.
+              if (event is KeyRepeatEvent) return KeyEventResult.handled;
               ref.read(editorProvider.notifier).deleteWords([wordId]);
               LoggerService.instance.log(LogLevel.action, 'WordPanel', 'Deleted word via keyboard shortcut');
               return KeyEventResult.handled;
@@ -68,8 +76,8 @@ class WordCard extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                 decoration: AppTheme.glassDecoration(
                   color: isWordActive
-                      ? Colors.white.withValues(alpha: 0.08)
-                      : (hasFocus ? Colors.white.withValues(alpha: 0.04) : Colors.transparent),
+                      ? AppTheme.cardBgElevated
+                      : (hasFocus ? AppTheme.hoverBg : Colors.transparent),
                   borderRadius: 4,
                   borderOpacity: isWordActive
                       ? 0.3
@@ -89,6 +97,44 @@ class WordCard extends ConsumerWidget {
                         decoration: word.hidden == true ? TextDecoration.lineThrough : null,
                       ),
                     ),
+                    if (word.emoji != null && word.emoji!.isNotEmpty && word.emoji != 'none') ...[
+                      const SizedBox(width: 3),
+                      Builder(
+                        builder: (context) {
+                          final parsed = EmojiPackParser.parse(word.emoji!, '');
+                          final resolvedPath = (!kIsWeb) ? EmojiService.resolveStickerPath(parsed.glyph) : null;
+                          final isSticker = !kIsWeb &&
+                              (resolvedPath != null ||
+                                  parsed.pack == 'custom' ||
+                                  parsed.glyph.endsWith('.png') ||
+                                  parsed.glyph.endsWith('.webp') ||
+                                  parsed.glyph.endsWith('.jpg') ||
+                                  parsed.glyph.endsWith('.jpeg') ||
+                                  parsed.glyph.endsWith('.gif') ||
+                                  parsed.glyph.contains('/') ||
+                                  parsed.glyph.contains('\\'));
+                          if (resolvedPath != null) {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(2),
+                              child: Image.file(
+                                File(resolvedPath),
+                                width: 14,
+                                height: 14,
+                                fit: BoxFit.contain,
+                                errorBuilder: (_, __, ___) => const Icon(Icons.image_outlined, size: 12),
+                              ),
+                            );
+                          }
+                          if (isSticker) {
+                            return const Icon(Icons.image_outlined, size: 12);
+                          }
+                          return Text(
+                            parsed.glyph,
+                            style: const TextStyle(fontSize: 11, fontFamily: 'Noto Color Emoji'),
+                          );
+                        },
+                      ),
+                    ],
                     Builder(
                       builder: (context) {
                         final sfxData = SfxData.parse(word.soundEffect, fallbackVolume: word.soundVolume ?? 100);
@@ -110,7 +156,7 @@ class WordCard extends ConsumerWidget {
                         width: 5,
                         height: 5,
                         decoration: BoxDecoration(
-                          color: word.confidence! < 0.4 ? Colors.redAccent : Colors.orangeAccent,
+                          color: word.confidence! < 0.4 ? AppTheme.accentRed : AppTheme.accentOrange,
                           shape: BoxShape.circle,
                         ),
                       ),

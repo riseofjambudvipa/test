@@ -23,6 +23,8 @@ class SettingsService {
   static const _keyVadThreshold = 'vad_threshold';
   static const _keyOutputFolder = 'output_folder';
   static const _keyTheme = 'app_theme';
+  static const _keyThemeMode = 'app_theme_mode';
+  static const _keyThemePalette = 'app_theme_palette';
   static const _keyOnboardingComplete = 'onboarding_complete';
   static const _keyForceNoAvx = 'force_no_avx';
   static const _keyWhisperModelPath = 'whisper_model_path';
@@ -37,6 +39,8 @@ class SettingsService {
   static const _keyEmojiSearchLanguage = 'emoji_search_language';
   static const _keyLogLevel = 'app_log_level';
   static const _keyUiLanguage = 'app_ui_language';
+  static const _keyAutoApplyEmojis = 'auto_apply_emojis';
+  static const _keyAutoApplySfx = 'auto_apply_sfx';
 
   SharedPreferences? _prefs;
   bool _isInitialized = false;
@@ -45,9 +49,14 @@ class SettingsService {
   Future<void> init() async {
     final isTesting = !kIsWeb && Platform.environment.containsKey('FLUTTER_TEST');
     if (_isInitialized && !isTesting) return;
-    _isInitialized = true;
+    // FIX (audit): _isInitialized was set to true BEFORE _prefs was assigned,
+    // so a concurrent init() caller would return immediately and any getter
+    // running in that window threw StateError. Assign _prefs first, then flag
+    // initialization complete.
     try {
-      _prefs = await SharedPreferences.getInstance();
+      final prefs = await SharedPreferences.getInstance();
+      _prefs = prefs;
+      _isInitialized = true;
       _applyStoredSettings();
     } catch (e) {
       _isInitialized = false;
@@ -77,7 +86,9 @@ class SettingsService {
       try {
         final level = LogLevel.values.firstWhere((l) => l.name == logLevelName);
         LoggerService.instance.setMinimumLevel(level);
-      } catch (_) {}
+      } catch (e) {
+        LoggerService.instance.debug('Failed to parse persisted log level "$logLevelName": $e');
+      }
     }
   }
 
@@ -96,6 +107,8 @@ class SettingsService {
   double get vadThreshold => _requirePrefs.getDouble(_keyVadThreshold) ?? 0.5;
   String? get outputFolder => _requirePrefs.getString(_keyOutputFolder);
   String get appTheme => _requirePrefs.getString(_keyTheme) ?? 'obsidianAmber';
+  bool get isDarkMode => (_requirePrefs.getString(_keyThemeMode) ?? 'dark') == 'dark';
+  String get appThemePalette => _requirePrefs.getString(_keyThemePalette) ?? (_requirePrefs.getString(_keyTheme) == 'cleanLight' ? 'obsidianAmber' : (_requirePrefs.getString(_keyTheme) ?? 'obsidianAmber'));
   bool get onboardingComplete => kIsWeb || (_requirePrefs.getBool(_keyOnboardingComplete) ?? false);
   bool get forceNoAvx => _requirePrefs.getBool(_keyForceNoAvx) ?? false;
   String? get whisperModelPath {
@@ -113,6 +126,8 @@ class SettingsService {
   String get emojiSearchLanguage => _requirePrefs.getString(_keyEmojiSearchLanguage) ?? 'auto';
   String get logMinimumLevel => _requirePrefs.getString(_keyLogLevel) ?? 'info';
   String get uiLanguage => _requirePrefs.getString(_keyUiLanguage) ?? 'system';
+  bool get autoApplyEmojis => _requirePrefs.getBool(_keyAutoApplyEmojis) ?? false;
+  bool get autoApplySfx => _requirePrefs.getBool(_keyAutoApplySfx) ?? false;
 
   // Helper Setters with success checks
   Future<void> _setBool(String key, bool value) async {
@@ -151,7 +166,16 @@ class SettingsService {
     if (cleaned.startsWith(r'\\') || cleaned.startsWith('//')) {
       return ''; // Refuse network UNC paths
     }
-    cleaned = cleaned.replaceAll(RegExp(r'[\x00-\x1F\x7F;|&$`><\r\n]'), '');
+    // FIX (audit): the previous regex stripped legal path characters (&, $,
+    // ;, backtick) and, because it was a raw string containing \\r\\n, even
+    // backslashes and the letters r/n — silently rewriting user-picked
+    // folders into paths that do not exist. Strip only control characters and
+    // the characters that are actually illegal inside Windows file names.
+    // Path separators (/ and \) AND the drive-letter colon (:) are preserved.
+    final illegal = Platform.isWindows
+        ? RegExp(r'[\x00-\x1F\x7F<>"|?*]')
+        : RegExp(r'[\x00-\x1F\x7F]');
+    cleaned = cleaned.replaceAll(illegal, '');
     return cleaned;
   }
 
@@ -163,7 +187,14 @@ class SettingsService {
   Future<void> setFfmpegCliPath(String path) async {
     final sanitized = _sanitizePath(path);
     await _setString(_keyFfmpegPath, sanitized);
-    WhisperService.instance.configureFfmpeg(sanitized);
+    // FIX (audit, asymmetry): configureFfmpeg('') ignores empty strings, so
+    // clearing the FFmpeg path persisted '' but left the in-memory config
+    // stale. Reset it explicitly when the path is cleared.
+    if (sanitized.isEmpty) {
+      WhisperService.instance.configureFfmpeg(null);
+    } else {
+      WhisperService.instance.configureFfmpeg(sanitized);
+    }
   }
   Future<void> setDefaultLanguage(String lang) async => await _setString(_keyDefaultLanguage, lang);
   Future<void> setUseVad(bool v) async => await _setBool(_keyUseVad, v);
@@ -172,7 +203,16 @@ class SettingsService {
     final sanitized = _sanitizePath(path);
     await _setString(_keyOutputFolder, sanitized);
   }
-  Future<void> setAppTheme(String theme) async => await _setString(_keyTheme, theme);
+  Future<void> setAppTheme(String theme) async {
+    await _setString(_keyTheme, theme);
+    if (theme == 'cleanLight') {
+      await _setString(_keyThemeMode, 'light');
+    } else {
+      await _setString(_keyThemePalette, theme);
+    }
+  }
+  Future<void> setDarkMode(bool isDark) async => await _setString(_keyThemeMode, isDark ? 'dark' : 'light');
+  Future<void> setAppThemePalette(String palette) async => await _setString(_keyThemePalette, palette);
   Future<void> setOnboardingComplete() async => await _setBool(_keyOnboardingComplete, true);
   Future<void> setForceNoAvx(bool value) async {
     await _setBool(_keyForceNoAvx, value);
@@ -198,4 +238,6 @@ class SettingsService {
   Future<void> setEmojiSearchLanguage(String lang) async => await _setString(_keyEmojiSearchLanguage, lang);
   Future<void> setLogMinimumLevel(String level) async => await _setString(_keyLogLevel, level);
   Future<void> setUiLanguage(String lang) async => await _setString(_keyUiLanguage, lang);
+  Future<void> setAutoApplyEmojis(bool v) async => await _setBool(_keyAutoApplyEmojis, v);
+  Future<void> setAutoApplySfx(bool v) async => await _setBool(_keyAutoApplySfx, v);
 }

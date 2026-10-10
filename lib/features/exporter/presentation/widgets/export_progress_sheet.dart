@@ -11,9 +11,13 @@ import '../../../../core/database/schemas/project.dart';
 import '../../../../core/logger/logger_service.dart';
 import '../../../editor/domain/caption_engine.dart';
 import '../../../editor/presentation/widgets/caption_overlay.dart';
+import '../../../editor/presentation/widgets/retention_progress_bar_overlay.dart';
+import '../../../../core/video/retention_progress_bar_models.dart';
+import '../../../../core/video/b_roll_models.dart' show BRollClip;
 import '../../data/ffmpeg_exporter.dart';
 import '../../../../core/utils/share_service.dart';
 import '../../../../core/assets/asset_path_service.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ExportProgressSheet extends StatefulWidget {
   final Project project;
@@ -21,6 +25,13 @@ class ExportProgressSheet extends StatefulWidget {
   final String ffmpegPath;
   final String exportMode;
   final int exportFps;
+  final bool enableStudioSound;
+  final AudioMasteringConfig? audioMastering;
+  final bool enableAudioCrossfade;
+  final RetentionProgressBarConfig? progressBarConfig;
+  final AspectConversionMode? conversionMode;
+  final BackgroundMusicConfig? backgroundMusic;
+  final List<BRollClip>? bRollClips;
 
   const ExportProgressSheet({
     super.key,
@@ -29,6 +40,13 @@ class ExportProgressSheet extends StatefulWidget {
     required this.ffmpegPath,
     this.exportMode = 'fast',
     this.exportFps = 30,
+    this.enableStudioSound = false,
+    this.audioMastering,
+    this.enableAudioCrossfade = true,
+    this.progressBarConfig,
+    this.conversionMode,
+    this.backgroundMusic,
+    this.bRollClips,
   });
 
   @override
@@ -54,21 +72,33 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
   // Slow export state
   final GlobalKey _repaintKey = GlobalKey();
   double _exportCurrentTime = 0.0;
+  double _exportRelativeTime = 0.0;
+  double _exportTotalDuration = 0.0;
 
   @override
   void initState() {
     super.initState();
     _exporter = FfmpegExporter();
     _exporter.configureCli(widget.ffmpegPath);
-    _chunks = CaptionEngine.buildChunks(
-      widget.project.words,
-      widget.project.segments,
-      widget.project.trimStart,
-      widget.project.trimEnd,
-      widget.project.config.subs.chunkSize,
-      widget.project.config.subs.chunkLineMaxLength,
-    );
-    
+    try {
+      _chunks = CaptionEngine.buildChunks(
+        widget.project.words,
+        widget.project.segments,
+        widget.project.trimStart,
+        widget.project.trimEnd,
+        widget.project.config.subs.chunkSize,
+        widget.project.config.subs.chunkLineMaxLength,
+      );
+    } catch (e) {
+      // Malformed project data must not crash the sheet before any error UI
+      // exists — surface the failure instead of throwing from initState.
+      LoggerService.instance.log(LogLevel.error, 'ExportProgressSheet', 'Failed to build caption chunks: $e');
+      _statusText = 'failed';
+      _statusMessage = 'Export failed to initialize';
+      _errorMessage = e.toString();
+      return;
+    }
+
     _startTimer();
     _startExport();
   }
@@ -80,6 +110,10 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
     _timer?.cancel();
     _timer = null;
     _stopwatch.stop();
+    // Cancel any in-flight FFmpeg process so a dispose outside the explicit
+    // cancel path (route teardown, hot reload) doesn't leave an orphaned
+    // child process writing the output file.
+    _exporter.cancelExport();
     super.dispose();
   }
 
@@ -113,10 +147,18 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
     });
   }
 
-  Future<Uint8List?> _renderFrame(double time) async {
+  Future<Uint8List?> _renderFrame(
+    double time, {
+    double? relativeTime,
+    double? exportDuration,
+  }) async {
     if (!mounted) return null;
     setState(() {
       _exportCurrentTime = time;
+      _exportRelativeTime = relativeTime ?? time;
+      if (exportDuration != null && exportDuration > 0) {
+        _exportTotalDuration = exportDuration;
+      }
     });
     
     await WidgetsBinding.instance.endOfFrame;
@@ -136,7 +178,18 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
   }
 
   void _startExport() {
-    final tempDir = AssetPathService.instance.tempDir;
+    final String? tempDir;
+    try {
+      tempDir = AssetPathService.instance.tempDir;
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.error, 'ExportProgressSheet', 'Failed to resolve temp directory: $e');
+      setState(() {
+        _statusText = 'failed';
+        _statusMessage = 'Export failed to initialize';
+        _errorMessage = e.toString();
+      });
+      return;
+    }
 
     final stream = widget.exportMode == 'slow'
         ? _exporter.exportVideoSlow(
@@ -146,12 +199,26 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
             tempDir: tempDir,
             fps: widget.exportFps,
             renderFrame: _renderFrame,
+            conversionMode: widget.conversionMode,
+            enableStudioSound: widget.enableStudioSound,
+            audioMastering: widget.audioMastering,
+            enableAudioCrossfade: widget.enableAudioCrossfade,
+            progressBarConfig: widget.progressBarConfig,
+            backgroundMusic: widget.backgroundMusic,
+            bRollClips: widget.bRollClips,
           )
         : _exporter.exportVideo(
             project: widget.project,
             chunks: _chunks,
             outputFilePath: widget.outputFilePath,
             tempDir: tempDir,
+            conversionMode: widget.conversionMode,
+            enableStudioSound: widget.enableStudioSound,
+            audioMastering: widget.audioMastering,
+            enableAudioCrossfade: widget.enableAudioCrossfade,
+            progressBarConfig: widget.progressBarConfig,
+            backgroundMusic: widget.backgroundMusic,
+            bRollClips: widget.bRollClips,
           );
 
     _subscription = stream.listen(
@@ -169,7 +236,13 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
           } else if (_progress <= 0.80) {
             _statusMessage = 'Burning karaoke styled captions via FFmpeg...';
           } else if (_progress <= 0.95) {
-            _statusMessage = 'Mixing audio tracks and sound effects...';
+            final hasBgm = widget.backgroundMusic != null && widget.backgroundMusic!.hasMusic;
+            final isStudio = widget.enableStudioSound || (widget.audioMastering?.enableStudioSound ?? false);
+            _statusMessage = hasBgm
+                ? 'Mixing background music, ducking & voiceover...'
+                : (isStudio
+                    ? 'Mastering ${widget.audioMastering?.platform.label ?? "studio"} voice track...'
+                    : 'Mixing audio tracks and sound effects...');
           } else if (_progress < 1.0) {
             _statusMessage = 'Finalizing output container file...';
           } else {
@@ -220,7 +293,9 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
           sizeStr = ' ($sizeMb MB)';
           
           if (Platform.isAndroid) {
-            _saveToAndroidDownloads(widget.outputFilePath);
+            _saveToAndroidGallery(widget.outputFilePath);
+          } else if (Platform.isIOS) {
+            _saveToIosCameraRoll(widget.outputFilePath);
           }
         }
       } catch (e) {
@@ -235,17 +310,29 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
     }
   }
 
-  Future<void> _saveToAndroidDownloads(String filePath) async {
+  Future<void> _saveToAndroidGallery(String filePath) async {
     try {
       final name = p.basename(filePath);
-      const channel = MethodChannel('com.capstudio/share');
-      await channel.invokeMethod('saveToDownloads', {
+      const channel = MethodChannel('com.capstudio/native');
+      await channel.invokeMethod('saveVideoToGallery', {
         'path': filePath,
         'name': name,
       });
-      LoggerService.instance.log(LogLevel.action, 'ExportProgressSheet', 'Android export successfully copied to public Downloads folder: $name');
+      LoggerService.instance.log(LogLevel.action, 'ExportProgressSheet', 'Android export successfully copied to gallery: $name');
     } catch (e) {
-      LoggerService.instance.log(LogLevel.error, 'ExportProgressSheet', 'Failed to copy Android export to public Downloads: $e');
+      LoggerService.instance.log(LogLevel.error, 'ExportProgressSheet', 'Failed to copy Android export to gallery: $e');
+    }
+  }
+
+  Future<void> _saveToIosCameraRoll(String filePath) async {
+    try {
+      const channel = MethodChannel('com.capstudio/native');
+      await channel.invokeMethod('saveVideoToGallery', {
+        'path': filePath,
+      });
+      LoggerService.instance.log(LogLevel.action, 'ExportProgressSheet', 'iOS export successfully saved to Camera Roll: $filePath');
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.error, 'ExportProgressSheet', 'Failed to save iOS export to Camera Roll: $e');
     }
   }
 
@@ -270,16 +357,15 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
       if (Platform.isWindows) {
         final winPath = absPath.replaceAll('/', '\\');
         if (file.existsSync()) {
-          // Use PowerShell Start-Process to reliably pass /select,"<path>" to
-          // explorer.exe. cmd.exe /c mangles inner quotes on paths with spaces,
-          // causing explorer.exe to fall back to showing "This PC".
-          await Process.run('powershell', [
-            '-NoProfile', '-NonInteractive', '-Command',
-            "Start-Process explorer.exe -ArgumentList '/select,\"$winPath\"'"
-          ]);
+          await Process.run('explorer.exe', ['/select,', winPath]);
         } else {
-          // File not found — open the parent directory as a fallback
-          await Process.run('explorer.exe', [p.dirname(winPath)]);
+          final parentDir = Directory(p.dirname(winPath));
+          if (!parentDir.existsSync()) {
+            try {
+              parentDir.createSync(recursive: true);
+            } catch (_) {}
+          }
+          await Process.run('explorer.exe', [parentDir.path]);
         }
       } else if (Platform.isMacOS) {
         // Reveal the exported video file in Finder (highlights it)
@@ -301,6 +387,7 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final isDone = _statusText == 'completed' || _progress >= 1.0;
     final isFailed = _statusText == 'failed';
     final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
@@ -324,7 +411,7 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
                   topRight: Radius.circular(20),
                 ),
                 border: Border(
-                  top: BorderSide(color: Colors.white.withValues(alpha: 0.08), width: 1),
+                  top: BorderSide(color: AppTheme.borderGlass, width: 1),
                 ),
               ),
               child: SingleChildScrollView(
@@ -346,7 +433,7 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.2,
                             color: isFailed 
-                                ? Colors.redAccent 
+                                ? AppTheme.accentRed 
                                 : isDone 
                                     ? AppTheme.accentGreen 
                                     : AppTheme.accentOrange,
@@ -368,7 +455,7 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
                     if (!isFailed) ...[
                       LinearProgressIndicator(
                         value: _progress,
-                        backgroundColor: Colors.white12,
+                        backgroundColor: AppTheme.borderGlass,
                         valueColor: AlwaysStoppedAnimation<Color>(
                           isDone ? AppTheme.accentGreen : AppTheme.accentOrange,
                         ),
@@ -390,7 +477,7 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
                       const SizedBox(height: 12),
                       Container(
                         constraints: BoxConstraints(
-                          maxHeight: isLandscape ? 80.0 : 120.0,
+                          maxHeight: isLandscape ? 90.0 : 130.0,
                         ),
                         padding: const EdgeInsets.all(12),
                         decoration: AppTheme.glassDecoration(
@@ -398,17 +485,69 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
                           borderRadius: 8,
                           borderOpacity: 0.12,
                         ).copyWith(
-                          border: Border.all(color: Colors.redAccent.withValues(alpha: 0.2)),
+                          border: Border.all(color: AppTheme.accentRed.withValues(alpha: 0.2)),
                         ),
-                        child: SingleChildScrollView(
-                          child: Text(
-                            _errorMessage!,
-                            style: const TextStyle(
-                              fontFamily: 'monospace',
-                              fontSize: 11,
-                              color: Colors.redAccent,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.error_outline_rounded, color: AppTheme.accentRed, size: 14),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'Error Log',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppTheme.accentRed,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Clipboard.setData(ClipboardData(text: _errorMessage!));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text('Error copied to clipboard!'),
+                                        backgroundColor: AppTheme.accentGreen,
+                                        duration: const Duration(seconds: 2),
+                                      ),
+                                    );
+                                  },
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.copy_rounded, size: 12, color: AppTheme.mutedText),
+                                        const SizedBox(width: 4),
+                                        Text('Copy', style: TextStyle(fontSize: 10, color: AppTheme.mutedText)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                            const SizedBox(height: 6),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: SelectableText(
+                                  _errorMessage!,
+                                  style: TextStyle(
+                                    fontFamily: 'monospace',
+                                    fontSize: 11,
+                                    color: AppTheme.accentRed,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -432,8 +571,8 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
                           ElevatedButton(
                             onPressed: _cancelExport,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent.withValues(alpha: 0.15),
-                              foregroundColor: Colors.redAccent,
+                              backgroundColor: AppTheme.accentRed.withValues(alpha: 0.15),
+                              foregroundColor: AppTheme.accentRed,
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
@@ -448,10 +587,14 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
                           if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
                             ElevatedButton.icon(
                               onPressed: () async {
-                                await ShareService.shareFile(widget.outputFilePath, mimeType: 'video/mp4');
+                                try {
+                                  await ShareService.shareFile(widget.outputFilePath, mimeType: 'video/mp4');
+                                } catch (e) {
+                                  LoggerService.instance.log(LogLevel.error, 'ExportProgressSheet', 'Failed to share exported video: $e');
+                                }
                               },
                               icon: const Icon(Icons.share, size: 16),
-                              label: const Text('Share Video'),
+                              label: Text(l10n?.shareVideo ?? 'Share Video'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.accentOrange.withValues(alpha: 0.15),
                                 foregroundColor: AppTheme.accentOrange,
@@ -463,7 +606,7 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
                             ElevatedButton.icon(
                               onPressed: _openOutputFolder,
                               icon: const Icon(Icons.folder_open_outlined, size: 16),
-                              label: const Text('Open output folder'),
+                              label: Text(l10n?.openOutputFolder ?? 'Open output folder'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.accentGreen.withValues(alpha: 0.15),
                                 foregroundColor: AppTheme.accentGreen,
@@ -472,17 +615,42 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
                               ),
                             ),
                         ],
-                        if (isFailed)
+                        if (isFailed) ...[
+                          OutlinedButton.icon(
+                            onPressed: () {
+                              final textToCopy = _errorMessage?.isNotEmpty == true
+                                  ? _errorMessage!
+                                  : _statusMessage;
+                              Clipboard.setData(ClipboardData(text: textToCopy));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('Error log copied to clipboard!'),
+                                  backgroundColor: AppTheme.accentGreen,
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.copy_rounded, size: 16),
+                            label: const Text('Copy Error to Clipboard'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppTheme.accentRed,
+                              side: BorderSide(color: AppTheme.accentRed.withValues(alpha: 0.4)),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
                           ElevatedButton(
                             onPressed: () => Navigator.pop(context, false),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white10,
-                              foregroundColor: Colors.white,
+                              backgroundColor: AppTheme.cardBgElevated,
+                              foregroundColor: AppTheme.primaryText,
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
                             child: const Text('Close'),
                           ),
+                        ],
                       ],
                     ),
                   ],
@@ -497,19 +665,42 @@ class _ExportProgressSheetState extends State<ExportProgressSheet> {
               child: RepaintBoundary(
                 key: _repaintKey,
                 child: Container(
-                  width: widget.project.width.toDouble(),
-                  height: widget.project.height.toDouble(),
+                  width: (widget.conversionMode != null && widget.project.width > widget.project.height)
+                      ? 1080.0
+                      : widget.project.width.toDouble(),
+                  height: (widget.conversionMode != null && widget.project.width > widget.project.height)
+                      ? 1920.0
+                      : widget.project.height.toDouble(),
                   color: Colors.transparent,
                   child: Stack(
                     children: [
+                      if (widget.progressBarConfig != null)
+                        RetentionProgressBarOverlay(
+                          currentTime: _exportRelativeTime,
+                          duration: _exportTotalDuration > 0
+                              ? _exportTotalDuration
+                              : widget.project.duration,
+                          config: widget.progressBarConfig!,
+                          scale: ((widget.conversionMode != null && widget.project.width > widget.project.height)
+                                  ? 1920.0
+                                  : widget.project.height.toDouble()) /
+                              640.0,
+                        ),
                       CaptionOverlay(
                         chunks: _chunks,
                         currentTime: _exportCurrentTime,
                         config: widget.project.config,
-                        scale: widget.project.height / 640.0,
+                        scale: ((widget.conversionMode != null && widget.project.width > widget.project.height)
+                                ? 1920.0
+                                : widget.project.height.toDouble()) /
+                            640.0,
                         allowDrag: false,
-                        videoWidth: widget.project.width.toDouble(),
-                        videoHeight: widget.project.height.toDouble(),
+                        videoWidth: (widget.conversionMode != null && widget.project.width > widget.project.height)
+                            ? 1080.0
+                            : widget.project.width.toDouble(),
+                        videoHeight: (widget.conversionMode != null && widget.project.width > widget.project.height)
+                            ? 1920.0
+                            : widget.project.height.toDouble(),
                         isExporting: true,
                       ),
                     ],

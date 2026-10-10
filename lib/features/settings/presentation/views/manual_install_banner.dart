@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/downloader/binary_downloader_service.dart';
 import '../../../../app/theme.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ManualInstallBanner extends StatelessWidget {
   final ManualInstallRequiredException exception;
@@ -17,7 +18,7 @@ class ManualInstallBanner extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 16.0),
       padding: const EdgeInsets.all(20.0),
       decoration: AppTheme.glassDecoration(
-        color: const Color(0xFF1E1B18), // Rich slight-warm black
+        color: AppTheme.cardBgElevated,
         borderOpacity: 0.12,
       ),
       child: Column(
@@ -105,7 +106,7 @@ class ManualInstallBanner extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0),
                       decoration: AppTheme.glassDecoration(
-                        color: Colors.black.withValues(alpha: 0.4),
+                        color: AppTheme.surfaceDim,
                         borderRadius: 10,
                         borderOpacity: 0.08,
                       ),
@@ -116,10 +117,10 @@ class ManualInstallBanner extends StatelessWidget {
                               scrollDirection: Axis.horizontal,
                               child: Text(
                                 step.command,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontFamily: 'monospace',
                                   fontSize: 13,
-                                  color: Color(0xFF38BDF8), // Code cyan
+                                  color: AppTheme.accentCyan,
                                 ),
                               ),
                             ),
@@ -130,10 +131,14 @@ class ManualInstallBanner extends StatelessWidget {
                             color: AppTheme.secondaryText,
                             tooltip: 'Copy command',
                             onPressed: () {
+                              final l10n = AppLocalizations.of(context);
                               Clipboard.setData(ClipboardData(text: step.command));
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Copied: "${step.command}"'),
+                                  content: Text(
+                                    l10n?.commandCopied(step.command) ??
+                                        'Copied: "${step.command}"',
+                                  ),
                                   backgroundColor: AppTheme.cardBg,
                                   duration: const Duration(seconds: 2),
                                 ),

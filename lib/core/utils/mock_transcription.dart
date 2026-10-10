@@ -12,7 +12,11 @@ List<WordSchema> generateMockWords(double duration) {
 
   final words = <WordSchema>[];
   double cursor = 0.1;
-  for (int i = 0; i < phrases.length && cursor < duration - 0.5; i++) {
+  // FIX (audit): the loop was bounded by phrases.length, so a 10-minute demo
+  // video got captions only for the first few seconds and looked broken.
+  // Cycle the phrases so the mock transcript covers the whole duration.
+  int i = 0;
+  while (cursor < duration - 0.5) {
     final text = phrases[i % phrases.length];
     final wordDuration = 0.2 + (text.length * 0.04);
     final w = WordSchema()
@@ -25,6 +29,7 @@ List<WordSchema> generateMockWords(double duration) {
       ..splitBefore = (i % 4 == 0 && i > 0);
     words.add(w);
     cursor += wordDuration + 0.05;
+    i++;
   }
   return words;
 }

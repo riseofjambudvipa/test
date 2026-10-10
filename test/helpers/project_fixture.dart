@@ -2,6 +2,9 @@ import 'package:capstudio/core/database/schemas/project.dart';
 import 'package:capstudio/core/database/schemas/word.dart';
 import 'package:isar_community/isar.dart';
 
+int _fixtureSequence = 0;
+int _nextFixtureId() => ++_fixtureSequence;
+
 WordSchema makeWord({
   String? wordId,
   String? text = 'hello',
@@ -18,7 +21,7 @@ WordSchema makeWord({
   int? soundVolume,
 }) {
   return WordSchema()
-    ..wordId = wordId ?? 'word_${DateTime.now().microsecondsSinceEpoch}'
+    ..wordId = wordId ?? 'word_${DateTime.now().microsecondsSinceEpoch}_${_nextFixtureId()}'
     ..text = text
     ..start = start
     ..end = end
@@ -100,7 +103,7 @@ Project makeProject({
 }) {
   return Project()
     ..id = id ?? Isar.autoIncrement
-    ..projectId = projectId ?? 'proj_${DateTime.now().microsecondsSinceEpoch}'
+    ..projectId = projectId ?? 'proj_${DateTime.now().microsecondsSinceEpoch}_${_nextFixtureId()}'
     ..name = name ?? 'Test Project'
     ..videoPath = videoPath ?? 'path/to/video.mp4'
     ..duration = duration ?? 10.0

@@ -84,5 +84,36 @@ void main() {
       expect(painter1.shouldRepaint(painter2), isFalse);
       expect(painter1.shouldRepaint(painterDifferentGlow), isTrue);
     });
+
+    test('AppThemeData supports both dark and light for all 6 palettes with high contrast', () {
+      for (final palette in ThemePalette.values) {
+        final darkTheme = AppThemeData.getThemeFor(palette: palette, isDark: true);
+        final lightTheme = AppThemeData.getThemeFor(palette: palette, isDark: false);
+
+        expect(darkTheme.isDark, isTrue);
+        expect(lightTheme.isDark, isFalse);
+
+        // Dark theme: primaryText must be bright
+        expect(darkTheme.primaryText.computeLuminance(), greaterThan(0.7));
+        // Dark theme: background must be deep
+        expect(darkTheme.background.computeLuminance(), lessThan(0.15));
+
+        // Light theme: primaryText must be dark for contrast
+        expect(lightTheme.primaryText.computeLuminance(), lessThan(0.3));
+        // Light theme: background must be light
+        expect(lightTheme.background.computeLuminance(), greaterThan(0.7));
+      }
+    });
+
+    test('ThemeNotifier toggles brightness between dark and light', () {
+      final notifier = ThemeNotifier();
+      expect(notifier.state.isDark, isTrue);
+
+      notifier.toggleBrightness();
+      expect(notifier.state.isDark, isFalse);
+
+      notifier.toggleBrightness();
+      expect(notifier.state.isDark, isTrue);
+    });
   });
 }

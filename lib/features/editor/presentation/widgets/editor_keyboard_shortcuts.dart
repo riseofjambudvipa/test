@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:collection/collection.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../controllers/editor_controller.dart';
 import '../controllers/editor_state.dart';
 
@@ -20,6 +21,7 @@ class EditorKeyboardShortcuts extends ConsumerWidget {
   final ValueChanged<bool> onMobileSidebarOpenChanged;
   final bool desktopSidebarOpen;
   final ValueChanged<bool> onDesktopSidebarOpenChanged;
+  final VoidCallback? onExport;
 
   const EditorKeyboardShortcuts({
     super.key,
@@ -35,6 +37,7 @@ class EditorKeyboardShortcuts extends ConsumerWidget {
     required this.onMobileSidebarOpenChanged,
     required this.desktopSidebarOpen,
     required this.onDesktopSidebarOpenChanged,
+    this.onExport,
   });
 
   @override
@@ -54,6 +57,16 @@ class EditorKeyboardShortcuts extends ConsumerWidget {
         (primaryFocus.context?.widget is EditableText || 
          primaryFocus.context?.findAncestorWidgetOfExactType<EditableText>() != null);
     if (isInputFocused) return KeyEventResult.ignored;
+
+    // FIX (audit): Space/Delete etc. used to fire even while a modal dialog
+    // was open (only text input was excluded), so pressing Space or Delete in
+    // the emoji/SFX/word pickers could toggle playback or delete a word
+    // underneath. Ignore keys while focus is inside a dialog.
+    final focusCtx = primaryFocus?.context;
+    final isInDialog = focusCtx != null &&
+        (focusCtx.findAncestorWidgetOfExactType<Dialog>() != null ||
+            focusCtx.findAncestorWidgetOfExactType<ModalBarrier>() != null);
+    if (isInDialog) return KeyEventResult.ignored;
 
     final isCmdOrCtrl = HardwareKeyboard.instance.isControlPressed || HardwareKeyboard.instance.isMetaPressed;
     final isShift = HardwareKeyboard.instance.isShiftPressed;
@@ -92,14 +105,68 @@ class EditorKeyboardShortcuts extends ConsumerWidget {
       return KeyEventResult.handled;
     }
 
+    // Ctrl+E — Export Dialog / Panel
+    if (isCmdOrCtrl && event.logicalKey == LogicalKeyboardKey.keyE) {
+      if (onExport != null) {
+        onExport!();
+      } else {
+        ref.read(editorProvider.notifier).setActiveTab(EditorTab.export);
+      }
+      return KeyEventResult.handled;
+    }
+
+    // Ctrl+1 to 4 — Panel Tabs
+    if (isCmdOrCtrl && event.logicalKey == LogicalKeyboardKey.digit1) {
+      ref.read(editorProvider.notifier).setActiveTab(EditorTab.caption);
+      return KeyEventResult.handled;
+    }
+    if (isCmdOrCtrl && event.logicalKey == LogicalKeyboardKey.digit2) {
+      ref.read(editorProvider.notifier).setActiveTab(EditorTab.style);
+      return KeyEventResult.handled;
+    }
+    if (isCmdOrCtrl && event.logicalKey == LogicalKeyboardKey.digit3) {
+      ref.read(editorProvider.notifier).setActiveTab(EditorTab.clipping);
+      return KeyEventResult.handled;
+    }
+    if (isCmdOrCtrl && event.logicalKey == LogicalKeyboardKey.digit4) {
+      ref.read(editorProvider.notifier).setActiveTab(EditorTab.transcription);
+      return KeyEventResult.handled;
+    }
+
+    // Home — Jump to start
+    if (event.logicalKey == LogicalKeyboardKey.home) {
+      seekRelative(-999999.0);
+      return KeyEventResult.handled;
+    }
+
+    // End — Jump to end
+    if (event.logicalKey == LogicalKeyboardKey.end) {
+      final duration = ref.read(editorProvider).project?.duration ?? 0.0;
+      final currentTime = ref.read(editorProvider).currentTime;
+      seekRelative(duration - currentTime);
+      return KeyEventResult.handled;
+    }
+
+    // Shift + Left Arrow — Seek -1s (medium step)
+    if (isShift && event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      seekRelative(-1.0);
+      return KeyEventResult.handled;
+    }
+
+    // Shift + Right Arrow — Seek +1s (medium step)
+    if (isShift && event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      seekRelative(1.0);
+      return KeyEventResult.handled;
+    }
+
     // Left Arrow — Seek -0.1s (fine frame step)
-    if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+    if (!isShift && event.logicalKey == LogicalKeyboardKey.arrowLeft) {
       seekRelative(-0.1);
       return KeyEventResult.handled;
     }
 
     // Right Arrow — Seek +0.1s (fine frame step)
-    if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+    if (!isShift && event.logicalKey == LogicalKeyboardKey.arrowRight) {
       seekRelative(0.1);
       return KeyEventResult.handled;
     }
@@ -120,6 +187,9 @@ class EditorKeyboardShortcuts extends ConsumerWidget {
     if (event.logicalKey == LogicalKeyboardKey.keyK) {
       if (ref.read(editorProvider).isPlaying) {
         unawaited(player?.pause());
+        // FIX (audit): pause the provider state too, otherwise the pause icon
+        // desyncs from the actual playback state.
+        ref.read(editorProvider.notifier).setIsPlaying(false);
       }
       return KeyEventResult.handled;
     }
@@ -140,15 +210,86 @@ class EditorKeyboardShortcuts extends ConsumerWidget {
             editorState.currentTime <= (w.end ?? 0.0));
         if (activeWord != null && activeWord.wordId != null) {
           ref.read(editorProvider.notifier).deleteWords([activeWord.wordId!]);
+          final l10n = AppLocalizations.of(context);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Deleted word: "${activeWord.text}"'),
+              content: Text(
+                l10n?.wordDeletedSuccess(activeWord.text ?? '') ??
+                    'Deleted word: "${activeWord.text ?? ''}"',
+              ),
               duration: const Duration(seconds: 2),
             ),
           );
           return KeyEventResult.handled;
         }
       }
+    }
+
+    // S — Split timeline at playhead (Blade tool — standard NLE convention)
+    if (!isCmdOrCtrl && event.logicalKey == LogicalKeyboardKey.keyS) {
+      final editorState = ref.read(editorProvider);
+      final curr = editorState.currentTime;
+      final project = editorState.project;
+      if (project != null && curr > project.trimStart && curr < project.trimEnd) {
+        ref.read(editorProvider.notifier).splitSegmentAtTime(curr);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Split clip at ${curr.toStringAsFixed(2)}s'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+      return KeyEventResult.handled;
+    }
+
+    // X — Toggle current segment exclusion / Ripple Delete (standard NLE convention)
+    if (!isCmdOrCtrl && event.logicalKey == LogicalKeyboardKey.keyX) {
+      ref.read(editorProvider.notifier).toggleSegmentDeleted(
+        ref.read(editorProvider).currentTime,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Toggled segment exclusion under playhead'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return KeyEventResult.handled;
+    }
+
+    // I — Set trim In point at playhead (standard NLE convention)
+    if (!isCmdOrCtrl && event.logicalKey == LogicalKeyboardKey.keyI) {
+      final editorState = ref.read(editorProvider);
+      final curr = editorState.currentTime;
+      final project = editorState.project;
+      if (project != null) {
+        final newEnd = project.trimEnd > curr ? project.trimEnd : project.duration;
+        ref.read(editorProvider.notifier).setTrim(curr, newEnd);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('In point set at ${curr.toStringAsFixed(2)}s'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+      return KeyEventResult.handled;
+    }
+
+    // O — Set trim Out point at playhead (standard NLE convention)
+    if (!isCmdOrCtrl && event.logicalKey == LogicalKeyboardKey.keyO) {
+      final editorState = ref.read(editorProvider);
+      final curr = editorState.currentTime;
+      final project = editorState.project;
+      if (project != null) {
+        final newStart = project.trimStart < curr ? project.trimStart : 0.0;
+        ref.read(editorProvider.notifier).setTrim(newStart, curr);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Out point set at ${curr.toStringAsFixed(2)}s'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+      return KeyEventResult.handled;
     }
 
     // '?' = Shift + '/'

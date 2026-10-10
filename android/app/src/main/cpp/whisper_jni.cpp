@@ -4,6 +4,7 @@
 #include <fstream>
 #include <thread>
 #include <mutex>
+#include <new>
 #include <android/log.h>
 #include "whisper.h"
 
@@ -117,19 +118,24 @@ bool read_wav_custom(const std::string& filename, std::vector<float>& pcmf32) {
 
             // Read PCM samples from the data chunk
             // Allocate with padding to prevent odd-byte heap buffer overflow
-            std::vector<short> samples((chunkSize + 1) / 2);
-            file.read(reinterpret_cast<char*>(samples.data()), chunkSize);
-            size_t bytesRead = file.gcount();
-            samples.resize(bytesRead / 2);
+            try {
+                std::vector<short> samples((chunkSize + 1) / 2);
+                file.read(reinterpret_cast<char*>(samples.data()), chunkSize);
+                size_t bytesRead = file.gcount();
+                samples.resize(bytesRead / 2);
 
-            // Convert to float
-            pcmf32.resize(samples.size());
-            for (size_t i = 0; i < samples.size(); ++i) {
-                pcmf32[i] = static_cast<float>(samples[i]) / 32768.0f;
+                // Convert to float
+                pcmf32.resize(samples.size());
+                for (size_t i = 0; i < samples.size(); ++i) {
+                    pcmf32[i] = static_cast<float>(samples[i]) / 32768.0f;
+                }
+
+                LOGI("Successfully loaded %zu samples from WAV file", pcmf32.size());
+                return true;
+            } catch (const std::bad_alloc& e) {
+                LOGE("Out of memory allocating WAV sample buffers: %s", e.what());
+                return false;
             }
-
-            LOGI("Successfully loaded %zu samples from WAV file", pcmf32.size());
-            return true;
         }
         else {
             // Unknown or unsupported chunk (like LIST, JUNK, metadata, etc.)
@@ -161,17 +167,23 @@ Java_com_capstudio_WhisperJNI_loadModel(
     
     // Copy path to a local std::string before releasing the JNI string,
     // so we can safely log it after ReleaseStringUTFChars without UAF.
-    std::string local_path(path);
-    g_ctx = whisper_init_from_file_with_params(path, params);
-    env->ReleaseStringUTFChars(modelPath, path);
-    
-    if (g_ctx == nullptr) {
-        LOGE("Failed to load model from: %s", local_path.c_str());
+    try {
+        std::string local_path(path);
+        g_ctx = whisper_init_from_file_with_params(path, params);
+        env->ReleaseStringUTFChars(modelPath, path);
+        
+        if (g_ctx == nullptr) {
+            LOGE("Failed to load model from: %s", local_path.c_str());
+            return -1;
+        }
+        
+        LOGI("Model loaded successfully from: %s", local_path.c_str());
+        return 0;
+    } catch (const std::bad_alloc& e) {
+        LOGE("Out of memory loading model: %s", e.what());
+        env->ReleaseStringUTFChars(modelPath, path);
         return -1;
     }
-    
-    LOGI("Model loaded successfully from: %s", local_path.c_str());
-    return 0;
 }
 
 // Transcribe WAV file — returns JSON string with word-level timestamps

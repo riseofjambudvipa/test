@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:capstudio/core/emoji/emoji_service.dart';
 import 'package:capstudio/core/assets/asset_manifest.dart';
 import 'package:capstudio/core/assets/asset_verification_service.dart';
 import 'package:capstudio/features/editor/domain/caption_engine.dart';
@@ -56,6 +59,11 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    EmojiService.instance.resetForTesting();
+  });
+
+  tearDown(() {
+    EmojiService.instance.resetForTesting();
   });
 
   Future<void> pumpPicker(
@@ -216,6 +224,55 @@ void main() {
       expect(find.textContaining('🔒'), findsWidgets);
       // notoColorEmoji is always available.
       expect(find.text('Noto Color Emoji (Fallback)'), findsWidgets);
+    });
+
+    testWidgets('shows custom stickers category when custom stickers exist', (tester) async {
+      Directory? tempDir;
+      await tester.runAsync(() async {
+        tempDir = await Directory.systemTemp.createTemp('capstudio_picker_sticker_test');
+        File(p.join(tempDir!.path, 'rocket_sticker.png')).createSync();
+        await EmojiService.instance.scanCustomStickers(tempDir!.path);
+      });
+
+      try {
+        await pumpPicker(tester);
+
+        // Custom stickers category icon is 🖼️
+        final stickersChip = find.descendant(
+          of: find.byType(ChoiceChip),
+          matching: find.text('🖼️'),
+        );
+        expect(stickersChip, findsOneWidget);
+
+        // Switch to Stickers category
+        await tester.tap(stickersChip);
+        await tester.pump();
+
+        expect(find.byType(ChoiceChip), findsWidgets);
+      } finally {
+        await tester.runAsync(() async {
+          if (tempDir != null && tempDir!.existsSync()) {
+            await tempDir!.delete(recursive: true);
+          }
+        });
+      }
+    });
+
+    testWidgets('shows custom stickers empty state with import button when empty', (tester) async {
+      await pumpPicker(tester);
+
+      // Custom stickers category icon 🖼️ is always visible
+      final stickersChip = find.descendant(
+        of: find.byType(ChoiceChip),
+        matching: find.text('🖼️'),
+      );
+      expect(stickersChip, findsOneWidget);
+
+      await tester.tap(stickersChip);
+      await tester.pump();
+
+      expect(find.text('No Custom Stickers Yet'), findsOneWidget);
+      expect(find.text('IMPORT STICKERS'), findsOneWidget);
     });
   });
 }

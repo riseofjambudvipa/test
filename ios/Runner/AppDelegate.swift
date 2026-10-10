@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import Photos
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -15,15 +16,38 @@ import UIKit
         WhisperBridge.register(with: registrar)
       }
       
+      // Setup Native Channel (PhotoKit Camera Roll & platform methods)
+      let nativeChannel = FlutterMethodChannel(
+          name: "com.capstudio/native",
+          binaryMessenger: controller.binaryMessenger
+      )
+      nativeChannel.setMethodCallHandler { (call, result) in
+          switch call.method {
+          case "saveVideoToGallery", "saveToGallery":
+              let args = call.arguments as? [String: Any]
+              guard let path = args?["path"] as? String ?? args?["filePath"] as? String else {
+                  result(FlutterError(code: "INVALID_ARGS", message: "Video path is required", details: nil))
+                  return
+              }
+              AppDelegate.saveVideoToCameraRoll(path: path, result: result)
+          default:
+              result(FlutterMethodNotImplemented)
+          }
+      }
+
       // Setup Share Channel
       let shareChannel = FlutterMethodChannel(
           name: "com.capstudio/share",
           binaryMessenger: controller.binaryMessenger
       )
       shareChannel.setMethodCallHandler { [weak controller] (call, result) in
-          if call.method == "shareFile",
-             let args = call.arguments as? [String: Any],
-             let path = args["path"] as? String {
+          switch call.method {
+          case "shareFile":
+              guard let args = call.arguments as? [String: Any],
+                    let path = args["path"] as? String else {
+                  result(FlutterError(code: "INVALID_ARGS", message: "Path is required", details: nil))
+                  return
+              }
               let url = URL(fileURLWithPath: path)
               let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
               
@@ -36,12 +60,101 @@ import UIKit
               }
               controller?.present(activityVC, animated: true)
               result(nil)
-          } else {
+          case "saveVideoToGallery", "saveToGallery":
+              let args = call.arguments as? [String: Any]
+              guard let path = args?["path"] as? String ?? args?["filePath"] as? String else {
+                  result(FlutterError(code: "INVALID_ARGS", message: "Video path is required", details: nil))
+                  return
+              }
+              AppDelegate.saveVideoToCameraRoll(path: path, result: result)
+          default:
               result(FlutterMethodNotImplemented)
           }
       }
     }
     
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  /// Saves an exported video file directly into the iOS Camera Roll / Photos Library.
+  /// Handles PHPhotoLibrary authorization checks and PHAssetChangeRequest creation.
+  private static func saveVideoToCameraRoll(path: String, result: @escaping FlutterResult) {
+      let fileURL = URL(fileURLWithPath: path)
+      guard FileManager.default.fileExists(atPath: fileURL.path) else {
+          result(FlutterError(code: "FILE_NOT_FOUND", message: "Video file does not exist at path: \(path)", details: nil))
+          return
+      }
+
+      let performSave = {
+          PHPhotoLibrary.shared().performChanges({
+              PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: fileURL)
+          }) { success, error in
+              DispatchQueue.main.async {
+                  if success {
+                      result(true)
+                  } else {
+                      result(FlutterError(
+                          code: "SAVE_FAILED",
+                          message: error?.localizedDescription ?? "Failed to save video to Photos library",
+                          details: nil
+                      ))
+                  }
+              }
+          }
+      }
+
+      let currentStatus: PHAuthorizationStatus
+      if #available(iOS 14, *) {
+          currentStatus = PHPhotoLibrary.authorizationStatus(for: .addOnly)
+      } else {
+          currentStatus = PHPhotoLibrary.authorizationStatus()
+      }
+
+      switch currentStatus {
+      case .authorized, .limited:
+          performSave()
+      case .notDetermined:
+          if #available(iOS 14, *) {
+              PHPhotoLibrary.requestAuthorization(for: .addOnly) { newStatus in
+                  DispatchQueue.main.async {
+                      if newStatus == .authorized || newStatus == .limited {
+                          performSave()
+                      } else {
+                          result(FlutterError(
+                              code: "PERMISSION_DENIED",
+                              message: "Photo library authorization was denied by the user",
+                              details: nil
+                          ))
+                      }
+                  }
+              }
+          } else {
+              PHPhotoLibrary.requestAuthorization { newStatus in
+                  DispatchQueue.main.async {
+                      if newStatus == .authorized {
+                          performSave()
+                      } else {
+                          result(FlutterError(
+                              code: "PERMISSION_DENIED",
+                              message: "Photo library authorization was denied by the user",
+                              details: nil
+                          ))
+                      }
+                  }
+              }
+          }
+      case .denied, .restricted:
+          result(FlutterError(
+              code: "PERMISSION_DENIED",
+              message: "Photo library access is denied or restricted on this device",
+              details: nil
+          ))
+      @unknown default:
+          result(FlutterError(
+              code: "UNKNOWN_STATUS",
+              message: "Unknown photo library authorization status",
+              details: nil
+          ))
+      }
   }
 }

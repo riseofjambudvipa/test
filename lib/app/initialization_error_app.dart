@@ -23,7 +23,7 @@ class InitializationErrorApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       home: Scaffold(
-        backgroundColor: const Color(0xFF09090B),
+        backgroundColor: AppTheme.background,
         body: Builder(
           builder: (context) {
             return Stack(
@@ -33,7 +33,7 @@ class InitializationErrorApp extends StatelessWidget {
                   child: RepaintBoundary(
                     child: CustomPaint(
                       painter: GlowingBackgroundPainter(
-                        primaryGlow: Colors.redAccent,
+                        primaryGlow: AppTheme.accentRed,
                         secondaryGlow: AppTheme.accentOrange,
                         devicePixelRatio: MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0,
                       ),
@@ -58,20 +58,20 @@ class InitializationErrorApp extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(20.0),
                             decoration: BoxDecoration(
-                              color: Colors.redAccent.withValues(alpha: 0.1),
+                              color: AppTheme.accentRed.withValues(alpha: 0.1),
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.redAccent.withValues(alpha: 0.15),
+                                  color: AppTheme.accentRed.withValues(alpha: 0.15),
                                   blurRadius: 30,
                                   spreadRadius: 2,
                                 ),
                               ],
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.gpp_bad_rounded,
                               size: 64,
-                              color: Colors.redAccent,
+                              color: AppTheme.accentRed,
                             ),
                           ),
                           const SizedBox(height: 32),
@@ -107,9 +107,9 @@ class InitializationErrorApp extends StatelessWidget {
                             width: double.infinity,
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.35),
+                              color: AppTheme.cardBgElevated,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.white10),
+                              border: Border.all(color: AppTheme.borderGlass),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,24 +117,24 @@ class InitializationErrorApp extends StatelessWidget {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text(
+                                    Text(
                                       'ERROR DETAILS',
                                       style: TextStyle(
-                                        color: Colors.redAccent,
+                                        color: AppTheme.accentRed,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 12,
                                         letterSpacing: 0.5,
                                       ),
                                     ),
                                     IconButton(
-                                      icon: const Icon(Icons.copy_rounded, size: 16, color: Colors.white70),
+                                      icon: Icon(Icons.copy_rounded, size: 16, color: AppTheme.secondaryText),
                                       tooltip: 'Copy full log & stack trace',
                                       onPressed: () {
                                         Clipboard.setData(ClipboardData(text: 'Error: $error\n\nStack Trace:\n$stackTrace'));
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            content: Text('Error log copied to clipboard.'),
-                                            backgroundColor: Color(0xFF1E1E24),
+                                          SnackBar(
+                                            content: Text('Error log copied to clipboard.', style: TextStyle(color: AppTheme.primaryText)),
+                                            backgroundColor: AppTheme.cardBgElevated,
                                           ),
                                         );
                                       },
@@ -144,17 +144,17 @@ class InitializationErrorApp extends StatelessWidget {
                                 const SizedBox(height: 8),
                                 Text(
                                   error,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontFamily: 'Consolas',
                                     fontSize: 13,
-                                    color: Colors.white,
+                                    color: AppTheme.primaryText,
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                const Text(
+                                Text(
                                   'STACK TRACE',
                                   style: TextStyle(
-                                    color: Colors.white38,
+                                    color: AppTheme.mutedText,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 10,
                                     letterSpacing: 0.5,
@@ -187,7 +187,7 @@ class InitializationErrorApp extends StatelessWidget {
                                 ElevatedButton.icon(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppTheme.accentOrange,
-                                    foregroundColor: Colors.white,
+                                    foregroundColor: AppTheme.onAccentText,
                                     shadowColor: AppTheme.accentOrange.withValues(alpha: 0.3),
                                     elevation: 6,
                                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
@@ -205,8 +205,8 @@ class InitializationErrorApp extends StatelessWidget {
                               if (!kIsWeb) ...[
                                 OutlinedButton.icon(
                                   style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.white70,
-                                    side: const BorderSide(color: Colors.white24),
+                                    foregroundColor: AppTheme.secondaryText,
+                                    side: BorderSide(color: AppTheme.borderGlass),
                                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                   ),

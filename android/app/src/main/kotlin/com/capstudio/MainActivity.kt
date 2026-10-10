@@ -1,21 +1,25 @@
 package com.capstudio
 
+import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import androidx.core.content.FileProvider
 import java.io.File
+import java.io.IOException
 import kotlin.concurrent.thread
 
 class MainActivity : FlutterActivity() {
     private val PERMISSIONS_CHANNEL = "com.capstudio.ai/permissions"
     private val WHISPER_CHANNEL = "com.capstudio/whisper"
     private val SHARE_CHANNEL = "com.capstudio/share"
+    private val NATIVE_CHANNEL = "com.capstudio/native"
     
     private val whisperJNI = WhisperJNI()
 
@@ -96,6 +100,24 @@ class MainActivity : FlutterActivity() {
             }
         }
 
+        // Native Channel (PhotoKit / MediaStore Gallery Saving)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, NATIVE_CHANNEL).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "saveVideoToGallery", "saveToGallery" -> {
+                    val path = call.argument<String>("path")
+                    if (path == null) {
+                        result.error("INVALID_ARGS", "path is required", null)
+                        return@setMethodCallHandler
+                    }
+                    val name = call.argument<String>("name")
+                    val mimeType = call.argument<String>("mimeType") ?: "video/mp4"
+                    val relativeFolder = call.argument<String>("relativeFolder")
+                    saveVideoToGallery(path, name, mimeType, relativeFolder, result)
+                }
+                else -> result.notImplemented()
+            }
+        }
+
         // Share Channel
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SHARE_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
@@ -122,55 +144,100 @@ class MainActivity : FlutterActivity() {
                         result.error("SHARE_FAILED", e.message, null)
                     }
                 }
+                "saveVideoToGallery", "saveToGallery" -> {
+                    val path = call.argument<String>("path")
+                    if (path == null) {
+                        result.error("INVALID_ARGS", "path is required", null)
+                        return@setMethodCallHandler
+                    }
+                    val name = call.argument<String>("name")
+                    val mimeType = call.argument<String>("mimeType") ?: "video/mp4"
+                    val relativeFolder = call.argument<String>("relativeFolder")
+                    saveVideoToGallery(path, name, mimeType, relativeFolder, result)
+                }
                 "saveToDownloads" -> {
                     val path = call.argument<String>("path")
                     val name = call.argument<String>("name")
-                    if (path == null || name == null) {
-                        result.error("INVALID_ARGS", "path and name are required", null)
+                    val mimeType = call.argument<String>("mimeType") ?: "video/mp4"
+                    if (path == null) {
+                        result.error("INVALID_ARGS", "path is required", null)
                         return@setMethodCallHandler
                     }
-                    thread {
-                        try {
-                            val file = File(path)
-                            val resolver = contentResolver
-                            val contentValues = android.content.ContentValues().apply {
-                                put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, name)
-                                put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                    put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-                                    put(android.provider.MediaStore.MediaColumns.IS_PENDING, 1)
-                                }
-                            }
-
-                            val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI
-                            } else {
-                                android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                            }
-
-                            val uri = resolver.insert(collection, contentValues)
-                            if (uri == null) {
-                                runOnUiThread { result.error("INSERT_FAILED", "Failed to insert MediaStore entry", null) }
-                                return@thread
-                            }
-
-                            resolver.openOutputStream(uri).use { outputStream ->
-                                file.inputStream().use { inputStream ->
-                                    inputStream.copyTo(outputStream!!)
-                                }
-                            }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                contentValues.clear()
-                                contentValues.put(android.provider.MediaStore.MediaColumns.IS_PENDING, 0)
-                                resolver.update(uri, contentValues, null, null)
-                            }
-                            runOnUiThread { result.success(true) }
-                        } catch (e: Exception) {
-                            runOnUiThread { result.error("SAVE_FAILED", e.message, null) }
-                        }
-                    }
+                    saveVideoToGallery(path, name, mimeType, Environment.DIRECTORY_DOWNLOADS, result)
                 }
                 else -> result.notImplemented()
+            }
+        }
+    }
+
+    /**
+     * Saves an exported video directly into MediaStore (Camera Roll / Gallery) using Scoped Storage.
+     * Uses MediaStore.Video.Media with RELATIVE_PATH = Environment.DIRECTORY_MOVIES + "/CapStudio"
+     * (or Environment.DIRECTORY_DOWNLOADS) and IS_PENDING flag for Android 10+ (API 29+) and Android 13+ (API 33+)
+     * cleanly without requiring obsolete WRITE_EXTERNAL_STORAGE permissions.
+     */
+    private fun saveVideoToGallery(
+        path: String,
+        name: String?,
+        mimeType: String?,
+        relativeFolder: String?,
+        result: MethodChannel.Result
+    ) {
+        val file = File(path)
+        if (!file.exists()) {
+            result.error("FILE_NOT_FOUND", "Source video file not found at $path", null)
+            return
+        }
+
+        val videoName = name ?: file.name
+        val videoMimeType = mimeType ?: "video/mp4"
+        val destinationFolder = relativeFolder ?: (Environment.DIRECTORY_MOVIES + "/CapStudio")
+
+        thread {
+            try {
+                val resolver = contentResolver
+                val contentValues = ContentValues().apply {
+                    put(MediaStore.Video.Media.DISPLAY_NAME, videoName)
+                    put(MediaStore.Video.Media.MIME_TYPE, videoMimeType)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        put(MediaStore.Video.Media.RELATIVE_PATH, destinationFolder)
+                        put(MediaStore.Video.Media.IS_PENDING, 1)
+                    }
+                }
+
+                val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                } else {
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                }
+
+                val uri = resolver.insert(collection, contentValues)
+                if (uri == null) {
+                    runOnUiThread { result.error("INSERT_FAILED", "Failed to insert MediaStore entry", null) }
+                    return@thread
+                }
+
+                val outputStream = resolver.openOutputStream(uri)
+                if (outputStream == null) {
+                    throw IOException("Failed to open output stream for MediaStore URI: $uri")
+                }
+
+                val inputStream = file.inputStream()
+                inputStream.use { input ->
+                    outputStream.use { output ->
+                        input.copyTo(output)
+                    }
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    contentValues.clear()
+                    contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
+                    resolver.update(uri, contentValues, null, null)
+                }
+
+                runOnUiThread { result.success(true) }
+            } catch (e: Exception) {
+                runOnUiThread { result.error("SAVE_FAILED", e.message, null) }
             }
         }
     }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -6,6 +7,7 @@ import '../../../../../core/assets/asset_path_service.dart';
 import '../../../../../core/assets/asset_manifest.dart';
 import '../../../../../core/assets/asset_verification_service.dart';
 import '../../../../../core/assets/pack_download_service.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 class PacksDownloadStep extends ConsumerStatefulWidget {
   final VoidCallback onBack;
@@ -32,6 +34,7 @@ class _PacksDownloadStepState extends ConsumerState<PacksDownloadStep> {
 
   Widget _buildPackOnboardingRow(AssetPack pack, AssetVerificationResult verification) {
     final isInstalled = verification.installedPackIds.contains(pack.id);
+    final l10n = AppLocalizations.of(context);
 
     return StreamBuilder<DownloadProgress>(
       stream: PackDownloadService.instance.stream(pack.id),
@@ -71,7 +74,7 @@ class _PacksDownloadStepState extends ConsumerState<PacksDownloadStep> {
                             Flexible(
                               child: Text(
                                 pack.name,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.white),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppTheme.primaryText),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -85,7 +88,7 @@ class _PacksDownloadStepState extends ConsumerState<PacksDownloadStep> {
                                   borderOpacity: 0.2,
                                 ),
                                 child: Text(
-                                  'REQUIRED',
+                                  l10n?.requiredBadge ?? 'REQUIRED',
                                   style: TextStyle(fontSize: 7, fontWeight: FontWeight.bold, color: AppTheme.accentOrange),
                                 ),
                               ),
@@ -95,7 +98,7 @@ class _PacksDownloadStepState extends ConsumerState<PacksDownloadStep> {
                         const SizedBox(height: 2),
                         Text(
                           '${pack.description} (${pack.sizeMB.toStringAsFixed(0)} MB)',
-                          style: const TextStyle(fontSize: 10, color: Colors.white30),
+                          style: TextStyle(fontSize: 10, color: AppTheme.secondaryText),
                         ),
                       ],
                     ),
@@ -104,10 +107,22 @@ class _PacksDownloadStepState extends ConsumerState<PacksDownloadStep> {
                   if (isComplete)
                     Icon(Icons.check_circle_rounded, size: 16, color: AppTheme.accentGreen)
                   else if (isDownloading || isExtracting)
-                    const SizedBox(
+                    SizedBox(
                       width: 12,
                       height: 12,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white70),
+                      child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.secondaryText),
+                    )
+                  else if (kIsWeb)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppTheme.accentCyan.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        pack.format == 'ttf' ? 'WEB FONT' : 'WEB READY',
+                        style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: AppTheme.accentCyan),
+                      ),
                     )
                   else
                     ElevatedButton(
@@ -124,13 +139,16 @@ class _PacksDownloadStepState extends ConsumerState<PacksDownloadStep> {
                         PackDownloadService.instance.download(pack).catchError((Object e) {
                           scaffoldMessenger.showSnackBar(
                             SnackBar(
-                              content: Text('Failed to download pack ${pack.name}: $e'),
-                              backgroundColor: Colors.redAccent,
+                              content: Text(
+                                l10n?.errorPackDownloadNamedFailed(pack.name, e.toString()) ??
+                                    'Failed to download pack ${pack.name}: $e',
+                              ),
+                              backgroundColor: AppTheme.accentRed,
                             ),
                           );
                         });
                       },
-                      child: const Text('DOWNLOAD', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold)),
+                      child: Text((l10n?.btnDownload ?? 'Download').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold)),
                     ),
                 ],
               ),
@@ -140,7 +158,7 @@ class _PacksDownloadStepState extends ConsumerState<PacksDownloadStep> {
                   borderRadius: BorderRadius.circular(2),
                   child: LinearProgressIndicator(
                     value: progress.overall,
-                    backgroundColor: Colors.white10,
+                    backgroundColor: AppTheme.dividerColor,
                     valueColor: AlwaysStoppedAnimation<Color>(AppTheme.accentOrange),
                     minHeight: 3,
                   ),
@@ -151,13 +169,38 @@ class _PacksDownloadStepState extends ConsumerState<PacksDownloadStep> {
                   children: [
                     Text(
                       progress.label,
-                      style: const TextStyle(fontSize: 8, color: Colors.white30),
+                      style: TextStyle(fontSize: 8, color: AppTheme.secondaryText),
                     ),
                     Text(
                       '${(progress.overall * 100).toStringAsFixed(0)}%',
-                      style: const TextStyle(fontSize: 8, color: Colors.white30, fontWeight: FontWeight.bold, fontFamily: 'monospace'),
+                      style: TextStyle(fontSize: 8, color: AppTheme.secondaryText, fontWeight: FontWeight.bold, fontFamily: 'monospace'),
                     ),
                   ],
+                ),
+              ],
+              if (status == DownloadStatus.failed && progress.error != null && progress.error!.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.accentRed.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: AppTheme.accentRed.withValues(alpha: 0.25)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.error_outline, size: 12, color: AppTheme.accentRed),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          progress.error!,
+                          style: TextStyle(fontSize: 9, color: AppTheme.accentRed, fontWeight: FontWeight.w500),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ],
@@ -174,71 +217,95 @@ class _PacksDownloadStepState extends ConsumerState<PacksDownloadStep> {
     final verification = ref.watch(assetVerificationProvider);
 
     final emojiPacks = manifest.packs.where((p) => p.format != 'ttf').toList();
-    final fontPacks = manifest.packs.where((p) => p.format == 'ttf').toList();
+
+    final l10n = AppLocalizations.of(context);
 
     return Column(
       key: const ValueKey('step_download_pack'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Download Content Packs (Optional)',
-          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+          l10n?.downloadPacksTitle ?? 'Download Content Packs (Optional)',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppTheme.primaryText,
+            fontSize: 16,
+          ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Text(
-          'Choose optional emoji packs and fonts to style your captions. You can download them now or skip this and set them up later in settings.',
-          style: theme.textTheme.bodySmall?.copyWith(color: AppTheme.secondaryText),
+          l10n?.downloadPacksDesc ??
+              'Choose optional emoji packs and fonts to style your captions. You can download them now or skip this and set them up later in settings.',
+          style: theme.textTheme.bodySmall?.copyWith(color: AppTheme.secondaryText, fontSize: 12),
         ),
         const SizedBox(height: 16),
 
-        SizedBox(
-          height: 280,
+        Container(
+          constraints: BoxConstraints(
+            maxHeight: (MediaQuery.of(context).size.height * 0.38).clamp(160.0, 280.0),
+          ),
+          padding: const EdgeInsets.all(8),
+          decoration: AppTheme.glassDecoration(
+            color: AppTheme.cardBgElevated.withValues(alpha: 0.25),
+            borderRadius: 12,
+            borderOpacity: 0.08,
+          ),
           child: Scrollbar(
             controller: _packsScrollController,
             thumbVisibility: true,
             child: ListView(
               controller: _packsScrollController,
-              padding: const EdgeInsets.only(right: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Text('EMOJI PACKS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white30, letterSpacing: 0.5)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                  child: Row(
+                    children: [
+                      Icon(Icons.emoji_emotions_outlined, size: 14, color: AppTheme.accentOrange),
+                      const SizedBox(width: 6),
+                      Text(
+                        l10n?.emojiPacksHeader ?? 'EMOJI PACKS',
+                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.mutedText, letterSpacing: 0.5),
+                      ),
+                    ],
+                  ),
                 ),
                 ...emojiPacks.map((pack) => _buildPackOnboardingRow(pack, verification)),
-                if (fontPacks.isNotEmpty) ...[
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Text('FONT PACKS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white30, letterSpacing: 0.5)),
-                  ),
-                  ...fontPacks.map((pack) => _buildPackOnboardingRow(pack, verification)),
-                ],
               ],
             ),
           ),
         ),
         const SizedBox(height: 24),
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            if (!AssetPathService.instance.isMobile)
-              TextButton(
-                onPressed: widget.onBack,
-                child: const Text('Back', style: TextStyle(color: Colors.white30)),
-              )
-            else
-              const SizedBox(),
-            ElevatedButton(
-              onPressed: widget.onContinue,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.accentOrange,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              child: const Text('Continue', style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-          ],
+        LayoutBuilder(
+          builder: (context, actionConstraints) {
+            final isNarrow = actionConstraints.maxWidth < 360;
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (!AssetPathService.instance.isMobile)
+                  TextButton.icon(
+                    onPressed: widget.onBack,
+                    icon: const Icon(Icons.arrow_back_rounded, size: 16),
+                    label: Text(l10n?.btnBack ?? 'Back', style: TextStyle(color: AppTheme.secondaryText)),
+                  )
+                else
+                  const SizedBox(),
+                ElevatedButton.icon(
+                  onPressed: widget.onContinue,
+                  icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.accentOrange,
+                    foregroundColor: AppTheme.onAccentText,
+                    padding: EdgeInsets.symmetric(horizontal: isNarrow ? 18 : 24, vertical: 13),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    elevation: 2,
+                  ),
+                  label: Text(l10n?.btnContinue ?? 'Continue', style: const TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ],
+            );
+          },
         ),
       ],
     ).animate().fade(duration: 300.ms);

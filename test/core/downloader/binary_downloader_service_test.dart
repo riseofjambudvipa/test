@@ -60,27 +60,29 @@ void main() {
   });
 
   group('BinaryDownloaderService Tests', () {
-    test('should resolve correct download URL for whisper based on AVX presence', () async {
-      // 1. With AVX support
-      AppDirs.setHasAvx(true);
-      final urlAvx = await service.getDownloadUrl('whisper');
+    test('should resolve correct download URL for whisper based on platform', () async {
+      final url = await service.getDownloadUrl('whisper');
       if (Platform.isWindows) {
-        expect(urlAvx, contains('whisper-bin-x64.zip'));
+        expect(url, anyOf(contains('whisper-cli-win-x64-avx.zip'), contains('whisper-cli-win-x64-noavx.zip')));
       } else if (Platform.isMacOS) {
-        expect(urlAvx, contains('whisper-cli-mac-universal.zip'));
+        expect(url, anyOf(contains('whisper-cli-mac-universal.zip'), contains('whisper-macos.zip')));
       } else {
-        expect(urlAvx, contains('whisper-cli-linux-x64.zip'));
+        expect(url, anyOf(contains('whisper-cli-linux-x64.zip'), contains('whisper-linux.zip')));
       }
+    });
 
-      // 2. Without AVX support
-      AppDirs.setHasAvx(false);
-      final urlNoAvx = await service.getDownloadUrl('whisper');
+    test('should resolve fast CDN mirror and fallback mirrors for ffmpeg', () async {
+      final mirrors = await service.getDownloadUrls('ffmpeg');
+      expect(mirrors, isNotEmpty);
       if (Platform.isWindows) {
-        expect(urlNoAvx, contains('whisper-cli-win-x64-noavx.zip'));
+        expect(mirrors.length, 3);
+        expect(mirrors.any((m) => m.contains('ffmpeg-windows.zip')), isTrue);
+        expect(mirrors.any((m) => m.contains('codexffmpeg')), isTrue);
+        expect(mirrors.any((m) => m.contains('gyan.dev')), isTrue);
       } else if (Platform.isMacOS) {
-        expect(urlNoAvx, contains('whisper-cli-mac-universal.zip'));
+        expect(mirrors.any((m) => m.contains('evermeet.cx')), isTrue);
       } else {
-        expect(urlNoAvx, contains('whisper-cli-linux-x64.zip'));
+        expect(mirrors.any((m) => m.contains('johnvansickle.com')), isTrue);
       }
     });
 
@@ -237,6 +239,73 @@ void main() {
       expect(File(badPath).existsSync(), isFalse);
 
       await subscription.cancel();
+    });
+
+    test('should preserve both whisper and ffmpeg licenses side-by-side without collision', () async {
+      AppDirs.setHasAvx(true);
+      final binDir = Directory(AppDirs.bin);
+      if (!binDir.existsSync()) binDir.createSync(recursive: true);
+
+      // 1. First download Whisper which contains LICENSE.txt
+      final whisperTarget = Platform.isWindows ? 'whisper-cli.exe' : 'whisper-cli';
+      final whisperArchive = Archive();
+      final mockData = List<int>.generate(2 * 1024 * 1024, (i) => (i * 11) & 0xFF);
+      whisperArchive.addFile(ArchiveFile(whisperTarget, mockData.length, mockData));
+      final whisperLicenseBytes = 'MIT License - Whisper.cpp copyright (c) 2023 Georgi Gerganov'.codeUnits;
+      whisperArchive.addFile(ArchiveFile('LICENSE.txt', whisperLicenseBytes.length, whisperLicenseBytes));
+      final whisperZipBytes = ZipEncoder().encode(whisperArchive);
+
+      when(() => mockResponse.contentLength).thenReturn(whisperZipBytes.length);
+      when(() => mockResponse.listen(
+        any(),
+        onError: any(named: 'onError'),
+        onDone: any(named: 'onDone'),
+        cancelOnError: any(named: 'cancelOnError'),
+      )).thenAnswer((invocation) {
+        return Stream<List<int>>.fromIterable([whisperZipBytes]).listen(
+          invocation.positionalArguments[0] as void Function(List<int>)?,
+          onError: invocation.namedArguments[#onError] as Function?,
+          onDone: invocation.namedArguments[#onDone] as void Function()?,
+          cancelOnError: invocation.namedArguments[#cancelOnError] as bool?,
+        );
+      });
+
+      await service.download('whisper');
+      final whisperLicense = File(p.join(AppDirs.bin, 'whisper_LICENSE.txt'));
+      expect(whisperLicense.existsSync(), isTrue);
+      expect(whisperLicense.readAsStringSync(), contains('Whisper.cpp'));
+
+      // 2. Now download FFmpeg which ALSO contains LICENSE.txt
+      final ffmpegTarget = Platform.isWindows ? 'ffmpeg.exe' : 'ffmpeg';
+      final ffmpegArchive = Archive();
+      ffmpegArchive.addFile(ArchiveFile(ffmpegTarget, mockData.length, mockData));
+      final ffmpegLicenseBytes = 'GNU General Public License v3 - FFmpeg project'.codeUnits;
+      ffmpegArchive.addFile(ArchiveFile('LICENSE.txt', ffmpegLicenseBytes.length, ffmpegLicenseBytes));
+      final ffmpegZipBytes = ZipEncoder().encode(ffmpegArchive);
+
+      when(() => mockResponse.contentLength).thenReturn(ffmpegZipBytes.length);
+      when(() => mockResponse.listen(
+        any(),
+        onError: any(named: 'onError'),
+        onDone: any(named: 'onDone'),
+        cancelOnError: any(named: 'cancelOnError'),
+      )).thenAnswer((invocation) {
+        return Stream<List<int>>.fromIterable([ffmpegZipBytes]).listen(
+          invocation.positionalArguments[0] as void Function(List<int>)?,
+          onError: invocation.namedArguments[#onError] as Function?,
+          onDone: invocation.namedArguments[#onDone] as void Function()?,
+          cancelOnError: invocation.namedArguments[#cancelOnError] as bool?,
+        );
+      });
+
+      await service.download('ffmpeg');
+      final ffmpegLicense = File(p.join(AppDirs.bin, 'ffmpeg_LICENSE.txt'));
+      expect(ffmpegLicense.existsSync(), isTrue);
+      expect(ffmpegLicense.readAsStringSync(), contains('FFmpeg project'));
+
+      // 3. Confirm whisper license was NOT overwritten or deleted!
+      expect(whisperLicense.existsSync(), isTrue);
+      expect(whisperLicense.readAsStringSync(), contains('Whisper.cpp'));
     });
   }); // BinaryDownloaderService Tests
 }

@@ -15,7 +15,14 @@ import '../../controllers/editor_controller.dart';
 import 'style_panel/font_settings_section.dart';
 import 'style_panel/color_settings_section.dart';
 import 'style_panel/border_settings_section.dart';
+import 'style_panel/position_settings_section.dart';
+import 'style_panel/retention_bar_section.dart';
+import 'style_panel/save_preset_dialog.dart';
+import 'style_panel/community_presets_dialog.dart';
+import 'style_panel/brand_kit_dialog.dart';
+import 'style_panel/plugins_dialog.dart';
 import '../../../../../core/utils/premium_blur_dialog.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 class StylePanel extends ConsumerStatefulWidget {
   const StylePanel({super.key});
@@ -105,9 +112,10 @@ class _StylePanelState extends ConsumerState<StylePanel> {
       }
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Saved style preset "$name" successfully!'),
+            content: Text(l10n?.presetSaved(name) ?? 'Saved style preset "$name" successfully!'),
             backgroundColor: AppTheme.accentGreen,
           ),
         );
@@ -131,10 +139,11 @@ class _StylePanelState extends ConsumerState<StylePanel> {
       }
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Preset deleted successfully.'),
-            backgroundColor: Colors.redAccent,
+          SnackBar(
+            content: Text(l10n?.presetDeleted ?? 'Preset deleted successfully.'),
+            backgroundColor: AppTheme.accentRed,
           ),
         );
       }
@@ -144,6 +153,8 @@ class _StylePanelState extends ConsumerState<StylePanel> {
   }
 
   Future<void> _exportPresets() async {
+    // Capture l10n before any async gaps
+    final l10n = AppLocalizations.of(context);
     try {
       final prefs = await SharedPreferences.getInstance();
       final list = prefs.getStringList('custom_presets') ?? [];
@@ -155,7 +166,7 @@ class _StylePanelState extends ConsumerState<StylePanel> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Style presets exported successfully!'),
+              content: Text(l10n?.presetExported ?? 'Style presets exported successfully!'),
               backgroundColor: AppTheme.accentGreen,
             ),
           );
@@ -173,7 +184,7 @@ class _StylePanelState extends ConsumerState<StylePanel> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Style presets exported successfully!'),
+              content: Text(l10n?.presetExported ?? 'Style presets exported successfully!'),
               backgroundColor: AppTheme.accentGreen,
             ),
           );
@@ -184,8 +195,10 @@ class _StylePanelState extends ConsumerState<StylePanel> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to export presets: $e'),
-            backgroundColor: Colors.redAccent,
+            content: Text(
+                l10n?.errorPresetExportFailed(e.toString()) ??
+                    'Failed to export presets: $e'),
+            backgroundColor: AppTheme.accentRed,
           ),
         );
       }
@@ -193,6 +206,8 @@ class _StylePanelState extends ConsumerState<StylePanel> {
   }
 
   Future<void> _importPresets() async {
+    // Capture l10n before any async gaps
+    final l10n = AppLocalizations.of(context);
     try {
       final result = await FilePicker.pickFiles(
         type: FileType.custom,
@@ -214,14 +229,16 @@ class _StylePanelState extends ConsumerState<StylePanel> {
             final hasMatch = merged.any((m) {
               try {
                 return (jsonDecode(m) as Map<String, dynamic>)['id'] == itemId;
-              } catch (_) {
+              } catch (e) {
+                LoggerService.instance.debug('Error decoding preset while matching: $e');
                 return false;
               }
             });
             if (!hasMatch) {
               merged.add(item);
             }
-          } catch (_) {
+          } catch (e) {
+            LoggerService.instance.debug('Error parsing imported preset item: $e');
             merged.add(item);
           }
         }
@@ -232,7 +249,7 @@ class _StylePanelState extends ConsumerState<StylePanel> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Imported style presets successfully!'),
+              content: Text(l10n?.presetImported ?? 'Imported style presets successfully!'),
               backgroundColor: AppTheme.accentGreen,
             ),
           );
@@ -243,8 +260,10 @@ class _StylePanelState extends ConsumerState<StylePanel> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to import presets: $e'),
-            backgroundColor: Colors.redAccent,
+            content: Text(
+                l10n?.errorPresetImportFailed(e.toString()) ??
+                    'Failed to import presets: $e'),
+            backgroundColor: AppTheme.accentRed,
           ),
         );
       }
@@ -255,11 +274,43 @@ class _StylePanelState extends ConsumerState<StylePanel> {
     showDialog<void>(
       context: context,
       builder: (context) {
-        return _SavePresetDialog(
+        return SavePresetDialog(
           onSave: (name) => _saveCustomPreset(name),
         );
       },
     );
+  }
+
+  void _applyTemplate(StyleTemplate template) {
+    final stateVal = ref.read(editorProvider);
+    final project = stateVal.project;
+    final newConfig = templateToConfig(template, currentEmojiPack: project?.config.emojiPack, existingSubs: project?.config.subs);
+    LoggerService.instance.log(LogLevel.action, 'StylePanel', 'Applied template: ${template.name} (${template.fontFamily})');
+    ref.read(editorProvider.notifier).setFullConfig(newConfig);
+
+    if (project != null && project.words.isNotEmpty) {
+      final firstStart = project.words.first.start ?? 0.0;
+      final lastEnd = project.words.last.end ?? project.duration;
+      if (stateVal.currentTime < firstStart || stateVal.currentTime > lastEnd) {
+        ref.read(editorProvider.notifier).setCurrentTime(firstStart);
+      }
+    }
+  }
+
+  void _showCommunityPresetsDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return CommunityPresetsDialog(
+          onApplyPreset: (template) => _applyTemplate(template),
+          onPacksUpdated: () => _loadCustomPresets(),
+        );
+      },
+    );
+  }
+
+  void _showBrandKitDialog() {
+    BrandKitDialog.show(context);
   }
 
   @override
@@ -269,6 +320,7 @@ class _StylePanelState extends ConsumerState<StylePanel> {
     ref.watch(editorProvider.select((s) => s.revision));
     if (project == null) return const SizedBox.shrink();
 
+    final l10n = AppLocalizations.of(context);
     final config = project.config;
     final style = config.style;
     final hs = config.highlightStyle;
@@ -291,7 +343,7 @@ class _StylePanelState extends ConsumerState<StylePanel> {
             alignment: WrapAlignment.spaceBetween,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              _buildSectionHeader('MY SAVED PRESETS'),
+              _buildSectionHeader(l10n?.mySavedPresets ?? 'MY SAVED PRESETS'),
               Wrap(
                 spacing: 2,
                 runSpacing: 2,
@@ -300,7 +352,7 @@ class _StylePanelState extends ConsumerState<StylePanel> {
                     onPressed: _importPresets,
                     icon: Icon(Icons.upload_file_rounded, size: 14, color: AppTheme.accentCyan),
                     label: Text(
-                      'IMPORT',
+                      l10n?.btnImport ?? 'IMPORT',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -310,13 +362,13 @@ class _StylePanelState extends ConsumerState<StylePanel> {
                   ),
                   TextButton.icon(
                     onPressed: _customPresets.isEmpty ? null : _exportPresets,
-                    icon: Icon(Icons.download_rounded, size: 14, color: _customPresets.isEmpty ? Colors.white24 : AppTheme.accentGreen),
+                    icon: Icon(Icons.download_rounded, size: 14, color: _customPresets.isEmpty ? AppTheme.mutedText : AppTheme.accentGreen),
                     label: Text(
-                      'EXPORT',
+                      l10n?.btnExportCaps ?? 'EXPORT',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        color: _customPresets.isEmpty ? Colors.white24 : AppTheme.accentGreen,
+                        color: _customPresets.isEmpty ? AppTheme.mutedText : AppTheme.accentGreen,
                       ),
                     ),
                   ),
@@ -324,7 +376,7 @@ class _StylePanelState extends ConsumerState<StylePanel> {
                     onPressed: _showSavePresetDialog,
                     icon: Icon(Icons.add_rounded, size: 14, color: AppTheme.accentOrange),
                     label: Text(
-                      'SAVE CURRENT',
+                      l10n?.btnSaveCurrent ?? 'SAVE CURRENT',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -359,17 +411,17 @@ class _StylePanelState extends ConsumerState<StylePanel> {
               ),
               child: Column(
                 children: [
-                  Icon(Icons.style_outlined, color: Colors.white.withValues(alpha: 0.2), size: 24),
+                  Icon(Icons.style_outlined, color: AppTheme.mutedText, size: 24),
                   const SizedBox(height: 8),
                   Text(
                     'No saved presets yet.',
-                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.5), fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 11, color: AppTheme.secondaryText, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'Customize style settings below and tap "Save Current" to create your own brand style.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 9, color: Colors.white.withValues(alpha: 0.3)),
+                    style: TextStyle(fontSize: 9, color: AppTheme.mutedText),
                   ),
                 ],
               ),
@@ -398,16 +450,16 @@ class _StylePanelState extends ConsumerState<StylePanel> {
               },
             ),
 
-          const Divider(color: Colors.white12, height: 32),
+          Divider(color: AppTheme.dividerColor, height: 32),
 
           // 🎨 built-in templates
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildSectionHeader('STYLE TEMPLATES'),
+              _buildSectionHeader(l10n?.styleTemplatesHeader ?? 'STYLE TEMPLATES'),
               IconButton(
-                icon: const Icon(Icons.restore_rounded, size: 16, color: Colors.white60),
-                tooltip: 'Reset to default style',
+                icon: Icon(Icons.restore_rounded, size: 16, color: AppTheme.secondaryText),
+                tooltip: l10n?.resetToDefaultStyle ?? 'Reset to default style',
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
                 splashRadius: 16,
@@ -416,13 +468,13 @@ class _StylePanelState extends ConsumerState<StylePanel> {
                     context: context,
                     builder: (ctx) => PremiumBlurDialog(
                       maxWidth: 360,
-                      glowColor: Colors.redAccent,
+                      glowColor: AppTheme.accentRed,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Reset Styling?',
+                            l10n?.resetStylingTitle ?? 'Reset Styling?',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -431,7 +483,7 @@ class _StylePanelState extends ConsumerState<StylePanel> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            'This will reset all caption styles to default. Cannot be undone.',
+                            l10n?.resetStylingDesc ?? 'This will reset all caption styles to default. Cannot be undone.',
                             style: TextStyle(color: AppTheme.secondaryText, fontSize: 13),
                           ),
                           const SizedBox(height: 20),
@@ -440,23 +492,24 @@ class _StylePanelState extends ConsumerState<StylePanel> {
                             children: [
                               TextButton(
                                 onPressed: () => Navigator.pop(ctx),
-                                child: Text('Cancel', style: TextStyle(color: AppTheme.secondaryText)),
+                                child: Text(l10n?.btnCancel ?? 'Cancel', style: TextStyle(color: AppTheme.secondaryText)),
                               ),
                               const SizedBox(width: 8),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.redAccent,
-                                  foregroundColor: Colors.white,
+                                  backgroundColor: AppTheme.accentRed,
+                                  foregroundColor: AppTheme.onAccentText,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 ),
                                 onPressed: () {
                                   Navigator.pop(ctx);
+                                  final project = ref.read(editorProvider).project;
                                   final defaultTemplate = allTemplates.first;
-                                  final newConfig = templateToConfig(defaultTemplate);
+                                  final newConfig = templateToConfig(defaultTemplate, currentEmojiPack: project?.config.emojiPack, existingSubs: project?.config.subs);
                                   ref.read(editorProvider.notifier).setFullConfig(newConfig);
                                   LoggerService.instance.log(LogLevel.action, 'StylePanel', 'Reset styling to default: ${defaultTemplate.name}');
                                 },
-                                child: const Text('Reset'),
+                                child: Text(l10n?.btnReset ?? 'Reset'),
                               ),
                             ],
                           ),
@@ -467,6 +520,52 @@ class _StylePanelState extends ConsumerState<StylePanel> {
                 },
               ),
             ],
+          ),
+          const SizedBox(height: 6),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                TextButton.icon(
+                  onPressed: _showBrandKitDialog,
+                  icon: Icon(Icons.verified_user_rounded, size: 14, color: AppTheme.accentCyan),
+                  label: Text(
+                    'BRAND KITS',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.accentCyan,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                TextButton.icon(
+                  onPressed: _showCommunityPresetsDialog,
+                  icon: Icon(Icons.auto_awesome_rounded, size: 14, color: AppTheme.accentPink),
+                  label: Text(
+                    'COMMUNITY PACKS',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.accentPink,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                TextButton.icon(
+                  onPressed: () => PluginsDialog.show(context),
+                  icon: Icon(Icons.extension_rounded, size: 14, color: AppTheme.accentOrange),
+                  label: Text(
+                    'PLUGINS',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.accentOrange,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 8),
           
@@ -483,7 +582,7 @@ class _StylePanelState extends ConsumerState<StylePanel> {
                     label: Text(cat.displayName, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                     selected: isSelected,
                     selectedColor: AppTheme.accentOrange.withValues(alpha: 0.2),
-                    backgroundColor: Colors.white.withValues(alpha: 0.03),
+                    backgroundColor: AppTheme.cardBgElevated,
                     labelStyle: TextStyle(
                       color: isSelected ? AppTheme.accentOrange : AppTheme.secondaryText,
                     ),
@@ -522,66 +621,18 @@ class _StylePanelState extends ConsumerState<StylePanel> {
             },
           ),
 
-          const Divider(color: Colors.white12, height: 32),
+          Divider(color: AppTheme.dividerColor, height: 32),
 
           // 🗛 Text Font styling controls
           FontSettingsSection(config: config),
 
-          _buildSectionHeader('SIZE & POSITION'),
-          const SizedBox(height: 8),
-
-          // Y Position Slider
-          _buildSliderRow(
-            label: 'Vertical Y Position (%)',
-            value: style.top,
-            min: 0,
-            max: 100,
-            onChanged: (val) {
-              ref.read(editorProvider.notifier).updateStyleProp('top', val);
-            },
-          ),
-          const SizedBox(height: 8),
-
-          // Word Highlight Box Toggle
-          SwitchListTile(
-            title: const Text('Word Highlight Box', style: TextStyle(fontSize: 13, color: Colors.white70)),
-            subtitle: const Text('Colored pill background behind active spoken words', style: TextStyle(fontSize: 10, color: Colors.white30)),
-            value: style.highlightBackground ?? false,
-            activeThumbColor: AppTheme.accentOrange,
-            contentPadding: EdgeInsets.zero,
-            onChanged: (v) {
-              ref.read(editorProvider.notifier).updateStyleProp('highlightBackground', v);
-            },
-          ),
-          const SizedBox(height: 8),
-
-          // Chunk Size Slider
-          _buildSliderRow(
-            label: 'Max Words per Subtitle Chunk',
-            value: config.subs.chunkSize.toDouble(),
-            min: 1,
-            max: 15,
-            onChanged: (val) {
-              ref.read(editorProvider.notifier).updateStyleProp('chunkSize', val.toInt());
-            },
-          ),
-          
-          // Char Limit Slider
-          _buildSliderRow(
-            label: 'Max Characters per Subtitle Line',
-            value: config.subs.chunkLineMaxLength.toDouble(),
-            min: 10,
-            max: 60,
-            onChanged: (val) {
-              ref.read(editorProvider.notifier).updateStyleProp('chunkLineMaxLength', val.toInt());
-            },
-          ),
-
-          const Divider(color: Colors.white12, height: 32),
+          PositionSettingsSection(config: config),
 
           ColorSettingsSection(config: config),
 
           BorderSettingsSection(config: config),
+
+          const RetentionBarSection(),
         ],
       ),
     );
@@ -590,127 +641,90 @@ class _StylePanelState extends ConsumerState<StylePanel> {
   Widget _buildSectionHeader(String label) {
     return Text(
       label,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w900,
-        color: Color(0xFF71717A),
+        color: AppTheme.secondaryText,
         letterSpacing: 1.5,
       ),
     );
   }
 
-  Widget _buildSliderRow({
-    required String label,
-    required double value,
-    required double min,
-    required double max,
-    required ValueChanged<double> onChanged,
-    int fractionDigits = 0,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(label, style: const TextStyle(fontSize: 13, color: Colors.white70)),
-            Text(
-              value.toStringAsFixed(fractionDigits),
-              style: const TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.bold, color: Colors.white70),
-            ),
-          ],
-        ),
-        SliderTheme(
-          data: SliderTheme.of(context).copyWith(
-            trackHeight: 2,
-            thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-            activeTrackColor: AppTheme.accentOrange,
-            inactiveTrackColor: Colors.white12,
-            thumbColor: AppTheme.accentOrange,
-          ),
-          child: Slider(
-            value: value.clamp(min, max),
-            min: min,
-            max: max,
-            onChanged: onChanged,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildTemplateCard(StyleTemplate template, bool isActive) {
     return GestureDetector(
-      onTap: () {
-        final newConfig = templateToConfig(template);
-        ref.read(editorProvider.notifier).setFullConfig(newConfig);
-      },
-      child: GlassContainer(
-        borderRadius: 8,
-        borderOpacity: isActive ? 0.25 : 0.06,
-        color: isActive ? AppTheme.accentOrange.withValues(alpha: 0.1) : AppTheme.cardBg.withValues(alpha: 0.4),
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              template.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontFamily: template.fontFamily,
-                fontWeight: template.fontWeight == '900' ? FontWeight.w900 : FontWeight.bold,
-                fontSize: 14,
-                color: Colors.white,
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _applyTemplate(template),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          decoration: AppTheme.glassDecoration(
+            borderRadius: 8,
+            borderOpacity: isActive ? 0.35 : 0.08,
+            color: isActive ? AppTheme.accentOrange.withValues(alpha: 0.15) : AppTheme.cardBgElevated,
+          ),
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                template.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: template.fontFamily,
+                  fontWeight: template.fontWeight == '900' ? FontWeight.w900 : FontWeight.bold,
+                  fontSize: 14,
+                  color: AppTheme.primaryText,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              template.category.name.toUpperCase(),
-              style: TextStyle(
-                fontSize: 8,
-                fontWeight: FontWeight.w900,
-                color: isActive ? AppTheme.accentOrange : AppTheme.mutedText,
-                letterSpacing: 1.0,
+              const SizedBox(height: 4),
+              Text(
+                template.category.name.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 8,
+                  fontWeight: FontWeight.w900,
+                  color: isActive ? AppTheme.accentOrange : AppTheme.mutedText,
+                  letterSpacing: 1.0,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-
-
   Widget _buildCustomTemplateCard(StyleTemplate template, bool isActive) {
     return GestureDetector(
-      onTap: () {
-        final newConfig = templateToConfig(template);
-        ref.read(editorProvider.notifier).setFullConfig(newConfig);
-      },
-      child: Stack(
-        children: [
-          GlassContainer(
-            width: double.infinity,
-            height: double.infinity,
-            borderRadius: 8,
-            borderOpacity: isActive ? 0.25 : 0.06,
-            color: isActive ? AppTheme.accentOrange.withValues(alpha: 0.1) : AppTheme.cardBg.withValues(alpha: 0.4),
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  template.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontFamily: template.fontFamily,
-                    fontWeight: template.fontWeight == '900' ? FontWeight.w900 : FontWeight.bold,
-                    fontSize: 13,
-                    color: Colors.white,
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _applyTemplate(template),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: AppTheme.glassDecoration(
+                borderRadius: 8,
+                borderOpacity: isActive ? 0.35 : 0.08,
+                color: isActive ? AppTheme.accentOrange.withValues(alpha: 0.15) : AppTheme.cardBgElevated,
+              ),
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    template.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: template.fontFamily,
+                      fontWeight: template.fontWeight == '900' ? FontWeight.w900 : FontWeight.bold,
+                      fontSize: 13,
+                      color: AppTheme.primaryText,
+                    ),
                   ),
-                ),
                 const SizedBox(height: 4),
                 Text(
                   'CUSTOM PRESET',
@@ -734,7 +748,7 @@ class _StylePanelState extends ConsumerState<StylePanel> {
                   context: context,
                     builder: (ctx) => PremiumBlurDialog(
                       maxWidth: 380,
-                      glowColor: Colors.redAccent,
+                      glowColor: AppTheme.accentRed,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -763,15 +777,20 @@ class _StylePanelState extends ConsumerState<StylePanel> {
                               const SizedBox(width: 8),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.redAccent,
-                                  foregroundColor: Colors.white,
+                                  backgroundColor: AppTheme.accentRed,
+                                  foregroundColor: AppTheme.onAccentText,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 ),
                                 onPressed: () {
                                   Navigator.of(ctx).pop();
                                   _deleteCustomPreset(template.id);
                                 },
-                                child: const Text('Delete'),
+                                child: Builder(
+                                  builder: (context) {
+                                    final l10n = AppLocalizations.of(context);
+                                    return Text(l10n?.btnDelete ?? 'Delete');
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -785,105 +804,15 @@ class _StylePanelState extends ConsumerState<StylePanel> {
                 child: Icon(
                   Icons.close_rounded,
                   size: 14,
-                  color: Colors.white.withValues(alpha: 0.4),
+                  color: AppTheme.mutedText,
                 ),
               ),
             ),
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
-
-
-class _SavePresetDialog extends StatefulWidget {
-  final void Function(String name) onSave;
-
-  const _SavePresetDialog({required this.onSave});
-
-  @override
-  State<_SavePresetDialog> createState() => _SavePresetDialogState();
-}
-
-class _SavePresetDialogState extends State<_SavePresetDialog> {
-  late TextEditingController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return PremiumBlurDialog(
-      maxWidth: 360,
-      glowColor: AppTheme.accentOrange,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Save Custom Style Preset',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.primaryText,
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: controller,
-            autofocus: true,
-            style: TextStyle(color: AppTheme.primaryText),
-            decoration: InputDecoration(
-              labelText: 'Preset Name',
-              hintText: 'e.g., My Vibrant Pink',
-              labelStyle: TextStyle(color: AppTheme.secondaryText),
-              hintStyle: TextStyle(color: AppTheme.mutedText),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              border: AppTheme.defaultBorder(radius: 6),
-              focusedBorder: AppTheme.focusedBorder(radius: 6),
-              filled: true,
-              fillColor: AppTheme.cardBg,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Cancel', style: TextStyle(color: AppTheme.secondaryText)),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.accentOrange,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-                onPressed: () {
-                  final name = controller.text.trim();
-                  if (name.isNotEmpty) {
-                    Navigator.of(context).pop();
-                    widget.onSave(name);
-                  }
-                },
-                child: const Text('Save'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}

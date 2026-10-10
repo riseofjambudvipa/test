@@ -78,6 +78,7 @@ class PackDownloadService {
   final List<AssetPack> _queue = [];
   bool _isProcessingQueue = false;
   final Map<String, Completer<void>> _completers = {};
+  bool verifyChecksumsEnabled = true;
 
   Stream<DownloadProgress> stream(String packId) {
     _streams[packId] ??= StreamController<DownloadProgress>.broadcast();
@@ -94,19 +95,49 @@ class PackDownloadService {
     }
   }
 
-  Future<bool> _verifySha256(String filePath, String expectedHex) async {
-    if (expectedHex.isEmpty) {
-      LoggerService.instance.log(LogLevel.warning, 'PackDownloadService',
-          'No checksum configured for $filePath. Skipping integrity check.');
+  Future<String> _fetchCompanionSha256(String url) async {
+    try {
+      final client = HttpClient();
+      client.connectionTimeout = const Duration(seconds: 12);
+      final req = await client.getUrl(Uri.parse('$url.sha256'));
+      final res = await req.close();
+      if (res.statusCode == 200) {
+        final body = await res.transform(const Utf8Decoder(allowMalformed: true)).join();
+        client.close();
+        final match = RegExp(r'[a-fA-F0-9]{64}').firstMatch(body);
+        if (match != null) {
+          final hash = match.group(0)!.toLowerCase();
+          LoggerService.instance.log(LogLevel.info, 'PackDownloadService',
+              'Dynamically fetched companion SHA-256 for $url: $hash');
+          return hash;
+        }
+      }
+      client.close();
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.info, 'PackDownloadService',
+          'Companion .sha256 file not available for $url ($e).');
+    }
+    return '';
+  }
+
+  Future<bool> _verifySha256(dynamic file, String expectedHex) async {
+    if (!verifyChecksumsEnabled) {
       return true;
+    }
+    final String filePath = file is File ? file.path : file.toString();
+    final cleanExpected = expectedHex.trim().toLowerCase();
+    if (cleanExpected.isEmpty) {
+      LoggerService.instance.log(LogLevel.warning, 'PackDownloadService',
+          'No checksum configured or found for $filePath. Refusing to verify empty checksum.');
+      return false;
     }
     try {
       final stream = File(filePath).openRead();
       final hash = await sha256.bind(stream).first;
-      final actual = hash.toString();
-      if (actual != expectedHex.toLowerCase()) {
-        LoggerService.instance.log(LogLevel.error, 'PackDownloadService',
-            'Checksum mismatch for $filePath! Expected $expectedHex, got $actual');
+      final actual = hash.toString().toLowerCase();
+      if (actual != cleanExpected) {
+        LoggerService.instance.log(LogLevel.warning, 'PackDownloadService',
+            'Checksum mismatch for $filePath! Expected $cleanExpected, got $actual');
         return false;
       }
       return true;
@@ -119,7 +150,9 @@ class PackDownloadService {
 
   Future<void> download(AssetPack pack) async {
     if (kIsWeb) {
-      throw UnsupportedError('Pack downloading is not supported on Web.');
+      LoggerService.instance.log(LogLevel.info, 'PackDownloadService',
+          'Download requested on Web for ${pack.id} - skipped (Web fonts/assets streamed dynamically).');
+      return;
     }
 
     // If already downloading or queued, return the existing future to prevent duplicate triggers
@@ -222,7 +255,11 @@ class PackDownloadService {
 
         // Step 1.5: Verify Checksum
         emit(DownloadProgress(packId: pack.id, status: DownloadStatus.verifying, downloadProgress: 1.0));
-        final checksumOk = await _verifySha256(tempTtf, pack.checksum);
+        String expectedChecksum = pack.checksum;
+        if (expectedChecksum.isEmpty) {
+          expectedChecksum = await _fetchCompanionSha256(pack.downloadUrl);
+        }
+        final checksumOk = await _verifySha256(tempTtf, expectedChecksum);
         if (!checksumOk) {
           emit(DownloadProgress(
             packId: pack.id,
@@ -230,7 +267,11 @@ class PackDownloadService {
             downloadProgress: 1.0,
             error: 'Download integrity check failed. File may be corrupted or tampered with.',
           ));
-          try { File(tempTtf).deleteSync(); } catch (_) {}
+          try {
+            File(tempTtf).deleteSync();
+          } catch (e) {
+            LoggerService.instance.debug('Failed to delete tempTtf on checksum failure: $e');
+          }
           _closeStream(pack.id);
           return;
         }
@@ -269,7 +310,11 @@ class PackDownloadService {
 
       // Step 1.5: Verify Checksum
       emit(DownloadProgress(packId: pack.id, status: DownloadStatus.verifying, downloadProgress: 1.0));
-      final checksumOk = await _verifySha256(tempZip, pack.checksum);
+      String expectedChecksum = pack.checksum;
+      if (expectedChecksum.isEmpty) {
+        expectedChecksum = await _fetchCompanionSha256(pack.downloadUrl);
+      }
+      final checksumOk = await _verifySha256(tempZip, expectedChecksum);
       if (!checksumOk) {
         emit(DownloadProgress(
           packId: pack.id,
@@ -277,14 +322,26 @@ class PackDownloadService {
           downloadProgress: 1.0,
           error: 'Download integrity check failed. File may be corrupted or tampered with.',
         ));
-        try { File(tempZip).deleteSync(); } catch (_) {}
+        try {
+          File(tempZip).deleteSync();
+        } catch (e) {
+          LoggerService.instance.debug('Failed to delete tempZip on checksum failure: $e');
+        }
         _closeStream(pack.id);
         return;
       }
 
       // Step 2: Extract in isolate (keeps UI responsive)
       emit(DownloadProgress(packId: pack.id, status: DownloadStatus.extracting, downloadProgress: 1.0));
-      await _extractInIsolate(zipPath: tempZip, destDir: AssetPathService.instance.emojisDir, packId: pack.id, emit: emit);
+      final packDestDir = AssetPathService.instance.emojiPackDir(pack.localFolder);
+      await Directory(packDestDir).create(recursive: true);
+      await _extractInIsolate(
+        zipPath: tempZip,
+        destDir: packDestDir,
+        packId: pack.id,
+        localFolder: pack.localFolder,
+        emit: emit,
+      );
 
       try {
         final f = File(tempZip);
@@ -314,13 +371,17 @@ class PackDownloadService {
         try {
           final f = File(tempTtf);
           if (f.existsSync()) f.deleteSync();
-        } catch (_) {}
+        } catch (err) {
+          LoggerService.instance.debug('Failed to delete tempTtf on error: $err');
+        }
       }
       if (tempZip != null) {
         try {
           final f = File(tempZip);
           if (f.existsSync()) f.deleteSync();
-        } catch (_) {}
+        } catch (err) {
+          LoggerService.instance.debug('Failed to delete tempZip on error: $err');
+        }
       }
       LoggerService.instance.log(LogLevel.error, 'PackDownloadService', 'Failed to download ${pack.id}: $e');
       emit(DownloadProgress(packId: pack.id, status: DownloadStatus.failed, error: e.toString()));
@@ -336,9 +397,43 @@ class PackDownloadService {
     required void Function(DownloadProgress) emit,
   }) async {
     final filename = p.basename(url);
+
+    // Fast-path: Check if local archive exists (offline / pre-downloaded)
+    if (httpClient == null) {
+      final localCandidates = [
+        p.join(AssetPathService.instance.assetsRoot, 'archive', filename),
+        p.join(AppDirs.support, 'archive', filename),
+      ];
+      for (final candidate in localCandidates) {
+        final localFile = File(candidate);
+        if (localFile.existsSync() && localFile.lengthSync() > 0) {
+          try {
+            LoggerService.instance.log(LogLevel.info, 'PackDownloadService',
+                'Found local archive bundle at $candidate. Copying to $savePath...');
+            await localFile.copy(savePath);
+            emit(DownloadProgress(
+              packId: packId,
+              status: DownloadStatus.downloading,
+              downloadProgress: 1.0,
+              bytesReceived: localFile.lengthSync(),
+              totalBytes: localFile.lengthSync(),
+            ));
+            return true;
+          } catch (e) {
+            LoggerService.instance.log(LogLevel.warning, 'PackDownloadService',
+                'Failed copying local archive, falling back to network: $e');
+          }
+        }
+      }
+    }
+
     final urls = [
       url,
-      'https://github.com/chyrenselin/Local-AI-Caption-Studio/releases/download/v0.0.1/$filename',
+      'https://github.com/riseofjambudvipa/test/releases/download/test/$filename',
+      'https://github.com/riseofjambudvipa/CapStudio/releases/download/test/$filename',
+      'https://github.com/riseofjambudvipa/CapStudio/releases/latest/download/$filename',
+      'https://github.com/riseofjambudvipa/test/releases/download/v0.0.1/$filename',
+      'https://github.com/riseofjambudvipa/CapStudio/releases/download/v0.0.1/$filename',
     ];
 
     Exception? lastException;
@@ -452,10 +547,11 @@ class PackDownloadService {
     required String zipPath,
     required String destDir,
     required String packId,
+    required String localFolder,
     required void Function(DownloadProgress) emit,
   }) async {
     final port = ReceivePort();
-    await Isolate.spawn(_extractEntry, [zipPath, destDir, port.sendPort]);
+    await Isolate.spawn(_extractEntry, (zipPath, destDir, localFolder, packId, port.sendPort));
     await for (final msg in port) {
       if (msg is double) {
         emit(DownloadProgress(packId: packId, status: DownloadStatus.extracting,
@@ -467,12 +563,10 @@ class PackDownloadService {
     }
   }
 
-  static Future<void> _extractEntry(List<dynamic> args) async {
-    final zip = args[0] as String;
-    final dest = args[1] as String;
-    final port = args[2] as SendPort;
+  static Future<void> _extractEntry((String, String, String, String, SendPort) args) async {
+    final (zip, dest, localFolder, packId, port) = args;
     try {
-      await _extractZipMemoryEfficiently(zip, dest, port);
+      await _extractZipMemoryEfficiently(zip, dest, localFolder, packId, port);
       port.send('done');
     } catch (e) {
       port.send('err:$e');
@@ -482,6 +576,8 @@ class PackDownloadService {
   static Future<void> _extractZipMemoryEfficiently(
     String zipPath,
     String destDir,
+    String localFolder,
+    String packId,
     SendPort port,
   ) async {
     final file = File(zipPath);
@@ -557,15 +653,32 @@ class PackDownloadService {
       }
 
       final String canonicalDest = p.canonicalize(destDir);
+      final folderPrefix = '$localFolder/'.toLowerCase();
+      final packIdPrefix = '$packId/'.toLowerCase();
+
       for (int i = 0; i < entries.length; i++) {
         final entry = entries[i];
-        final outPath = p.join(destDir, entry.filename);
+        var relPath = entry.filename.replaceAll('\\', '/');
+        final relLower = relPath.toLowerCase();
+
+        // If archive entries already have an outer wrapper folder, strip it
+        if (relLower.startsWith(folderPrefix)) {
+          relPath = relPath.substring(folderPrefix.length);
+        } else if (relLower.startsWith(packIdPrefix)) {
+          relPath = relPath.substring(packIdPrefix.length);
+        }
+
+        if (relPath.isEmpty || relPath == '/') {
+          continue;
+        }
+
+        final outPath = p.join(destDir, relPath);
         final String canonicalOut = p.canonicalize(outPath);
         if (!p.isWithin(canonicalDest, canonicalOut) && canonicalOut != canonicalDest) {
           throw Exception('Malicious zip entry path detected (Zip Slip): ${entry.filename}');
         }
 
-        final isDir = entry.filename.endsWith('/') || entry.filename.endsWith('\\');
+        final isDir = relPath.endsWith('/') || entry.filename.endsWith('/') || entry.filename.endsWith('\\');
         if (isDir) {
           await Directory(outPath).create(recursive: true);
         } else {
@@ -671,7 +784,10 @@ class PackDownloadService {
     try {
       PaintingBinding.instance.imageCache.clear();
       PaintingBinding.instance.imageCache.clearLiveImages();
-    } catch (_) {}
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'PackDownloadService',
+          'Failed to clear image cache: $e');
+    }
 
     for (int i = 0; i < 5; i++) {
       try {
@@ -699,6 +815,20 @@ class PackDownloadService {
       }
       final dir = Directory(AssetPathService.instance.emojiPackDir(pack.localFolder));
       await _safeDeleteDirectory(dir);
+
+      // Also clean up any loose legacy resolution folder or legacy packId folder
+      final subdir = AssetPathService.packSubdir(pack.id).replaceAll('/', '').replaceAll('\\', '');
+      if (subdir.isNotEmpty) {
+        final looseDir = Directory(p.join(AssetPathService.instance.emojisDir, subdir));
+        if (looseDir.existsSync()) {
+          await _safeDeleteDirectory(looseDir);
+        }
+      }
+      final legacyIdDir = Directory(p.join(AssetPathService.instance.emojisDir, pack.id));
+      if (legacyIdDir.existsSync()) {
+        await _safeDeleteDirectory(legacyIdDir);
+      }
+
       await EmojiService.instance.invalidatePackCache(pack.id);
       EmojiImage.clearCache();
     } catch (e, stackTrace) {

@@ -1,23 +1,31 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart' show defaultTargetPlatform;
+import 'dart:io';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb;
+import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as p;
+import '../../../../../../core/assets/asset_path_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../../core/utils/premium_blur_dialog.dart';
 import '../../../../../../app/theme.dart';
 import '../../../../../../core/database/schemas/project.dart';
+import '../../../../../../core/database/schemas/word.dart';
 import '../../../../../../core/assets/asset_manifest.dart';
 import '../../../../../../core/assets/asset_verification_service.dart';
 import '../../../../../../core/logger/logger_service.dart';
+import '../../../../../../core/emoji/emoji_service.dart';
 import '../../../../domain/caption_engine.dart';
 import '../../../controllers/editor_controller.dart';
 import 'emoji_tile.dart';
 import 'emoji_pack_meta.dart';
+import '../../../../../../l10n/app_localizations.dart';
 
 class EmojiPickerDialog extends ConsumerStatefulWidget {
   final Project project;
   final Chunk chunk;
   final String? initialPack;
+  final WordSchema? targetWord;
   final void Function(String selectedPack, String selectedGlyph)? onEmojiSelected;
 
   const EmojiPickerDialog({
@@ -25,6 +33,7 @@ class EmojiPickerDialog extends ConsumerStatefulWidget {
     required this.project,
     required this.chunk,
     this.initialPack,
+    this.targetWord,
     this.onEmojiSelected,
   });
 
@@ -53,6 +62,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
   static const List<Map<String, String>> _categories = [
     {'id': 'recent',           'icon': '🕐', 'name': 'Recent'},
     {'id': 'favorites',        'icon': '⭐', 'name': 'Favorites'},
+    {'id': 'custom',           'icon': '🖼️', 'name': 'Stickers'},
     {'id': 'smileys & emotion','icon': '😀', 'name': 'Smileys'},
     {'id': 'people & body',    'icon': '👋', 'name': 'People'},
     {'id': 'animals & nature', 'icon': '🐶', 'name': 'Animals'},
@@ -140,6 +150,58 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
     if (mounted) setState(_updateFilteredData);
   }
 
+  Future<void> _importCustomStickers() async {
+    if (kIsWeb) return;
+    try {
+      final result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['png', 'jpg', 'jpeg', 'webp', 'gif'],
+      );
+      if (result == null || result.files.isEmpty) return;
+
+      final targetDir = AssetPathService.instance.customStickersDir;
+      final dir = Directory(targetDir);
+      if (!dir.existsSync()) {
+        dir.createSync(recursive: true);
+      }
+
+      int copied = 0;
+      for (final file in result.files) {
+        if (file.path != null) {
+          final src = File(file.path!);
+          final dest = File(p.join(targetDir, file.name));
+          src.copySync(dest.path);
+          copied++;
+        }
+      }
+
+      if (copied > 0) {
+        await EmojiService.instance.scanCustomStickers(targetDir);
+        if (mounted) {
+          setState(() {
+            _updateFilteredData();
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Imported $copied sticker${copied > 1 ? 's' : ''} successfully!'),
+              backgroundColor: AppTheme.accentGreen,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.error, 'EmojiPicker', 'Failed to import stickers: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to import stickers: $e'),
+            backgroundColor: AppTheme.accentRed,
+          ),
+        );
+      }
+    }
+  }
+
   bool _isSupportedOnWindowsSystemDefault(String unicode) {
     // Zero-Width Joiner (ZWJ) sequences (e.g., professions, families, horizontal/vertical head shakes,
     // face-in-clouds, black cat) often render as split/separated component glyphs on Windows
@@ -174,7 +236,9 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
         if (value >= 0x1F6FB && value <= 0x1F6FF) return false; 
         if (value >= 0x1F6D0 && value <= 0x1F6DF) return false; // playground slide, elevator, etc.
         
-      } catch (_) {}
+      } catch (e) {
+        LoggerService.instance.debug('Error checking Segoe UI Emoji support: $e');
+      }
     }
     return true;
   }
@@ -188,6 +252,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
   /// legitimate reason for the duplication, just copy-paste. Single
   /// implementation now; all 4 call it.
   bool _isEmojiAvailableForPack(EmojiMeta e, String selectedPack) {
+    if (e.group == 'Custom Stickers') return true;
     if (selectedPack == 'notoColorEmoji') return true;
     if (selectedPack == 'systemDefault') {
       if (defaultTargetPlatform == TargetPlatform.windows) {
@@ -199,6 +264,55 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
     return e.styles.containsKey(selectedPack);
   }
 
+  /// Filters out skin-tone variants, single-byte ASCII characters, regional
+  /// indicator symbols (unsupported standalone flags), and legacy keycaps/symbols.
+  bool _isExcludedEmoji(String character, [String? unicode]) {
+    if (character.contains('/') || character.contains('\\')) return false;
+    final manifest = ref.read(assetManifestProvider);
+    final u = unicode ??
+        manifest.byGlyph[character]?.unicode ??
+        (manifest.byUnicode.containsKey(character) ? character : null) ??
+        character.runes
+            .map((r) => r.toRadixString(16).padLeft(4, '0').toLowerCase())
+            .join('-');
+    if (u.contains('-1f3fb') ||
+        u.contains('-1f3fc') ||
+        u.contains('-1f3fd') ||
+        u.contains('-1f3fe') ||
+        u.contains('-1f3ff') ||
+        character.endsWith('🏻') ||
+        character.endsWith('🏼') ||
+        character.endsWith('🏽') ||
+        character.endsWith('🏾') ||
+        character.endsWith('🏿')) {
+      return true;
+    }
+    if (character.length == 1 && character.codeUnitAt(0) < 127) {
+      return true;
+    }
+    final codeUnits = character.runes.toList();
+    if (codeUnits.length == 1) {
+      final rune = codeUnits.first;
+      if (rune >= 0x1F1E6 && rune <= 0x1F1FF) {
+        return true;
+      }
+    }
+    final isKeycapOrSymbol = u == '0023-20e3' ||
+        u == '002a-20e3' ||
+        (u.startsWith('003') && u.endsWith('-20e3')) ||
+        u == '00a9' ||
+        u == '00ae' ||
+        u == '2122' ||
+        character == '©' ||
+        character == '®' ||
+        character == '™' ||
+        character.contains('\u20e3');
+    if (isKeycapOrSymbol) {
+      return true;
+    }
+    return false;
+  }
+
   void _updateFilteredData() {
     final manifest = ref.read(assetManifestProvider);
     final Map<String, int> counts = {};
@@ -208,24 +322,50 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
       final catId = cat['id']!;
 
       // Dynamic categories — built from persisted glyph lists
-      if (catId == 'recent') {
-        final recentList = _recentGlyphs
-            .map((g) => manifest.byGlyph[g])
-            .whereType<EmojiMeta>()
-            .where((e) => _isEmojiAvailableForPack(e, selectedPack))
-            .toList();
-        lists[catId]  = recentList;
-        counts[catId] = recentList.length;
+      if (catId == 'recent' || catId == 'favorites') {
+        final glyphList = catId == 'recent' ? _recentGlyphs : _favoriteGlyphs.toList();
+        final list = <EmojiMeta>[];
+        for (final g in glyphList) {
+          final meta = manifest.byGlyph[g];
+          if (meta != null) {
+            if (_isEmojiAvailableForPack(meta, selectedPack)) list.add(meta);
+          } else {
+            final custom = EmojiService.instance.findByGlyph(g);
+            if (custom != null && custom.group == 'Custom Stickers') {
+              list.add(EmojiMeta(
+                unicode: custom.unicode,
+                glyph: custom.glyph,
+                name: custom.name,
+                group: 'Custom Stickers',
+                unicodeVersion: '1.0',
+                keywords: custom.keywords,
+                shortcodes: custom.shortcodes,
+                styles: custom.styles,
+              ));
+            }
+          }
+        }
+        lists[catId]  = list;
+        counts[catId] = list.length;
         continue;
       }
-      if (catId == 'favorites') {
-        final favList = _favoriteGlyphs
-            .map((g) => manifest.byGlyph[g])
-            .whereType<EmojiMeta>()
-            .where((e) => _isEmojiAvailableForPack(e, selectedPack))
-            .toList();
-        lists[catId]  = favList;
-        counts[catId] = favList.length;
+
+      if (catId == 'custom') {
+        final customModels = EmojiService.instance.getByGroup('Custom Stickers');
+        final customList = customModels.map((m) {
+          return EmojiMeta(
+            unicode: m.unicode,
+            glyph: m.glyph,
+            name: m.name,
+            group: 'Custom Stickers',
+            unicodeVersion: '1.0',
+            keywords: m.keywords,
+            shortcodes: m.shortcodes,
+            styles: m.styles,
+          );
+        }).toList();
+        lists[catId]  = customList;
+        counts[catId] = customList.length;
         continue;
       }
 
@@ -233,26 +373,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
       final list = manifest.byGroup[catId] ?? [];
       
       final filtered = list.where((e) {
-        if (e.unicode.contains('-1f3fb') || e.unicode.contains('-1f3fc') ||
-            e.unicode.contains('-1f3fd') || e.unicode.contains('-1f3fe') ||
-            e.unicode.contains('-1f3ff') ||
-            e.glyph.endsWith('🏻') || e.glyph.endsWith('🏼') ||
-            e.glyph.endsWith('🏽') || e.glyph.endsWith('🏾') || e.glyph.endsWith('🏿')) {
-          return false;
-        }
-        if (e.glyph.length == 1 && e.glyph.codeUnitAt(0) < 127) {
-          return false;
-        }
-        final codeUnits = e.glyph.runes.toList();
-        if (codeUnits.length == 1) {
-          final rune = codeUnits.first;
-          if (rune >= 0x1F1E6 && rune <= 0x1F1FF) {
-            return false;
-          }
-        }
-        final u = e.unicode;
-        if (u == '0023-20e3' || u == '002a-20e3' || (u.startsWith('003') && u.endsWith('-20e3')) ||
-            u == '00a9' || u == '00ae' || u == '2122') {
+        if (_isExcludedEmoji(e.glyph, e.unicode)) {
           return false;
         }
 
@@ -296,7 +417,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 11,
-                      color: isInstalled ? Colors.white : Colors.white38,
+                      color: isInstalled ? AppTheme.primaryText : AppTheme.mutedText,
                       fontWeight: isInstalled ? FontWeight.w600 : FontWeight.normal,
                     ),
                   ),
@@ -318,10 +439,11 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final double screenHeight = MediaQuery.of(context).size.height;
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     final double availableHeight = screenHeight - keyboardHeight;
-    final double maxBodyHeight = (availableHeight * 0.48).clamp(160.0, 320.0);
+    final double maxBodyHeight = (availableHeight * 0.48).clamp(240.0, 360.0);
     final bool isShortScreen = availableHeight < 500;
     final bool useScrollFallback = availableHeight < 400;
 
@@ -331,26 +453,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
     final unfilteredList = isSearching ? searchResults : (_filteredLists[activeCategory] ?? []);
     final displayList = isSearching
         ? unfilteredList.where((e) {
-            if (e.unicode.contains('-1f3fb') || e.unicode.contains('-1f3fc') ||
-                e.unicode.contains('-1f3fd') || e.unicode.contains('-1f3fe') ||
-                e.unicode.contains('-1f3ff') ||
-                e.glyph.endsWith('🏻') || e.glyph.endsWith('🏼') ||
-                e.glyph.endsWith('🏽') || e.glyph.endsWith('🏾') || e.glyph.endsWith('🏿')) {
-              return false;
-            }
-            if (e.glyph.length == 1 && e.glyph.codeUnitAt(0) < 127) {
-              return false;
-            }
-            final codeUnits = e.glyph.runes.toList();
-            if (codeUnits.length == 1) {
-              final rune = codeUnits.first;
-              if (rune >= 0x1F1E6 && rune <= 0x1F1FF) {
-                return false;
-              }
-            }
-            final u = e.unicode;
-            if (u == '0023-20e3' || u == '002a-20e3' || (u.startsWith('003') && u.endsWith('-20e3')) ||
-                u == '00a9' || u == '00ae' || u == '2122') {
+            if (_isExcludedEmoji(e.glyph, e.unicode)) {
               return false;
             }
             return _isEmojiAvailableForPack(e, selectedPack);
@@ -369,7 +472,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'STYLE PACK',
+                    l10n?.stylePackLabel ?? 'STYLE PACK',
                     style: TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
@@ -381,7 +484,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
                   PopupMenuButton<String>(
                     offset: const Offset(0, 36),
                     color: AppTheme.cardBg,
-                    tooltip: 'Select Style Pack',
+                    tooltip: l10n?.selectStylePackTooltip ?? 'Select Style Pack',
                     itemBuilder: (context) => _buildPopupMenuItems(verification.installedPackIds),
                     onSelected: (val) {
                       final isSpecial = val == 'systemDefault' || val == 'notoColorEmoji';
@@ -389,13 +492,13 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
                       
                       if (!isInstalled) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            backgroundColor: Colors.redAccent,
+                          SnackBar(
+                            backgroundColor: AppTheme.accentRed,
                             content: Text(
                               'This pack is not downloaded yet. Please download it from the Settings panel to unlock it.',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: AppTheme.onAccentText),
                             ),
-                            duration: Duration(seconds: 3),
+                            duration: const Duration(seconds: 3),
                           ),
                         );
                         setState(() {});
@@ -419,7 +522,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                         color: AppTheme.cardBg,
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                        border: Border.all(color: AppTheme.borderGlass),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -451,7 +554,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
                 controller: searchController,
                 style: TextStyle(fontSize: 12, color: AppTheme.primaryText),
                 decoration: InputDecoration(
-                  hintText: 'Search...',
+                  hintText: l10n?.searchHint ?? 'Search...',
                   prefixIcon: const Icon(Icons.search, size: 16),
                   isDense: true,
                   contentPadding: EdgeInsets.symmetric(
@@ -480,8 +583,21 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
                     if (mounted) {
                       final manifest = ref.read(assetManifestProvider);
                       final matches = manifest.search(val);
+                      final customModels = EmojiService.instance
+                          .search(val)
+                          .where((m) => m.group == 'Custom Stickers');
+                      final customMetas = customModels.map((m) => EmojiMeta(
+                            unicode: m.unicode,
+                            glyph: m.glyph,
+                            name: m.name,
+                            group: 'Custom Stickers',
+                            unicodeVersion: '1.0',
+                            keywords: m.keywords,
+                            shortcodes: m.shortcodes,
+                            styles: m.styles,
+                          ));
                       setState(() {
-                        searchResults = matches;
+                        searchResults = [...matches, ...customMetas];
                       });
                     }
                   });
@@ -496,7 +612,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
           (() {
             final visibleCategories = _categories.where((cat) {
               final catId = cat['id']!;
-              if (catId == 'recent' || catId == 'favorites') return true;
+              if (catId == 'recent' || catId == 'favorites' || catId == 'custom') return true;
               return (_categoryCounts[catId] ?? 0) > 0;
             }).toList();
 
@@ -534,9 +650,9 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
                         }
                       },
                       selectedColor: AppTheme.accentOrange,
-                      backgroundColor: Colors.white.withValues(alpha: 0.04),
+                      backgroundColor: AppTheme.cardBgElevated,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      side: BorderSide(color: isSelected ? AppTheme.accentOrange : Colors.white10),
+                      side: BorderSide(color: isSelected ? AppTheme.accentOrange : AppTheme.borderGlass),
                     ),
                   );
                 },
@@ -576,6 +692,32 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
                       color: AppTheme.mutedText,
                     ),
                   ),
+                  if (activeCategory == 'custom' && !kIsWeb) ...[
+                    const Spacer(),
+                    InkWell(
+                      onTap: _importCustomStickers,
+                      borderRadius: BorderRadius.circular(6),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppTheme.accentOrange.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: AppTheme.accentOrange.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.add_photo_alternate_rounded, size: 12, color: AppTheme.accentOrange),
+                            const SizedBox(width: 4),
+                            Text(
+                              'IMPORT',
+                              style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppTheme.accentOrange),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             );
@@ -584,15 +726,53 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
         ],
         (() {
           if (displayList.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: useScrollFallback ? 24.0 : 0.0),
-                child: Text(
-                  'No emojis found.',
-                  style: TextStyle(color: AppTheme.mutedText, fontSize: 12),
+            final Widget emptyView;
+            if (activeCategory == 'custom') {
+              emptyView = Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.add_photo_alternate_outlined, size: 32, color: AppTheme.mutedText),
+                      const SizedBox(height: 6),
+                      Text(
+                        'No Custom Stickers Yet',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppTheme.primaryText),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Import transparent PNG, JPG, or GIF files to overlay custom stickers and graphics on your captions.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 10.5, color: AppTheme.secondaryText, height: 1.25),
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.add_rounded, size: 14),
+                        label: const Text('IMPORT STICKERS', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.accentOrange,
+                          foregroundColor: AppTheme.onAccentText,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        onPressed: _importCustomStickers,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
+              );
+            } else {
+              emptyView = Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: useScrollFallback ? 24.0 : 0.0),
+                  child: Text(
+                    l10n?.noEmojisFound ?? 'No emojis found.',
+                    style: TextStyle(color: AppTheme.mutedText, fontSize: 12),
+                  ),
+                ),
+              );
+            }
+            return useScrollFallback ? emptyView : Expanded(child: emptyView);
           }
 
           final grid = GridView.builder(
@@ -615,22 +795,38 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
                     packId: selectedPack,
                     onSelect: (selectedGlyph) {
                       _addToRecent(selectedGlyph);
+                      final isSticker = !kIsWeb &&
+                          (match.group == 'Custom Stickers' ||
+                              selectedGlyph.endsWith('.png') ||
+                              selectedGlyph.endsWith('.webp') ||
+                              selectedGlyph.endsWith('.jpg') ||
+                              selectedGlyph.endsWith('.jpeg') ||
+                              selectedGlyph.endsWith('.gif') ||
+                              selectedGlyph.startsWith('/') ||
+                              RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(selectedGlyph) ||
+                              EmojiService.resolveStickerPath(selectedGlyph) != null);
+                      final packToUse = isSticker ? 'custom' : selectedPack;
                       if (widget.onEmojiSelected != null) {
-                        widget.onEmojiSelected!(selectedPack, selectedGlyph);
+                        widget.onEmojiSelected!(packToUse, selectedGlyph);
                         return;
                       }
                       if (widget.chunk.words.isNotEmpty) {
-                        final firstWord = widget.chunk.words.first;
-                        final firstWordId = firstWord.wordId;
-                        if (firstWordId != null) {
+                        final target = widget.targetWord ??
+                            widget.chunk.words.firstWhere(
+                              (w) => w.emoji == null || w.emoji!.isEmpty || w.emoji == 'none',
+                              orElse: () => widget.chunk.words.first,
+                            );
+                        final targetWordId = target.wordId;
+                        if (targetWordId != null) {
+                          final finalEmoji = '$packToUse:$selectedGlyph';
                           ref.read(editorProvider.notifier).updateWord(
-                            firstWordId,
-                            emoji: '$selectedPack:$selectedGlyph',
+                            targetWordId,
+                            emoji: finalEmoji,
                             emojiX: 0.0,
                             emojiY: 0.0,
                             emojiScale: 1.0,
                           );
-                          LoggerService.instance.log(LogLevel.action, 'WordPanel', 'Assigned emoji $selectedPack:$selectedGlyph to chunk');
+                          LoggerService.instance.log(LogLevel.action, 'WordPanel', 'Assigned emoji $finalEmoji to word "$targetWordId"');
                         }
                       }
                       Navigator.pop(context);
@@ -647,7 +843,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
                         size: 9,
                         color: isFavorited
                             ? AppTheme.accentOrange
-                            : Colors.white24,
+                            : AppTheme.mutedText.withValues(alpha: 0.35),
                       ),
                     ),
                   ),
@@ -677,7 +873,7 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
             children: [
               Expanded(
                 child: Text(
-                  'SELECT EMOJI',
+                  l10n?.selectEmojiTitle ?? 'SELECT EMOJI',
                   style: TextStyle(
                     fontSize: isShortScreen ? 11 : 13,
                     fontWeight: FontWeight.w900,
@@ -690,18 +886,16 @@ class _EmojiPickerDialogState extends ConsumerState<EmojiPickerDialog> {
               ),
               const SizedBox(width: 8),
               IconButton(
-                icon: Icon(Icons.close, size: isShortScreen ? 18 : 20, color: Colors.white70),
+                icon: Icon(Icons.close, size: isShortScreen ? 18 : 20, color: AppTheme.secondaryText),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
           ),
-          Divider(color: Colors.white10, height: isShortScreen ? 8 : 16),
+          Divider(color: AppTheme.dividerColor, height: isShortScreen ? 8 : 16),
           useScrollFallback
               ? innerContent
-              : ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: maxBodyHeight,
-                  ),
+              : SizedBox(
+                  height: maxBodyHeight,
                   child: innerContent,
                 ),
         ],

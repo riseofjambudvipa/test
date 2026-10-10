@@ -196,4 +196,74 @@ void main() {
     expect(find.byType(EditorHeaderBar), findsOneWidget);
     expect(find.text('Widget Test Project'), findsOneWidget);
   });
+
+  testWidgets('EditorScreen renders on narrow desktop window (< 600px) without clamp ArgumentError', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(500, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    when(() => mockIsar.getProject('proj_test_456')).thenAnswer((_) async => testProject);
+
+    final file = File(testProject.videoPath);
+    file.parent.createSync(recursive: true);
+    file.writeAsStringSync('dummy_video_bytes');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          assetManifestProvider.overrideWithValue(mockManifest),
+          assetVerificationProvider.overrideWith((ref) => AssetVerificationNotifier(mockVerification)),
+        ],
+        child: const MaterialApp(
+          home: EditorScreen(projectId: 'proj_test_456'),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.runAsync(() async {
+      await Future.delayed(const Duration(milliseconds: 300));
+    });
+    await tester.pump();
+
+    expect(find.byType(EditorHeaderBar), findsOneWidget);
+  });
+
+  testWidgets('EditorScreen renders on mobile landscape (< 711px) without clamp ArgumentError', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(667, 375);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    when(() => mockIsar.getProject('proj_test_456')).thenAnswer((_) async => testProject);
+
+    final file = File(testProject.videoPath);
+    file.parent.createSync(recursive: true);
+    file.writeAsStringSync('dummy_video_bytes');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          assetManifestProvider.overrideWithValue(mockManifest),
+          assetVerificationProvider.overrideWith((ref) => AssetVerificationNotifier(mockVerification)),
+        ],
+        child: const MaterialApp(
+          home: EditorScreen(projectId: 'proj_test_456'),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.runAsync(() async {
+      await Future.delayed(const Duration(milliseconds: 300));
+    });
+    await tester.pump();
+
+    expect(find.byType(EditorHeaderBar), findsOneWidget);
+  });
 }

@@ -60,28 +60,46 @@ class EmojiModel {
 
 class EmojiPackParser {
   static EmojiParseResult parse(String emojiStr, String defaultPack) {
-    if (emojiStr.contains(':') &&
-        !emojiStr.startsWith('http') &&
-        !emojiStr.startsWith('/')) {
-      // Check if it is a Windows absolute path starting with drive letter (e.g. D:/ or E:\)
-      final colonIndex = emojiStr.indexOf(':');
-      if (colonIndex == 1) {
-        final driveLetter = emojiStr[0].toLowerCase();
-        if (driveLetter.codeUnitAt(0) >= 97 && driveLetter.codeUnitAt(0) <= 122) {
-          // This is a Windows drive letter path, treat entire string as glyph
-          return EmojiParseResult(pack: defaultPack, glyph: emojiStr);
-        }
+    if (emojiStr.isEmpty) {
+      return EmojiParseResult(pack: defaultPack, glyph: '');
+    }
+
+    // 1. Direct absolute file path check (Unix / Android or Windows C:\...)
+    if (emojiStr.startsWith('/') ||
+        RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(emojiStr) ||
+        emojiStr.endsWith('.png') ||
+        emojiStr.endsWith('.webp') ||
+        emojiStr.endsWith('.jpg') ||
+        emojiStr.endsWith('.jpeg') ||
+        emojiStr.endsWith('.gif')) {
+      return EmojiParseResult(pack: 'custom', glyph: emojiStr);
+    }
+
+    // 2. Check for pack:glyph prefix (e.g. custom:C:\... or notoColorEmoji:😀)
+    final firstColon = emojiStr.indexOf(':');
+    // If the colon is at index 1, it is a Windows drive letter (e.g. C:\)
+    if (firstColon > 1) {
+      final packCandidate = emojiStr.substring(0, firstColon);
+      final remaining = emojiStr.substring(firstColon + 1);
+
+      if (remaining.startsWith('/') ||
+          RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(remaining) ||
+          remaining.endsWith('.png') ||
+          remaining.endsWith('.webp') ||
+          remaining.endsWith('.jpg') ||
+          remaining.endsWith('.jpeg') ||
+          remaining.endsWith('.gif')) {
+        return EmojiParseResult(pack: 'custom', glyph: remaining);
       }
 
-      final parts = emojiStr.split(':');
-      if (parts.length == 2) {
-        final pack = parts[0];
-        final glyph = parts[1];
-        if (isValidPack(pack) || pack == 'systemDefault' || pack == 'notoColorEmoji') {
-          return EmojiParseResult(pack: pack, glyph: glyph);
-        }
+      if (isValidPack(packCandidate) ||
+          packCandidate == 'systemDefault' ||
+          packCandidate == 'notoColorEmoji' ||
+          packCandidate == 'custom') {
+        return EmojiParseResult(pack: packCandidate, glyph: remaining);
       }
     }
+
     return EmojiParseResult(pack: defaultPack, glyph: emojiStr);
   }
 
@@ -91,7 +109,8 @@ class EmojiPackParser {
         pack == 'microsoftAnimated' ||
         pack == 'microsoftNonAnimated' ||
         pack == 'openmoji' ||
-        pack == 'notoColorEmoji';
+        pack == 'notoColorEmoji' ||
+        pack == 'custom';
   }
 }
 

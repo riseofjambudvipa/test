@@ -60,9 +60,13 @@ mixin EditorProjectOpsMixin on EditorTrimStyleOpsMixin {
         newWords = result.words;
         detectedLanguage = result.language;
 
-        try {
-          await File(wavPath).delete();
-        } catch (_) {}
+        if (!kIsWeb) {
+          try {
+            await File(wavPath).delete();
+          } catch (e) {
+            LoggerService.instance.debug('Failed to delete temp wav in retranscribe: $e');
+          }
+        }
       }
 
       final updated = _cloneProject(project);
@@ -121,6 +125,7 @@ mixin EditorProjectOpsMixin on EditorTrimStyleOpsMixin {
       ..color = style.color
       ..fontSize = style.fontSize
       ..top = style.top
+      ..left = style.left
       ..highlightBackground = style.highlightBackground
       ..letterSpacing = style.letterSpacing
       ..lineHeight = style.lineHeight;
@@ -132,6 +137,14 @@ mixin EditorProjectOpsMixin on EditorTrimStyleOpsMixin {
   }
 
   void updateCaptionTop(double top) {
+    updateCaptionPosition(top: top);
+  }
+
+  void updateCaptionLeft(double left) {
+    updateCaptionPosition(left: left);
+  }
+
+  void updateCaptionPosition({double? top, double? left}) {
     final project = state.project;
     if (project == null) return;
     
@@ -160,7 +173,8 @@ mixin EditorProjectOpsMixin on EditorTrimStyleOpsMixin {
       ..textTransform = style.textTransform
       ..color = style.color
       ..fontSize = style.fontSize
-      ..top = top.clamp(5.0, 95.0)
+      ..top = (top != null ? top.clamp(5.0, 95.0) : style.top)
+      ..left = (left != null ? left.clamp(5.0, 95.0) : style.left)
       ..highlightBackground = style.highlightBackground
       ..letterSpacing = style.letterSpacing
       ..lineHeight = style.lineHeight;

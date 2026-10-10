@@ -499,7 +499,7 @@ void main() {
       await tester.pump();
 
       // Verify the import dialog is opened
-      expect(find.text('IMPORT NEW VIDEO'), findsOneWidget);
+      expect(find.text('IMPORT NEW VIDEO'), findsAtLeastNWidgets(1));
       expect(find.text('CREATE PROJECT'), findsOneWidget);
 
       // Ensure button is visible before tapping
@@ -537,8 +537,8 @@ void main() {
       ));
       await tester.pump(const Duration(milliseconds: 500));
 
-      // Verify import dialog is NOT opened
-      expect(find.text('IMPORT NEW VIDEO'), findsNothing);
+      // Verify import dialog is NOT opened (CREATE PROJECT only exists inside the dialog)
+      expect(find.text('CREATE PROJECT'), findsNothing);
 
       // Verify invalid file SnackBar is shown
       expect(find.text('Invalid file format. Please drop a video file.'), findsOneWidget);

@@ -6,6 +6,7 @@ import '../../../../../../core/fonts/font_service.dart';
 import '../../../../../../core/logger/logger_service.dart';
 import '../../../../../../core/database/schemas/project.dart';
 import '../../../controllers/editor_controller.dart';
+import '../../../../../../l10n/app_localizations.dart';
 
 class FontSettingsSection extends ConsumerStatefulWidget {
   final ProjectConfigSchema config;
@@ -17,11 +18,12 @@ class FontSettingsSection extends ConsumerStatefulWidget {
 
 class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
   Future<void> _importCustomFont() async {
+    final l10n = AppLocalizations.of(context);
     try {
       final result = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['ttf', 'otf'],
-        dialogTitle: 'Select TTF or OTF Font File',
+        dialogTitle: l10n?.selectFontFileDialogTitle ?? 'Select TTF or OTF Font File',
       );
       if (result != null) {
         final bytes = await result.files.single.readAsBytes();
@@ -42,7 +44,10 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Successfully imported and applied custom font: "$registeredName"'),
+                content: Text(
+                  l10n?.fontImportedSuccess(registeredName) ??
+                      'Successfully imported and applied custom font: "$registeredName"',
+                ),
                 backgroundColor: AppTheme.accentGreen,
               ),
             );
@@ -50,7 +55,9 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
         } else {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Failed to load font file. Invalid data.')),
+              SnackBar(
+                content: Text(l10n?.errorFontImportFailed ?? 'Failed to load font file. Invalid data.'),
+              ),
             );
           }
         }
@@ -81,6 +88,8 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
     required double min,
     required double max,
     required ValueChanged<double> onChanged,
+    ValueChanged<double>? onChangeStart,
+    ValueChanged<double>? onChangeEnd,
     int fractionDigits = 0,
   }) {
     return Column(
@@ -111,6 +120,8 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
             min: min,
             max: max,
             onChanged: onChanged,
+            onChangeStart: onChangeStart,
+            onChangeEnd: onChangeEnd,
           ),
         ),
       ],
@@ -119,12 +130,13 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final style = widget.config.style;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader('FONT CONFIGURATION'),
+        _buildSectionHeader(l10n?.fontConfigHeader ?? 'FONT CONFIGURATION'),
         const SizedBox(height: 12),
 
         // Font Family Dropdown
@@ -132,7 +144,7 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
           dropdownColor: AppTheme.cardBg,
           isExpanded: true,
           decoration: InputDecoration(
-            labelText: 'Font Family',
+            labelText: l10n?.fontFamilyLabel ?? 'Font Family',
             border: AppTheme.defaultBorder(),
             focusedBorder: AppTheme.focusedBorder(),
           ),
@@ -164,11 +176,11 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
           width: double.infinity,
           child: ElevatedButton.icon(
             icon: const Icon(Icons.font_download_outlined, size: 14),
-            label: const Text('IMPORT CUSTOM FONT (.ttf / .otf)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+            label: Text(l10n?.btnImportCustomFont ?? 'IMPORT CUSTOM FONT (.ttf / .otf)', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white.withValues(alpha: 0.05),
-              foregroundColor: Colors.white,
-              side: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
+              backgroundColor: AppTheme.cardBgElevated,
+              foregroundColor: AppTheme.primaryText,
+              side: BorderSide(color: AppTheme.borderGlass),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
             onPressed: _importCustomFont,
@@ -184,23 +196,23 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
                 dropdownColor: AppTheme.cardBg,
                 isExpanded: true,
                 decoration: InputDecoration(
-                  labelText: 'Font Weight',
+                  labelText: l10n?.fontWeightLabel ?? 'Font Weight',
                   border: AppTheme.defaultBorder(),
                   focusedBorder: AppTheme.focusedBorder(),
                 ),
                 initialValue: const ['100', '200', '300', '400', '500', '600', '700', '800', '900'].contains(style.fontWeight)
                     ? style.fontWeight
                     : '700',
-                items: const [
-                  DropdownMenuItem(value: '100', child: Text('Thin')),
-                  DropdownMenuItem(value: '200', child: Text('Extra Light')),
-                  DropdownMenuItem(value: '300', child: Text('Light')),
-                  DropdownMenuItem(value: '400', child: Text('Normal')),
-                  DropdownMenuItem(value: '500', child: Text('Medium')),
-                  DropdownMenuItem(value: '600', child: Text('Semi Bold')),
-                  DropdownMenuItem(value: '700', child: Text('Bold')),
-                  DropdownMenuItem(value: '800', child: Text('Extra Bold')),
-                  DropdownMenuItem(value: '900', child: Text('Black')),
+                items: [
+                  DropdownMenuItem(value: '100', child: Text(l10n?.fontWeightThin ?? 'Thin')),
+                  DropdownMenuItem(value: '200', child: Text(l10n?.fontWeightExtraLight ?? 'Extra Light')),
+                  DropdownMenuItem(value: '300', child: Text(l10n?.fontWeightLight ?? 'Light')),
+                  DropdownMenuItem(value: '400', child: Text(l10n?.fontWeightNormal ?? 'Normal')),
+                  DropdownMenuItem(value: '500', child: Text(l10n?.fontWeightMedium ?? 'Medium')),
+                  DropdownMenuItem(value: '600', child: Text(l10n?.fontWeightSemiBold ?? 'Semi Bold')),
+                  DropdownMenuItem(value: '700', child: Text(l10n?.fontWeightBold ?? 'Bold')),
+                  DropdownMenuItem(value: '800', child: Text(l10n?.fontWeightExtraBold ?? 'Extra Bold')),
+                  DropdownMenuItem(value: '900', child: Text(l10n?.fontWeightBlack ?? 'Black')),
                 ],
                 onChanged: (val) {
                   if (val != null) {
@@ -215,17 +227,17 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
                 dropdownColor: AppTheme.cardBg,
                 isExpanded: true,
                 decoration: InputDecoration(
-                  labelText: 'Text Case',
+                  labelText: l10n?.textCaseLabel ?? 'Text Case',
                   border: AppTheme.defaultBorder(),
                   focusedBorder: AppTheme.focusedBorder(),
                 ),
                 initialValue: const ['none', 'uppercase', 'capitalize'].contains(style.textTransform)
                     ? style.textTransform
                     : 'none',
-                items: const [
-                  DropdownMenuItem(value: 'none', child: Text('Normal')),
-                  DropdownMenuItem(value: 'uppercase', child: Text('UPPERCASE')),
-                  DropdownMenuItem(value: 'capitalize', child: Text('Capitalize')),
+                items: [
+                  DropdownMenuItem(value: 'none', child: Text(l10n?.fontCaseNormal ?? 'Normal')),
+                  DropdownMenuItem(value: 'uppercase', child: Text(l10n?.fontCaseUppercase ?? 'UPPERCASE')),
+                  DropdownMenuItem(value: 'capitalize', child: Text(l10n?.fontCaseCapitalize ?? 'Capitalize')),
                 ],
                 onChanged: (val) {
                   if (val != null) {
@@ -240,10 +252,12 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
 
         // Font Size Slider
         _buildSliderRow(
-          label: 'Font Size',
+          label: l10n?.fontSizeLabel ?? 'Font Size',
           value: style.fontSize,
           min: 24,
           max: 72,
+          onChangeStart: (_) => ref.read(editorProvider.notifier).beginHistoryBatch(),
+          onChangeEnd: (_) => ref.read(editorProvider.notifier).endHistoryBatch(),
           onChanged: (val) {
             ref.read(editorProvider.notifier).updateStyleProp('fontSize', val);
           },
@@ -252,11 +266,13 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
 
         // Letter Spacing Slider
         _buildSliderRow(
-          label: 'Letter Spacing',
+          label: l10n?.letterSpacingLabel ?? 'Letter Spacing',
           value: style.letterSpacing ?? 0.0,
           min: 0.0,
           max: 8.0,
           fractionDigits: 1,
+          onChangeStart: (_) => ref.read(editorProvider.notifier).beginHistoryBatch(),
+          onChangeEnd: (_) => ref.read(editorProvider.notifier).endHistoryBatch(),
           onChanged: (val) {
             ref.read(editorProvider.notifier).updateStyleProp('letterSpacing', val);
           },
@@ -265,17 +281,19 @@ class _FontSettingsSectionState extends ConsumerState<FontSettingsSection> {
 
         // Line Height Slider
         _buildSliderRow(
-          label: 'Line Height',
+          label: l10n?.lineHeightLabel ?? 'Line Height',
           value: style.lineHeight ?? 1.2,
           min: 0.8,
           max: 2.5,
           fractionDigits: 1,
+          onChangeStart: (_) => ref.read(editorProvider.notifier).beginHistoryBatch(),
+          onChangeEnd: (_) => ref.read(editorProvider.notifier).endHistoryBatch(),
           onChanged: (val) {
             ref.read(editorProvider.notifier).updateStyleProp('lineHeight', val);
           },
         ),
 
-        const Divider(color: Colors.white12, height: 32),
+        Divider(color: AppTheme.dividerColor, height: 32),
       ],
     );
   }

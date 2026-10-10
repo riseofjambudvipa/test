@@ -29,8 +29,8 @@ void main() {
 
     test('should verify kWhisperModels constants catalog contains all required profiles', () {
       expect(kWhisperModels, isNotEmpty);
-      // tiny/base/small/medium each have a multilingual + English-only (.en) variant, plus large-v3-turbo.
-      expect(kWhisperModels.length, 9);
+      // Universal multilingual models (tiny, base, small, medium, large-v3-turbo).
+      expect(kWhisperModels.length, 5);
 
       // Verify all models have valid fields
       for (final m in kWhisperModels) {
@@ -57,10 +57,16 @@ void main() {
       expect(turbo.sizeMb, 1540.0);
       expect(turbo.relativeAccuracy, 10);
 
-      // English-only variants must exist so modelNameEn lookups never silently fall back.
-      for (final enName in ['tiny.en', 'base.en', 'small.en', 'medium.en']) {
-        final en = kWhisperModels.firstWhere((m) => m.name == enName);
-        expect(en.englishOnly, isTrue);
+      // Verify that all models in the catalog are universal multilingual models (no English-only models).
+      expect(kWhisperModels.length, 5);
+      for (final model in kWhisperModels) {
+        expect(model.englishOnly, isFalse);
+      }
+    });
+
+    test('QualityMode presets should resolve to universal multilingual models', () {
+      for (final mode in QualityMode.values) {
+        expect(mode.modelNameEn, mode.modelName);
       }
     });
   });

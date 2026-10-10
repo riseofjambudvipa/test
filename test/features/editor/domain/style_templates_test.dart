@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:capstudio/core/database/schemas/project.dart';
 import 'package:capstudio/features/editor/domain/style_templates.dart';
 
 void main() {
@@ -156,7 +157,7 @@ void main() {
     });
 
     test('allTemplates shadow styles are valid', () {
-      final validShadows = {'none', 'soft', 'hard'};
+      final validShadows = {'none', 'soft', 'hard', '3d'};
       for (final template in allTemplates) {
         expect(
           validShadows.contains(template.shadow.toLowerCase()),
@@ -228,6 +229,50 @@ void main() {
       expect(deserialized.top, equals(55.0)); // fallback
       expect(deserialized.letterSpacing, isNull);
       expect(deserialized.lineHeight, isNull);
+    });
+
+    group('toConfig & templateToConfig preservation tests', () {
+      test('toConfig preserves existingSubs chunkSize and chunkLineMaxLength', () {
+        final template = allTemplates.first;
+        final existingSubs = SubtitleConfigSchema()
+          ..chunkSize = 2
+          ..chunkLineMaxLength = 18;
+
+        final config = template.toConfig(existingSubs: existingSubs);
+        expect(config.subs.chunkSize, equals(2));
+        expect(config.subs.chunkLineMaxLength, equals(18));
+      });
+
+      test('toConfig preserves currentEmojiPack', () {
+        final template = allTemplates.first;
+        final config = template.toConfig(currentEmojiPack: 'appleColorEmoji');
+        expect(config.emojiPack, equals('appleColorEmoji'));
+      });
+
+      test('toConfig falls back to default chunkSize and notoColorEmoji when not provided', () {
+        final template = allTemplates.first;
+        final config = template.toConfig();
+        expect(config.subs.chunkSize, equals(4));
+        expect(config.subs.chunkLineMaxLength, equals(30));
+        expect(config.emojiPack, equals('notoColorEmoji'));
+      });
+
+      test('templateToConfig forwards existingSubs and currentEmojiPack correctly', () {
+        final template = allTemplates.first;
+        final existingSubs = SubtitleConfigSchema()
+          ..chunkSize = 1
+          ..chunkLineMaxLength = 12;
+
+        final config = templateToConfig(
+          template,
+          existingSubs: existingSubs,
+          currentEmojiPack: 'fluentAnimated',
+        );
+
+        expect(config.subs.chunkSize, equals(1));
+        expect(config.subs.chunkLineMaxLength, equals(12));
+        expect(config.emojiPack, equals('fluentAnimated'));
+      });
     });
   });
 }

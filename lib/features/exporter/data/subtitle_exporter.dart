@@ -131,8 +131,10 @@ class SubtitleExporter {
 
     final double exportScale = height / 640.0;
     final double assFontSize = style.fontSize * exportScale;
-    final double outlineWidth = config.stroke == 'thick' ? 6.0 * exportScale : 0.0;
-    final double shadowWidth = config.shadow == 'soft' ? 2.0 * exportScale : 0.0;
+    final double outlineWidth = config.stroke == 'thick' ? 6.0 * exportScale : (config.stroke == 'thin' ? 2.5 * exportScale : 0.0);
+    final double shadowWidth = (config.shadow == '3d' || config.shadow == 'extruded')
+        ? 5.0 * exportScale
+        : (config.shadow == 'hard' ? 3.5 * exportScale : (config.shadow == 'soft' ? 2.0 * exportScale : 0.0));
 
     // Bold flag: ASS uses -1 for bold, 0 for normal.
     final int assBold = (style.fontWeight == 'bold' ||
@@ -147,14 +149,15 @@ class SubtitleExporter {
     final double assSpacing = (style.letterSpacing ?? 0.0) * exportScale;
 
     // Background box configuration
+    final bool hasBackgroundBox = config.background != null || style.highlightBackground == true;
     final String finalBackColor = config.background != null 
         ? _hexToAssColor(config.background!) 
-        : shadowColor;
-    final int borderStyle = config.background != null ? 3 : 1;
-    final double finalOutlineWidth = config.background != null
+        : (style.highlightBackground == true ? highlightColor : shadowColor);
+    final int borderStyle = hasBackgroundBox ? 3 : 1;
+    final double finalOutlineWidth = hasBackgroundBox
         ? (outlineWidth > 0 ? outlineWidth : 6.0 * exportScale)
         : outlineWidth;
-    final String finalOutlineColor = config.background != null ? finalBackColor : outlineColor;
+    final String finalOutlineColor = hasBackgroundBox ? finalBackColor : outlineColor;
 
     final buffer = StringBuffer();
     buffer.writeln('[Script Info]');
@@ -186,6 +189,7 @@ class SubtitleExporter {
         projectWidth: width.toDouble(),
         projectHeight: height.toDouble(),
         styleTop: style.top,
+        styleLeft: style.left,
         fontFamily: style.fontFamily,
         fontSize: style.fontSize,
         fontWeight: style.fontWeight,
@@ -240,6 +244,7 @@ class SubtitleExporter {
     final parts = <String>[];
     for (final w in words) {
       String text = w.text ?? '';
+      text = text.replaceAll('{', '').replaceAll('}', '').replaceAll('\r', '').replaceAll('\n', '');
       switch (config.style.textTransform) {
         case 'uppercase': text = text.toUpperCase(); break;
         case 'capitalize':

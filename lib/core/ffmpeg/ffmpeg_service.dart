@@ -144,11 +144,30 @@ class FfmpegService {
       if (codecType == 'video') {
         width = stream.getWidth() ?? 0;
         height = stream.getHeight() ?? 0;
-        // Parse rotation from side_data_list or tags
-        final tags = stream.getAllProperties()?['tags'];
-        if (tags is Map) {
-          final rotStr = tags['rotate']?.toString() ?? '0';
-          rotation = int.tryParse(rotStr) ?? 0;
+        // Inspect both Display Matrix side data and the rotation tag (mirroring video_probe.dart)
+        final allProps = stream.getAllProperties();
+        if (allProps != null) {
+          final sideDataList = allProps['side_data_list'];
+          if (sideDataList is List) {
+            for (final sideData in sideDataList) {
+              if (sideData is Map &&
+                  sideData['side_data_type'] == 'Display Matrix' &&
+                  sideData['rotation'] != null) {
+                final rotVal = sideData['rotation'];
+                if (rotVal is num) {
+                  rotation = rotVal.toInt();
+                } else {
+                  rotation = int.tryParse(rotVal.toString()) ?? rotation;
+                }
+                break;
+              }
+            }
+          }
+
+          final tags = allProps['tags'];
+          if (tags is Map && tags['rotate'] != null) {
+            rotation = int.tryParse(tags['rotate'].toString()) ?? rotation;
+          }
         }
       }
     }
@@ -285,7 +304,9 @@ class FfmpegService {
     } finally {
       try {
         if (File(tempWav).existsSync()) await File(tempWav).delete();
-      } catch (_) {}
+      } catch (e) {
+        LoggerService.instance.debug('Failed to delete tempWav in ffmpeg_service: $e');
+      }
     }
   }
 
@@ -314,14 +335,6 @@ class FfmpegService {
 
   String _redactPath(String path) {
     if (kIsWeb) return path;
-    try {
-      final userProfile = Platform.environment['USERPROFILE'] ?? Platform.environment['HOME'];
-      if (userProfile != null && userProfile.isNotEmpty && path.contains(userProfile)) {
-        return path.replaceAll(userProfile, '<USER_PROFILE>');
-      }
-      return path.replaceAll(RegExp(r'[Cc]:\\Users\\[^\\]+'), r'C:\Users\<USER>');
-    } catch (_) {
-      return path;
-    }
+    return LoggerService.instance.scrubPii(path);
   }
 }

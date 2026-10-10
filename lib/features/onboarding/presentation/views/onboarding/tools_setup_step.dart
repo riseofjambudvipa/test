@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:path/path.dart' as p;
 import '../../../../../app/theme.dart';
 import '../../../../../core/logger/logger_service.dart';
 import '../../../../../core/settings/settings_service.dart';
 import '../../../../../core/utils/executable_validator.dart';
 import '../../../../../core/downloader/binary_downloader_service.dart';
+import '../../../../../core/ffmpeg/ffmpeg_locator.dart';
+import '../../../../../core/whisper/whisper_locator.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../settings/presentation/views/manual_install_banner.dart';
 
 class ToolsSetupStep extends ConsumerStatefulWidget {
@@ -73,11 +75,15 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
       args,
       onAvxDetected: () async {
         if (!mounted) return;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Missing AVX support detected! Downloading compatible whisper-cli (no-AVX)...'),
-            backgroundColor: Colors.orangeAccent,
-            duration: Duration(seconds: 5),
+          SnackBar(
+            content: Text(
+              l10n?.warningNoAvx ??
+                  'Missing AVX support detected! Downloading compatible whisper-cli (no-AVX)...',
+            ),
+            backgroundColor: AppTheme.accentOrange,
+            duration: const Duration(seconds: 5),
           ),
         );
         unawaited(downloadNoAvxWhisperAndRevalidate(
@@ -118,33 +124,22 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
   Future<void> _autoDetectWhisper() async {
     if (kIsWeb) return;
     setState(() => _validatingWhisper = true);
-    final isWin = Platform.isWindows;
-    final exeName = isWin ? 'whisper-cli.exe' : 'whisper-cli';
 
-    final pathsToSearch = [
-      p.join(Directory.current.path, 'assets', 'bin', exeName),
-      p.join(Directory.current.path, 'Capstudio Flutter', 'assets', 'bin', exeName),
-      p.join(Platform.environment['USERPROFILE'] ?? '', 'AppData', 'Local', 'Programs', 'whisper.cpp', exeName),
-      p.join('C:\\Program Files', 'whisper.cpp', exeName),
-      p.join('/usr', 'local', 'bin', exeName),
-      p.join('/usr', 'bin', exeName),
-      exeName
-    ];
-
+    final resolved = WhisperLocator.instance.resolve();
     String? foundPath;
-    for (final path in pathsToSearch) {
-      if (path == exeName) {
-        final ok = await _validateExecutable(path, ['--help']);
-        if (ok) {
-          foundPath = path;
-          break;
-        }
-      } else if (File(path).existsSync()) {
-        final ok = await _validateExecutable(path, ['--help']);
-        if (ok) {
-          foundPath = path;
-          break;
-        }
+
+    // Check resolved path if it exists or validate it
+    if (resolved != 'whisper-cli' && resolved != 'whisper-cli.exe') {
+      if (File(resolved).existsSync() && await _validateExecutable(resolved, ['--help'])) {
+        foundPath = resolved;
+      }
+    }
+
+    // Fallback: check exeName directly on PATH
+    if (foundPath == null) {
+      final exeName = Platform.isWindows ? 'whisper-cli.exe' : 'whisper-cli';
+      if (await _validateExecutable(exeName, ['--help'])) {
+        foundPath = exeName;
       }
     }
 
@@ -156,8 +151,14 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
         _whisperValid = true;
       } else {
         _whisperValid = false;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not auto-detect whisper-cli. Please browse manually.')),
+          SnackBar(
+            content: Text(
+              l10n?.errorAutoDetectWhisper ??
+                  'Could not auto-detect whisper-cli. Please browse manually.',
+            ),
+          ),
         );
       }
     });
@@ -166,30 +167,20 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
   Future<void> _autoDetectFfmpeg() async {
     if (kIsWeb) return;
     setState(() => _validatingFfmpeg = true);
-    final isWin = Platform.isWindows;
-    final exeName = isWin ? 'ffmpeg.exe' : 'ffmpeg';
 
-    final pathsToSearch = [
-      p.join(Directory.current.path, 'assets', 'bin', exeName),
-      p.join(Directory.current.path, 'Capstudio Flutter', 'assets', 'bin', exeName),
-      p.join('C:\\ffmpeg', 'bin', exeName),
-      exeName
-    ];
-
+    final resolved = FfmpegLocator.instance.resolve();
     String? foundPath;
-    for (final path in pathsToSearch) {
-      if (path == exeName) {
-        final ok = await _validateExecutable(path, ['-version']);
-        if (ok) {
-          foundPath = path;
-          break;
-        }
-      } else if (File(path).existsSync()) {
-        final ok = await _validateExecutable(path, ['-version']);
-        if (ok) {
-          foundPath = path;
-          break;
-        }
+
+    if (resolved != 'ffmpeg' && resolved != 'ffmpeg.exe') {
+      if (File(resolved).existsSync() && await _validateExecutable(resolved, ['-version'])) {
+        foundPath = resolved;
+      }
+    }
+
+    if (foundPath == null) {
+      final exeName = Platform.isWindows ? 'ffmpeg.exe' : 'ffmpeg';
+      if (await _validateExecutable(exeName, ['-version'])) {
+        foundPath = exeName;
       }
     }
 
@@ -201,8 +192,14 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
         _ffmpegValid = true;
       } else {
         _ffmpegValid = false;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not auto-detect ffmpeg. Please browse manually.')),
+          SnackBar(
+            content: Text(
+              l10n?.errorAutoDetectFfmpeg ??
+                  'Could not auto-detect ffmpeg. Please browse manually.',
+            ),
+          ),
         );
       }
     });
@@ -256,6 +253,7 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
       stream: BinaryDownloaderService.instance.stream(toolId),
       initialData: BinaryDownloadProgress(toolId: toolId, status: BinaryDownloadStatus.idle),
       builder: (context, snapshot) {
+        final l10n = AppLocalizations.of(context);
         final progress = snapshot.data!;
         final isDownloading = progress.status == BinaryDownloadStatus.downloading;
         final isExtracting = progress.status == BinaryDownloadStatus.extracting;
@@ -269,7 +267,7 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(label, style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white70, fontSize: 12)),
+                Text(label, style: TextStyle(fontWeight: FontWeight.w600, color: AppTheme.secondaryText, fontSize: 12)),
                 if (!isWorking && (isValid != true || isFailed))
                   TextButton.icon(
                     onPressed: () {
@@ -287,10 +285,25 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
                       }).catchError((Object e) {
                         if (mounted) {
                           if (e is ManualInstallRequiredException) {
-                            setState(() => _whisperManualException = e);
+                            if (e.toolId == 'whisper') {
+                              setState(() => _whisperManualException = e);
+                            } else {
+                              // FIX (audit, cross-tool mislabel): an FFmpeg
+                              // manual-install failure was previously shown in
+                              // the whisper-branded banner.
+                              scaffoldMessenger.showSnackBar(
+                                SnackBar(content: Text('${e.toolId} requires manual installation (${e.platform}).'), backgroundColor: AppTheme.accentRed),
+                              );
+                            }
                           } else {
                             scaffoldMessenger.showSnackBar(
-                              SnackBar(content: Text('Failed to download tool: $e'), backgroundColor: Colors.redAccent),
+                              SnackBar(
+                                content: Text(
+                                  l10n?.errorToolDownloadFailed(e.toString()) ??
+                                      'Failed to download tool: $e',
+                                ),
+                                backgroundColor: AppTheme.accentRed,
+                              ),
                             );
                           }
                         }
@@ -298,7 +311,7 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
                     },
                     icon: Icon(Icons.download_for_offline, size: 14, color: AppTheme.accentOrange),
                     label: Text(
-                      'AUTO DOWNLOAD',
+                      l10n?.autoDownload ?? 'AUTO DOWNLOAD',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -331,19 +344,19 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
                       children: [
                         Text(
                           progress.label,
-                          style: const TextStyle(fontSize: 11, color: Colors.white70, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 11, color: AppTheme.secondaryText, fontWeight: FontWeight.bold),
                         ),
                         if (progress.speedBytesPerSec > 0 && isDownloading)
                           Text(
                             '${(progress.speedBytesPerSec / (1024 * 1024)).toStringAsFixed(1)} MB/s',
-                            style: const TextStyle(fontSize: 10, color: Colors.white30, fontFamily: 'monospace'),
+                            style: TextStyle(fontSize: 10, color: AppTheme.mutedText, fontFamily: 'monospace'),
                           ),
                       ],
                     ),
                     const SizedBox(height: 8),
                     LinearProgressIndicator(
                       value: progress.overall,
-                      backgroundColor: Colors.white10,
+                      backgroundColor: AppTheme.dividerColor,
                       color: AppTheme.accentOrange,
                       borderRadius: BorderRadius.circular(2),
                     ),
@@ -356,33 +369,58 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
                   Expanded(
                     child: TextField(
                       controller: controller,
-                      style: const TextStyle(fontSize: 12, color: Colors.white70),
+                      style: TextStyle(fontSize: 12, color: AppTheme.primaryText),
                       decoration: InputDecoration(
                         hintText: hint,
                         filled: true,
-                        fillColor: Colors.black26,
+                        fillColor: AppTheme.cardBgElevated,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         suffixIcon: isValid == null
                             ? null
                             : Icon(
                                 isValid ? Icons.check_circle_outline : Icons.error_outline,
-                                color: isValid ? Colors.greenAccent : Colors.redAccent,
+                                color: isValid ? AppTheme.accentGreen : AppTheme.accentRed,
                                 size: 18,
                               ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 8),
-                  IconButton(icon: const Icon(Icons.folder_open), onPressed: onBrowse, tooltip: 'Browse'),
+                  IconButton(icon: const Icon(Icons.folder_open), onPressed: onBrowse, tooltip: l10n?.settingsBrowse ?? 'Browse'),
                   IconButton(
                     icon: isValidating
-                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white60))
+                        ? SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.secondaryText))
                         : const Icon(Icons.flash_on_outlined),
                     onPressed: onAutoDetect,
-                    tooltip: 'Auto-detect & Validate',
+                    tooltip: l10n?.autoDetectAndValidate ?? 'Auto-detect & Validate',
                   ),
                 ],
+              ),
+            ],
+            if (isFailed && progress.error != null && progress.error!.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppTheme.accentRed.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: AppTheme.accentRed.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.error_outline, size: 14, color: AppTheme.accentRed),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        progress.error!,
+                        style: TextStyle(fontSize: 10, color: AppTheme.accentRed, fontWeight: FontWeight.w500),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ],
@@ -394,84 +432,251 @@ class _ToolsSetupStepState extends ConsumerState<ToolsSetupStep> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
 
     return Column(
       key: const ValueKey('step_setup'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Connect Local CLI Tools',
-          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'CapStudio needs whisper.cpp and FFmpeg binaries to perform transcription and export videos locally.',
-          style: theme.textTheme.bodySmall?.copyWith(color: AppTheme.secondaryText),
-        ),
-        const SizedBox(height: 24),
-        
-        _buildPathField(
-          toolId: 'whisper',
-          controller: _whisperController,
-          label: 'Whisper CLI Executable Path',
-          hint: 'e.g. A:/Capstudio/assets/bin/whisper-cli.exe',
-          isValid: _whisperValid,
-          isValidating: _validatingWhisper,
-          onBrowse: () => _pickFile(_whisperController, 'Select whisper-cli executable'),
-          onAutoDetect: _autoDetectWhisper,
-        ),
-        const SizedBox(height: 20),
-        
-        _buildPathField(
-          toolId: 'ffmpeg',
-          controller: _ffmpegController,
-          label: 'FFmpeg CLI Executable Path',
-          hint: 'e.g. A:/ffmpeg/bin/ffmpeg.exe',
-          isValid: _ffmpegValid,
-          isValidating: _validatingFfmpeg,
-          onBrowse: () => _pickFile(_ffmpegController, 'Select FFmpeg executable'),
-          onAutoDetect: _autoDetectFfmpeg,
-        ),
-        if (_whisperManualException != null) ...[
-          const SizedBox(height: 20),
-          ManualInstallBanner(exception: _whisperManualException!),
-        ],
-        const SizedBox(height: 24),
-        
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextButton(
-              onPressed: widget.onSkip,
-              child: const Text('Skip setup for now', style: TextStyle(color: Colors.white30)),
-            ),
-            Row(
-              children: [
-                if (_whisperController.text.isNotEmpty || _ffmpegController.text.isNotEmpty)
-                  ElevatedButton(
-                    onPressed: _runValidation,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white10,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n?.connectCliTitle ?? 'Connect Local CLI Tools',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryText,
+                      fontSize: 16,
                     ),
-                    child: const Text('Validate'),
                   ),
-                const SizedBox(width: 12),
-                ElevatedButton(
-                  onPressed: _saveAndContinue,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.accentOrange,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n?.connectCliDesc ?? 'CapStudio needs whisper.cpp and FFmpeg binaries to perform transcription and export videos locally.',
+                    style: theme.textTheme.bodySmall?.copyWith(color: AppTheme.secondaryText, fontSize: 12),
                   ),
-                  child: const Text('Continue'),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
+        ),
+        const SizedBox(height: 16),
+
+        // Quick Auto-Detect Header Banner
+        LayoutBuilder(
+          builder: (context, bannerConstraints) {
+            final isNarrow = bannerConstraints.maxWidth < 420;
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: AppTheme.glassDecoration(
+                color: AppTheme.accentOrange.withValues(alpha: 0.08),
+                borderRadius: 10,
+                borderOpacity: 0.15,
+              ),
+              child: isNarrow
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.bolt_rounded, size: 18, color: AppTheme.accentOrange),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Automated Discovery: locate binaries automatically.',
+                                style: TextStyle(fontSize: 11, color: AppTheme.secondaryText),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            _autoDetectWhisper();
+                            _autoDetectFfmpeg();
+                          },
+                          icon: const Icon(Icons.search_rounded, size: 14),
+                          label: const Text('DETECT ALL', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppTheme.accentOrange,
+                            side: BorderSide(color: AppTheme.accentOrange.withValues(alpha: 0.4)),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        Icon(Icons.bolt_rounded, size: 20, color: AppTheme.accentOrange),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Automated Discovery: CapStudio can locate system and bundled binaries automatically.',
+                            style: TextStyle(fontSize: 11, color: AppTheme.secondaryText),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            _autoDetectWhisper();
+                            _autoDetectFfmpeg();
+                          },
+                          icon: const Icon(Icons.search_rounded, size: 14),
+                          label: const Text('DETECT ALL', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppTheme.accentOrange,
+                            side: BorderSide(color: AppTheme.accentOrange.withValues(alpha: 0.4)),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ),
+                      ],
+                    ),
+            );
+          },
+        ),
+        const SizedBox(height: 18),
+
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: AppTheme.glassDecoration(
+            color: AppTheme.cardBgElevated.withValues(alpha: 0.35),
+            borderRadius: 12,
+            borderOpacity: 0.08,
+          ),
+          child: _buildPathField(
+            toolId: 'whisper',
+            controller: _whisperController,
+            label: l10n?.whisperCliPathLabel ?? 'Whisper CLI Executable Path',
+            hint: 'e.g. A:/Capstudio/assets/bin/whisper-cli.exe',
+            isValid: _whisperValid,
+            isValidating: _validatingWhisper,
+            onBrowse: () => _pickFile(_whisperController, 'Select whisper-cli executable'),
+            onAutoDetect: _autoDetectWhisper,
+          ),
+        ),
+        const SizedBox(height: 14),
+
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: AppTheme.glassDecoration(
+            color: AppTheme.cardBgElevated.withValues(alpha: 0.35),
+            borderRadius: 12,
+            borderOpacity: 0.08,
+          ),
+          child: _buildPathField(
+            toolId: 'ffmpeg',
+            controller: _ffmpegController,
+            label: l10n?.ffmpegCliPathLabel ?? 'FFmpeg CLI Executable Path',
+            hint: 'e.g. A:/ffmpeg/bin/ffmpeg.exe',
+            isValid: _ffmpegValid,
+            isValidating: _validatingFfmpeg,
+            onBrowse: () => _pickFile(_ffmpegController, 'Select FFmpeg executable'),
+            onAutoDetect: _autoDetectFfmpeg,
+          ),
+        ),
+        if (_whisperManualException != null) ...[
+          const SizedBox(height: 16),
+          ManualInstallBanner(exception: _whisperManualException!),
+        ],
+        const SizedBox(height: 24),
+
+        LayoutBuilder(
+          builder: (context, actionConstraints) {
+            final isNarrow = actionConstraints.maxWidth < 440;
+            if (isNarrow) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      if (_whisperController.text.isNotEmpty || _ffmpegController.text.isNotEmpty) ...[
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: _runValidation,
+                            icon: const Icon(Icons.check_rounded, size: 14),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.cardBgElevated,
+                              foregroundColor: AppTheme.primaryText,
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            ),
+                            label: Text(l10n?.btnValidate ?? 'Validate'),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: _saveAndContinue,
+                          icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.accentOrange,
+                            foregroundColor: AppTheme.onAccentText,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            elevation: 2,
+                          ),
+                          label: Text(l10n?.btnContinue ?? 'Continue', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Center(
+                    child: TextButton(
+                      onPressed: widget.onSkip,
+                      child: Text(l10n?.skipSetup ?? 'Skip setup for now', style: TextStyle(color: AppTheme.secondaryText)),
+                    ),
+                  ),
+                ],
+              );
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: widget.onSkip,
+                  child: Text(l10n?.skipSetup ?? 'Skip setup for now', style: TextStyle(color: AppTheme.secondaryText)),
+                ),
+                Row(
+                  children: [
+                    if (_whisperController.text.isNotEmpty || _ffmpegController.text.isNotEmpty)
+                      ElevatedButton.icon(
+                        onPressed: _runValidation,
+                        icon: const Icon(Icons.check_rounded, size: 14),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.cardBgElevated,
+                          foregroundColor: AppTheme.primaryText,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                        label: Text(l10n?.btnValidate ?? 'Validate'),
+                      ),
+                    const SizedBox(width: 10),
+                    ElevatedButton.icon(
+                      onPressed: _saveAndContinue,
+                      icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.accentOrange,
+                        foregroundColor: AppTheme.onAccentText,
+                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 2,
+                      ),
+                      label: Text(l10n?.btnContinue ?? 'Continue', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
         ),
       ],
     ).animate().fade(duration: 300.ms);

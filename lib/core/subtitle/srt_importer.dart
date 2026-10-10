@@ -13,6 +13,12 @@ class SrtImporter {
     return parseSrtBytes(bytes);
   }
 
+  /// Parse SRT or VTT string directly and return a list of WordSchema objects
+  static List<WordSchema> parseSrtString(String content) {
+    if (content.isEmpty) return [];
+    return parseSrtBytes(Uint8List.fromList(utf8.encode(content)));
+  }
+
   /// Parse SRT or VTT bytes and return a list of WordSchema objects
   static List<WordSchema> parseSrtBytes(Uint8List bytes) {
     if (bytes.isEmpty) return [];
@@ -103,6 +109,7 @@ class SrtImporter {
         words.add(word);
       }
     }
+    words.sort((a, b) => (a.start ?? 0.0).compareTo(b.start ?? 0.0));
     return words;
   }
 

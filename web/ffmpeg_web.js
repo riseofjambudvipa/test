@@ -19,18 +19,18 @@ async function exportVideoWeb(videoUrl, assContent, optionsJson, onProgressCallb
     
     if (!ffmpegInstance) {
       // Load the vendored WASM core locally (web/vendor/ffmpeg-core.js) so the
-      // web app works without a CDN. If the local file is missing (e.g. a stale
-      // build), fall back to the unpkg CDN mirror at the pinned version.
-      ffmpegInstance = createFFmpeg({
-        log: true,
-        corePath: 'vendor/ffmpeg-core.js',
-      });
-      // Verify the local core exists before load(); if not, fall back to CDN.
+      // web app works without a CDN. Always pass an absolute URL to prevent Jerome Wu's
+      // webpack bundle from resolving relative URLs against build-time "file:///home/jeromewu/...".
+      const localCoreUrl = new URL('vendor/ffmpeg-core.js', window.location.origin).href;
       try {
-        const localCore = await fetch('vendor/ffmpeg-core.js');
+        const localCore = await fetch(localCoreUrl);
         if (!localCore.ok) {
-          throw new Error('Local ffmpeg core missing');
+          throw new Error('Local ffmpeg core returned status ' + localCore.status);
         }
+        ffmpegInstance = createFFmpeg({
+          log: true,
+          corePath: localCoreUrl,
+        });
       } catch (e) {
         console.warn('Local ffmpeg core unavailable, falling back to CDN:', e);
         ffmpegInstance = createFFmpeg({
@@ -52,9 +52,45 @@ async function exportVideoWeb(videoUrl, assContent, optionsJson, onProgressCallb
     const duration = options.duration || 0.0;
     
     // 1. Mount input video file into virtual filesystem
-    ffmpegInstance.FS('writeFile', 'input.mp4', await fetchFile(videoUrl));
+    // Ensure videoUrl is an absolute URL to avoid Jerome Wu's webpack bundle resolving
+    // relative paths to build-time "file:///home/jeromewu/...".
+    const absoluteVideoUrl = (videoUrl.startsWith('http://') || videoUrl.startsWith('https://') || videoUrl.startsWith('blob:') || videoUrl.startsWith('data:'))
+      ? videoUrl
+      : new URL(videoUrl, window.location.origin).href;
     
-    // 2. Mount ASS SubtitlesTiming Script
+    let inputBytes;
+    try {
+      inputBytes = await fetchFile(absoluteVideoUrl);
+    } catch (fetchErr) {
+      console.warn("fetchFile failed, trying direct fetch:", fetchErr);
+      const res = await fetch(absoluteVideoUrl);
+      if (!res.ok) {
+        throw new Error(`Failed to load video file from ${absoluteVideoUrl} (Status ${res.status})`);
+      }
+      inputBytes = new Uint8Array(await res.arrayBuffer());
+    }
+    if (inputBytes.byteLength > 350 * 1024 * 1024) {
+      throw new Error("Input video exceeds 350MB browser WebAssembly RAM limit. Please export on desktop for very large files.");
+    }
+    ffmpegInstance.FS('writeFile', 'input.mp4', inputBytes);
+    
+    // 2. Mount Fonts and ASS Subtitles Timing Script
+    try {
+      ffmpegInstance.FS('mkdir', '/fonts');
+    } catch (_) {}
+
+    try {
+      // Attempt to load standard font into WASM virtual filesystem so libass can render glyphs
+      const fontUrl = new URL('assets/assets/fonts/design/Montserrat-Variable.ttf', window.location.origin).href;
+      const fontRes = await fetch(fontUrl);
+      if (fontRes.ok) {
+        const fontBytes = new Uint8Array(await fontRes.arrayBuffer());
+        ffmpegInstance.FS('writeFile', '/fonts/default.ttf', fontBytes);
+      }
+    } catch (fErr) {
+      console.warn("Could not preload default font into WASM filesystem:", fErr);
+    }
+
     ffmpegInstance.FS('writeFile', 'subtitles.ass', new TextEncoder().encode(assContent));
     
     // 3. Build FFmpeg command arguments
@@ -70,7 +106,7 @@ async function exportVideoWeb(videoUrl, assContent, optionsJson, onProgressCallb
     
     args.push(
       '-i', 'input.mp4',
-      '-vf', 'subtitles=subtitles.ass',
+      '-vf', 'subtitles=subtitles.ass:fontsdir=/fonts',
       '-c:v', 'libx264',
       '-preset', 'ultrafast',
       '-pix_fmt', 'yuv420p',
@@ -82,13 +118,30 @@ async function exportVideoWeb(videoUrl, assContent, optionsJson, onProgressCallb
     
     // Setup progress listener
     ffmpegInstance.setProgress(({ ratio }) => {
-      // Map progress from 25% to 95%
       const val = 0.25 + ratio * 0.70;
       onProgressCallback(val, `Encoding frame data: ${Math.round(ratio * 100)}%`);
     });
     
     onProgressCallback(0.25, "Rendering video & burning subtitles (client-side)...");
-    await ffmpegInstance.run(...args);
+    try {
+      await ffmpegInstance.run(...args);
+    } catch (primaryRunErr) {
+      console.warn("Primary render with fontsdir failed, trying basic subtitles filter:", primaryRunErr);
+      // Fallback without fontsdir
+      const fallbackArgs = [
+        ...(trimStart > 0 || (trimEnd > 0 && trimEnd < duration) ? ['-ss', trimStart.toString(), ...(trimEnd > 0 ? ['-to', trimEnd.toString()] : [])] : []),
+        '-i', 'input.mp4',
+        '-vf', 'subtitles=subtitles.ass',
+        '-c:v', 'libx264',
+        '-preset', 'ultrafast',
+        '-pix_fmt', 'yuv420p',
+        '-c:a', 'aac',
+        '-b:a', '128k',
+        '-y',
+        'output.mp4'
+      ];
+      await ffmpegInstance.run(...fallbackArgs);
+    }
     
     onProgressCallback(0.95, "Finalizing output video package...");
     
@@ -107,18 +160,25 @@ async function exportVideoWeb(videoUrl, assContent, optionsJson, onProgressCallb
     const blob = new Blob([data.buffer], { type: 'video/mp4' });
     const url = URL.createObjectURL(blob);
     
-    // Trigger download directly in the browser
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = options.fileName || 'output.mp4';
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+    // Trigger download directly in the browser with error recovery
+    try {
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = options.fileName || 'output.mp4';
+      document.body.appendChild(anchor);
+      anchor.click();
+      setTimeout(() => {
+        try { document.body.removeChild(anchor); } catch (_) {}
+      }, 1000);
+    } catch (downloadErr) {
+      console.error("Browser download failed:", downloadErr);
+      throw new Error(`Browser failed to initiate download: ${downloadErr.message}. Please check browser download permissions.`);
+    }
     
     // Revoke object URL after a delay to ensure browser completes handoff
     setTimeout(() => {
       URL.revokeObjectURL(url);
-    }, 2000);
+    }, 10000);
     
     return "SUCCESS";
   } catch (error) {

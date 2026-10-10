@@ -64,7 +64,7 @@ class ColorSettingsSection extends ConsumerWidget {
           },
         ),
 
-        const Divider(color: Colors.white12, height: 32),
+        Divider(color: AppTheme.dividerColor, height: 32),
       ],
     );
   }

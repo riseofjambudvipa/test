@@ -48,15 +48,19 @@ void main() {
 
         runApp(
           InitializationErrorApp(
-            error: error.toString(),
-            stackTrace: stackTrace.toString(),
+            error: LoggerService.instance.scrubPii(error.toString()),
+            stackTrace: LoggerService.instance.scrubPii(stackTrace.toString()),
             onRetry: () {
               try {
                 IsarService.instance.close();
-              } catch (_) {}
+              } catch (e) {
+                debugPrint('Failed to close IsarService on retry: $e');
+              }
               try {
                 LoggerService.instance.dispose();
-              } catch (_) {}
+              } catch (e) {
+                debugPrint('Failed to dispose LoggerService on retry: $e');
+              }
               boot();
             },
           ),
@@ -106,11 +110,13 @@ class _CapStudioAppState extends ConsumerState<CapStudioApp> with WindowListener
     super.didChangeAppLifecycleState(state);
     if (isMobile) {
       if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
-        // Free whisper model when app goes to background
-        try {
-          WhisperMobileService.instance.freeModel();
-        } catch (e) {
-          LoggerService.instance.log(LogLevel.warning, 'Lifecycle', 'Failed to free Whisper model: $e');
+        // Free whisper model when app goes to background only if not actively transcribing
+        if (!WhisperMobileService.instance.isTranscribing) {
+          try {
+            WhisperMobileService.instance.freeModel();
+          } catch (e) {
+            LoggerService.instance.log(LogLevel.warning, 'Lifecycle', 'Failed to free Whisper model: $e');
+          }
         }
       }
     }
@@ -128,7 +134,7 @@ class _CapStudioAppState extends ConsumerState<CapStudioApp> with WindowListener
         context: context,
         builder: (context) => PremiumBlurDialog(
           maxWidth: 400,
-          glowColor: hasUnsaved ? Colors.redAccent : AppTheme.accentOrange,
+          glowColor: hasUnsaved ? AppTheme.accentRed : AppTheme.accentOrange,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,8 +165,8 @@ class _CapStudioAppState extends ConsumerState<CapStudioApp> with WindowListener
                   const SizedBox(width: 8),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: hasUnsaved ? Colors.redAccent : AppTheme.accentOrange,
-                      foregroundColor: Colors.white,
+                      backgroundColor: hasUnsaved ? AppTheme.accentRed : AppTheme.accentOrange,
+                      foregroundColor: AppTheme.onAccentText,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () => Navigator.pop(context, true),
@@ -199,13 +205,15 @@ class _CapStudioAppState extends ConsumerState<CapStudioApp> with WindowListener
         // Stop all active audio players (AudioService logs internally)
         AudioService.instance.stopAll(),
         // Close Isar to release database file locks cleanly
-        IsarService.instance.close().catchError((_) {}),
+        IsarService.instance.close().catchError((Object e) {
+          LoggerService.instance.debug('Teardown IsarService close error: $e');
+        }),
       ]).timeout(
         const Duration(milliseconds: 150),
         onTimeout: () => [],
       );
-    } catch (_) {
-      // Silently swallow and proceed
+    } catch (e) {
+      LoggerService.instance.debug('Teardown Phase 1 exception: $e');
     }
 
     // Phase 2: Flush and close log files — must happen AFTER all other services.
@@ -215,7 +223,7 @@ class _CapStudioAppState extends ConsumerState<CapStudioApp> with WindowListener
         onTimeout: () {},
       );
     } catch (_) {
-      // Silently swallow and proceed to exit
+      // Silently swallow as LoggerService is already disposed
     }
 
     if (kIsWeb) {
@@ -236,7 +244,8 @@ class _CapStudioAppState extends ConsumerState<CapStudioApp> with WindowListener
 
     return MaterialApp.router(
       title: 'CapStudio',
-      themeMode: ThemeMode.dark,
+      themeMode: currentTheme.isLight ? ThemeMode.light : ThemeMode.dark,
+      theme: currentTheme.theme,
       darkTheme: currentTheme.darkTheme,
       locale: currentLocale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

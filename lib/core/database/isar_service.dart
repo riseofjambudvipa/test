@@ -65,13 +65,19 @@ class IsarService {
         return name.startsWith('capstudio_db_backup_') && name.endsWith('.isar');
       }).toList();
       
-      if (list.length >= 5) {
+      // FIX (audit, data loss): the previous cap of 4 meant a series of
+      // corruptions could rotate out every copy of the user's projects.
+      // Keep 10 backups instead, and log when older ones are pruned.
+      if (list.length >= 11) {
         list.sort((a, b) => a.path.compareTo(b.path)); // Oldest first
-        final toDeleteCount = list.length - 4;
+        final toDeleteCount = list.length - 10;
         for (int i = 0; i < toDeleteCount; i++) {
           try {
             await list[i].delete();
-          } catch (_) {}
+            _log(LogLevel.warning, 'IsarService', 'Pruned old DB backup: ${list[i].path}');
+          } catch (e) {
+            _log(LogLevel.debug, 'IsarService', 'Failed to prune backup file ${list[i].path}: $e');
+          }
         }
       }
     } catch (e) {
@@ -89,13 +95,20 @@ class IsarService {
       if (kIsWeb) {
         _log(LogLevel.info, 'IsarService', 'Initializing database for Web via IndexedDB.');
         try {
-          // 1. Load from IndexedDB
-          final idbJsonStrings = await WebDbHelper.getAllProjectsWeb();
-          for (final jsonStr in idbJsonStrings) {
+        // 1. Load from IndexedDB
+        final idbJsonStrings = await WebDbHelper.getAllProjectsWeb();
+        for (final jsonStr in idbJsonStrings) {
+          // FIX (audit): one corrupt record (e.g. a malformed createdAt)
+          // previously aborted the whole load loop, leaving the DB partially
+          // populated. Skip the bad record and keep loading the rest.
+          try {
             final map = jsonDecode(jsonStr) as Map<String, dynamic>;
             final project = _projectFromMap(map);
             _webProjects[project.projectId] = project;
+          } catch (e) {
+            _log(LogLevel.error, 'IsarService', 'Skipping corrupt web project record: $e');
           }
+        }
 
           // 2. Migration: load legacy SharedPreferences projects if any
           final prefs = await SharedPreferences.getInstance();
@@ -106,11 +119,17 @@ class IsarService {
             if (!_webProjects.containsKey(projectId)) {
               final jsonStr = prefs.getString(key);
               if (jsonStr != null) {
-                final map = jsonDecode(jsonStr) as Map<String, dynamic>;
-                final project = _projectFromMap(map);
-                _webProjects[project.projectId] = project;
-                await WebDbHelper.saveProjectWeb(project.projectId, jsonStr);
-                migratedCount++;
+                // FIX (audit): a malformed legacy record must not block the
+                // migration of the remaining projects.
+                try {
+                  final map = jsonDecode(jsonStr) as Map<String, dynamic>;
+                  final project = _projectFromMap(map);
+                  _webProjects[project.projectId] = project;
+                  await WebDbHelper.saveProjectWeb(project.projectId, jsonStr);
+                  migratedCount++;
+                } catch (e) {
+                  _log(LogLevel.error, 'IsarService', 'Skipping corrupt legacy project "$projectId": $e');
+                }
               }
             }
             await prefs.remove(key);
@@ -118,7 +137,10 @@ class IsarService {
 
           _log(LogLevel.info, 'IsarService', 'Loaded ${_webProjects.length} projects on Web (Migrated $migratedCount legacy projects).');
         } catch (e) {
-          _log(LogLevel.error, 'IsarService', 'Failed to load projects on Web: $e');
+          // FIX (audit): a partial load followed by a save could silently
+          // overwrite records that failed to load. Keep the app usable but
+          // flag the risk loudly.
+          _log(LogLevel.error, 'IsarService', 'Failed to load projects on Web: $e. The in-memory project list may be incomplete; saving may overwrite unread records.');
         }
         _initialized = true;
         _initCompleter!.complete();
@@ -141,21 +163,29 @@ class IsarService {
             'IsarService',
             'Database schema version mismatch detected: $storedVersion -> $currentSchemaVersion. Note: Schema migrations are currently not implemented.',
           );
-          // Custom field migrations/default-setting logic is not yet implemented
+          // Record the schema version as current. No migrations exist yet, so
+          // this only marks the DB as being on the current schema; when a real
+          // migration is added, currentSchemaVersion will be bumped and stored
+          // versions below it will trigger it again.
           await SettingsService.instance.setDbSchemaVersion(currentSchemaVersion);
         }
       }
 
       _log(LogLevel.info, 'IsarService', kIsWeb ? 'Opening Isar database for Web' : 'Opening Isar database at: $dirPath');
       try {
-        _isar = await Isar.open(
-          [
-            ProjectSchema,
-          ],
-          directory: dirPath ?? '',
-          name: 'capstudio_db',
-          inspector: false,
-        );
+        final existing = Isar.getInstance('capstudio_db');
+        if (existing != null && existing.isOpen) {
+          _isar = existing;
+        } else {
+          _isar = await Isar.open(
+            [
+              ProjectSchema,
+            ],
+            directory: dirPath ?? '',
+            name: 'capstudio_db',
+            inspector: false,
+          );
+        }
       } on IsarError catch (e) {
         _log(
           LogLevel.error,
@@ -178,14 +208,19 @@ class IsarService {
           }
         }
         // Try opening a fresh database
-        _isar = await Isar.open(
-          [
-            ProjectSchema,
-          ],
-          directory: dirPath ?? '',
-          name: 'capstudio_db',
-          inspector: false,
-        );
+        final existing = Isar.getInstance('capstudio_db');
+        if (existing != null && existing.isOpen) {
+          _isar = existing;
+        } else {
+          _isar = await Isar.open(
+            [
+              ProjectSchema,
+            ],
+            directory: dirPath ?? '',
+            name: 'capstudio_db',
+            inspector: false,
+          );
+        }
       }
       _log(LogLevel.info, 'IsarService', 'Isar database successfully opened.');
       _initialized = true;
@@ -236,7 +271,13 @@ class IsarService {
     _log(LogLevel.info, 'IsarService', 'Saving project to database: ${project.projectId} (${project.name})');
     
     if (kIsWeb) {
-      _webProjects[project.projectId] = project;
+      if (project.id == Isar.autoIncrement) {
+        project.id = DateTime.now().millisecondsSinceEpoch;
+      }
+      // FIX (audit, aliasing): store a deep clone like the native path does,
+      // so a caller mutating its own Project object can't leak changes into
+      // the stored instance (and vice versa).
+      _webProjects[project.projectId] = _deepCloneProject(project);
       try {
         final jsonStr = jsonEncode(_projectToMap(project));
         await WebDbHelper.saveProjectWeb(project.projectId, jsonStr);
@@ -329,6 +370,10 @@ class IsarService {
       await _isar!.close();
       _isar = null;
       _log(LogLevel.info, 'IsarService', 'Isar database closed.');
+    }
+    final existing = Isar.getInstance('capstudio_db');
+    if (existing != null && existing.isOpen) {
+      await existing.close();
     }
     _initialized = false;
     _initCompleter = null;

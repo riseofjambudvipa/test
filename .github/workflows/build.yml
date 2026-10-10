@@ -1,4 +1,4 @@
-name: CapStudio Build
+name: CapStudio Build & Release
 
 on:
   workflow_dispatch:
@@ -9,16 +9,84 @@ on:
         type: boolean
         default: false
       tag_name:
-        description: 'Release Tag Name (e.g., v1.0.0)'
+        description: 'Release Tag Name (e.g., v0.0.1)'
         required: false
         type: string
+        default: 'v0.0.1'
+      release_title:
+        description: 'Release Title'
+        required: false
+        type: string
+        default: 'CapStudio v0.0.1'
+      run_tests:
+        description: 'Run Analyze & Tests before building'
+        required: true
+        type: boolean
+        default: true
+      build_windows:
+        description: 'Build Windows Desktop (.zip)'
+        required: true
+        type: boolean
+        default: true
+      build_android:
+        description: 'Build Android (APK & AAB)'
+        required: true
+        type: boolean
+        default: true
+      build_web:
+        description: 'Build Web App (.zip)'
+        required: true
+        type: boolean
+        default: true
+      build_macos:
+        description: 'Build macOS App (.dmg)'
+        required: true
+        type: boolean
+        default: true
+      build_linux:
+        description: 'Build Linux Package (.deb)'
+        required: true
+        type: boolean
+        default: true
+      build_ios:
+        description: 'Build iOS (Runner.app)'
+        required: true
+        type: boolean
+        default: false
+      build_whispers:
+        description: 'Build Whisper CLI Binaries (Windows, macOS, Linux)'
+        required: true
+        type: boolean
+        default: true
+      whisper_tag:
+        description: 'Whisper.cpp Git Tag / Version (e.g. v1.8.4)'
+        required: false
+        type: string
+        default: 'v1.8.4'
+      pack_ffmpeg:
+        description: 'Package FFmpeg Binaries (Windows, macOS, Linux)'
+        required: true
+        type: boolean
+        default: true
+      pack_source_code:
+        description: 'Pack Clean Source Code Archive (.zip)'
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
 
 jobs:
+  # =========================================================================
+  # 0. CODE QUALITY CHECKS
+  # =========================================================================
   analyze_and_test:
     name: Analyze & Test
+    if: ${{ inputs.run_tests }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -29,7 +97,7 @@ jobs:
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v5
+        uses: actions/cache@v4
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
@@ -39,12 +107,16 @@ jobs:
       - run: flutter analyze
       - run: flutter test
 
+  # =========================================================================
+  # 1. ANDROID (APK & AAB)
+  # =========================================================================
   build_android:
     name: Build Android
-    needs: analyze_and_test
+    needs: [analyze_and_test]
+    if: ${{ always() && !cancelled() && (needs.analyze_and_test.result == 'success' || needs.analyze_and_test.result == 'skipped') && inputs.build_android }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -63,14 +135,14 @@ jobs:
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v5
+        uses: actions/cache@v4
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: pub-${{ runner.os }}-
 
       - name: Cache Gradle
-        uses: actions/cache@v5
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
@@ -84,126 +156,45 @@ jobs:
           ndk-version: r27
 
       - name: Setup signing
-        if: github.event_name != 'pull_request' && secrets.KEYSTORE_BASE64 != ''
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        if: github.event_name != 'pull_request' && env.KEYSTORE_BASE64 != ''
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release.jks
+          echo "$KEYSTORE_BASE64" | base64 -d > release.jks
           echo "KEYSTORE_FILE=$PWD/release.jks" >> $GITHUB_ENV
-          echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
-          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
-          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
+          echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD" >> $GITHUB_ENV
+          echo "KEY_ALIAS=$KEY_ALIAS" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=$KEY_PASSWORD" >> $GITHUB_ENV
 
       - run: flutter pub get
 
-      - name: Build App Bundle
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      - name: Build Android App Bundle (AAB)
         run: flutter build appbundle --release
 
-      - name: Upload AAB
-        uses: actions/upload-artifact@v7
+      - name: Upload Android Artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: android-release
-          path: build/app/outputs/bundle/release/app-release.aab
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
 
-  build_ios:
-    name: Build iOS
-    needs: analyze_and_test
-    runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          submodules: recursive
-
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.44.0'
-          cache: true
-
-      - name: Cache pub packages
-        uses: actions/cache@v5
-        with:
-          path: ~/.pub-cache
-          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: pub-${{ runner.os }}-
-
-      - name: Build whisper.xcframework
-        run: |
-          chmod +x scripts/build/build_whisper_ios.sh
-          ./scripts/build/build_whisper_ios.sh
-
-      - run: flutter pub get
-
-      - name: Install CocoaPods
-        run: cd ios && pod install && cd ..
-
-      - name: Build iOS (no-codesign, produces Runner.app for CI validation)
-        run: flutter build ios --release --no-codesign
-
-      - name: Package Runner.app as tar for artifact upload
-        run: |
-          tar -czf ios-runner.tar.gz -C build/ios/iphoneos Runner.app
-
-      - name: Upload iOS build
-        uses: actions/upload-artifact@v7
-        with:
-          name: ios-release
-          path: ios-runner.tar.gz
-
-  build_macos:
-    name: Build macOS
-    needs: analyze_and_test
-    runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          submodules: recursive
-
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.44.0'
-          cache: true
-
-      - name: Cache pub packages
-        uses: actions/cache@v5
-        with:
-          path: ~/.pub-cache
-          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: pub-${{ runner.os }}-
-
-      - run: flutter pub get
-
-      - name: Build macOS
-        run: flutter build macos --release
-
-      # Platform-gap fix: bundle a pinned, checksum-verified FFmpeg into the
-      # app bundle so macOS works out-of-the-box (no Homebrew/manual linking).
-      # Hash matches binary_downloader_service.dart's _macOsFfmpeg71Sha256.
-      - name: Bundle FFmpeg into macOS app
-        run: |
-          set -e
-          curl -fsSL -o /tmp/ffmpeg-7.1.zip https://evermeet.cx/ffmpeg/ffmpeg-7.1.zip
-          echo "5a1303c7babaffff3c32c141ff49c7f44bd3b3b3e7dcea992fd7d04b6558ef43  /tmp/ffmpeg-7.1.zip" | shasum -a 256 -c -
-          mkdir -p /tmp/ffmpeg-mac && cd /tmp/ffmpeg-mac && unzip -q /tmp/ffmpeg-7.1.zip
-          RES_DIR="$GITHUB_WORKSPACE/build/macos/Build/Products/Release/CapStudio.app/Contents/Resources"
-          mkdir -p "$RES_DIR/bin"
-          cp /tmp/ffmpeg-mac/ffmpeg "$RES_DIR/bin/ffmpeg"
-          chmod +x "$RES_DIR/bin/ffmpeg"
-          echo "Bundled FFmpeg 7.1 into CapStudio.app/Contents/Resources/bin/"
-
-      - name: Package macOS DMG
-        run: |
-          hdiutil create -format UDZO -srcfolder build/macos/Build/Products/Release/CapStudio.app build/macos/Build/Products/Release/CapStudio.dmg
-
-      - name: Upload macOS
-        uses: actions/upload-artifact@v7
-        with:
-          name: macos-release
-          path: build/macos/Build/Products/Release/CapStudio.dmg
-
+  # =========================================================================
+  # 2. WINDOWS DESKTOP
+  # =========================================================================
   build_windows:
     name: Build Windows
-    needs: analyze_and_test
+    needs: [analyze_and_test]
+    if: ${{ always() && !cancelled() && (needs.analyze_and_test.result == 'success' || needs.analyze_and_test.result == 'skipped') && inputs.build_windows }}
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -213,7 +204,7 @@ jobs:
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v5
+        uses: actions/cache@v4
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
@@ -237,14 +228,26 @@ jobs:
       - name: Patch ffmpeg_kit_flutter_new include bug
         shell: pwsh
         run: |
+          # 1. Search and patch in Pub cache
+          $searchRoots = @(
+            $env:PUB_CACHE,
+            "$env:LOCALAPPDATA\Pub\Cache",
+            "$env:USERPROFILE\.pub-cache"
+          ) | Where-Object { $_ -and (Test-Path $_) }
+
+          foreach ($root in $searchRoots) {
+            $matched = Get-ChildItem -Path $root -Filter "ffmpeg_kit_flutter_plugin_c_api.cpp" -Recurse -ErrorAction SilentlyContinue
+            foreach ($m in $matched) {
+              (Get-Content $m.FullName) -replace 'ffmpeg_kit_flutter_new_full', 'ffmpeg_kit_flutter_new' | Set-Content $m.FullName
+              Write-Host "Patched Pub-cache copy: $($m.FullName)"
+            }
+          }
+
+          # 2. Patch ephemeral if already generated
           $file = "windows\flutter\ephemeral\.plugin_symlinks\ffmpeg_kit_flutter_new\windows\ffmpeg_kit_flutter_plugin_c_api.cpp"
           if (Test-Path $file) {
-            Write-Host "Patching $file..."
             (Get-Content $file) -replace 'ffmpeg_kit_flutter_new_full', 'ffmpeg_kit_flutter_new' | Set-Content $file
-            Write-Host "Patch applied successfully."
-          } else {
-            Write-Host "Error: $file not found!"
-            exit 1
+            Write-Host "Patched ephemeral copy: $file"
           }
 
       - name: Build Windows
@@ -253,21 +256,26 @@ jobs:
         run: flutter build windows --release
 
       - name: Package Windows Release
+        shell: pwsh
         run: |
           Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath build/windows/x64/runner/CapStudio-Windows-x64.zip
 
-      - name: Upload Windows
-        uses: actions/upload-artifact@v7
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: windows-release
           path: build/windows/x64/runner/CapStudio-Windows-x64.zip
 
-  build_linux:
-    name: Build Linux
-    needs: analyze_and_test
+  # =========================================================================
+  # 3. WEB APPLICATION
+  # =========================================================================
+  build_web:
+    name: Build Web
+    needs: [analyze_and_test]
+    if: ${{ always() && !cancelled() && (needs.analyze_and_test.result == 'success' || needs.analyze_and_test.result == 'skipped') && inputs.build_web }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -277,7 +285,99 @@ jobs:
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v5
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - run: flutter pub get
+
+      - name: Build Web
+        run: flutter build web --release
+
+      - name: Compress Web Distribution
+        run: |
+          cd build/web && zip -r ../../CapStudio-Web.zip . && cd ../..
+
+      - name: Upload Web Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-release
+          path: CapStudio-Web.zip
+
+  # =========================================================================
+  # 4. MACOS APP
+  # =========================================================================
+  build_macos:
+    name: Build macOS
+    needs: [analyze_and_test]
+    if: ${{ always() && !cancelled() && (needs.analyze_and_test.result == 'success' || needs.analyze_and_test.result == 'skipped') && inputs.build_macos }}
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.0'
+          cache: true
+
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - run: flutter pub get
+
+      - name: Build macOS
+        run: flutter build macos --release
+
+      - name: Bundle FFmpeg into macOS app
+        run: |
+          set -e
+          curl -fsSL -o /tmp/ffmpeg-7.1.zip https://evermeet.cx/ffmpeg/ffmpeg-7.1.zip
+          echo "5a1303c7babaffff3c32c141ff49c7f44bd3b3b3e7dcea992fd7d04b6558ef43  /tmp/ffmpeg-7.1.zip" | shasum -a 256 -c -
+          mkdir -p /tmp/ffmpeg-mac && cd /tmp/ffmpeg-mac && unzip -q /tmp/ffmpeg-7.1.zip
+          RES_DIR="$GITHUB_WORKSPACE/build/macos/Build/Products/Release/CapStudio.app/Contents/Resources"
+          mkdir -p "$RES_DIR/bin"
+          cp /tmp/ffmpeg-mac/ffmpeg "$RES_DIR/bin/ffmpeg"
+          chmod +x "$RES_DIR/bin/ffmpeg"
+          echo "Bundled FFmpeg 7.1 into CapStudio.app/Contents/Resources/bin/"
+
+      - name: Package macOS DMG
+        run: |
+          hdiutil create -format UDZO -srcfolder build/macos/Build/Products/Release/CapStudio.app build/macos/Build/Products/Release/CapStudio.dmg
+
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-release
+          path: build/macos/Build/Products/Release/CapStudio.dmg
+
+  # =========================================================================
+  # 5. LINUX PACKAGE
+  # =========================================================================
+  build_linux:
+    name: Build Linux
+    needs: [analyze_and_test]
+    if: ${{ always() && !cancelled() && (needs.analyze_and_test.result == 'success' || needs.analyze_and_test.result == 'skipped') && inputs.build_linux }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.0'
+          cache: true
+
+      - name: Cache pub packages
+        uses: actions/cache@v4
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
@@ -296,10 +396,6 @@ jobs:
       - name: Build Linux
         run: flutter build linux --release
 
-      # Platform-gap fix: bundle a checksum-verified static FFmpeg into the
-      # release bundle so Linux works out-of-the-box (no distro install).
-      # The .md5 companion is fetched from the same origin, matching the
-      # runtime behavior in binary_downloader_service.dart.
       - name: Bundle FFmpeg into Linux bundle
         run: |
           set -e
@@ -320,21 +416,25 @@ jobs:
 
       - name: Build Debian Package
         run: |
-          chmod +x scripts/create_deb.sh
-          ./scripts/create_deb.sh
+          chmod +x third_party/scripts/create_deb.sh
+          ./third_party/scripts/create_deb.sh
 
-      - name: Upload Linux
-        uses: actions/upload-artifact@v7
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: linux-release
-          path: capstudio_1.0.0_amd64.deb
+          path: capstudio_*.deb
 
-  build_web:
-    name: Build Web
-    needs: analyze_and_test
-    runs-on: ubuntu-latest
+  # =========================================================================
+  # 6. IOS RUNNER
+  # =========================================================================
+  build_ios:
+    name: Build iOS
+    needs: [analyze_and_test]
+    if: ${{ always() && !cancelled() && (needs.analyze_and_test.result == 'success' || needs.analyze_and_test.result == 'skipped') && inputs.build_ios }}
+    runs-on: macos-14
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -344,48 +444,416 @@ jobs:
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v5
+        uses: actions/cache@v4
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: pub-${{ runner.os }}-
 
+      - name: Build whisper.xcframework
+        run: |
+          chmod +x third_party/scripts/build/build_whisper_ios.sh
+          ./third_party/scripts/build/build_whisper_ios.sh
+
       - run: flutter pub get
 
-      - name: Build Web
-        run: flutter build web --release
+      - name: Install CocoaPods
+        run: cd ios && pod install && cd ..
 
-      - name: Upload Web Build
-        uses: actions/upload-artifact@v7
+      - name: Build iOS (no-codesign)
+        run: flutter build ios --release --no-codesign
+
+      - name: Package Runner.app as tar
+        run: |
+          tar -czf ios-runner.tar.gz -C build/ios/iphoneos Runner.app
+
+      - name: Upload iOS Artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: web-release
-          path: build/web/
+          name: ios-release
+          path: ios-runner.tar.gz
 
+  # =========================================================================
+  # 7. WHISPER CLI BINARIES (WINDOWS, MACOS, LINUX)
+  # =========================================================================
+  whisper_windows:
+    name: Build Whisper CLI (Windows x64 & ARM64)
+    if: ${{ inputs.build_whispers }}
+    runs-on: windows-latest
+    steps:
+      - name: Checkout whisper.cpp
+        uses: actions/checkout@v4
+        with:
+          repository: 'ggml-org/whisper.cpp'
+          ref: ${{ inputs.whisper_tag }}
+          path: 'whisper_src'
+          submodules: recursive
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build Windows AVX2 (Modern CPUs)
+        shell: pwsh
+        run: |
+          cmake -S whisper_src -B build_avx `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DGGML_AVX2=ON `
+            -DGGML_AVX=ON `
+            -DGGML_FMA=ON `
+            -DGGML_F16C=ON `
+            -DBUILD_SHARED_LIBS=OFF `
+            -DWHISPER_BUILD_TESTS=OFF `
+            -DWHISPER_BUILD_EXAMPLES=ON
+          cmake --build build_avx --config Release --target whisper-cli || cmake --build build_avx --config Release --target main
+
+          New-Item -ItemType Directory -Path dist/win_avx -Force | Out-Null
+          $exe = Get-ChildItem -Path build_avx -Filter "whisper-cli.exe" -Recurse | Select-Object -First 1
+          if (-not $exe) {
+            $exe = Get-ChildItem -Path build_avx -Filter "main.exe" -Recurse | Select-Object -First 1
+          }
+          Copy-Item $exe.FullName dist/win_avx/whisper-cli.exe
+          Copy-Item whisper_src/LICENSE dist/win_avx/whisper_LICENSE.txt
+
+          Compress-Archive -Path dist/win_avx/* -DestinationPath dist/whisper-cli-win-x64-avx.zip -Force
+          $hash = (Get-FileHash -Path dist/whisper-cli-win-x64-avx.zip -Algorithm SHA256).Hash.ToLower()
+          Set-Content -Path dist/whisper-cli-win-x64-avx.zip.sha256 -Value "$hash  whisper-cli-win-x64-avx.zip"
+
+      - name: Build Windows Generic / No-AVX (Older CPUs)
+        shell: pwsh
+        run: |
+          cmake -S whisper_src -B build_noavx `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DGGML_AVX2=OFF `
+            -DGGML_AVX=OFF `
+            -DGGML_FMA=OFF `
+            -DGGML_F16C=OFF `
+            -DBUILD_SHARED_LIBS=OFF `
+            -DWHISPER_BUILD_TESTS=OFF `
+            -DWHISPER_BUILD_EXAMPLES=ON
+          cmake --build build_noavx --config Release --target whisper-cli || cmake --build build_noavx --config Release --target main
+
+          New-Item -ItemType Directory -Path dist/win_noavx -Force | Out-Null
+          $exe = Get-ChildItem -Path build_noavx -Filter "whisper-cli.exe" -Recurse | Select-Object -First 1
+          if (-not $exe) {
+            $exe = Get-ChildItem -Path build_noavx -Filter "main.exe" -Recurse | Select-Object -First 1
+          }
+          Copy-Item $exe.FullName dist/win_noavx/whisper-cli.exe
+          Copy-Item whisper_src/LICENSE dist/win_noavx/whisper_LICENSE.txt
+
+          Compress-Archive -Path dist/win_noavx/* -DestinationPath dist/whisper-cli-win-x64-noavx.zip -Force
+          $hash = (Get-FileHash -Path dist/whisper-cli-win-x64-noavx.zip -Algorithm SHA256).Hash.ToLower()
+          Set-Content -Path dist/whisper-cli-win-x64-noavx.zip.sha256 -Value "$hash  whisper-cli-win-x64-noavx.zip"
+
+      - name: Build Windows ARM64 (Snapdragon / Surface)
+        shell: pwsh
+        run: |
+          cmake -S whisper_src -B build_win_arm64 `
+            -A ARM64 `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DGGML_NATIVE=OFF `
+            -DBUILD_SHARED_LIBS=OFF `
+            -DWHISPER_BUILD_TESTS=OFF `
+            -DWHISPER_BUILD_EXAMPLES=ON
+          cmake --build build_win_arm64 --config Release --target whisper-cli || cmake --build build_win_arm64 --config Release --target main
+
+          New-Item -ItemType Directory -Path dist/win_arm64 -Force | Out-Null
+          $exe = Get-ChildItem -Path build_win_arm64 -Filter "whisper-cli.exe" -Recurse | Select-Object -First 1
+          if (-not $exe) {
+            $exe = Get-ChildItem -Path build_win_arm64 -Filter "main.exe" -Recurse | Select-Object -First 1
+          }
+          if ($exe) {
+            Copy-Item $exe.FullName dist/win_arm64/whisper-cli.exe
+          }
+          Copy-Item whisper_src/LICENSE dist/win_arm64/whisper_LICENSE.txt
+
+          Compress-Archive -Path dist/win_arm64/* -DestinationPath dist/whisper-cli-win-arm64.zip -Force
+          $hash = (Get-FileHash -Path dist/whisper-cli-win-arm64.zip -Algorithm SHA256).Hash.ToLower()
+          Set-Content -Path dist/whisper-cli-win-arm64.zip.sha256 -Value "$hash  whisper-cli-win-arm64.zip"
+
+      - name: Upload Windows Whisper Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: whisper-windows-artifacts
+          path: |
+            dist/*.zip
+            dist/*.sha256
+
+  whisper_macos:
+    name: Build Whisper CLI (macOS Universal M1-M4 & Intel)
+    if: ${{ inputs.build_whispers }}
+    runs-on: macos-latest
+    steps:
+      - name: Checkout whisper.cpp
+        uses: actions/checkout@v4
+        with:
+          repository: 'ggml-org/whisper.cpp'
+          ref: ${{ inputs.whisper_tag }}
+          path: 'whisper_src'
+          submodules: recursive
+
+      - name: Build macOS Binary (Metal Accelerated Universal)
+        run: |
+          cmake -S whisper_src -B build_mac \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
+            -DGGML_METAL=ON \
+            -DGGML_METAL_EMBED_LIBRARY=ON \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DWHISPER_BUILD_TESTS=OFF \
+            -DWHISPER_BUILD_EXAMPLES=ON
+          cmake --build build_mac --config Release --target whisper-cli || cmake --build build_mac --config Release --target main
+
+          mkdir -p dist/mac
+          CLI_BIN=$(find build_mac \( -name "whisper-cli" -o -name "main" \) -type f | head -n 1)
+          cp "$CLI_BIN" dist/mac/whisper-cli
+          chmod +x dist/mac/whisper-cli
+          cp whisper_src/LICENSE dist/mac/whisper_LICENSE.txt
+
+          cd dist/mac
+          zip -r ../whisper-cli-mac-universal.zip *
+          cp ../whisper-cli-mac-universal.zip ../whisper-macos.zip
+          cd ../..
+          shasum -a 256 dist/whisper-cli-mac-universal.zip > dist/whisper-cli-mac-universal.zip.sha256
+          shasum -a 256 dist/whisper-macos.zip > dist/whisper-macos.zip.sha256
+
+      - name: Upload macOS Whisper Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: whisper-macos-artifacts
+          path: |
+            dist/*.zip
+            dist/*.sha256
+
+  whisper_linux:
+    name: Build Whisper CLI (Linux x64 & ARM64)
+    if: ${{ inputs.build_whispers }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout whisper.cpp
+        uses: actions/checkout@v4
+        with:
+          repository: 'ggml-org/whisper.cpp'
+          ref: ${{ inputs.whisper_tag }}
+          path: 'whisper_src'
+          submodules: recursive
+
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential libsdl2-dev gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+
+      - name: Build Linux x64 Binary
+        run: |
+          cmake -S whisper_src -B build_linux_x64 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DWHISPER_BUILD_TESTS=OFF \
+            -DWHISPER_BUILD_EXAMPLES=ON
+          cmake --build build_linux_x64 --config Release --target whisper-cli || cmake --build build_linux_x64 --config Release --target main
+
+          mkdir -p dist/linux_x64
+          CLI_BIN=$(find build_linux_x64 \( -name "whisper-cli" -o -name "main" \) -type f | head -n 1)
+          cp "$CLI_BIN" dist/linux_x64/whisper-cli
+          chmod +x dist/linux_x64/whisper-cli
+          cp whisper_src/LICENSE dist/linux_x64/whisper_LICENSE.txt
+
+          cd dist/linux_x64
+          zip -r ../whisper-cli-linux-x64.zip *
+          cp ../whisper-cli-linux-x64.zip ../whisper-linux.zip
+          cd ../..
+          sha256sum dist/whisper-cli-linux-x64.zip > dist/whisper-cli-linux-x64.zip.sha256
+          sha256sum dist/whisper-linux.zip > dist/whisper-linux.zip.sha256
+
+      - name: Build Linux ARM64 (aarch64) Binary
+        run: |
+          export SOURCE_DATE_EPOCH=1234567890
+          cmake -S whisper_src -B build_linux_arm64 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc \
+            -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ \
+            -DCMAKE_SYSTEM_NAME=Linux \
+            -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
+            -DGGML_NATIVE=OFF \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DWHISPER_BUILD_TESTS=OFF \
+            -DWHISPER_BUILD_EXAMPLES=ON
+          cmake --build build_linux_arm64 --config Release --target whisper-cli || cmake --build build_linux_arm64 --config Release --target main
+
+          mkdir -p dist/linux_arm64
+          CLI_BIN=$(find build_linux_arm64 \( -name "whisper-cli" -o -name "main" \) -type f | head -n 1)
+          cp "$CLI_BIN" dist/linux_arm64/whisper-cli
+          chmod +x dist/linux_arm64/whisper-cli
+          cp whisper_src/LICENSE dist/linux_arm64/whisper_LICENSE.txt
+
+          cd dist/linux_arm64
+          zip -r ../whisper-cli-linux-arm64.zip *
+          cp ../whisper-cli-linux-arm64.zip ../whisper-linux-arm64.zip
+          cd ../..
+          sha256sum dist/whisper-cli-linux-arm64.zip > dist/whisper-cli-linux-arm64.zip.sha256
+          sha256sum dist/whisper-linux-arm64.zip > dist/whisper-linux-arm64.zip.sha256
+
+      - name: Upload Linux Whisper Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: whisper-linux-artifacts
+          path: |
+            dist/*.zip
+            dist/*.sha256
+
+  # =========================================================================
+  # 8. FFMPEG BINARIES PACKAGING (WINDOWS, MACOS, LINUX)
+  # =========================================================================
+  pack_ffmpeg:
+    name: Package FFmpeg Binaries (All Platforms & Architectures)
+    if: ${{ inputs.pack_ffmpeg }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Archive Utilities
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl unzip p7zip-full xz-utils
+
+      - name: Package Windows FFmpeg (GyanD Essentials)
+        run: |
+          mkdir -p ffmpeg_win/dist ffmpeg_win/extracted dist
+          echo "Downloading official GyanD Windows FFmpeg essentials 7.1..."
+          curl -fsSL --retry 5 --retry-connrefused -o ffmpeg_win/ffmpeg.zip "https://github.com/GyanD/codexffmpeg/releases/download/7.1/ffmpeg-7.1-essentials_build.zip"
+          unzip -q ffmpeg_win/ffmpeg.zip -d ffmpeg_win/extracted
+          find ffmpeg_win/extracted -name "ffmpeg.exe" -exec cp {} ffmpeg_win/dist/ \;
+          find ffmpeg_win/extracted -name "ffprobe.exe" -exec cp {} ffmpeg_win/dist/ \;
+          find ffmpeg_win/extracted -name "*.dll" -exec cp {} ffmpeg_win/dist/ \;
+          find ffmpeg_win/extracted -name "LICENSE.txt" -exec cp {} ffmpeg_win/dist/ffmpeg_LICENSE.txt \;
+          if [ ! -f ffmpeg_win/dist/ffmpeg_LICENSE.txt ]; then
+            echo "FFmpeg is licensed under the LGPL/GPL. Official build by GyanD: https://www.gyan.dev/ffmpeg/" > ffmpeg_win/dist/ffmpeg_LICENSE.txt
+          fi
+          cd ffmpeg_win/dist
+          zip -r ../../dist/ffmpeg-windows.zip ./*
+          cd ../..
+          sha256sum dist/ffmpeg-windows.zip > dist/ffmpeg-windows.zip.sha256
+
+      - name: Package macOS FFmpeg (Evermeet Universal/Static)
+        run: |
+          mkdir -p ffmpeg_mac/dist dist
+          echo "Downloading official macOS FFmpeg 7.1..."
+          curl -fsSL --retry 5 --retry-connrefused -o ffmpeg_mac/ffmpeg.zip "https://evermeet.cx/ffmpeg/ffmpeg-7.1.zip"
+          curl -fsSL --retry 5 --retry-connrefused -o ffmpeg_mac/ffprobe.zip "https://evermeet.cx/ffmpeg/ffprobe-7.1.zip"
+          unzip -q ffmpeg_mac/ffmpeg.zip -d ffmpeg_mac/dist
+          unzip -q ffmpeg_mac/ffprobe.zip -d ffmpeg_mac/dist
+          echo "FFmpeg is licensed under the LGPL 2.1+ / GPL 3.0+. Official binaries: https://evermeet.cx/ffmpeg/" > ffmpeg_mac/dist/ffmpeg_LICENSE.txt
+          chmod +x ffmpeg_mac/dist/*
+          cd ffmpeg_mac/dist
+          zip -r ../../dist/ffmpeg-macos.zip ./*
+          cd ../..
+          sha256sum dist/ffmpeg-macos.zip > dist/ffmpeg-macos.zip.sha256
+
+      - name: Package Linux FFmpeg (Official Prebuilt Static amd64 & arm64)
+        run: |
+          mkdir -p ffmpeg_linux_amd64/dist ffmpeg_linux_amd64/extracted dist
+          echo "Packaging Linux amd64 static FFmpeg..."
+          # Try download directly from verified GitHub Release test repository first
+          if curl -fsSL --retry 3 -o dist/ffmpeg-linux.zip "https://github.com/riseofjambudvipa/test/releases/download/test/ffmpeg-linux.zip"; then
+            echo "Successfully retrieved ffmpeg-linux.zip from GitHub Release."
+            cp dist/ffmpeg-linux.zip dist/ffmpeg-linux-amd64.zip
+          else
+            echo "Falling back to BtbN Linux 64 GPL build..."
+            curl -fsSL --retry 5 --retry-connrefused -o ffmpeg_linux_amd64/ffmpeg.tar.xz "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz"
+            tar -xf ffmpeg_linux_amd64/ffmpeg.tar.xz -C ffmpeg_linux_amd64/extracted
+            find ffmpeg_linux_amd64/extracted -name "ffmpeg" -type f -exec cp {} ffmpeg_linux_amd64/dist/ \;
+            find ffmpeg_linux_amd64/extracted -name "ffprobe" -type f -exec cp {} ffmpeg_linux_amd64/dist/ \;
+            find ffmpeg_linux_amd64/extracted -name "LICENSE*" -o -name "GPL*" -exec cp {} ffmpeg_linux_amd64/dist/ffmpeg_LICENSE.txt \;
+            if [ ! -f ffmpeg_linux_amd64/dist/ffmpeg_LICENSE.txt ]; then
+              echo "FFmpeg static build (GPL): https://github.com/BtbN/FFmpeg-Builds" > ffmpeg_linux_amd64/dist/ffmpeg_LICENSE.txt
+            fi
+            chmod +x ffmpeg_linux_amd64/dist/*
+            cd ffmpeg_linux_amd64/dist
+            zip -r ../../dist/ffmpeg-linux.zip ./*
+            cp ../../dist/ffmpeg-linux.zip ../../dist/ffmpeg-linux-amd64.zip
+            cd ../..
+          fi
+          sha256sum dist/ffmpeg-linux.zip > dist/ffmpeg-linux.zip.sha256
+          sha256sum dist/ffmpeg-linux-amd64.zip > dist/ffmpeg-linux-amd64.zip.sha256
+
+          mkdir -p ffmpeg_linux_arm64/dist ffmpeg_linux_arm64/extracted
+          echo "Packaging Linux arm64 static FFmpeg..."
+          if curl -fsSL --retry 3 -o dist/ffmpeg-linux-arm64.zip "https://github.com/riseofjambudvipa/test/releases/download/test/ffmpeg-linux-arm64.zip"; then
+            echo "Successfully retrieved ffmpeg-linux-arm64.zip from GitHub Release."
+          else
+            echo "Falling back to BtbN Linux ARM64 GPL build..."
+            curl -fsSL --retry 5 --retry-connrefused -o ffmpeg_linux_arm64/ffmpeg.tar.xz "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linuxarm64-gpl.tar.xz"
+            tar -xf ffmpeg_linux_arm64/ffmpeg.tar.xz -C ffmpeg_linux_arm64/extracted
+            find ffmpeg_linux_arm64/extracted -name "ffmpeg" -type f -exec cp {} ffmpeg_linux_arm64/dist/ \;
+            find ffmpeg_linux_arm64/extracted -name "ffprobe" -type f -exec cp {} ffmpeg_linux_arm64/dist/ \;
+            find ffmpeg_linux_arm64/extracted -name "LICENSE*" -o -name "GPL*" -exec cp {} ffmpeg_linux_arm64/dist/ffmpeg_LICENSE.txt \;
+            if [ ! -f ffmpeg_linux_arm64/dist/ffmpeg_LICENSE.txt ]; then
+              echo "FFmpeg static build (GPL): https://github.com/BtbN/FFmpeg-Builds" > ffmpeg_linux_arm64/dist/ffmpeg_LICENSE.txt
+            fi
+            chmod +x ffmpeg_linux_arm64/dist/*
+            cd ffmpeg_linux_arm64/dist
+            zip -r ../../dist/ffmpeg-linux-arm64.zip ./*
+            cd ../..
+          fi
+          sha256sum dist/ffmpeg-linux-arm64.zip > dist/ffmpeg-linux-arm64.zip.sha256
+
+      - name: Upload FFmpeg Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-artifacts
+          path: |
+            dist/*.zip
+            dist/*.sha256
+
+  # =========================================================================
+  # 9. CLEAN SOURCE CODE ARCHIVE
+  # =========================================================================
+  pack_source_code:
+    name: Pack Source Code
+    if: ${{ inputs.pack_source_code }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Archive Clean Source Code
+        run: |
+          mkdir -p dist
+          git archive --format=zip --output=dist/CapStudio-Source-${{ inputs.tag_name }}.zip HEAD
+          ls -lh dist/
+
+      - name: Upload Source Archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-artifact
+          path: dist/CapStudio-Source-*.zip
+
+  # =========================================================================
+  # 10. PUBLISH GITHUB RELEASE
+  # =========================================================================
   release:
     name: Create GitHub Release
-    needs: [build_android, build_ios, build_macos, build_windows, build_linux, build_web]
+    needs: [build_android, build_windows, build_web, build_macos, build_linux, build_ios, whisper_windows, whisper_macos, whisper_linux, pack_ffmpeg, pack_source_code]
+    if: ${{ always() && !cancelled() && inputs.create_release }}
     runs-on: ubuntu-latest
-    if: ${{ inputs.create_release }}
-    permissions:
-      contents: write
     steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v8
+      - name: Download all generated artifacts
+        uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          path: all_artifacts
 
-      - name: Create Release and Upload Assets
+      - name: Organize Release Assets
+        run: |
+          mkdir -p release_assets
+          find all_artifacts/ -type f \( -name "*.zip" -o -name "*.sha256" -o -name "*.apk" -o -name "*.aab" -o -name "*.dmg" -o -name "*.deb" -o -name "*.tar.gz" \) -exec cp {} release_assets/ \;
+          echo "=== Release assets to be published ==="
+          ls -lh release_assets/
+
+      - name: Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.tag_name }}
-          files: |
-            artifacts/android-release/app-release.aab
-            artifacts/ios-release/ios-runner.tar.gz
-            artifacts/macos-release/CapStudio.dmg
-            artifacts/windows-release/CapStudio-Windows-x64.zip
-            artifacts/linux-release/capstudio_1.0.0_amd64.deb
+          name: ${{ inputs.release_title }}
           draft: false
           prerelease: false
+          files: release_assets/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

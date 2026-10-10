@@ -14,6 +14,7 @@ class AssPositionUtils {
     required double projectWidth,
     required double projectHeight,
     required double styleTop,
+    double styleLeft = 50.0,
     required String fontFamily,
     required double fontSize,
     required String fontWeight,
@@ -60,7 +61,9 @@ class AssPositionUtils {
       yTextCenter = yTop + T / 2.0;
     }
 
-    final double xTextCenter = projectWidth / 2.0;
+    // 4. Compute horizontal center for text using style.left
+    final double leftFraction = (styleLeft / 100.0).clamp(0.05, 0.95);
+    final double xTextCenter = projectWidth * leftFraction;
 
     return AssPosition(xTextCenter, yTextCenter);
   }

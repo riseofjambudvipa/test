@@ -6,10 +6,18 @@ import 'package:uuid/uuid.dart';
 import '../database/schemas/word.dart';
 import '../logger/logger_service.dart';
 import '../settings/settings_service.dart';
+import '../ffmpeg/ffmpeg_locator.dart';
 import '../ffmpeg/ffmpeg_service.dart';
 import '../utils/web_wasm_bridge.dart';
+import '../video/video_web_helper.dart';
+import 'whisper_locator.dart';
 import 'whisper_mobile_service.dart';
 import 'whisper_ffi_stub.dart' if (dart.library.ffi) 'whisper_ffi_service.dart';
+export 'whisper_ffi_stub.dart' if (dart.library.ffi) 'whisper_ffi_service.dart'
+    show
+        TranscriptionCancelledException,
+        WhisperFfiCancellationToken,
+        WhisperFfiService;
 
 class TranscriptionResult {
   final List<WordSchema> words;
@@ -35,6 +43,31 @@ class WhisperService {
   @visibleForTesting
   static void resetForTesting() {
     _instance = WhisperService._internal();
+    FfmpegLocator.instance.clearCache();
+    WhisperLocator.instance.clearCache();
+  }
+
+  /// Normalizes and sanitizes language codes to alphanumeric, underscore, or hyphen characters.
+  /// Returns 'auto' if null, empty, or unsanitizable.
+  static String sanitizeLanguage(String? lang) {
+    if (lang == null || lang.trim().isEmpty || lang.trim().toLowerCase() == 'auto') {
+      return 'auto';
+    }
+    final clean = lang.replaceAll(RegExp(r'[^a-zA-Z_-]'), '').trim();
+    return clean.isEmpty ? 'auto' : clean;
+  }
+
+  /// Checks whether a process stderr message indicates a GPU runtime or driver failure.
+  static bool isGpuFailure(String stderr) {
+    final s = stderr.toLowerCase();
+    return s.contains('cuda') ||
+        s.contains('vulkan') ||
+        s.contains('opencl') ||
+        s.contains('ggml_backend') ||
+        s.contains('failed to initialize gpu') ||
+        s.contains('clcreatecontext') ||
+        s.contains('clgetplatformids') ||
+        s.contains('out of memory');
   }
 
   /// Mockable process runner for unit testing offline
@@ -49,106 +82,104 @@ class WhisperService {
   String? _whisperCliPath;
   String _ffmpegCliPath = 'ffmpeg';
   String? _modelPath;
-  String? _cachedFfmpegPath;
   final Set<Process> _activeProcesses = {};
 
-  String get whisperCliPath => _whisperCliPath ?? 'whisper-cli';
+  String get whisperCliPath {
+    if (kIsWeb) return 'whisper-cli';
+    return WhisperLocator.instance.resolve(configured: _whisperCliPath);
+  }
   String? get modelPath => _modelPath;
 
   /// Cancels the active transcription process if one is running
   void cancelActiveTranscription() {
+    WhisperFfiService.instance.cancelActiveTranscription();
     if (_activeProcesses.isNotEmpty) {
-      LoggerService.instance.log(LogLevel.action, 'WhisperService', 'Killing ${_activeProcesses.length} active processes');
+      LoggerService.instance.log(LogLevel.action, 'WhisperService',
+          'Killing ${_activeProcesses.length} active processes');
       for (final process in _activeProcesses) {
         try {
           process.kill();
-        } catch (_) {}
+        } catch (e) {
+          LoggerService.instance.debug('Error killing whisper process: $e');
+        }
       }
       _activeProcesses.clear();
     }
   }
-  
+
   String get ffmpegCliPath {
     if (kIsWeb) {
       return 'ffmpeg';
     }
-    if (_ffmpegCliPath != 'ffmpeg') {
-      return _ffmpegCliPath;
-    }
-    if (_cachedFfmpegPath != null) {
-      return _cachedFfmpegPath!;
-    }
-
-    // FIX (platform audit): discovery previously only checked
-    // `Directory.current`-relative paths, which works in dev runs but NOT in
-    // packaged apps — the working directory of a shipped app is not the app
-    // bundle. Added bundle-relative lookups (Platform.resolvedExecutable) and
-    // standard system locations so a CI-bundled FFmpeg is actually found.
-    final exe = Platform.isWindows ? 'ffmpeg.exe' : 'ffmpeg';
-    final executableDir = p.dirname(Platform.resolvedExecutable);
-
-    final paths = <String>[
-      // Dev-mode / source-tree locations
-      p.join(Directory.current.path, 'assets', 'bin', exe),
-      p.join(Directory.current.path, 'Capstudio Flutter', 'assets', 'bin', exe),
-      p.join(Directory.current.path, 'data', 'flutter_assets', 'assets', 'bin', exe),
-      // Packaged macOS app bundle: Contents/MacOS/ffmpeg or Contents/Resources/bin/ffmpeg
-      p.join(executableDir, exe),
-      p.join(executableDir, '..', 'Resources', 'bin', exe),
-      // Packaged Linux bundle: alongside the app binary or in bundle/bin
-      p.join(executableDir, 'bin', exe),
-      // System locations (Homebrew, standard Unix paths)
-      '/opt/homebrew/bin/$exe',
-      '/usr/local/bin/$exe',
-      '/usr/bin/$exe',
-    ];
-
-    for (final path in paths) {
-      if (File(path).existsSync()) {
-        _cachedFfmpegPath = path;
-        LoggerService.instance.log(LogLevel.info, 'WhisperService', 'Discovered bundled FFmpeg at: $path');
-        return path;
-      }
-    }
-    return 'ffmpeg';
+    // Shared locator: explicitly-configured path wins; otherwise bundle- and
+    // dev-tree-relative discovery (see FfmpegLocator). This is the same
+    // discovery used by the exporter, timeline, and dashboard, so a packaged
+    // app's bundled FFmpeg is found consistently everywhere.
+    return FfmpegLocator.instance.resolve(
+      configured: _ffmpegCliPath == 'ffmpeg' ? null : _ffmpegCliPath,
+    );
   }
 
   /// Configure local whisper.cpp executable path
-  void configureCli(String path) {
+  void configureCli(String? path) {
+    if (path == null || path.trim().isEmpty) {
+      _whisperCliPath = null;
+      WhisperLocator.instance.clearCache();
+      LoggerService.instance.log(LogLevel.info, 'WhisperService',
+          'Whisper CLI path cleared, reverting to auto-discovery.');
+      return;
+    }
     _whisperCliPath = path;
-    LoggerService.instance.log(LogLevel.info, 'WhisperService', 'Whisper CLI path configured: $path');
+    WhisperLocator.instance.clearCache();
+    LoggerService.instance.log(
+        LogLevel.info, 'WhisperService', 'Whisper CLI path configured: $path');
   }
 
-  /// Configure local FFmpeg executable path
-  void configureFfmpeg(String path) {
-    if (path.trim().isNotEmpty) {
-      _ffmpegCliPath = path;
-      _cachedFfmpegPath = null; // Invalidate cache
-      LoggerService.instance.log(LogLevel.info, 'WhisperService', 'FFmpeg path configured: $path');
+  /// Configure local FFmpeg executable path. Passing null (or an empty
+  /// string) clears the configured path back to auto-discovery — previously
+  /// an empty string was silently ignored, leaving the in-memory config stale
+  /// after the user cleared the path in settings.
+  void configureFfmpeg(String? path) {
+    if (path == null || path.trim().isEmpty) {
+      _ffmpegCliPath = 'ffmpeg';
+      FfmpegLocator.instance.clearCache();
+      LoggerService.instance.log(LogLevel.info, 'WhisperService',
+          'FFmpeg path cleared, reverting to auto-discovery.');
+      return;
     }
+    _ffmpegCliPath = path;
+    FfmpegLocator.instance.clearCache(); // Invalidate discovery cache
+    LoggerService.instance.log(
+        LogLevel.info, 'WhisperService', 'FFmpeg path configured: $path');
   }
 
   /// Configure active model path (.bin file)
   void configureModel(String path) {
     _modelPath = path;
-    LoggerService.instance.log(LogLevel.info, 'WhisperService', 'Model path configured: $path');
+    LoggerService.instance
+        .log(LogLevel.info, 'WhisperService', 'Model path configured: $path');
   }
 
   /// Extracts mono 16kHz audio from a video using local FFmpeg (desktop) or native FFmpegKit (mobile)
-  Future<String> extractAudio(String videoPath, String tempDir, {String? ffmpegCliPath}) async {
+  Future<String> extractAudio(String videoPath, String tempDir,
+      {String? ffmpegCliPath}) async {
     if (kIsWeb) {
-      throw UnsupportedError('Audio extraction is handled via browser Web Audio API on Web.');
+      throw UnsupportedError(
+          'Audio extraction is handled via browser Web Audio API on Web.');
     }
     final videoFile = File(videoPath);
     if (!videoFile.existsSync()) {
-      LoggerService.instance.log(LogLevel.error, 'WhisperService', 'Audio extraction failed: Video file not found: $videoPath');
+      LoggerService.instance.log(LogLevel.error, 'WhisperService',
+          'Audio extraction failed: Video file not found: $videoPath');
       throw FileSystemException('Video file not found', videoPath);
     }
 
-    final outputWavPath = p.join(tempDir, '${p.basenameWithoutExtension(videoPath)}_16k.wav');
+    final outputWavPath =
+        p.join(tempDir, '${p.basenameWithoutExtension(videoPath)}_16k.wav');
 
     if (Platform.isAndroid || Platform.isIOS) {
-      return FfmpegService.instance.extractAudioForWhisper(videoPath, outputWavPath);
+      return FfmpegService.instance
+          .extractAudioForWhisper(videoPath, outputWavPath);
     }
 
     final wavFile = File(outputWavPath);
@@ -157,7 +188,8 @@ class WhisperService {
     }
 
     final activeFfmpegPath = ffmpegCliPath ?? this.ffmpegCliPath;
-    LoggerService.instance.log(LogLevel.info, 'WhisperService', 'Starting audio extraction: $videoPath -> $outputWavPath using $activeFfmpegPath');
+    LoggerService.instance.log(LogLevel.info, 'WhisperService',
+        'Starting audio extraction: $videoPath -> $outputWavPath using $activeFfmpegPath');
 
     final int exitCode;
     final String stderrStr;
@@ -165,7 +197,19 @@ class WhisperService {
     if (processRunner != null) {
       final res = await processRunner!(
         activeFfmpegPath,
-        ['-y', '-i', videoPath, '-vn', '-ac', '1', '-ar', '16000', '-acodec', 'pcm_s16le', outputWavPath],
+        [
+          '-y',
+          '-i',
+          videoPath,
+          '-vn',
+          '-ac',
+          '1',
+          '-ar',
+          '16000',
+          '-acodec',
+          'pcm_s16le',
+          outputWavPath
+        ],
         stdoutEncoding: utf8,
         stderrEncoding: utf8,
       );
@@ -174,13 +218,29 @@ class WhisperService {
     } else {
       final process = await Process.start(
         activeFfmpegPath,
-        ['-y', '-i', videoPath, '-vn', '-ac', '1', '-ar', '16000', '-acodec', 'pcm_s16le', outputWavPath],
+        [
+          '-y',
+          '-i',
+          videoPath,
+          '-vn',
+          '-ac',
+          '1',
+          '-ar',
+          '16000',
+          '-acodec',
+          'pcm_s16le',
+          outputWavPath
+        ],
       );
       _activeProcesses.add(process);
 
       try {
-        final stderrFuture = process.stderr.transform(const Utf8Decoder(allowMalformed: true)).join();
-        final stdoutFuture = process.stdout.transform(const Utf8Decoder(allowMalformed: true)).join();
+        final stderrFuture = process.stderr
+            .transform(const Utf8Decoder(allowMalformed: true))
+            .join();
+        final stdoutFuture = process.stdout
+            .transform(const Utf8Decoder(allowMalformed: true))
+            .join();
 
         exitCode = await process.exitCode;
         stderrStr = await stderrFuture;
@@ -191,11 +251,14 @@ class WhisperService {
     }
 
     if (exitCode != 0) {
-      LoggerService.instance.log(LogLevel.error, 'WhisperService', 'FFmpeg audio extraction failed. Exit code: $exitCode, Error: $stderrStr');
-      throw ProcessException(activeFfmpegPath, [], 'Audio extraction failed: $stderrStr', exitCode);
+      LoggerService.instance.log(LogLevel.error, 'WhisperService',
+          'FFmpeg audio extraction failed. Exit code: $exitCode, Error: $stderrStr');
+      throw ProcessException(activeFfmpegPath, [],
+          'Audio extraction failed: $stderrStr', exitCode);
     }
 
-    LoggerService.instance.log(LogLevel.info, 'WhisperService', 'Audio extraction successful: $outputWavPath');
+    LoggerService.instance.log(LogLevel.info, 'WhisperService',
+        'Audio extraction successful: $outputWavPath');
     return outputWavPath;
   }
 
@@ -210,6 +273,8 @@ class WhisperService {
     String? whisperCliPath,
     bool? translate,
     void Function(double progress, String status)? onWebProgress,
+    void Function(int progress)? onProgress,
+    bool? useGpu,
   }) async {
     if (kIsWeb) {
       String modelName = 'tiny';
@@ -222,7 +287,7 @@ class WhisperService {
       }
       try {
         final jsonStr = await WebWasmBridge.transcribe(
-          videoUrl: wavPath,
+          videoUrl: resolveWebVideoUrl(wavPath),
           modelName: modelName,
           language: language ?? 'auto',
           translate: translate ?? false,
@@ -230,7 +295,8 @@ class WhisperService {
         );
         return parseTranscriptionJson(jsonStr, expectedDuration);
       } catch (e) {
-        LoggerService.instance.log(LogLevel.error, 'WhisperService', 'Web WASM transcription failed: $e');
+        LoggerService.instance.log(LogLevel.error, 'WhisperService',
+            'Web WASM transcription failed: $e');
         rethrow;
       }
     }
@@ -250,34 +316,41 @@ class WhisperService {
 
     final wavFile = File(wavPath);
     if (!wavFile.existsSync()) {
-      LoggerService.instance.log(LogLevel.error, 'WhisperService', 'Transcription failed: WAV file not found: $wavPath');
+      LoggerService.instance.log(LogLevel.error, 'WhisperService',
+          'Transcription failed: WAV file not found: $wavPath');
       throw FileSystemException('WAV file not found', wavPath);
     }
 
     final activeModelPath = modelPath ?? _modelPath;
     if (activeModelPath == null || activeModelPath.isEmpty) {
-      LoggerService.instance.log(LogLevel.error, 'WhisperService', 'Transcription failed: No model configured.');
-      throw StateError('No whisper model configured. Please download and configure a model first.');
+      LoggerService.instance.log(LogLevel.error, 'WhisperService',
+          'Transcription failed: No model configured.');
+      throw StateError(
+          'No whisper model configured. Please download and configure a model first.');
     }
 
     final modelFile = File(activeModelPath);
     if (!modelFile.existsSync()) {
-      LoggerService.instance.log(LogLevel.error, 'WhisperService', 'Transcription failed: Model file not found at: $activeModelPath');
-      throw FileSystemException('Whisper model file not found. Please download and activate a model in Settings.', activeModelPath);
+      LoggerService.instance.log(LogLevel.error, 'WhisperService',
+          'Transcription failed: Model file not found at: $activeModelPath');
+      throw FileSystemException(
+          'Whisper model file not found. Please download and activate a model in Settings.',
+          activeModelPath);
     }
 
     // Determine thread count (shared by both FFI and CLI modes)
     int activeThreads = SettingsService.instance.whisperThreads;
     if (activeThreads <= 0) {
       activeThreads = (Platform.numberOfProcessors - 1).clamp(1, 16);
-      LoggerService.instance.log(LogLevel.info, 'WhisperService', 
+      LoggerService.instance.log(LogLevel.info, 'WhisperService',
           'Dynamic allocation active. Detected logical cores: ${Platform.numberOfProcessors}. Assigned threads: $activeThreads');
     }
 
     // Try FFI first for zero-setup execution (Windows/macOS/Linux)
     if (WhisperFfiService.instance.isAvailable) {
       try {
-        LoggerService.instance.log(LogLevel.action, 'WhisperService', 'Attempting native FFI transcription...');
+        LoggerService.instance.log(LogLevel.action, 'WhisperService',
+            'Attempting native FFI transcription...');
         return await WhisperFfiService.instance.transcribe(
           wavPath: wavPath,
           modelPath: activeModelPath,
@@ -287,7 +360,18 @@ class WhisperService {
           useVad: useVad,
           vadThreshold: vadThreshold,
           expectedDuration: expectedDuration,
+          onProgress: (pct) {
+            if (onProgress != null) onProgress(pct);
+            if (onWebProgress != null) {
+              onWebProgress(
+                  pct / 100.0, 'Running local speech-to-text ($pct%)...');
+            }
+          },
         );
+      } on TranscriptionCancelledException {
+        LoggerService.instance.log(LogLevel.info, 'WhisperService',
+            'Native FFI transcription cancelled by user.');
+        rethrow;
       } catch (e, stackTrace) {
         LoggerService.instance.log(
           LogLevel.warning,
@@ -307,11 +391,9 @@ class WhisperService {
       '-t', activeThreads.toString(),
     ];
 
-    if (language != null && language != 'auto') {
-      final sanitizedLanguage = language.replaceAll(RegExp(r'[^a-zA-Z_-]'), '');
-      if (sanitizedLanguage.isNotEmpty) {
-        args.addAll(['-l', sanitizedLanguage]);
-      }
+    final sanitizedLanguage = sanitizeLanguage(language);
+    if (sanitizedLanguage != 'auto') {
+      args.addAll(['-l', sanitizedLanguage]);
     }
 
     if (translate == true) {
@@ -320,68 +402,70 @@ class WhisperService {
 
     if (useVad == true) {
       args.add('--vad');
-      args.addAll(['--vad-threshold', (vadThreshold ?? 0.5).toStringAsFixed(2)]);
+      args.addAll(
+          ['--vad-threshold', (vadThreshold ?? 0.5).toStringAsFixed(2)]);
     }
 
-    final redactedCli = _redactPath(activeWhisperCliPath);
-    final redactedArgs = args.map((a) => _redactPath(a)).join(' ');
-    LoggerService.instance.log(LogLevel.info, 'WhisperService', 'Running transcription CLI: $redactedCli $redactedArgs');
+    final bool enableGpu = useGpu ??
+        (SettingsService.instance.isInitialized && SettingsService.instance.useGpu);
+
+    final List<String> activeArgs = List<String>.from(args);
+    if (!enableGpu) {
+      activeArgs.add('-ng');
+    }
 
     final jsonFile = File('$wavPath.json');
     final txtFile = File('$wavPath.txt');
     try {
-      final int exitCode;
-      final String stdoutStr;
-      final String stderrStr;
+      var runResult = await _runWhisperProcess(
+        executable: activeWhisperCliPath,
+        args: activeArgs,
+        onProgress: onProgress,
+        onWebProgress: onWebProgress,
+      );
 
-      if (processRunner != null) {
-        final res = await processRunner!(activeWhisperCliPath, args, stdoutEncoding: utf8, stderrEncoding: utf8);
-        exitCode = res.exitCode;
-        stdoutStr = res.stdout.toString();
-        stderrStr = res.stderr.toString();
-      } else {
-        final process = await Process.start(activeWhisperCliPath, args);
-        _activeProcesses.add(process);
-
-        final StringBuffer stderrBuffer = StringBuffer();
-        final stdoutFuture = process.stdout.transform(const Utf8Decoder(allowMalformed: true)).join();
-        
-        final stderrFuture = process.stderr
-            .transform(const Utf8Decoder(allowMalformed: true))
-            .transform(const LineSplitter())
-            .forEach((line) {
-          stderrBuffer.writeln(line);
-          if (line.contains('progress =')) {
-            final match = RegExp(r'progress\s*=\s*(\d+)%?').firstMatch(line);
-            if (match != null) {
-              final pct = int.tryParse(match.group(1) ?? '');
-              if (pct != null && onWebProgress != null) {
-                onWebProgress(pct / 100.0, 'Running local speech-to-text ($pct%)...');
-              }
-            }
-          }
-        });
-
-        try {
-          exitCode = await process.exitCode;
-          stdoutStr = await stdoutFuture;
-          await stderrFuture;
-          stderrStr = stderrBuffer.toString();
-        } finally {
-          _activeProcesses.remove(process);
-        }
+      // Automatic GPU error fallback to CPU SIMD mode (-ng)
+      if (runResult.exitCode != 0 &&
+          !activeArgs.contains('-ng') &&
+          isGpuFailure(runResult.stderr)) {
+        LoggerService.instance.log(LogLevel.warning, 'WhisperService',
+            'Whisper GPU inference failed (${runResult.stderr.trim()}). Falling back to CPU SIMD (-ng)...');
+        final fallbackArgs = List<String>.from(args)..add('-ng');
+        runResult = await _runWhisperProcess(
+          executable: activeWhisperCliPath,
+          args: fallbackArgs,
+          onProgress: onProgress,
+          onWebProgress: onWebProgress,
+        );
+      } else if (runResult.exitCode != 0 &&
+          activeArgs.contains('-ng') &&
+          runResult.stderr.contains('unknown argument: -ng')) {
+        // Legacy whisper binary compatibility fallback
+        LoggerService.instance.log(LogLevel.warning, 'WhisperService',
+            'Whisper binary does not support -ng flag. Retrying with default arguments...');
+        runResult = await _runWhisperProcess(
+          executable: activeWhisperCliPath,
+          args: args,
+          onProgress: onProgress,
+          onWebProgress: onWebProgress,
+        );
       }
- 
-      LoggerService.instance.log(LogLevel.trace, 'WhisperService', 'Transcription CLI finished. Output: ${stdoutStr.trim()}');
 
-      if (exitCode != 0) {
-        LoggerService.instance.log(LogLevel.error, 'WhisperService', 'Whisper transcription failed. Exit code: $exitCode, Error: $stderrStr');
-        throw ProcessException(activeWhisperCliPath, args, 'Transcription CLI failed: $stderrStr', exitCode);
+      LoggerService.instance.log(LogLevel.trace, 'WhisperService',
+          'Transcription CLI finished. Output: ${runResult.stdout.trim()}');
+
+      if (runResult.exitCode != 0) {
+        LoggerService.instance.log(LogLevel.error, 'WhisperService',
+            'Whisper transcription failed. Exit code: ${runResult.exitCode}, Error: ${runResult.stderr}');
+        throw ProcessException(activeWhisperCliPath, activeArgs,
+            'Transcription CLI failed: ${runResult.stderr}', runResult.exitCode);
       }
 
       if (!jsonFile.existsSync()) {
-        LoggerService.instance.log(LogLevel.error, 'WhisperService', 'Whisper JSON output not found at ${jsonFile.path}');
-        throw FileSystemException('Transcription JSON output not found', jsonFile.path);
+        LoggerService.instance.log(LogLevel.error, 'WhisperService',
+            'Whisper JSON output not found at ${jsonFile.path}');
+        throw FileSystemException(
+            'Transcription JSON output not found', jsonFile.path);
       }
 
       final bytes = await jsonFile.readAsBytes();
@@ -390,27 +474,96 @@ class WhisperService {
     } finally {
       try {
         if (jsonFile.existsSync()) await jsonFile.delete();
-      } catch (_) {}
+      } catch (e) {
+        LoggerService.instance.debug('Failed to delete temp jsonFile: $e');
+      }
       try {
         if (txtFile.existsSync()) await txtFile.delete();
-      } catch (_) {}
+      } catch (e) {
+        LoggerService.instance.debug('Failed to delete temp txtFile: $e');
+      }
+    }
+  }
+
+  Future<({int exitCode, String stdout, String stderr})> _runWhisperProcess({
+    required String executable,
+    required List<String> args,
+    void Function(int progress)? onProgress,
+    void Function(double progress, String stage)? onWebProgress,
+  }) async {
+    final redactedCli = _redactPath(executable);
+    final redactedArgs = args.map((a) => _redactPath(a)).join(' ');
+    LoggerService.instance.log(LogLevel.info, 'WhisperService',
+        'Running transcription CLI: $redactedCli $redactedArgs');
+
+    if (processRunner != null) {
+      final res = await processRunner!(executable, args,
+          stdoutEncoding: utf8, stderrEncoding: utf8);
+      return (
+        exitCode: res.exitCode,
+        stdout: res.stdout.toString(),
+        stderr: res.stderr.toString(),
+      );
+    }
+
+    final process = await Process.start(executable, args);
+    _activeProcesses.add(process);
+
+    final StringBuffer stderrBuffer = StringBuffer();
+    final stdoutFuture = process.stdout
+        .transform(const Utf8Decoder(allowMalformed: true))
+        .join();
+
+    final stderrFuture = process.stderr
+        .transform(const Utf8Decoder(allowMalformed: true))
+        .transform(const LineSplitter())
+        .forEach((line) {
+      stderrBuffer.writeln(line);
+      if (line.contains('progress =')) {
+        final match = RegExp(r'progress\s*=\s*(\d+)%?').firstMatch(line);
+        if (match != null) {
+          final pct = int.tryParse(match.group(1) ?? '');
+          if (pct != null) {
+            if (onProgress != null) onProgress(pct);
+            if (onWebProgress != null) {
+              onWebProgress(
+                  pct / 100.0, 'Running local speech-to-text ($pct%)...');
+            }
+          }
+        }
+      }
+    });
+
+    try {
+      final exitCode = await process.exitCode;
+      final stdoutStr = await stdoutFuture;
+      await stderrFuture;
+      final stderrStr = stderrBuffer.toString();
+      return (exitCode: exitCode, stdout: stdoutStr, stderr: stderrStr);
+    } finally {
+      _activeProcesses.remove(process);
     }
   }
 
   /// Parses JSON output containing segments and words timestamps.
   /// Shared between desktop file reading and mobile memory FFI result strings.
-  TranscriptionResult parseTranscriptionJson(String jsonString, double? expectedDuration) {
+  TranscriptionResult parseTranscriptionJson(
+      String jsonString, double? expectedDuration) {
     final Map<String, dynamic> data;
     try {
       data = jsonDecode(jsonString) as Map<String, dynamic>;
     } catch (e) {
-      LoggerService.instance.log(LogLevel.error, 'WhisperService', 'Failed to parse transcription JSON: $e');
-      throw FormatException('Malformed transcription JSON output from Whisper CLI: $e', jsonString);
+      LoggerService.instance.log(LogLevel.error, 'WhisperService',
+          'Failed to parse transcription JSON: $e');
+      throw FormatException(
+          'Malformed transcription JSON output from Whisper CLI: $e',
+          jsonString);
     }
 
     if (data.containsKey('error')) {
       final errorMsg = data['error'];
-      LoggerService.instance.log(LogLevel.error, 'WhisperService', 'Transcription error: $errorMsg');
+      LoggerService.instance.log(
+          LogLevel.error, 'WhisperService', 'Transcription error: $errorMsg');
       throw Exception('Whisper transcription failed: $errorMsg');
     }
 
@@ -421,61 +574,100 @@ class WhisperService {
     String detectedLang = 'en';
     if (data.containsKey('language')) {
       detectedLang = data['language'] as String? ?? 'en';
-    } else if (data['result'] is Map && (data['result'] as Map).containsKey('language')) {
+    } else if (data['result'] is Map &&
+        (data['result'] as Map).containsKey('language')) {
       detectedLang = (data['result'] as Map)['language'] as String? ?? 'en';
-    } else if (data['params'] is Map && (data['params'] as Map).containsKey('language')) {
+    } else if (data['params'] is Map &&
+        (data['params'] as Map).containsKey('language')) {
       detectedLang = (data['params'] as Map)['language'] as String? ?? 'en';
     }
+    final cleanLang = sanitizeLanguage(detectedLang);
+    detectedLang = cleanLang == 'auto' ? 'en' : cleanLang;
 
     // Scan raw timestamps to determine if unit is milliseconds or seconds
     double maxRawTimestamp = 0.0;
+    double totalWordDuration = 0.0;
+    int sampledWordsCount = 0;
+
     for (final segment in segments) {
       if (segment is! Map) continue;
       if (segment.containsKey('tokens')) {
-        final List<dynamic>? tokens = segment['tokens'] as List<dynamic>?;
+        final tokens = segment['tokens'] as List<dynamic>?;
         if (tokens != null) {
           for (final token in tokens) {
             if (token is! Map) continue;
             final offsets = token['offsets'] as Map<dynamic, dynamic>?;
             if (offsets != null) {
+              final from = (offsets['from'] as num?)?.toDouble() ?? 0.0;
               final to = (offsets['to'] as num?)?.toDouble() ?? 0.0;
               if (to > maxRawTimestamp) maxRawTimestamp = to;
+              if (to > from) {
+                totalWordDuration += (to - from);
+                sampledWordsCount++;
+              }
             }
           }
         }
       } else if (segment.containsKey('timestamps')) {
         final ts = segment['timestamps'];
         if (ts is Map) {
+          final from = (ts['from'] as num?)?.toDouble() ?? 0.0;
           final to = (ts['to'] as num?)?.toDouble() ?? 0.0;
           if (to > maxRawTimestamp) maxRawTimestamp = to;
+          if (to > from) {
+            totalWordDuration += (to - from);
+            sampledWordsCount++;
+          }
         }
       } else {
-        final List<dynamic> segmentWords = segment['words'] is List ? segment['words'] as List : [];
+        final List<dynamic> segmentWords =
+            segment['words'] is List ? segment['words'] as List : [];
         for (final w in segmentWords) {
           if (w is! Map) continue;
+          final start = (w['start'] as num?)?.toDouble() ?? 0.0;
           final end = (w['end'] as num?)?.toDouble() ?? 0.0;
           if (end > maxRawTimestamp) maxRawTimestamp = end;
+          if (end > start) {
+            totalWordDuration += (end - start);
+            sampledWordsCount++;
+          }
         }
       }
     }
 
-    final bool isMs = expectedDuration != null
-        ? (maxRawTimestamp > expectedDuration * 1.5)
-        : (maxRawTimestamp > 1000.0);
+    final double avgWordDuration = sampledWordsCount > 0
+        ? (totalWordDuration / sampledWordsCount)
+        : 0.0;
+
+    final bool isMs;
+    if (expectedDuration != null) {
+      isMs = maxRawTimestamp > expectedDuration * 1.5;
+    } else {
+      if (maxRawTimestamp > 1000.0 && avgWordDuration > 5.0) {
+        isMs = true;
+      } else {
+        isMs = maxRawTimestamp > 360000.0;
+      }
+    }
 
     // Calculate drift multiplier if expected duration is provided and transcription is very long (>1000s)
     double driftMultiplier = 1.0;
-    if (expectedDuration != null && expectedDuration > 1000.0 && segments.isNotEmpty) {
+    if (expectedDuration != null &&
+        expectedDuration > 1000.0 &&
+        segments.isNotEmpty) {
       final lastSegment = segments.last;
       if (lastSegment is Map) {
-        final lastSegmentWords = lastSegment['words'] is List ? lastSegment['words'] as List<dynamic> : const <dynamic>[];
+        final lastSegmentWords = lastSegment['words'] is List
+            ? lastSegment['words'] as List<dynamic>
+            : const <dynamic>[];
         double whisperEnd = 0.0;
         if (lastSegmentWords.isNotEmpty) {
           final lastWord = lastSegmentWords.last;
           if (lastWord is Map) {
             whisperEnd = (lastWord['end'] as num?)?.toDouble() ?? 0.0;
           }
-        } else if (lastSegment.containsKey('timestamps') && lastSegment['timestamps'] is Map) {
+        } else if (lastSegment.containsKey('timestamps') &&
+            lastSegment['timestamps'] is Map) {
           final ts = lastSegment['timestamps'] as Map;
           whisperEnd = (ts['to'] as num?)?.toDouble() ?? 0.0;
         } else if (lastSegment.containsKey('end')) {
@@ -488,20 +680,23 @@ class WhisperService {
           whisperEnd /= 1000.0;
         }
 
-        if (whisperEnd > 0 && (expectedDuration - whisperEnd).abs() <= (expectedDuration * 0.10)) {
+        if (whisperEnd > 0 &&
+            (expectedDuration - whisperEnd).abs() <=
+                (expectedDuration * 0.10)) {
           final rawDrift = expectedDuration / whisperEnd;
-          
+
           final knownRatios = [
             48000 / 44100, // 1.08843 (Audio sample rate mismatch)
             44100 / 48000, // 0.91875
-            25 / 24,       // 1.04166 (PAL/Film framerate conversion drift)
-            24 / 25,       // 0.96000
+            25 / 24, // 1.04166 (PAL/Film framerate conversion drift)
+            24 / 25, // 0.96000
           ];
-          
+
           for (final ratio in knownRatios) {
             if ((rawDrift - ratio).abs() < 0.005) {
               driftMultiplier = ratio;
-              LoggerService.instance.log(LogLevel.info, 'WhisperService', 'Applied exact hardware drift correction multiplier: $driftMultiplier (matches known ratio $ratio)');
+              LoggerService.instance.log(LogLevel.info, 'WhisperService',
+                  'Applied exact hardware drift correction multiplier: $driftMultiplier (matches known ratio $ratio)');
               break;
             }
           }
@@ -512,7 +707,8 @@ class WhisperService {
     for (final segment in segments) {
       if (segment is! Map) continue;
       // Check if token-level timestamps are available
-      final List<dynamic>? tokens = segment['tokens'] is List ? segment['tokens'] as List : null;
+      final List<dynamic>? tokens =
+          segment['tokens'] is List ? segment['tokens'] as List : null;
       if (tokens != null && tokens.isNotEmpty) {
         WordSchema? currentWord;
         for (final token in tokens) {
@@ -521,7 +717,8 @@ class WhisperService {
           if (textRaw.startsWith('[') && textRaw.endsWith(']')) {
             continue;
           }
-          final offsets = token['offsets'] is Map ? token['offsets'] as Map : null;
+          final offsets =
+              token['offsets'] is Map ? token['offsets'] as Map : null;
           if (offsets == null) continue;
 
           final startMs = (offsets['from'] as num?)?.toDouble() ?? 0.0;
@@ -530,7 +727,8 @@ class WhisperService {
           final double endSec = endMs / 1000.0;
           final double confidence = (token['p'] as num?)?.toDouble() ?? 1.0;
 
-          final isWordStart = textRaw.startsWith(' ') || textRaw.startsWith('Ġ');
+          final isWordStart =
+              textRaw.startsWith(' ') || textRaw.startsWith('Ġ');
           final cleanText = textRaw.trim();
           if (cleanText.isEmpty) continue;
 
@@ -546,13 +744,19 @@ class WhisperService {
           } else {
             currentWord.text = (currentWord.text ?? '') + cleanText;
             currentWord.end = endSec * driftMultiplier;
-            currentWord.confidence = ((currentWord.confidence ?? 1.0) + confidence) / 2.0;
+            currentWord.confidence =
+                ((currentWord.confidence ?? 1.0) + confidence) / 2.0;
           }
         }
-      } else if (segment.containsKey('text') && segment.containsKey('timestamps')) {
+      } else if (segment.containsKey('text') &&
+          segment.containsKey('timestamps')) {
         final timestamps = segment['timestamps'];
-        final startRaw = timestamps is Map ? (timestamps['from'] as num?)?.toDouble() ?? 0.0 : 0.0;
-        final endRaw = timestamps is Map ? (timestamps['to'] as num?)?.toDouble() ?? 0.0 : 0.0;
+        final startRaw = timestamps is Map
+            ? (timestamps['from'] as num?)?.toDouble() ?? 0.0
+            : 0.0;
+        final endRaw = timestamps is Map
+            ? (timestamps['to'] as num?)?.toDouble() ?? 0.0
+            : 0.0;
 
         final double startSec = isMs ? startRaw / 1000.0 : startRaw;
         final double endSec = isMs ? endRaw / 1000.0 : endRaw;
@@ -567,15 +771,16 @@ class WhisperService {
             ..confidence = (segment['p'] as num?)?.toDouble() ?? 1.0,
         );
       } else {
-        final List<dynamic> segmentWords = segment['words'] is List ? segment['words'] as List : [];
+        final List<dynamic> segmentWords =
+            segment['words'] is List ? segment['words'] as List : [];
         for (final w in segmentWords) {
           if (w is! Map) continue;
           final startRaw = (w['start'] as num?)?.toDouble() ?? 0.0;
           final endRaw = (w['end'] as num?)?.toDouble() ?? 0.0;
-          
+
           final double startSec = isMs ? startRaw / 1000.0 : startRaw;
           final double endSec = isMs ? endRaw / 1000.0 : endRaw;
-          
+
           words.add(
             WordSchema()
               ..wordId = _uuid.v4()
@@ -589,7 +794,8 @@ class WhisperService {
       }
     }
 
-    LoggerService.instance.log(LogLevel.info, 'WhisperService', 'Transcription parse successful. Extracted ${words.length} words in language: $detectedLang');
+    LoggerService.instance.log(LogLevel.info, 'WhisperService',
+        'Transcription parse successful. Extracted ${words.length} words in language: $detectedLang');
 
     return TranscriptionResult(
       words: words,
@@ -599,14 +805,6 @@ class WhisperService {
 
   String _redactPath(String path) {
     if (kIsWeb) return path;
-    try {
-      final userProfile = Platform.environment['USERPROFILE'] ?? Platform.environment['HOME'];
-      if (userProfile != null && userProfile.isNotEmpty && path.contains(userProfile)) {
-        return path.replaceAll(userProfile, '<USER_PROFILE>');
-      }
-      return path.replaceAll(RegExp(r'[Cc]:\\Users\\[^\\]+'), r'C:\Users\<USER>');
-    } catch (_) {
-      return path;
-    }
+    return LoggerService.instance.scrubPii(path);
   }
 }

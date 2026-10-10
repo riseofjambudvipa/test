@@ -40,6 +40,12 @@ void main() {
       expect(() => AppDirs.isWindowsVcRuntimeInstalled(), returnsNormally);
     });
 
+    test('isAppleSilicon and getCpuArchitecture should return valid results without throwing', () {
+      expect(() => AppDirs.isAppleSilicon(), returnsNormally);
+      expect(AppDirs.isAppleSilicon(), isA<bool>());
+      expect(AppDirs.getCpuArchitecture(), isNotEmpty);
+    });
+
     test('cpuSupportsAvx should cache and return boolean flag safely', () async {
       AppDirs.setHasAvx(true);
       expect(await AppDirs.cpuSupportsAvx(), isTrue);

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:capstudio/core/video/video_proxy_service.dart';
 import 'package:capstudio/core/database/schemas/project.dart';
 import 'package:capstudio/core/database/isar_service.dart';
 import 'package:capstudio/core/settings/settings_service.dart';
@@ -211,7 +214,7 @@ void main() {
       expect(words.length, 3);
       expect(words[1].text, '');
       expect(words[1].start, 0.5);
-      expect(words[1].end, 1.0);
+      expect(words[1].end, 0.59); // Clamped so it does not overlap w2 (start: 0.6)
     });
 
     test('should add split chunk after a specified word', () {
@@ -255,6 +258,53 @@ void main() {
       controller.setFullConfig(newConfig);
       expect(controller.state.project!.config.name, 'new_template');
       expect(controller.state.project!.config.stroke, 'thick');
+    });
+
+    test('should preserve custom word emojis and positions when switching style template via setFullConfig', () {
+      controller.updateWord(
+        'w1',
+        emoji: 'notoColorEmoji:🔥',
+        emojiX: 10.0,
+        emojiY: -5.0,
+        emojiScale: 1.5,
+      );
+
+      final wordBefore = controller.state.project!.words.firstWhere((w) => w.wordId == 'w1');
+      expect(wordBefore.emoji, 'notoColorEmoji:🔥');
+      expect(wordBefore.emojiConfig?.x, 10.0);
+      expect(wordBefore.emojiConfig?.y, -5.0);
+      expect(wordBefore.emojiConfig?.scale, 1.5);
+
+      final revisionBefore = controller.state.revision;
+
+      final newConfig = ProjectConfigSchema()
+        ..name = 'MrBeast'
+        ..style = (StyleConfigSchema()
+          ..fontFamily = 'Impact'
+          ..fontWeight = '900'
+          ..textTransform = 'uppercase'
+          ..color = '#ffffff'
+          ..fontSize = 60.0
+          ..top = 50.0)
+        ..highlightStyle = (HighlightStyleSchema()
+          ..mainColor = '#FFE600'
+          ..secondColor = '#06b6d4'
+          ..thirdColor = '#22c55e')
+        ..stroke = 'thick'
+        ..animation = 'bounce'
+        ..shadow = 'hard';
+
+      controller.setFullConfig(newConfig);
+
+      // Verify revision bumped
+      expect(controller.state.revision, greaterThan(revisionBefore));
+
+      // Verify custom word emojis and configurations are completely preserved
+      final wordAfter = controller.state.project!.words.firstWhere((w) => w.wordId == 'w1');
+      expect(wordAfter.emoji, 'notoColorEmoji:🔥');
+      expect(wordAfter.emojiConfig?.x, 10.0);
+      expect(wordAfter.emojiConfig?.y, -5.0);
+      expect(wordAfter.emojiConfig?.scale, 1.5);
     });
 
     test('should enforce maximum history size of 50', () {
@@ -516,4 +566,249 @@ void main() {
       expect(() => c.deleteWords(['w1']), returnsNormally); // Non-existent wordId should not crash
     });
   });
+
+  group('EditorController History Batching Regression Tests', () {
+    test('a batched style slider drag records exactly ONE history entry', () {
+      // FIX (perf): style slider drags used to call _recordChange() per tick,
+      // flooding undo history with dozens of entries per gesture. Batching
+      // must collapse a whole drag into a single undo step.
+      controller.beginHistoryBatch();
+      for (int i = 0; i < 8; i++) {
+        controller.updateStyleProp('fontSize', 24.0 + i * 2.0);
+      }
+      controller.endHistoryBatch();
+
+      expect(controller.state.project!.config.style.fontSize, 38.0);
+
+      // ONE undo restores the pre-drag value (24.0).
+      controller.undo();
+      expect(controller.state.project!.config.style.fontSize, 24.0);
+
+      // A second undo is a no-op: the drag contributed exactly one entry.
+      final afterFirstUndo = controller.state.project!.config.style.fontSize;
+      controller.undo();
+      expect(controller.state.project!.config.style.fontSize, afterFirstUndo);
+    });
+
+    test('a batched trim-handle drag records exactly ONE history entry', () {
+      // Trim-handle drags call setTrim per tick; batching must collapse the
+      // whole drag into one undo step so the trim can't be undone tick by tick.
+      controller.beginHistoryBatch();
+      for (int i = 0; i < 5; i++) {
+        controller.setTrim(0.5 + i * 0.1, 10.0);
+      }
+      controller.endHistoryBatch();
+
+      expect(controller.state.project!.trimStart, 0.9);
+
+      // ONE undo restores the pre-drag trim (0.0).
+      controller.undo();
+      expect(controller.state.project!.trimStart, 0.0);
+
+      final afterFirstUndo = controller.state.project!.trimStart;
+      controller.undo();
+      expect(controller.state.project!.trimStart, afterFirstUndo);
+    });
+
+    test('nested batches still commit exactly one entry', () {
+      // Nested begin/end pairs (multi-touch, overlapping gestures) must still
+      // collapse to a single entry at the outermost end.
+      controller.beginHistoryBatch();
+      controller.beginHistoryBatch();
+      controller.updateStyleProp('top', 30.0);
+      controller.endHistoryBatch();
+      controller.updateStyleProp('top', 40.0);
+      controller.endHistoryBatch();
+
+      expect(controller.state.project!.config.style.top, 40.0);
+
+      controller.undo();
+      expect(controller.state.project!.config.style.top, 70.0);
+
+      final afterFirstUndo = controller.state.project!.config.style.top;
+      controller.undo();
+      expect(controller.state.project!.config.style.top, afterFirstUndo);
+    });
+
+    test('unbatched edits still record one entry per change', () {
+      // The batching path must not affect ordinary (non-drag) edits.
+      controller.updateStyleProp('fontSize', 30.0);
+      controller.updateStyleProp('fontSize', 32.0);
+
+      controller.undo();
+      expect(controller.state.project!.config.style.fontSize, 30.0);
+
+      controller.undo();
+      expect(controller.state.project!.config.style.fontSize, 24.0);
+    });
+
+    test('updateCaptionLeft and updateCaptionPosition update 2D coordinates with clamping', () {
+      controller.updateCaptionPosition(top: 25.0, left: 35.0);
+      expect(controller.state.project!.config.style.top, equals(25.0));
+      expect(controller.state.project!.config.style.left, equals(35.0));
+
+      controller.updateCaptionLeft(80.0);
+      expect(controller.state.project!.config.style.left, equals(80.0));
+      expect(controller.state.project!.config.style.top, equals(25.0));
+
+      // Test clamping
+      controller.updateCaptionPosition(top: -50.0, left: 150.0);
+      expect(controller.state.project!.config.style.top, equals(5.0));
+      expect(controller.state.project!.config.style.left, equals(95.0));
+    });
+
+    test('cutVideoSegmentForTimeRange splits and deletes segment from video timeline', () {
+      // Total duration is 10.0s. Cut 2.0 to 4.0s out.
+      controller.cutVideoSegmentForTimeRange(2.0, 4.0, hideWords: true);
+
+      final segments = controller.state.project!.segments;
+      expect(segments, isNotNull);
+      expect(segments!.length, equals(3));
+
+      // Segment 1: 0.0 to 2.0 (active)
+      expect(segments[0].start, equals(0.0));
+      expect(segments[0].end, equals(2.0));
+      expect(segments[0].isDeleted, isFalse);
+
+      // Segment 2: 2.0 to 4.0 (cut / deleted)
+      expect(segments[1].start, equals(2.0));
+      expect(segments[1].end, equals(4.0));
+      expect(segments[1].isDeleted, isTrue);
+
+      // Segment 3: 4.0 to 10.0 (active)
+      expect(segments[2].start, equals(4.0));
+      expect(segments[2].end, equals(10.0));
+      expect(segments[2].isDeleted, isFalse);
+    });
+
+    test('cutVideoSegmentsForTimeRanges batch cuts multiple segments from timeline', () {
+      controller.cutVideoSegmentsForTimeRanges([
+        (start: 1.0, end: 2.0),
+        (start: 5.0, end: 6.0),
+      ], hideWords: true);
+
+      final segments = controller.state.project!.segments;
+      expect(segments, isNotNull);
+      expect(segments!.length, equals(5));
+
+      expect(segments[0].start, equals(0.0));
+      expect(segments[0].end, equals(1.0));
+      expect(segments[0].isDeleted, isFalse);
+
+      expect(segments[1].start, equals(1.0));
+      expect(segments[1].end, equals(2.0));
+      expect(segments[1].isDeleted, isTrue);
+
+      expect(segments[2].start, equals(2.0));
+      expect(segments[2].end, equals(5.0));
+      expect(segments[2].isDeleted, isFalse);
+
+      expect(segments[3].start, equals(5.0));
+      expect(segments[3].end, equals(6.0));
+      expect(segments[3].isDeleted, isTrue);
+
+      expect(segments[4].start, equals(6.0));
+      expect(segments[4].end, equals(10.0));
+      expect(segments[4].isDeleted, isFalse);
+    });
+
+    test('cutFillerWordsFromVideo automatically detects filler words and cuts them from video timeline', () {
+      // Add filler words ("um", "basically") to project
+      final w1 = makeWord(text: 'Hello', start: 0.0, end: 1.0);
+      final w2 = makeWord(text: 'um', start: 1.0, end: 1.5);
+      final w3 = makeWord(text: 'everyone', start: 1.5, end: 3.0);
+      final w4 = makeWord(text: 'basically', start: 3.0, end: 3.8);
+      final w5 = makeWord(text: 'welcome', start: 3.8, end: 5.0);
+
+      controller.importSubtitles([w1, w2, w3, w4, w5]);
+
+      final cutCount = controller.cutFillerWordsFromVideo();
+      expect(cutCount, equals(2));
+
+      // Words should be marked hidden
+      final words = controller.state.project!.words;
+      expect(words[1].hidden, isTrue);
+      expect(words[3].hidden, isTrue);
+      expect(words[0].hidden, isFalse);
+
+      // Video timeline segments should have cut intervals for [1.0, 1.5] and [3.0, 3.8]
+      final segments = controller.state.project!.segments;
+      expect(segments, isNotNull);
+      final deleted = segments!.where((s) => s.isDeleted == true).toList();
+      expect(deleted.length, equals(2));
+      expect(deleted[0].start, equals(1.0));
+      expect(deleted[0].end, equals(1.5));
+      expect(deleted[1].start, equals(3.0));
+      expect(deleted[1].end, equals(3.8));
+    });
+  });
+
+  group('EditorController 4K Video Proxy Pipeline', () {
+    test('toggleProxyMode switches active proxy to false if currently active', () async {
+      controller.setProject(testProject);
+      // Simulate proxy already active
+      controller.state = controller.state.copyWith(isProxyActive: true);
+      expect(controller.state.isProxyActive, isTrue);
+
+      await controller.toggleProxyMode();
+      expect(controller.state.isProxyActive, isFalse);
+    });
+
+    test('toggleProxyMode activates proxy when proxy file exists on disk', () async {
+      controller.setProject(testProject);
+      controller.state = controller.state.copyWith(isProxyActive: false);
+
+      final proxyPath = VideoProxyService.instance.getProxyPath(
+        testProject.projectId,
+        testProject.videoPath,
+      );
+      final proxyFile = File(proxyPath);
+      await proxyFile.create(recursive: true);
+      await proxyFile.writeAsBytes(List.filled(50000, 0));
+
+      try {
+        await controller.toggleProxyMode();
+        expect(controller.state.isProxyActive, isTrue);
+      } finally {
+        if (await proxyFile.exists()) {
+          await proxyFile.delete();
+        }
+      }
+    });
+
+    test('generateProxy runs FFmpeg generation and updates state on success', () async {
+      controller.setProject(testProject);
+
+      final dummySource = File(testProject.videoPath);
+      await dummySource.create();
+      await dummySource.writeAsBytes(List.filled(1024, 0));
+
+      final proxyPath = VideoProxyService.instance.getProxyPath(
+        testProject.projectId,
+        testProject.videoPath,
+      );
+      final stagingFile = File('$proxyPath.partial');
+      final proxyFile = File(proxyPath);
+
+      VideoProxyService.instance.processRunner = (executable, arguments) async {
+        await stagingFile.create(recursive: true);
+        await stagingFile.writeAsBytes(List.filled(2048, 1));
+        return ProcessResult(0, 0, '', '');
+      };
+
+      try {
+        final success = await controller.generateProxy();
+        expect(success, isTrue);
+        expect(controller.state.isProxyActive, isTrue);
+        expect(controller.state.isGeneratingProxy, isFalse);
+        expect(controller.state.proxyProgress, equals(1.0));
+      } finally {
+        VideoProxyService.instance.processRunner = null;
+        if (await dummySource.exists()) await dummySource.delete();
+        if (await stagingFile.exists()) await stagingFile.delete();
+        if (await proxyFile.exists()) await proxyFile.delete();
+      }
+    });
+  });
 }
+

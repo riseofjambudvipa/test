@@ -54,8 +54,11 @@ class AudioSynthesizer {
     int offset = 44;
     for (int i = 0; i < numSamples; i++) {
       final t = i / sampleRate;
-      final val = synthFunc(t);
-      final sampleVal = (val.clamp(-1.0, 1.0) * 32767).round();
+      final raw = synthFunc(t);
+      // FIX (audit): NaN.round() throws; guard so a misbehaving generator
+      // can't crash synthesis. NaN.clamp() also yields NaN in Dart.
+      final val = raw.isNaN ? 0.0 : raw.clamp(-1.0, 1.0);
+      final sampleVal = (val * 32767).round();
       byteData.setInt16(offset, sampleVal, Endian.little);
       offset += 2;
     }

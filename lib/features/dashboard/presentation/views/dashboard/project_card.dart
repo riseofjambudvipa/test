@@ -1,9 +1,14 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:convert';
+import 'package:file_picker/file_picker.dart';
 import '../../../../../app/theme.dart';
 import '../../../../../core/database/schemas/project.dart';
+import '../../../../../core/project/project_bundle_service.dart';
+import '../../../../../core/utils/web_download_helper.dart';
 import '../../../../../core/utils/premium_blur_dialog.dart';
 import '../../controllers/dashboard_controller.dart';
 import '../../../../../l10n/app_localizations.dart';
@@ -58,8 +63,12 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
       return;
     }
     if (kIsWeb) {
-      if (mounted) {
-        setState(() => _thumbnailExists = false);
+      // FIX (audit): this used to force _thumbnailExists = false, making the
+      // Image.network branch below permanently dead code — web users never
+      // saw thumbnails. dart:io File checks don't work on web, so trust the
+      // stored path and let the image's errorBuilder handle failures.
+      if (widget.project.thumbnailPath != null && mounted) {
+        setState(() => _thumbnailExists = true);
       }
       return;
     }
@@ -68,6 +77,53 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
         setState(() => _thumbnailExists = exists);
       }
     });
+  }
+
+  Future<void> _exportProjectBundle(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final safeName = widget.project.name.replaceAll(RegExp(r'[^\w\s-]'), '').trim();
+      final defaultFileName = '${safeName.isNotEmpty ? safeName : 'project'}.capstudio';
+
+      final map = ProjectBundleService.instance.serialize(widget.project);
+      final jsonStr = const JsonEncoder.withIndent('  ').convert(map);
+
+      if (kIsWeb) {
+        downloadFileWeb(jsonStr, defaultFileName);
+        messenger.showSnackBar(
+          SnackBar(
+            content: const Text('Exported project bundle (.capstudio)!'),
+            backgroundColor: AppTheme.accentGreen,
+          ),
+        );
+      } else {
+        final bytes = Uint8List.fromList(utf8.encode(jsonStr));
+        final savePath = await FilePicker.saveFile(
+          dialogTitle: 'Export Project Backup (.capstudio)',
+          fileName: defaultFileName,
+          type: FileType.custom,
+          allowedExtensions: ['capstudio', 'json'],
+          bytes: bytes,
+        );
+
+        if (savePath != null) {
+          await File(savePath).writeAsString(jsonStr);
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text('Exported project backup: $savePath'),
+              backgroundColor: AppTheme.accentGreen,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('Failed to export project: $e'),
+          backgroundColor: AppTheme.accentRed,
+        ),
+      );
+    }
   }
 
   @override
@@ -108,7 +164,7 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                       ).copyWith(
                         border: Border(
                           right: BorderSide(
-                            color: Colors.white.withValues(alpha: 0.04),
+                            color: AppTheme.borderGlass,
                             width: 1,
                           ),
                         ),
@@ -125,7 +181,7 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                                         child: Icon(
                                           Icons.movie_creation_outlined,
                                           size: 24,
-                                          color: Colors.white.withValues(alpha: 0.15),
+                                          color: AppTheme.mutedText,
                                         ),
                                       ),
                                     )
@@ -136,7 +192,7 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                                         child: Icon(
                                           Icons.movie_creation_outlined,
                                           size: 24,
-                                          color: Colors.white.withValues(alpha: 0.15),
+                                          color: AppTheme.mutedText,
                                         ),
                                       ),
                                     ))
@@ -144,7 +200,7 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                                   child: Icon(
                                     Icons.movie_creation_outlined,
                                     size: 24,
-                                    color: Colors.white.withValues(alpha: 0.15),
+                                    color: AppTheme.mutedText,
                                   ),
                                 ),
                           AnimatedOpacity(
@@ -183,7 +239,7 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: AppTheme.primaryText,
                                       fontSize: isSmallHeight ? 13 : 14,
                                     ),
                                   ),
@@ -215,7 +271,7 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                                   const SizedBox(width: 4),
                                   Expanded(
                                     child: Text(
-                                      '${AppLocalizations.of(context)!.createdLabel} $formattedDate',
+                                      '${AppLocalizations.of(context)?.createdLabel ?? 'Created:'} $formattedDate',
                                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                         fontSize: 10,
                                         color: AppTheme.secondaryText,
@@ -237,16 +293,17 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
               LayoutBuilder(
                 builder: (context, constraints) {
                   final showLabels = constraints.maxWidth >= 450;
+                  final l10n = AppLocalizations.of(context);
                   return Container(
                     height: 40,
                     decoration: AppTheme.glassDecoration(
-                      color: Colors.white.withValues(alpha: 0.015),
+                      color: AppTheme.cardBgElevated,
                       borderRadius: 0,
                       borderOpacity: 0.0,
                     ).copyWith(
                       border: Border(
                         top: BorderSide(
-                          color: Colors.white.withValues(alpha: 0.04),
+                          color: AppTheme.borderGlass,
                           width: 1,
                         ),
                       ),
@@ -259,7 +316,7 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                                 onPressed: widget.onEdit,
                                 icon: Icon(Icons.edit_outlined, size: 12, color: AppTheme.accentOrange),
                                 label: Text(
-                                  'EDIT',
+                                  l10n?.btnEdit ?? 'EDIT',
                                   style: TextStyle(
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
@@ -274,17 +331,17 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                             : IconButton(
                                 icon: Icon(Icons.edit_outlined, size: 16, color: AppTheme.accentOrange),
                                 onPressed: widget.onEdit,
-                                tooltip: 'Edit',
+                                tooltip: l10n?.tooltipEdit ?? 'Edit',
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
                               ),
-                        const VerticalDivider(width: 1, color: Colors.white10, indent: 6, endIndent: 6),
+                        VerticalDivider(width: 1, color: AppTheme.dividerColor, indent: 6, endIndent: 6),
                         showLabels
                             ? TextButton.icon(
                                 onPressed: widget.onRename,
                                 icon: Icon(Icons.drive_file_rename_outline, size: 12, color: AppTheme.accentPink),
                                 label: Text(
-                                  'RENAME',
+                                  l10n?.btnRename ?? 'RENAME',
                                   style: TextStyle(
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
@@ -299,11 +356,11 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                             : IconButton(
                                 icon: Icon(Icons.drive_file_rename_outline, size: 16, color: AppTheme.accentPink),
                                 onPressed: widget.onRename,
-                                tooltip: 'Rename',
+                                tooltip: l10n?.tooltipRename ?? 'Rename',
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
                               ),
-                        const VerticalDivider(width: 1, color: Colors.white10, indent: 6, endIndent: 6),
+                        VerticalDivider(width: 1, color: AppTheme.dividerColor, indent: 6, endIndent: 6),
                         showLabels
                             ? TextButton.icon(
                                 onPressed: () {
@@ -311,7 +368,7 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                                 },
                                 icon: Icon(Icons.copy_outlined, size: 12, color: AppTheme.accentCyan),
                                 label: Text(
-                                  'DUPLICATE',
+                                  l10n?.btnDuplicate ?? 'DUPLICATE',
                                   style: TextStyle(
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
@@ -328,21 +385,21 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                                 onPressed: () {
                                   ref.read(dashboardProvider.notifier).duplicateProject(widget.project.projectId);
                                 },
-                                tooltip: 'Duplicate',
+                                tooltip: l10n?.tooltipDuplicate ?? 'Duplicate',
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
                               ),
-                        const VerticalDivider(width: 1, color: Colors.white10, indent: 6, endIndent: 6),
+                        VerticalDivider(width: 1, color: AppTheme.dividerColor, indent: 6, endIndent: 6),
                         showLabels
                             ? TextButton.icon(
-                                onPressed: widget.onDelete,
-                                icon: const Icon(Icons.delete_forever_outlined, size: 12, color: Colors.redAccent),
-                                label: const Text(
-                                  'DELETE',
+                                onPressed: () => _exportProjectBundle(context),
+                                icon: Icon(Icons.archive_outlined, size: 12, color: AppTheme.accentOrange),
+                                label: Text(
+                                  'EXPORT',
                                   style: TextStyle(
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.redAccent,
+                                    color: AppTheme.accentOrange,
                                     letterSpacing: 0.5,
                                   ),
                                 ),
@@ -351,12 +408,37 @@ class _HoverableProjectCardState extends ConsumerState<HoverableProjectCard> {
                                 ),
                               )
                             : IconButton(
-                                icon: const Icon(Icons.delete_forever_outlined, size: 16, color: Colors.redAccent),
-                                 onPressed: widget.onDelete,
-                                 tooltip: 'Delete',
-                                 padding: EdgeInsets.zero,
-                                 constraints: const BoxConstraints(),
-                               ),
+                                icon: Icon(Icons.archive_outlined, size: 16, color: AppTheme.accentOrange),
+                                onPressed: () => _exportProjectBundle(context),
+                                tooltip: 'Export Project Backup (.capstudio)',
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                              ),
+                        VerticalDivider(width: 1, color: AppTheme.dividerColor, indent: 6, endIndent: 6),
+                        showLabels
+                            ? TextButton.icon(
+                                onPressed: widget.onDelete,
+                                icon: Icon(Icons.delete_forever_outlined, size: 12, color: AppTheme.accentRed),
+                                label: Text(
+                                  l10n?.btnDelete ?? 'DELETE',
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.accentRed,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                ),
+                              )
+                            : IconButton(
+                                icon: Icon(Icons.delete_forever_outlined, size: 16, color: AppTheme.accentRed),
+                                onPressed: widget.onDelete,
+                                tooltip: l10n?.tooltipDelete ?? 'Delete',
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                              ),
                       ],
                     ),
                   );
@@ -401,7 +483,7 @@ class _RenameProjectDialogState extends State<RenameProjectDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return PremiumBlurDialog(
       maxWidth: 400,
       glowColor: AppTheme.accentOrange,
@@ -411,7 +493,7 @@ class _RenameProjectDialogState extends State<RenameProjectDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.renameProjectTitle,
+            l10n?.renameProjectTitle ?? 'Rename Project',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w900,
@@ -423,12 +505,12 @@ class _RenameProjectDialogState extends State<RenameProjectDialog> {
           TextField(
             controller: _controller,
             autofocus: true,
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: AppTheme.primaryText),
             decoration: InputDecoration(
-              hintText: l10n.projectNameLabel,
-              hintStyle: const TextStyle(color: Colors.white30),
-              enabledBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.white24),
+              hintText: l10n?.projectNameLabel ?? 'Project Name',
+              hintStyle: TextStyle(color: AppTheme.mutedText),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.borderGlass),
               ),
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.accentOrange),
@@ -441,13 +523,13 @@ class _RenameProjectDialogState extends State<RenameProjectDialog> {
             children: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text(l10n.btnCancel, style: const TextStyle(color: Colors.white70)),
+                child: Text(l10n?.btnCancel ?? 'CANCEL', style: TextStyle(color: AppTheme.secondaryText)),
               ),
               const SizedBox(width: 8),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.accentOrange,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppTheme.onAccentText,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 onPressed: () {
@@ -457,7 +539,7 @@ class _RenameProjectDialogState extends State<RenameProjectDialog> {
                     widget.ref.read(dashboardProvider.notifier).renameProject(widget.project.projectId, newName);
                   }
                 },
-                child: Text(l10n.btnRename),
+                child: Text(l10n?.btnRename ?? 'RENAME'),
               ),
             ],
           ),

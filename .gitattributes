@@ -1,51 +1,94 @@
 # ==============================================================================
-# CapStudio Modernized .gitattributes
+# CapStudio Enterprise Git Attributes (.gitattributes)
+# Unified cross-platform line ending normalization and binary asset protection.
+# Targets: Windows, macOS, Linux, Android, iOS, and Web.
 # ==============================================================================
 
-# Set default behavior to automatically handle line endings for all text files
+# Default: Detect text files automatically and normalize all checkouts to LF
 * text=auto eol=lf
 
 # ------------------------------------------------------------------------------
-# Source Code & Text Config Files (Force LF line endings)
+# 1. Source Code & Text Config Files (Force LF line endings)
 # ------------------------------------------------------------------------------
-*.dart text eol=lf
+# Dart & Flutter
+*.dart text eol=lf diff=dart
+*.arb text eol=lf
+pubspec.lock text eol=lf
+
+# Markup & Configurations
 *.yaml text eol=lf
 *.yml text eol=lf
 *.json text eol=lf
-*.arb text eol=lf
 *.xml text eol=lf
+*.toml text eol=lf
+*.conf text eol=lf
+*.env text eol=lf
+*.properties text eol=lf
+
+# Android (Kotlin / Java / Gradle)
 *.kt text eol=lf
 *.java text eol=lf
+*.gradle text eol=lf
+*.gradle.kts text eol=lf
+
+# Apple Platforms (Swift / Objective-C / Xcode)
 *.swift text eol=lf
 *.m text eol=lf
 *.mm text eol=lf
-*.h text eol=lf
+*.plist text eol=lf
+*.xcconfig text eol=lf
+*.xcscheme text eol=lf
+*.storyboard text eol=lf
+*.xib text eol=lf
+*.podspec text eol=lf
+
+# C / C++ / Native Build Systems
 *.c text eol=lf
 *.cpp text eol=lf
+*.cc text eol=lf
+*.cxx text eol=lf
+*.h text eol=lf
 *.hpp text eol=lf
-*.gradle text eol=lf
-*.properties text eol=lf
+*.hxx text eol=lf
 *.cmake text eol=lf
 CMakeLists.txt text eol=lf
+*.def text eol=lf
+*.rc text eol=lf
+
+# Web Front-end
 *.html text eol=lf
 *.css text eol=lf
 *.js text eol=lf
 *.ts text eol=lf
+
+# Documentation & Information
 *.md text eol=lf
 *.txt text eol=lf
-*.sh text eol=lf
+LICENSE text eol=lf
+
+# Subtitles & Timing Formats
+*.srt text eol=lf
+*.vtt text eol=lf
+*.ass text eol=lf
+
+# Checksums & Packaging Scripts
+*.sha256 text eol=lf
+*.md5 text eol=lf
 *.iss text eol=lf
+*.sh text eol=lf
+gradlew text eol=lf
 
 # ------------------------------------------------------------------------------
-# Windows Command Scripts (Force CRLF line endings)
+# 2. Windows-Specific Scripts (Force CRLF line endings)
 # ------------------------------------------------------------------------------
 *.bat text eol=crlf
 *.cmd text eol=crlf
 *.ps1 text eol=crlf
 
 # ------------------------------------------------------------------------------
-# Binary Assets & Non-Text Media (Prevent git corruption and diffing)
+# 3. Binary Assets & Non-Text Media (Byte-exact preservation, no CRLF conversion)
 # ------------------------------------------------------------------------------
+# Image Assets
 *.png binary
 *.jpg binary
 *.jpeg binary
@@ -53,34 +96,73 @@ CMakeLists.txt text eol=lf
 *.webp binary
 *.svg binary
 *.ico binary
+*.icns binary
 *.bmp binary
+*.cur binary
+
+# Font Files
 *.ttf binary
 *.otf binary
 *.woff binary
 *.woff2 binary
+*.eot binary
+
+# Audio Files
 *.mp3 binary
 *.wav binary
 *.aac binary
 *.flac binary
+*.ogg binary
+*.m4a binary
+
+# Video Files
 *.mp4 binary
 *.mov binary
 *.webm binary
+*.avi binary
+*.mkv binary
+*.m4v binary
+
+# Archives & Packages
 *.zip binary
 *.tar binary
 *.gz binary
 *.7z binary
+*.xz binary
+*.tar.xz binary
+*.tar.gz binary
+*.tgz binary
+*.iso binary
+*.jar binary
+
+# Binaries, Libraries & Native Code
 *.bin binary
 *.dll binary
 *.so binary
 *.dylib binary
 *.a binary
 *.lib binary
+*.exe binary
+*.wasm binary
+*.obj binary
+*.pdb binary
+*.ilk binary
+*.res binary
+
+# Mobile & Desktop Distribution Bundles
 *.msix binary
 *.apk binary
 *.aab binary
+*.deb binary
+*.dmg binary
+*.xcframework binary
+*.framework binary
+
+# Certificates, Signatures & Keystores
 *.pfx binary
+*.p12 binary
 *.cer binary
 *.crt binary
 *.keystore binary
 *.jks binary
-*.xcframework binary
+*.key binary

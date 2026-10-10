@@ -10,10 +10,17 @@ import '../../../../app/theme_provider.dart';
 import '../../../../core/database/schemas/word.dart';
 import '../../../../core/database/schemas/project.dart';
 import '../../../../core/audio/waveform_service.dart';
+import '../../../../core/ffmpeg/ffmpeg_locator.dart';
 import '../../../../core/settings/settings_service.dart';
 import '../../../../core/logger/logger_service.dart';
 import '../controllers/editor_controller.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../core/video/background_music_models.dart';
+import '../../../../core/video/b_roll_models.dart';
+import '../../../../core/video/chapter_models.dart';
 import 'timeline_painter.dart';
+import 'timeline_controls.dart';
+export 'timeline_controls.dart';
 
 class TimelineWidget extends ConsumerStatefulWidget {
   final List<WordSchema> words;
@@ -22,6 +29,9 @@ class TimelineWidget extends ConsumerStatefulWidget {
   final double trimStart;
   final double trimEnd;
   final List<VideoSegmentSchema>? segments;
+  final BackgroundMusicConfig? backgroundMusic;
+  final List<BRollClip>? bRollClips;
+  final List<VideoChapter>? chapters;
 
   const TimelineWidget({
     super.key,
@@ -31,22 +41,24 @@ class TimelineWidget extends ConsumerStatefulWidget {
     required this.trimStart,
     required this.trimEnd,
     this.segments,
+    this.backgroundMusic,
+    this.bRollClips,
+    this.chapters,
   });
 
   @override
   ConsumerState<TimelineWidget> createState() => _TimelineWidgetState();
 }
 
-class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTickerProviderStateMixin {
-  late AnimationController _flingController;
+class _TimelineWidgetState extends ConsumerState<TimelineWidget>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _flingController;
   double _zoomLevel = 3.0;
   double _scrollOffset = 0.0;
   List<double>? _waveformAmplitudes;
   bool _needsAutoScroll = false;
   bool _isUserScrolling = false;
   Timer? _userScrollCooldown;
-  bool _isHoveringScrollbar = false;
-  bool _isDraggingScrollbar = false;
   double _baseZoomLevel = 3.0;
   Offset? _lastFocalPoint;
   int _waveformLoadCounter = 0;
@@ -57,7 +69,16 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
 
   /// Returns the zoomLevel that makes the entire video exactly fit the visible width.
   double _getFitZoomLevel(double width) {
-    return ((width / widget.duration) / 100.0).clamp(0.5, 10.0);
+    return ((width / widget.duration) / 100.0).clamp(0.5, 5.0);
+  }
+
+  void _setZoomLevel(double newZoom, double width) {
+    setState(() {
+      _zoomLevel = newZoom.clamp(0.5, 5.0);
+      final pixelsPerSecond = _getPixelsPerSecond(width);
+      final maxScroll = (widget.duration * pixelsPerSecond) - width;
+      _scrollOffset = _scrollOffset.clamp(0.0, math.max(0.0, maxScroll));
+    });
   }
 
   String? _draggingHandle; // null, 'start', or 'end'
@@ -67,11 +88,19 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
   bool _draggingPlayhead = false;
   MouseCursor _cursor = MouseCursor.defer;
 
+  // FIX (perf/correctness): the timeline painter binary-searches the visible
+  // word range, which is only valid when words are sorted by start AND end
+  // time. SRT-imported or hand-edited projects can be out of order, so the
+  // painter must fall back to a linear scan. Compute the flag once per words
+  // list (not per frame) and hand it to the painter.
+  bool _wordsAreOrdered = true;
+
   @override
   void initState() {
     super.initState();
     _flingController = AnimationController.unbounded(vsync: this);
     _flingController.addListener(_handleFlingTick);
+    _wordsAreOrdered = isWordsChronologicallyOrdered(widget.words);
     _loadWaveform();
   }
 
@@ -93,7 +122,8 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
     final maxScroll = (widget.duration * pixelsPerSecond) - width;
 
     setState(() {
-      _scrollOffset = _flingController.value.clamp(0.0, math.max(0.0, maxScroll));
+      _scrollOffset =
+          _flingController.value.clamp(0.0, math.max(0.0, maxScroll));
     });
   }
 
@@ -120,6 +150,12 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
   void didUpdateWidget(covariant TimelineWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    // Recompute the sorted-words flag only when the words list is replaced
+    // (identity changes on structural edits, not on per-frame rebuilds).
+    if (oldWidget.words != widget.words) {
+      _wordsAreOrdered = isWordsChronologicallyOrdered(widget.words);
+    }
+
     // Regenerate waveform data when the video duration changes
     if (oldWidget.duration != widget.duration) {
       _loadWaveform();
@@ -140,13 +176,16 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
     }
 
     final videoPath = project.videoPath;
-    final ffmpegPath = SettingsService.instance.ffmpegCliPath ?? 'ffmpeg';
+    final ffmpegPath = FfmpegLocator.instance.resolve(
+      configured: SettingsService.instance.ffmpegCliPath,
+    );
 
     try {
+      final sampleCount = (widget.duration * 15).round().clamp(800, 3600);
       final amps = await WaveformService.instance.extractWaveform(
         videoPath: videoPath,
         ffmpegPath: ffmpegPath,
-        sampleCount: 800,
+        sampleCount: sampleCount,
       );
       if (mounted && currentLoadId == _waveformLoadCounter) {
         setState(() {
@@ -154,7 +193,8 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
         });
       }
     } catch (e) {
-      LoggerService.instance.log(LogLevel.error, 'TimelineWidget', 'Failed to load real waveform: $e');
+      LoggerService.instance.log(
+          LogLevel.error, 'TimelineWidget', 'Failed to load real waveform: $e');
       if (mounted && currentLoadId == _waveformLoadCounter) {
         _generateMockWaveform();
       }
@@ -210,15 +250,17 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
       setState(() {
         final targetScroll = playheadX - (width / 2);
         final maxScroll = (widget.duration * pixelsPerSecond) - width;
-        _scrollOffset = targetScroll.clamp(0.0, math.max(0.0, maxScroll)).toDouble();
+        _scrollOffset =
+            targetScroll.clamp(0.0, math.max(0.0, maxScroll)).toDouble();
       });
     }
   }
 
-  void _handleTap(TapUpDetails details, double widgetWidth, double widgetHeight) {
+  void _handleTap(
+      TapUpDetails details, double widgetWidth, double widgetHeight) {
     final localX = details.localPosition.dx;
     final localY = details.localPosition.dy;
-    
+
     final trackTop = widgetHeight - 32.0;
     final trackBottom = widgetHeight - 8.0;
 
@@ -228,7 +270,7 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
 
     // 1. Clicked on the Ruler area (top of timeline) -> Seek playhead
     if (localY < trackTop) {
-      final targetTime = time.clamp(0.0, widget.duration).toDouble();
+      final double targetTime = time.clamp(0.0, widget.duration).toDouble();
       ref.read(editorProvider.notifier).setCurrentTime(targetTime);
       return;
     }
@@ -236,7 +278,16 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
     // 2. Clicked on the Subtitle Word Track (bottom of timeline) -> Detect Word Hit
     if (localY >= trackTop && localY <= trackBottom) {
       // Use the binary-search helper for O(log n) word lookup instead of O(n) linear scan.
-      final word = _findWordUnderCursor(localX, localY, widgetWidth, widgetHeight);
+      final word = TimelineHitTester.findWordUnderCursor(
+        localX: localX,
+        localY: localY,
+        widgetWidth: widgetWidth,
+        widgetHeight: widgetHeight,
+        scrollOffset: _scrollOffset,
+        pixelsPerSecond: pixelsPerSecond,
+        words: widget.words,
+        wordsAreOrdered: _wordsAreOrdered,
+      );
       if (word != null) {
         // Cycle Highlight Colors matching: w1 click timer cycle logic
         final cycleClasses = [null, 'mainColor', 'secondColor', 'thirdColor'];
@@ -246,96 +297,16 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
         final wid = word.wordId;
         if (wid != null) {
           ref.read(editorProvider.notifier).updateWord(
-            wid,
-            className: cycleClasses[nextIdx] ?? 'none',
-          );
+                wid,
+                className: cycleClasses[nextIdx] ?? 'none',
+              );
         }
       }
     }
   }
 
-  bool _isLocalYInWordTrack(double localY, double widgetHeight) {
-    final trackTop = widgetHeight - 32.0;
-    final trackBottom = widgetHeight - 8.0;
-    return localY >= trackTop && localY <= trackBottom;
-  }
-
-  WordSchema? _findWordUnderCursor(double localX, double localY, double widgetWidth, double widgetHeight) {
-    if (!_isLocalYInWordTrack(localY, widgetHeight)) return null;
-
-    final pixelsPerSecond = _getPixelsPerSecond(widgetWidth);
-    final timelineX = localX + _scrollOffset;
-    final time = timelineX / pixelsPerSecond;
-
-    // Binary search for the word containing time
-    int low = 0;
-    int high = widget.words.length - 1;
-    while (low <= high) {
-      final mid = (low + high) >> 1;
-      final word = widget.words[mid];
-      final start = word.start ?? 0.0;
-      final end = word.end ?? 0.0;
-      if (time >= start && time <= end) {
-        return word;
-      } else if (time < start) {
-        high = mid - 1;
-      } else {
-        low = mid + 1;
-      }
-    }
-    return null;
-  }
-
-  WordEdgeHit? _findWordEdgeHit(double localX, double localY, double widgetWidth, double widgetHeight) {
-    if (!_isLocalYInWordTrack(localY, widgetHeight)) return null;
-
-    final pixelsPerSecond = _getPixelsPerSecond(widgetWidth);
-    final time = (localX + _scrollOffset) / pixelsPerSecond;
-    final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
-    final edgeTolerance = isMobile ? 24.0 : 8.0;
-    final toleranceTime = edgeTolerance / pixelsPerSecond;
-
-    // Find the first index where word.start >= time - toleranceTime using binary search
-    int low = 0;
-    int high = widget.words.length - 1;
-    int targetIdx = widget.words.length;
-    final minTime = time - toleranceTime;
-
-    while (low <= high) {
-      final mid = (low + high) >> 1;
-      final start = widget.words[mid].start ?? 0.0;
-      if (start >= minTime) {
-        targetIdx = mid;
-        high = mid - 1;
-      } else {
-        low = mid + 1;
-      }
-    }
-
-    final startScan = math.max(0, targetIdx - 1);
-    final maxTime = time + toleranceTime;
-
-    for (int i = startScan; i < widget.words.length; i++) {
-      final word = widget.words[i];
-      final start = word.start ?? 0.0;
-      if (start > maxTime && (word.end ?? 0.0) > maxTime) {
-        break;
-      }
-      final end = word.end ?? 0.0;
-      final startX = (start * pixelsPerSecond) - _scrollOffset;
-      final endX = (end * pixelsPerSecond) - _scrollOffset;
-
-      if ((localX - startX).abs() <= edgeTolerance) {
-        return WordEdgeHit(word, 'start');
-      }
-      if ((localX - endX).abs() <= edgeTolerance) {
-        return WordEdgeHit(word, 'end');
-      }
-    }
-    return null;
-  }
-
-  void _handleScaleStart(ScaleStartDetails details, double widgetWidth, double widgetHeight) {
+  void _handleScaleStart(
+      ScaleStartDetails details, double widgetWidth, double widgetHeight) {
     _flingController.stop();
     _isUserScrolling = true;
     _userScrollCooldown?.cancel();
@@ -349,7 +320,8 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
     final trimStartX = (widget.trimStart * pixelsPerSecond) - _scrollOffset;
     final trimEndX = (widget.trimEnd * pixelsPerSecond) - _scrollOffset;
 
-    final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
+    final isMobile = defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
     final trimTolerance = isMobile ? 30.0 : 15.0;
 
     final nearStart = (localX - trimStartX).abs() <= trimTolerance;
@@ -369,11 +341,21 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
       _draggingHandle = null;
 
       // If not near trim handles, check if resizing a word edge
-      final hit = _findWordEdgeHit(localX, localY, widgetWidth, widgetHeight);
+      final hit = TimelineHitTester.findWordEdgeHit(
+        localX: localX,
+        localY: localY,
+        widgetWidth: widgetWidth,
+        widgetHeight: widgetHeight,
+        scrollOffset: _scrollOffset,
+        pixelsPerSecond: pixelsPerSecond,
+        words: widget.words,
+        wordsAreOrdered: _wordsAreOrdered,
+      );
       if (hit != null) {
         _draggingWordId = hit.word.wordId;
         _draggingWordEdge = hit.edge;
-        LoggerService.instance.action('TimelineWidget', 'Started dragging word edge: $_draggingWordEdge for word ID: $_draggingWordId');
+        LoggerService.instance.action('TimelineWidget',
+            'Started dragging word edge: $_draggingWordEdge for word ID: $_draggingWordId');
       } else {
         _draggingWordId = null;
         _draggingWordEdge = null;
@@ -382,26 +364,37 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
         final trackTop = widgetHeight - 32.0;
         if (localY < trackTop) {
           _draggingPlayhead = true;
-          LoggerService.instance.action('TimelineWidget', 'Started dragging playhead');
+          LoggerService.instance
+              .action('TimelineWidget', 'Started dragging playhead');
         }
       }
     }
+
+    // FIX (perf): a trim-handle or word-edge drag mutates state per tick,
+    // which used to flood undo history with dozens of entries per gesture.
+    // Batch the drag so it collapses into a single undo step on release.
+    if (_draggingHandle != null || _draggingWordId != null) {
+      ref.read(editorProvider.notifier).beginHistoryBatch();
+    }
   }
 
-  void _handleScaleUpdate(ScaleUpdateDetails details, double widgetWidth, double widgetHeight) {
-    // If the user is pinching (multi-touch zoom)
-    if (details.scale != 1.0) {
-      final double newZoom = (_baseZoomLevel * details.scale).clamp(0.5, 10.0);
+  void _handleScaleUpdate(
+      ScaleUpdateDetails details, double widgetWidth, double widgetHeight) {
+    // Multi-touch pinch zoom (only when 2+ fingers/pointers are actively gesturing)
+    if (details.pointerCount >= 2 && (details.scale - 1.0).abs() > 0.05) {
+      final double newZoom = (_baseZoomLevel * details.scale).clamp(1.0, 5.0);
       setState(() {
         final double oldPps = _getPixelsPerSecond(widgetWidth);
-        final double focalTime = (details.localFocalPoint.dx + _scrollOffset) / oldPps;
+        final double focalTime =
+            (details.localFocalPoint.dx + _scrollOffset) / oldPps;
 
         _zoomLevel = newZoom;
 
         final double newPps = _getPixelsPerSecond(widgetWidth);
         final double maxScroll = (widget.duration * newPps) - widgetWidth;
-        
-        _scrollOffset = (focalTime * newPps - details.localFocalPoint.dx).clamp(0.0, math.max(0.0, maxScroll));
+
+        _scrollOffset = (focalTime * newPps - details.localFocalPoint.dx)
+            .clamp(0.0, math.max(0.0, maxScroll));
       });
     } else {
       // Single-finger dragging / panning
@@ -430,7 +423,8 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
         final timelineX = localX + _scrollOffset;
         final time = (timelineX / pixelsPerSecond).clamp(0.0, widget.duration);
 
-        final wordIdx = widget.words.indexWhere((w) => w.wordId == _draggingWordId);
+        final wordIdx =
+            widget.words.indexWhere((w) => w.wordId == _draggingWordId);
         if (wordIdx != -1) {
           final word = widget.words[wordIdx];
           final start = word.start ?? 0.0;
@@ -442,16 +436,22 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
               minStart = widget.words[wordIdx - 1].end ?? 0.0;
             }
             final maxStart = end - 0.05;
-            final clampedStart = time.clamp(minStart, math.max(minStart, maxStart)).toDouble();
-            ref.read(editorProvider.notifier).updateWordTimingsQuietly(_draggingWordId!, start: clampedStart);
+            final clampedStart =
+                time.clamp(minStart, math.max(minStart, maxStart)).toDouble();
+            ref.read(editorProvider.notifier).updateWordTimingsQuietly(
+                _draggingWordId!,
+                start: clampedStart);
           } else if (_draggingWordEdge == 'end') {
             final minEnd = start + 0.05;
             double maxEnd = widget.duration;
             if (wordIdx < widget.words.length - 1) {
               maxEnd = widget.words[wordIdx + 1].start ?? widget.duration;
             }
-            final clampedEnd = time.clamp(minEnd, math.max(minEnd, maxEnd)).toDouble();
-            ref.read(editorProvider.notifier).updateWordTimingsQuietly(_draggingWordId!, end: clampedEnd);
+            final clampedEnd =
+                time.clamp(minEnd, math.max(minEnd, maxEnd)).toDouble();
+            ref
+                .read(editorProvider.notifier)
+                .updateWordTimingsQuietly(_draggingWordId!, end: clampedEnd);
           }
         }
       } else {
@@ -460,7 +460,9 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
           final dx = details.localFocalPoint.dx - _lastFocalPoint!.dx;
           setState(() {
             final maxScroll = (widget.duration * pixelsPerSecond) - widgetWidth;
-            _scrollOffset = (_scrollOffset - dx).clamp(0.0, math.max(0.0, maxScroll)).toDouble();
+            _scrollOffset = (_scrollOffset - dx)
+                .clamp(0.0, math.max(0.0, maxScroll))
+                .toDouble();
           });
         }
       }
@@ -470,10 +472,14 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
 
   void _handleScaleEnd(ScaleEndDetails details) {
     if (_draggingWordId != null || _draggingHandle != null) {
-      ref.read(editorProvider.notifier).commitHistoryAndSave();
+      // FIX (perf): end the batch begun in _handleScaleStart — records a
+      // single history entry + auto-save for the whole drag gesture.
+      ref.read(editorProvider.notifier).endHistoryBatch();
     }
 
-    if (_draggingWordId == null && _draggingHandle == null && !_draggingPlayhead) {
+    if (_draggingWordId == null &&
+        _draggingHandle == null &&
+        !_draggingPlayhead) {
       final velocityX = details.velocity.pixelsPerSecond.dx;
       if (velocityX.abs() > 50.0) {
         _startFling(velocityX);
@@ -498,21 +504,41 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
     });
   }
 
-  void _handleHover(PointerHoverEvent event, double widgetWidth, double widgetHeight) {
+  void _handleHover(
+      PointerHoverEvent event, double widgetWidth, double widgetHeight) {
     final localX = event.localPosition.dx;
     final localY = event.localPosition.dy;
     final pixelsPerSecond = _getPixelsPerSecond(widgetWidth);
     final trimStartX = (widget.trimStart * pixelsPerSecond) - _scrollOffset;
     final trimEndX = (widget.trimEnd * pixelsPerSecond) - _scrollOffset;
 
-    final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
+    final isMobile = defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
     final trimTolerance = isMobile ? 30.0 : 15.0;
 
     final nearStart = (localX - trimStartX).abs() <= trimTolerance;
     final nearEnd = (localX - trimEndX).abs() <= trimTolerance;
 
-    final wordEdgeHit = _findWordEdgeHit(localX, localY, widgetWidth, widgetHeight);
-    final wordUnderCursor = _findWordUnderCursor(localX, localY, widgetWidth, widgetHeight);
+    final wordEdgeHit = TimelineHitTester.findWordEdgeHit(
+      localX: localX,
+      localY: localY,
+      widgetWidth: widgetWidth,
+      widgetHeight: widgetHeight,
+      scrollOffset: _scrollOffset,
+      pixelsPerSecond: pixelsPerSecond,
+      words: widget.words,
+      wordsAreOrdered: _wordsAreOrdered,
+    );
+    final wordUnderCursor = TimelineHitTester.findWordUnderCursor(
+      localX: localX,
+      localY: localY,
+      widgetWidth: widgetWidth,
+      widgetHeight: widgetHeight,
+      scrollOffset: _scrollOffset,
+      pixelsPerSecond: pixelsPerSecond,
+      words: widget.words,
+      wordsAreOrdered: _wordsAreOrdered,
+    );
     final newHoveredWordId = wordUnderCursor?.wordId;
 
     if (newHoveredWordId != _hoveredWordId) {
@@ -521,7 +547,11 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
       });
     }
 
-    if (_draggingHandle != null || _draggingWordId != null || nearStart || nearEnd || wordEdgeHit != null) {
+    if (_draggingHandle != null ||
+        _draggingWordId != null ||
+        nearStart ||
+        nearEnd ||
+        wordEdgeHit != null) {
       if (_cursor != SystemMouseCursors.resizeLeftRight) {
         setState(() {
           _cursor = SystemMouseCursors.resizeLeftRight;
@@ -562,24 +592,31 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
 
           // Adjust zoomLevel: scroll up zooms in, scroll down zooms out
           final zoomDelta = delta < 0 ? 0.5 : -0.5;
-          _zoomLevel = (_zoomLevel + zoomDelta).clamp(0.5, 10.0);
+          _zoomLevel = (_zoomLevel + zoomDelta).clamp(1.0, 5.0);
 
           // Get new pixels per second
           final newPixelsPerSecond = _getPixelsPerSecond(widgetWidth);
 
           // Adjust scroll offset to keep the cursor time at the same local X coordinate
-          final maxScroll = (widget.duration * newPixelsPerSecond) - widgetWidth;
-          _scrollOffset = (cursorTime * newPixelsPerSecond - localX).clamp(0.0, math.max(0.0, maxScroll)).toDouble();
+          final maxScroll =
+              (widget.duration * newPixelsPerSecond) - widgetWidth;
+          _scrollOffset = (cursorTime * newPixelsPerSecond - localX)
+              .clamp(0.0, math.max(0.0, maxScroll))
+              .toDouble();
         });
       }
     } else {
       // Regular horizontal scroll logic
       setState(() {
         // Use horizontal scroll if available, otherwise fall back to vertical scroll axis
-        final delta = event.scrollDelta.dx != 0.0 ? event.scrollDelta.dx : event.scrollDelta.dy;
+        final delta = event.scrollDelta.dx != 0.0
+            ? event.scrollDelta.dx
+            : event.scrollDelta.dy;
         final pixelsPerSecond = _getPixelsPerSecond(widgetWidth);
         final maxScroll = (widget.duration * pixelsPerSecond) - widgetWidth;
-        _scrollOffset = (_scrollOffset + delta).clamp(0.0, math.max(0.0, maxScroll)).toDouble();
+        _scrollOffset = (_scrollOffset + delta)
+            .clamp(0.0, math.max(0.0, maxScroll))
+            .toDouble();
       });
     }
   }
@@ -599,7 +636,8 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
       if (activeDuration <= 0.0) activeDuration = widget.duration;
     }
 
-    final durationString = '${widget.currentTime.toStringAsFixed(3)}s / ${widget.duration.toStringAsFixed(3)}s (Active: ${activeDuration.toStringAsFixed(3)}s)';
+    final durationString =
+        '${widget.currentTime.toStringAsFixed(3)}s / ${widget.duration.toStringAsFixed(3)}s (Active: ${activeDuration.toStringAsFixed(3)}s)';
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -616,7 +654,7 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
           ).copyWith(
             border: Border(
               top: BorderSide(
-                color: Colors.white.withValues(alpha: 0.08),
+                color: AppTheme.borderGlass,
                 width: 1,
               ),
             ),
@@ -638,16 +676,19 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
                               durationString,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontFamily: 'monospace',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    fontFamily: 'monospace',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10,
+                                  ),
                             ),
                           ),
                         ],
                       )
-                    : (width >= 950
+                    : (width >= 1080
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -656,45 +697,95 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
                                   durationString,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontFamily: 'monospace',
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        fontFamily: 'monospace',
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              _buildTrimActionButtons(),
+                              TimelineTrimActionButtons(
+                                isCompact: width < 750,
+                                onSplit: _splitClip,
+                                onToggleExclusion: _toggleExclusion,
+                                onRippleDelete: _rippleDeleteGaps,
+                                onReset: _resetSplits,
+                              ),
                               const SizedBox(width: 8),
-                              _buildZoomControls(width),
+                              TimelineZoomControls(
+                                zoomLevel: _zoomLevel,
+                                timelineWidth: width,
+                                onZoomChanged: (newZoom) =>
+                                    _setZoomLevel(newZoom, width),
+                                onZoomIn: () =>
+                                    _setZoomLevel(_zoomLevel + 0.5, width),
+                                onZoomOut: () =>
+                                    _setZoomLevel(_zoomLevel - 0.5, width),
+                                onZoomFit: () {
+                                  setState(() {
+                                    _zoomLevel = _getFitZoomLevel(width);
+                                    _scrollOffset = 0.0;
+                                  });
+                                },
+                              ),
                             ],
                           )
                         : Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Text(
                                       durationString,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        fontFamily: 'monospace',
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: width >= 600 ? 14 : 11,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontFamily: 'monospace',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: width >= 600 ? 14 : 11,
+                                          ),
                                     ),
                                   ),
-                                  if (width >= 600) _buildZoomControls(width),
+                                  if (width >= 600)
+                                    TimelineZoomControls(
+                                      zoomLevel: _zoomLevel,
+                                      timelineWidth: width,
+                                      onZoomChanged: (newZoom) =>
+                                          _setZoomLevel(newZoom, width),
+                                      onZoomIn: () =>
+                                          _setZoomLevel(_zoomLevel + 0.5, width),
+                                      onZoomOut: () =>
+                                          _setZoomLevel(_zoomLevel - 0.5, width),
+                                      onZoomFit: () {
+                                        setState(() {
+                                          _zoomLevel = _getFitZoomLevel(width);
+                                          _scrollOffset = 0.0;
+                                        });
+                                      },
+                                    ),
                                 ],
                               ),
                               const SizedBox(height: 6),
-                              _buildTrimActionButtons(),
+                              TimelineTrimActionButtons(
+                                isCompact: width < 550,
+                                onSplit: _splitClip,
+                                onToggleExclusion: _toggleExclusion,
+                                onRippleDelete: _rippleDeleteGaps,
+                                onReset: _resetSplits,
+                              ),
                             ],
                           )),
               ),
-              
+
               // Interactive Canvas area with mouse wheel horizontal scrolling
               Expanded(
                 child: LayoutBuilder(
@@ -704,7 +795,8 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
 
                     return MouseRegion(
                       cursor: _cursor,
-                      onHover: (event) => _handleHover(event, canvasWidth, canvasHeight),
+                      onHover: (event) =>
+                          _handleHover(event, canvasWidth, canvasHeight),
                       onExit: (event) {
                         setState(() {
                           _hoveredWordId = null;
@@ -718,27 +810,51 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
                         },
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
-                          onTapUp: (details) => _handleTap(details, canvasWidth, canvasHeight),
-                          onScaleStart: (details) => _handleScaleStart(details, canvasWidth, canvasHeight),
-                          onScaleUpdate: (details) => _handleScaleUpdate(details, canvasWidth, canvasHeight),
+                          onTapUp: (details) =>
+                              _handleTap(details, canvasWidth, canvasHeight),
+                          onScaleStart: (details) => _handleScaleStart(
+                              details, canvasWidth, canvasHeight),
+                          onScaleUpdate: (details) => _handleScaleUpdate(
+                              details, canvasWidth, canvasHeight),
                           onScaleEnd: _handleScaleEnd,
-                          child: RepaintBoundary(
-                            child: CustomPaint(
-                              size: Size(canvasWidth, canvasHeight),
-                              painter: TimelinePainter(
-                                words: widget.words,
-                                currentTime: widget.currentTime,
-                                duration: widget.duration,
-                                pixelsPerSecond: pixelsPerSecond,
-                                scrollOffset: _scrollOffset,
-                                waveformAmplitudes: _waveformAmplitudes ?? const [],
-                                trimStart: widget.trimStart,
-                                trimEnd: widget.trimEnd,
-                                theme: theme,
-                                segments: widget.segments,
-                                hoveredWordId: _hoveredWordId,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              RepaintBoundary(
+                                child: CustomPaint(
+                                  size: Size(canvasWidth, canvasHeight),
+                                  painter: TimelineWaveformPainter(
+                                    duration: widget.duration,
+                                    pixelsPerSecond: pixelsPerSecond,
+                                    scrollOffset: _scrollOffset,
+                                    waveformAmplitudes:
+                                        _waveformAmplitudes ?? const [],
+                                    trimStart: widget.trimStart,
+                                    trimEnd: widget.trimEnd,
+                                    theme: theme,
+                                    segments: widget.segments,
+                                    backgroundMusic: widget.backgroundMusic,
+                                    bRollClips: widget.bRollClips,
+                                    words: widget.words,
+                                    chapters: widget.chapters,
+                                  ),
+                                ),
                               ),
-                            ),
+                              CustomPaint(
+                                size: Size(canvasWidth, canvasHeight),
+                                painter: TimelinePlayheadPainter(
+                                  words: widget.words,
+                                  currentTime: widget.currentTime,
+                                  duration: widget.duration,
+                                  pixelsPerSecond: pixelsPerSecond,
+                                  scrollOffset: _scrollOffset,
+                                  theme: theme,
+                                  hoveredWordId: _hoveredWordId,
+                                  wordsAreOrdered: _wordsAreOrdered,
+                                  segments: widget.segments,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -748,7 +864,18 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
               ),
 
               // Custom Scrollbar Slider
-              _buildHorizontalScrollbar(width, height),
+              TimelineHorizontalScrollbar(
+                width: width,
+                timelineHeight: height,
+                scrollOffset: _scrollOffset,
+                maxScroll: (widget.duration * pixelsPerSecond) - width,
+                totalContentWidth: widget.duration * pixelsPerSecond,
+                onScrollOffsetChanged: (newOffset) {
+                  setState(() {
+                    _scrollOffset = newOffset;
+                  });
+                },
+              ),
             ],
           ),
         );
@@ -756,308 +883,80 @@ class _TimelineWidgetState extends ConsumerState<TimelineWidget> with SingleTick
     );
   }
 
-  Widget _buildZoomControls(double timelineWidth) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.zoom_out, size: 16),
-          tooltip: 'Zoom Out',
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-          onPressed: () {
-            setState(() {
-              _zoomLevel = (_zoomLevel - 0.5).clamp(0.5, 10.0);
-              final pixelsPerSecond = _getPixelsPerSecond(timelineWidth);
-              final maxScroll = (widget.duration * pixelsPerSecond) - timelineWidth;
-              _scrollOffset = _scrollOffset.clamp(0.0, math.max(0.0, maxScroll));
-            });
-          },
-        ),
-        SizedBox(
-          width: 80,
-          child: SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              trackHeight: 2,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-              overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
-              activeTrackColor: const Color(0xFF06B6D4),
-              inactiveTrackColor: Colors.white24,
-              thumbColor: const Color(0xFF06B6D4),
-              overlayColor: const Color(0xFF06B6D4).withValues(alpha: 0.2),
-            ),
-            child: Slider(
-              value: _zoomLevel.clamp(0.5, 10.0),
-              min: 0.5,
-              max: 10.0,
-              onChanged: (value) {
-                setState(() {
-                  _zoomLevel = value.clamp(0.5, 10.0);
-                  final pixelsPerSecond = _getPixelsPerSecond(timelineWidth);
-                  final maxScroll = (widget.duration * pixelsPerSecond) - timelineWidth;
-                  _scrollOffset = _scrollOffset.clamp(0.0, math.max(0.0, maxScroll));
-                });
-              },
-            ),
+  void _splitClip() {
+    final l10n = AppLocalizations.of(context);
+    final curr = widget.currentTime;
+    if (curr > widget.trimStart && curr < widget.trimEnd) {
+      ref.read(editorProvider.notifier).splitSegmentAtTime(curr);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n?.splitTimelineAt(curr.toStringAsFixed(2)) ??
+                'Split timeline at ${curr.toStringAsFixed(2)}s.',
           ),
+          duration: const Duration(seconds: 2),
         ),
-        Text(
-          'Zoom: ${_zoomLevel.toStringAsFixed(1)}x',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontSize: 12,
-            color: Colors.white70,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n?.splitTimelineError ??
+                'Playhead must be inside the active region to split.',
           ),
+          duration: const Duration(seconds: 2),
         ),
-        IconButton(
-          icon: const Icon(Icons.zoom_in, size: 16),
-          tooltip: 'Zoom In',
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-          onPressed: () {
-            setState(() {
-              _zoomLevel = (_zoomLevel + 0.5).clamp(0.5, 10.0);
-              final pixelsPerSecond = _getPixelsPerSecond(timelineWidth);
-              final maxScroll = (widget.duration * pixelsPerSecond) - timelineWidth;
-              _scrollOffset = _scrollOffset.clamp(0.0, math.max(0.0, maxScroll));
-            });
-          },
-        ),
-        const SizedBox(width: 8),
-        IconButton(
-          icon: const Icon(Icons.fit_screen, size: 16),
-          tooltip: 'Zoom to Fit',
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-          onPressed: () {
-            setState(() {
-              _zoomLevel = _getFitZoomLevel(timelineWidth);
-              _scrollOffset = 0.0;
-            });
-          },
-        ),
-      ],
-    );
+      );
+    }
   }
 
-  Widget _buildHorizontalScrollbar(double width, double timelineHeight) {
-    if (timelineHeight < 100) return const SizedBox.shrink();
-    final trackWidth = width - 32.0;
-    final pixelsPerSecond = _getPixelsPerSecond(width);
-    final totalContentWidth = widget.duration * pixelsPerSecond;
-    final maxScroll = totalContentWidth - width;
-    final showThumb = maxScroll > 0;
-
-    final thumbWidth = showThumb
-        ? ((width / totalContentWidth) * trackWidth).clamp(40.0, trackWidth)
-        : trackWidth;
-
-    final scrollableTrackWidth = trackWidth - thumbWidth;
-    final thumbLeft = (showThumb && maxScroll > 0)
-        ? (_scrollOffset / maxScroll) * scrollableTrackWidth
-        : 0.0;
-
-    final Color trackColor = Colors.white.withValues(alpha: 0.05);
-    final Color thumbColor = _isDraggingScrollbar
-        ? AppTheme.accentSecondary // Accent color
-        : (_isHoveringScrollbar ? Colors.white.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.25));
-
-    final double thumbHeight = _isHoveringScrollbar || _isDraggingScrollbar ? 8.0 : 6.0;
-
-    return Container(
-      height: 18,
-      margin: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
-      alignment: Alignment.center,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTapDown: (details) {
-          if (!showThumb) return;
-          final localX = details.localPosition.dx;
-          final targetLeft = localX - (thumbWidth / 2);
-          final fraction = (scrollableTrackWidth > 0)
-              ? (targetLeft / scrollableTrackWidth).clamp(0.0, 1.0)
-              : 0.0;
-          setState(() {
-            _scrollOffset = (fraction * maxScroll).toDouble();
-          });
-        },
-        child: Stack(
-          alignment: Alignment.centerLeft,
-          children: [
-            // Track Line
-            Container(
-              height: 4,
-              decoration: BoxDecoration(
-                color: trackColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            // Thumb
-            if (showThumb)
-              Positioned(
-                left: thumbLeft,
-                child: MouseRegion(
-                  onEnter: (_) {
-                    setState(() {
-                      _isHoveringScrollbar = true;
-                    });
-                  },
-                  onExit: (_) {
-                    setState(() {
-                      _isHoveringScrollbar = false;
-                    });
-                  },
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onHorizontalDragStart: (_) {
-                      setState(() {
-                        _isDraggingScrollbar = true;
-                      });
-                    },
-                    onHorizontalDragUpdate: (details) {
-                      if (scrollableTrackWidth <= 0) return;
-                      final dx = details.delta.dx;
-                      final scrollDelta = (dx / scrollableTrackWidth) * maxScroll;
-                      setState(() {
-                        _scrollOffset = (_scrollOffset + scrollDelta)
-                            .clamp(0.0, maxScroll)
-                            .toDouble();
-                      });
-                    },
-                    onHorizontalDragEnd: (_) {
-                      setState(() {
-                        _isDraggingScrollbar = false;
-                      });
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 150),
-                      height: thumbHeight,
-                      width: thumbWidth,
-                      decoration: BoxDecoration(
-                        color: thumbColor,
-                        borderRadius: BorderRadius.circular(4),
-                        boxShadow: (_isDraggingScrollbar || _isHoveringScrollbar)
-                            ? [
-                                BoxShadow(
-                                  color: thumbColor.withValues(alpha: 0.3),
-                                  blurRadius: 4,
-                                  spreadRadius: 1,
-                                )
-                              ]
-                            : null,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-          ],
+  void _toggleExclusion() {
+    final l10n = AppLocalizations.of(context);
+    ref
+        .read(editorProvider.notifier)
+        .toggleSegmentDeleted(widget.currentTime);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          l10n?.exclusionToggled ??
+              'Toggled segment exclusion under playhead.',
         ),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
 
-  Widget _buildTrimActionButtons() {
-    final buttons = [
-      _buildActionPill(
-        icon: Icons.content_cut,
-        label: 'Split clip',
-        onTap: () {
-          final curr = widget.currentTime;
-          if (curr > widget.trimStart && curr < widget.trimEnd) {
-            ref.read(editorProvider.notifier).splitSegmentAtTime(curr);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Split timeline at ${curr.toStringAsFixed(2)}s.'),
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Playhead must be inside the active region to split.'),
-                duration: Duration(seconds: 2),
-              ),
-            );
-          }
-        },
-      ),
-      _buildActionPill(
-        icon: Icons.delete_outline,
-        label: 'Remove clip',
-        onTap: () {
-          ref.read(editorProvider.notifier).toggleSegmentDeleted(widget.currentTime);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Toggled segment exclusion under playhead.'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        },
-      ),
-      _buildActionPill(
-        icon: Icons.restore,
-        label: 'Reset to original',
-        onTap: () {
-          ref.read(editorProvider.notifier).resetSegments();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Reset all timeline splits and exclusions.'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        },
-      ),
-    ];
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: buttons.map((btn) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: btn,
-        )).toList(),
+  void _resetSplits() {
+    final l10n = AppLocalizations.of(context);
+    ref.read(editorProvider.notifier).resetSegments();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          l10n?.splitsReset ??
+              'Reset all timeline splits and exclusions.',
+        ),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
 
-  Widget _buildActionPill({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: AppTheme.glassDecoration(
-          color: Colors.white.withValues(alpha: 0.02),
-          borderRadius: 20,
-          borderOpacity: 0.08,
+  void _rippleDeleteGaps() {
+    final hasDeleted = widget.segments?.any((s) => s.isDeleted == true) ?? false;
+    if (!hasDeleted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No deleted segments to ripple. Exclude or cut a clip first.'),
+          duration: Duration(seconds: 2),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 12, color: AppTheme.iconMuted),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.textSubtle,
-              ),
-            ),
-          ],
-        ),
+      );
+      return;
+    }
+    ref.read(editorProvider.notifier).rippleDeleteAllDeletedSegments();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Ripple delete applied: closed dead air gaps and aligned timeline.'),
+        duration: Duration(seconds: 2),
       ),
     );
   }
-}
-
-// WordEdgeHit coordinate lookup model
-class WordEdgeHit {
-  final WordSchema word;
-  final String edge; // 'start' or 'end'
-  const WordEdgeHit(this.word, this.edge);
 }

@@ -256,6 +256,31 @@ UTF16 BE Test''';
       final words = await SrtImporter.importSrt(file.path);
       expect(words, isNotEmpty);
     });
+
+    test('sorts words by start time when SRT blocks are out of order or overlapping', () async {
+      final file = createTempFile('out_of_order.srt', '''
+1
+00:00:05,000 --> 00:00:07,000
+Second block later
+
+2
+00:00:01,000 --> 00:00:03,000
+First block earlier
+''');
+
+      final words = await SrtImporter.importSrt(file.path);
+      expect(words.length, 6);
+      // Words must be sorted chronologically by start time
+      for (int i = 0; i < words.length - 1; i++) {
+        expect(
+          words[i].start! <= words[i + 1].start!,
+          isTrue,
+          reason: 'Word at index $i (${words[i].text}) has start ${words[i].start} which exceeds next start ${words[i + 1].start}',
+        );
+      }
+      expect(words.first.text, 'First');
+      expect(words.last.text, 'later');
+    });
   });
 }
 

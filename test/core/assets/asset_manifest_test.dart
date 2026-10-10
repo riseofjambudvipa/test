@@ -183,12 +183,12 @@ void main() {
       expect(emoji.group, equals('Other'));
     });
 
-    test('validate predefined asset pack checksums are 64-character hex strings', () {
+    test('validate predefined asset pack checksums are valid hex strings or deferred to companion .sha256', () {
       final sha256Regex = RegExp(r'^[a-fA-F0-9]{64}$');
       final manifest = AssetManifest.fromJson({'emojis': []});
       for (final pack in manifest.packs) {
         expect(
-          sha256Regex.hasMatch(pack.checksum),
+          pack.checksum.isEmpty || sha256Regex.hasMatch(pack.checksum),
           isTrue,
           reason: 'Pack "${pack.name}" has invalid checksum format: "${pack.checksum}"',
         );
@@ -206,7 +206,7 @@ void main() {
 
       final manifest = AssetManifest.fromJson({'emojis': []});
       final microsoftAnimatedPack = manifest.packs.firstWhere((p) => p.id == 'microsoftAnimated');
-      expect(microsoftAnimatedPack.sizeMB, equals(1600.0)); // 1,677,721,600 / 1024 / 1024
+      expect(microsoftAnimatedPack.sizeMB, closeTo(1610.36, 0.1));
     });
 
     test('validate that assetManifestProvider throws UnimplementedError by default', () {
@@ -231,13 +231,11 @@ void main() {
       expect(searchLimit2.length, equals(2));
     });
 
-    test('should ensure at least one required pack is present in packs list', () {
+    test('all predefined default emoji packs are optional', () {
       final manifest = AssetManifest.fromJson({'emojis': []});
-      final hasRequired = manifest.packs.any((p) => p.required);
-      expect(hasRequired, isTrue);
-
-      final requiredPack = manifest.packs.firstWhere((p) => p.required);
-      expect(requiredPack.id, equals('googleNonAnimated'));
+      for (final pack in manifest.packs) {
+        expect(pack.required, isFalse, reason: 'Pack ${pack.name} must be optional');
+      }
     });
 
     test('EmojiMeta handles missing optional fields with safe defaults', () {

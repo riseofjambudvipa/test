@@ -1,5 +1,4 @@
 import 'dart:io' show Platform;
-import 'dart:ui';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +17,7 @@ class ShortcutsPanel extends ConsumerWidget {
     final isTesting = !kIsWeb && Platform.environment.containsKey('FLUTTER_TEST');
 
     final mainContent = Container(
-      color: isTesting ? Colors.black87 : Colors.black.withValues(alpha: 0.55),
+      color: isTesting ? AppTheme.surfaceDim : AppTheme.surfaceDim.withValues(alpha: 0.75),
       child: Center(
         child: Container(
           width: 500,
@@ -52,14 +51,14 @@ class ShortcutsPanel extends ConsumerWidget {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, size: 20, color: Colors.white60),
+                    icon: Icon(Icons.close, size: 20, color: AppTheme.secondaryText),
                     onPressed: () {
                       ref.read(editorProvider.notifier).closeShortcuts();
                     },
                   ),
                 ],
               ),
-              const Divider(color: Colors.white10, height: 20),
+              Divider(color: AppTheme.borderGlass, height: 20),
               
               // Scrollable shortcut list
               Flexible(
@@ -71,39 +70,49 @@ class ShortcutsPanel extends ConsumerWidget {
                       _buildShortcutRow('K', 'Pause'),
                       _buildShortcutRow('J', 'Seek −5 seconds'),
                       _buildShortcutRow('L', 'Seek +5 seconds'),
+                      _buildShortcutRow('Home', 'Jump to start'),
+                      _buildShortcutRow('End', 'Jump to end'),
+
+                      const SizedBox(height: 16),
+                      _buildSectionHeader('NAVIGATION'),
                       _buildShortcutRow('← / →', 'Seek ±0.1 seconds (frame step)'),
-                      _buildShortcutRow('F', 'Toggle Fullscreen'),
+                      _buildShortcutRow('Shift + ← / →', 'Seek ±1 second'),
+                      _buildShortcutRow('Click ruler', 'Seek playhead'),
 
                       const SizedBox(height: 16),
                       _buildSectionHeader('EDITING'),
                       _buildShortcutRow('${!kIsWeb && Platform.isMacOS ? 'Cmd' : 'Ctrl'} + Z', 'Undo'),
                       _buildShortcutRow('${!kIsWeb && Platform.isMacOS ? 'Cmd' : 'Ctrl'} + Y', 'Redo'),
                       _buildShortcutRow('${!kIsWeb && Platform.isMacOS ? 'Cmd' : 'Ctrl'} + Shift + Z', 'Redo (Alternate)'),
-                      _buildShortcutRow('${!kIsWeb && Platform.isMacOS ? 'Cmd' : 'Ctrl'} + S', 'Save Project'),
                       _buildShortcutRow('${!kIsWeb && Platform.isMacOS ? 'Cmd' : 'Ctrl'} + F', 'Find & Replace'),
                       _buildShortcutRow('Enter (on word)', 'Start inline text edit'),
-                      _buildShortcutRow('Delete / Backspace (on word)', 'Delete focused word'),
-                      _buildShortcutRow('Delete', 'Delete word under playhead'),
-
-                      const SizedBox(height: 16),
-                      _buildSectionHeader('NAVIGATION'),
-                      _buildShortcutRow('Escape', 'Close panel / Deselect'),
-                      _buildShortcutRow('?', 'Show / Hide Shortcuts Panel'),
-
-                      const SizedBox(height: 16),
-                      _buildSectionHeader('TIMELINE INTERACTIONS'),
-                      _buildShortcutRow('Click ruler', 'Seek playhead'),
-                      _buildShortcutRow('Click word chip', 'Cycle highlight color'),
-                      _buildShortcutRow('Drag word edge', 'Adjust word start / end timing'),
+                      _buildShortcutRow('Delete / Backspace', 'Delete focused word / word under playhead'),
                       _buildShortcutRow('Double-click word', 'Edit word text inline'),
-                      _buildShortcutRow('Scroll wheel / Trackpad', 'Scroll timeline horizontally'),
+                      _buildShortcutRow('Drag word edge', 'Adjust word start / end timing'),
+
+                      const SizedBox(height: 16),
+                      _buildSectionHeader('PANELS'),
+                      _buildShortcutRow('${!kIsWeb && Platform.isMacOS ? 'Cmd' : 'Ctrl'} + 1', 'Caption Tab'),
+                      _buildShortcutRow('${!kIsWeb && Platform.isMacOS ? 'Cmd' : 'Ctrl'} + 2', 'Style Tab'),
+                      _buildShortcutRow('${!kIsWeb && Platform.isMacOS ? 'Cmd' : 'Ctrl'} + 3', 'Shorts Tab'),
+                      _buildShortcutRow('${!kIsWeb && Platform.isMacOS ? 'Cmd' : 'Ctrl'} + 4', 'STT (Transcription) Tab'),
+                      _buildShortcutRow('${!kIsWeb && Platform.isMacOS ? 'Cmd' : 'Ctrl'} + E', 'Open Export Dialog'),
+                      _buildShortcutRow('Escape', 'Close panel / Deselect'),
+
+                      const SizedBox(height: 16),
+                      _buildSectionHeader('OTHER'),
+                      _buildShortcutRow('F', 'Toggle Fullscreen'),
+                      _buildShortcutRow('?', 'Show / Hide Shortcuts Panel'),
+                      _buildShortcutRow('${!kIsWeb && Platform.isMacOS ? 'Cmd' : 'Ctrl'} + S', 'Save Project'),
+                      _buildShortcutRow('Click word chip', 'Cycle highlight color'),
+                      _buildShortcutRow('Scroll / Trackpad', 'Scroll timeline horizontally'),
                       _buildShortcutRow('Pinch / Ctrl+Scroll', 'Zoom timeline'),
                     ],
                   ),
                 ),
               ),
               
-              const Divider(color: Colors.white10, height: 20),
+              Divider(color: AppTheme.borderGlass, height: 20),
               // Footer / Dismiss Tip
               Center(
                 child: Text(
@@ -139,7 +148,7 @@ class ShortcutsPanel extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 8),
-          const Expanded(child: Divider(color: Colors.white10)),
+          Expanded(child: Divider(color: AppTheme.borderGlass)),
         ],
       ),
     );
@@ -154,9 +163,9 @@ class ShortcutsPanel extends ConsumerWidget {
           Expanded(
             child: Text(
               action,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
-                color: Colors.white70,
+                color: AppTheme.secondaryText,
               ),
             ),
           ),
@@ -192,10 +201,7 @@ class ShortcutsPanelWrapper extends StatelessWidget {
     final isTesting = !kIsWeb && Platform.environment.containsKey('FLUTTER_TEST');
     if (isTesting) return child;
     return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-        child: child,
-      ),
+      child: child,
     );
   }
 }

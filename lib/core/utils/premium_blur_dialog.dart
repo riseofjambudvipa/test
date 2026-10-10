@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -60,7 +61,10 @@ class PremiumBlurDialog extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
             child: Container(
-              width: (size.width * 0.92).clamp(280.0, maxWidth),
+              // FIX (audit, latent crash): clamp() throws ArgumentError when
+              // the lower limit exceeds the upper limit, i.e. any caller with
+              // maxWidth < 280. Guard the upper bound instead of trusting it.
+              width: (size.width * 0.92).clamp(280.0, math.max(280.0, maxWidth)),
               constraints: BoxConstraints(
                 maxHeight: (size.height - MediaQuery.of(context).viewInsets.bottom) * heightMultiplier,
               ),

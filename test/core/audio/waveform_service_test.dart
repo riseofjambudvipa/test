@@ -102,5 +102,53 @@ void main() {
       expect(capturedWavPath, isNotNull);
       expect(File(capturedWavPath!).existsSync(), isFalse);
     });
+
+    test('should persist waveform to disk and reload successfully', () async {
+      int invokeCount = 0;
+      service.processRunner = (executable, arguments) async {
+        invokeCount++;
+        final capturedWavPath = arguments.last;
+        final List<int> pcmData = List<int>.filled(44, 0, growable: true);
+        for (int i = 0; i < 200; i++) {
+          final int sample = (i % 20 < 10) ? 8000 : -8000;
+          pcmData.add(sample & 0xFF);
+          pcmData.add((sample >> 8) & 0xFF);
+        }
+        final file = File(capturedWavPath);
+        await file.writeAsBytes(pcmData);
+        return ProcessResult(302, 0, 'success', '');
+      };
+
+      final videoFile = File('${Directory.systemTemp.path}/test_disk_video.mp4');
+      await videoFile.writeAsString('mock');
+
+      try {
+        final res1 = await service.extractWaveform(
+          videoPath: videoFile.path,
+          ffmpegPath: 'ffmpeg',
+          sampleCount: 16,
+        );
+        expect(res1.length, 16);
+        expect(invokeCount, 1);
+
+        // Allow async disk write to complete
+        await Future<void>.delayed(const Duration(milliseconds: 60));
+
+        // Calling clearCache() purges memory and disk cache cleanly
+        service.clearCache();
+
+        final res2 = await service.extractWaveform(
+          videoPath: videoFile.path,
+          ffmpegPath: 'ffmpeg',
+          sampleCount: 16,
+        );
+        expect(res2.length, 16);
+        expect(invokeCount, 2);
+      } finally {
+        if (videoFile.existsSync()) {
+          await videoFile.delete();
+        }
+      }
+    });
   });
 }

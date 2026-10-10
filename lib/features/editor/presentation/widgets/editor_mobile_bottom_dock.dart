@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../app/theme.dart';
@@ -26,15 +26,13 @@ class EditorMobileBottomDock extends ConsumerWidget {
       ).copyWith(
         border: Border(
           top: BorderSide(
-            color: Colors.white.withValues(alpha: 0.08),
+            color: AppTheme.borderGlass,
           ),
         ),
       ),
       child: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: SafeArea(
-            top: false,
+        child: SafeArea(
+          top: false,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
               child: Row(
@@ -42,14 +40,15 @@ class EditorMobileBottomDock extends ConsumerWidget {
                 children: [
                   _buildMobileTab(context, ref, EditorTab.style, Icons.palette_outlined, 'Style', activeTab),
                   _buildMobileTab(context, ref, EditorTab.caption, Icons.closed_caption_outlined, 'Captions', activeTab),
-                  _buildMobileTab(context, ref, EditorTab.transcription, Icons.translate_outlined, 'Import', activeTab),
-                  _buildMobileTab(context, ref, EditorTab.debug, Icons.terminal_outlined, 'Logs', activeTab),
+                  _buildMobileTab(context, ref, EditorTab.clipping, Icons.auto_awesome, 'Shorts', activeTab),
+                  _buildMobileTab(context, ref, EditorTab.transcription, Icons.translate_outlined, 'STT', activeTab),
+                  if (kDebugMode)
+                    _buildMobileTab(context, ref, EditorTab.debug, Icons.terminal_outlined, 'Logs', activeTab),
                 ],
               ),
             ),
           ),
         ),
-      ),
     );
   }
 

@@ -350,5 +350,31 @@ void main() {
       expect(result.words[0].start, 2.0);
       expect(result.words[0].end, 4.0);
     });
+
+    test('correctly preserves seconds for long video (>1000s) when expectedDuration is null', () {
+      final jsonStr = jsonEncode({
+        'language': 'en',
+        'segments': [
+          {
+            'id': 0,
+            'text': 'Late in the video',
+            'words': [
+              {'word': 'Late', 'start': 1100.0, 'end': 1100.4},
+              {'word': 'in', 'start': 1100.5, 'end': 1100.8},
+              {'word': 'video', 'start': 1101.0, 'end': 1101.5},
+            ]
+          }
+        ]
+      });
+
+      final result = WhisperService.instance.parseTranscriptionJson(jsonStr, null);
+      
+      expect(result.words.length, 3);
+      // Average word duration is ~0.4s (well below 5s), so units must NOT be misdetected as milliseconds
+      expect(result.words[0].start, 1100.0);
+      expect(result.words[0].end, 1100.4);
+      expect(result.words[2].start, 1101.0);
+      expect(result.words[2].end, 1101.5);
+    });
   });
 }

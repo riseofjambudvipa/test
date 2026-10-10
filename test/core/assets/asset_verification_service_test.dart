@@ -139,5 +139,45 @@ void main() {
       expect(result.missing[0].packId, 'googleNonAnimated');
       expect(result.missing[0].userMessage, contains('incomplete (1/15 files)'));
     });
+
+    test('verifies CJK font pack via TTF filename or localFolder', () async {
+      const cjkPack = AssetPack(
+        id: 'fontCjkSc',
+        name: 'Simplified Chinese Font',
+        description: 'CJK Sc font',
+        required: false,
+        sizeBytes: 100,
+        compressedSizeBytes: 50,
+        downloadUrl: 'https://example.com/fonts/NotoSansSC-Bold.ttf',
+        checksum: 'abc',
+        version: '1.0',
+        fileCount: 1,
+        format: 'ttf',
+        animated: false,
+        localFolder: 'fonts',
+      );
+
+      final manifestWithCjk = AssetManifest(
+        version: '1.0',
+        emojis: [],
+        packs: [cjkPack],
+      );
+
+      // Initially not installed
+      var isInstalled = await AssetVerificationService.instance.isPackInstalled('fontCjkSc', manifestWithCjk);
+      expect(isInstalled, isFalse);
+
+      // Create font file under fonts directory with filename matching downloadUrl
+      final fontFile = File(p.join(FontService.instance.fontsDirectory, 'NotoSansSC-Bold.ttf'));
+      fontFile.parent.createSync(recursive: true);
+      fontFile.writeAsStringSync('cjk_font_bytes');
+
+      isInstalled = await AssetVerificationService.instance.isPackInstalled('fontCjkSc', manifestWithCjk);
+      expect(isInstalled, isTrue);
+
+      final result = await AssetVerificationService.instance.verify(manifestWithCjk);
+      expect(result.installedPackIds, contains('fontCjkSc'));
+      expect(result.missing, isEmpty);
+    });
   });
 }

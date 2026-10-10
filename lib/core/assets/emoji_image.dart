@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'asset_manifest.dart';
 import '../emoji/emoji_service.dart';
+import '../logger/logger_service.dart';
 
 /// Displays an emoji image from disk.
 /// Fallback chain: activePack → googleNonAnimated → microsoftNonAnimated → openmoji → unicode glyph
@@ -323,7 +324,7 @@ class EmojiFrameCache {
       _cache[path] = frames;
       return frames;
     } catch (e) {
-      debugPrint('Failed to decode animated emoji: $e');
+      LoggerService.instance.log(LogLevel.error, 'EmojiFrameCache', 'Failed to decode animated emoji: $e');
       return null;
     }
   }

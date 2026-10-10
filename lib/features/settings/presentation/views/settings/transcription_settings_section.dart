@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:collection/collection.dart';
 import '../../../../../app/theme.dart';
+import '../../../../../app/theme_provider.dart';
 import '../../../../../core/settings/settings_service.dart';
 import '../../../../../core/whisper/whisper_languages.dart';
 import '../../../../../core/whisper/whisper_model.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 class TranscriptionSettingsSection extends ConsumerStatefulWidget {
   const TranscriptionSettingsSection({super.key});
@@ -33,19 +35,28 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
     _autoSaveEnabled = settings.autoSaveEnabled;
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w900,
-        color: Colors.white,
-        letterSpacing: 1.0,
-      ),
+  Widget _buildSectionHeader(String title, IconData icon, [AppThemeData? themeData]) {
+    final primaryColor = themeData?.primaryText ?? AppTheme.primaryText;
+    final accentColor = themeData?.accentOrange ?? AppTheme.accentOrange;
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: accentColor),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+            color: primaryColor,
+            letterSpacing: 0.8,
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildLanguageWarningCard() {
+  Widget _buildLanguageWarningCard([AppThemeData? themeData]) {
+    final primaryColor = themeData?.primaryText ?? AppTheme.primaryText;
     if (_defaultLanguage == 'auto') {
       return Padding(
         padding: const EdgeInsets.only(top: 8.0),
@@ -60,11 +71,11 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
             children: [
               Icon(Icons.info_outline_rounded, color: AppTheme.accentOrange, size: 16),
               const SizedBox(width: 10),
-              const Expanded(
+              Expanded(
                 child: Text(
                   'Tip: Auto-detect is not recommended for mixed languages (like Hinglish). '
                   'Explicitly selecting your spoken language (e.g. Hindi or English) will provide much more accurate captions.',
-                  style: TextStyle(color: Colors.white70, fontSize: 11, height: 1.3),
+                  style: TextStyle(color: primaryColor, fontSize: 11, height: 1.3),
                 ),
               ),
             ],
@@ -85,20 +96,20 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: AppTheme.glassDecoration(
-          color: Colors.redAccent.withValues(alpha: 0.08),
+          color: AppTheme.accentRed.withValues(alpha: 0.08),
           borderRadius: 8,
           borderOpacity: 0.12,
         ),
         child: Row(
           children: [
-            const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 16),
+            Icon(Icons.warning_amber_rounded, color: AppTheme.accentRed, size: 16),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 'Warning: Your active model (${activeModel?.displayName ?? modelName ?? 'English Only'}) is English-only. '
                 'Transcribing in "${kWhisperLanguages.firstWhere((l) => l.code == _defaultLanguage, orElse: () => WhisperLanguage('', _defaultLanguage)).name}" will fail or produce English captions. '
                 'Please download/select a Multilingual model.',
-                style: const TextStyle(color: Colors.redAccent, fontSize: 11, height: 1.3),
+                style: TextStyle(color: AppTheme.accentRed, fontSize: 11, height: 1.3),
               ),
             ),
           ],
@@ -109,33 +120,54 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
 
   @override
   Widget build(BuildContext context) {
+    final themeData = ref.watch(themeProvider);
     final isCompactWidth = MediaQuery.of(context).size.width < 600;
+    final l10n = AppLocalizations.of(context);
+
+    final dropdownDecoration = InputDecoration(
+      filled: true,
+      fillColor: themeData.cardBgElevated,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: themeData.borderGlass),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: themeData.borderGlass),
+      ),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader('📝 Transcription Settings'),
+        _buildSectionHeader(l10n?.settingsTranscription ?? 'Transcription Settings', Icons.mic_none_rounded, themeData),
         const SizedBox(height: 16),
         isCompactWidth
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Default Language', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white70)),
+                  Text(
+                    l10n?.defaultLanguage ?? 'Default Language',
+                    style: TextStyle(fontWeight: FontWeight.w600, color: themeData.primaryText),
+                  ),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    key: ValueKey(_defaultLanguage),
                     isExpanded: true,
-                    dropdownColor: AppTheme.cardBg,
-                    initialValue: _defaultLanguage,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
-                    ),
+                    dropdownColor: themeData.cardBg,
+                    style: TextStyle(color: themeData.primaryText, fontSize: 13),
+                    initialValue: kWhisperLanguages.any((l) => l.code == _defaultLanguage)
+                        ? _defaultLanguage
+                        : 'auto',
+                    decoration: dropdownDecoration,
                     items: [
-                      const DropdownMenuItem(value: 'auto', child: Text('Auto Detect')),
+                      DropdownMenuItem(
+                        value: 'auto',
+                        child: Text(l10n?.settingsAutoDetect ?? 'Auto Detect', style: TextStyle(color: themeData.primaryText)),
+                      ),
                       ...kWhisperLanguages.map((lang) => DropdownMenuItem(
                             value: lang.code,
-                            child: Text('${lang.name} (${lang.code})'),
+                            child: Text('${lang.name} (${lang.code})', style: TextStyle(color: themeData.primaryText)),
                           )),
                     ],
                     onChanged: (val) {
@@ -145,14 +177,17 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
                       }
                     },
                   ),
-                  _buildLanguageWarningCard(),
+                  _buildLanguageWarningCard(themeData),
                 ],
               )
             : Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     flex: 2,
-                    child: Text('Default Language', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white70)),
+                    child: Text(
+                      l10n?.defaultLanguage ?? 'Default Language',
+                      style: TextStyle(fontWeight: FontWeight.w600, color: themeData.primaryText),
+                    ),
                   ),
                   Expanded(
                     flex: 3,
@@ -160,19 +195,21 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         DropdownButtonFormField<String>(
-                          key: ValueKey(_defaultLanguage),
                           isExpanded: true,
-                          dropdownColor: AppTheme.cardBg,
-                          initialValue: _defaultLanguage,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
-                          ),
+                          dropdownColor: themeData.cardBg,
+                          style: TextStyle(color: themeData.primaryText, fontSize: 13),
+                          initialValue: kWhisperLanguages.any((l) => l.code == _defaultLanguage)
+                              ? _defaultLanguage
+                              : 'auto',
+                          decoration: dropdownDecoration,
                           items: [
-                            const DropdownMenuItem(value: 'auto', child: Text('Auto Detect')),
+                            DropdownMenuItem(
+                              value: 'auto',
+                              child: Text(l10n?.settingsAutoDetect ?? 'Auto Detect', style: TextStyle(color: themeData.primaryText)),
+                            ),
                             ...kWhisperLanguages.map((lang) => DropdownMenuItem(
                                   value: lang.code,
-                                  child: Text('${lang.name} (${lang.code})'),
+                                  child: Text('${lang.name} (${lang.code})', style: TextStyle(color: themeData.primaryText)),
                                 )),
                           ],
                           onChanged: (val) {
@@ -182,7 +219,7 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
                             }
                           },
                         ),
-                        _buildLanguageWarningCard(),
+                        _buildLanguageWarningCard(themeData),
                       ],
                     ),
                   ),
@@ -192,20 +229,26 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Voice Activity Detection (VAD)', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white70)),
-                  SizedBox(height: 4),
-                  Text('Skips silent regions during processing', style: TextStyle(fontSize: 11, color: Colors.white30)),
+                  Text(
+                    l10n?.vadTitle ?? 'Voice Activity Detection (VAD)',
+                    style: TextStyle(fontWeight: FontWeight.w600, color: themeData.primaryText),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n?.vadDesc ?? 'Skips silent regions during processing',
+                    style: TextStyle(fontSize: 11, color: themeData.mutedText),
+                  ),
                 ],
               ),
             ),
             const SizedBox(width: 8),
             Switch(
               value: _useVad,
-              activeThumbColor: AppTheme.accentOrange,
+              activeThumbColor: themeData.accentOrange,
               onChanged: (val) {
                 setState(() => _useVad = val);
                 SettingsService.instance.setUseVad(val);
@@ -219,26 +262,34 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('VAD Threshold', style: TextStyle(fontSize: 12, color: Colors.white60)),
+                    Text(
+                      l10n?.vadThreshold ?? 'VAD Threshold',
+                      style: TextStyle(fontSize: 12, color: themeData.secondaryText),
+                    ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
                         Expanded(
-                          child: Slider(
-                            value: _vadThreshold,
-                            min: 0.1,
-                            max: 0.9,
-                            activeColor: AppTheme.accentOrange,
-                            inactiveColor: Colors.white12,
-                            onChanged: (val) {
-                              setState(() => _vadThreshold = val);
-                              SettingsService.instance.setVadThreshold(val);
-                            },
+                          child: SliderTheme(
+                            data: AppTheme.premiumSliderTheme(context),
+                            child: Slider(
+                              value: _vadThreshold,
+                              min: 0.1,
+                              max: 0.9,
+                              activeColor: themeData.accentOrange,
+                              inactiveColor: themeData.dividerColor,
+                              onChanged: (val) {
+                                setState(() => _vadThreshold = val);
+                              },
+                              onChangeEnd: (val) {
+                                SettingsService.instance.setVadThreshold(val);
+                              },
+                            ),
                           ),
                         ),
                         Text(
                           _vadThreshold.toStringAsFixed(1),
-                          style: const TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.bold, color: themeData.primaryText),
                         ),
                       ],
                     ),
@@ -246,27 +297,35 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
                 )
               : Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       flex: 2,
-                      child: Text('VAD Threshold', style: TextStyle(fontSize: 12, color: Colors.white60)),
+                      child: Text(
+                        l10n?.vadThreshold ?? 'VAD Threshold',
+                        style: TextStyle(fontSize: 12, color: themeData.secondaryText),
+                      ),
                     ),
                     Expanded(
                       flex: 3,
-                      child: Slider(
-                        value: _vadThreshold,
-                        min: 0.1,
-                        max: 0.9,
-                        activeColor: AppTheme.accentOrange,
-                        inactiveColor: Colors.white12,
-                        onChanged: (val) {
-                          setState(() => _vadThreshold = val);
-                          SettingsService.instance.setVadThreshold(val);
-                        },
+                      child: SliderTheme(
+                        data: AppTheme.premiumSliderTheme(context),
+                        child: Slider(
+                          value: _vadThreshold,
+                          min: 0.1,
+                          max: 0.9,
+                          activeColor: themeData.accentOrange,
+                          inactiveColor: themeData.dividerColor,
+                          onChanged: (val) {
+                            setState(() => _vadThreshold = val);
+                          },
+                          onChangeEnd: (val) {
+                            SettingsService.instance.setVadThreshold(val);
+                          },
+                        ),
                       ),
                     ),
                     Text(
                       _vadThreshold.toStringAsFixed(1),
-                      style: const TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.bold),
+                      style: TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.bold, color: themeData.primaryText),
                     ),
                   ],
                 ),
@@ -275,20 +334,27 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Automatic Auto-Save', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white70)),
-                  SizedBox(height: 4),
-                  Text('Automatically save project edits to database every 3 seconds', style: TextStyle(fontSize: 11, color: Colors.white30)),
+                  Text(
+                    l10n?.autoSaveTitle ?? 'Automatic Auto-Save',
+                    style: TextStyle(fontWeight: FontWeight.w600, color: themeData.primaryText),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n?.autoSaveDesc ??
+                        'Automatically save project edits to database every 3 seconds',
+                    style: TextStyle(fontSize: 11, color: themeData.mutedText),
+                  ),
                 ],
               ),
             ),
             const SizedBox(width: 8),
             Switch(
               value: _autoSaveEnabled,
-              activeThumbColor: AppTheme.accentOrange,
+              activeThumbColor: themeData.accentOrange,
               onChanged: (val) {
                 setState(() => _autoSaveEnabled = val);
                 SettingsService.instance.setAutoSave(val);
@@ -296,7 +362,7 @@ class _TranscriptionSettingsSectionState extends ConsumerState<TranscriptionSett
             ),
           ],
         ),
-        const Divider(color: Colors.white10, height: 40),
+        Divider(color: themeData.borderGlass, height: 32),
       ],
     );
   }

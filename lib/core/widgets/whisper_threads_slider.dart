@@ -33,16 +33,18 @@ class WhisperThreadsSlider extends StatelessWidget {
     this.layout = WhisperThreadsSliderLayout.stacked,
     this.usePremiumTheme = false,
     this.showDescription = false,
-    this.titleStyle = const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
-    this.descriptionStyle = const TextStyle(fontSize: 11, color: Colors.white30),
+    this.titleStyle,
+    this.descriptionStyle,
     this.valueStyle = const TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.bold),
   });
 
   /// Current thread count. `0` means Auto.
   final int value;
 
-  /// Called with the new thread count (never 0; 0 is only reached by resetting
-  /// the setting elsewhere, e.g. "reset to defaults").
+  /// Called with the new thread count. `0` means Auto — the slider's minimum
+  /// is 0, so dragging fully to the left reaches it (the value is never
+  /// written to settings until the user releases, so 0 only persists via
+  /// "reset to defaults").
   final ValueChanged<int> onChanged;
 
   /// Upper slider bound. Defaults to the host's logical core count.
@@ -75,7 +77,7 @@ class WhisperThreadsSlider extends StatelessWidget {
       max: _maxThreads.toDouble(),
       divisions: _maxThreads,
       activeColor: AppTheme.accentOrange,
-      inactiveColor: Colors.white12,
+      inactiveColor: AppTheme.dividerColor,
       onChanged: (v) => onChanged(v.toInt()),
     );
     return usePremiumTheme
@@ -83,7 +85,26 @@ class WhisperThreadsSlider extends StatelessWidget {
         : slider;
   }
 
-  Widget _title() => Text('Whisper CPU Threads', style: titleStyle);
+  Widget _title() => Text(
+        'Whisper CPU Threads',
+        style: (titleStyle ??
+                const TextStyle(fontSize: 11, fontWeight: FontWeight.w600))
+            .copyWith(color: titleStyle?.color ?? AppTheme.primaryText),
+      );
+
+  Widget _descriptionWidget() => Text(
+        _description,
+        style: (descriptionStyle ?? const TextStyle(fontSize: 11))
+            .copyWith(color: descriptionStyle?.color ?? AppTheme.mutedText),
+      );
+
+  Widget _valueWidget() => Text(
+        _valueLabel,
+        style: (valueStyle ??
+                const TextStyle(
+                    fontFamily: 'monospace', fontWeight: FontWeight.bold))
+            .copyWith(color: valueStyle?.color ?? AppTheme.primaryText),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +117,7 @@ class WhisperThreadsSlider extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _title(),
-                Text(_valueLabel, style: valueStyle),
+                _valueWidget(),
               ],
             ),
             const SizedBox(height: 4),
@@ -110,14 +131,14 @@ class WhisperThreadsSlider extends StatelessWidget {
             _title(),
             if (showDescription) ...[
               const SizedBox(height: 4),
-              Text(_description, style: descriptionStyle),
+              _descriptionWidget(),
             ],
             const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(child: _slider(context)),
                 const SizedBox(width: 8),
-                Text(_valueLabel, style: valueStyle),
+                _valueWidget(),
               ],
             ),
           ],
@@ -133,14 +154,14 @@ class WhisperThreadsSlider extends StatelessWidget {
                   _title(),
                   if (showDescription) ...[
                     const SizedBox(height: 4),
-                    Text(_description, style: descriptionStyle),
+                    _descriptionWidget(),
                   ],
                 ],
               ),
             ),
             Expanded(flex: 3, child: _slider(context)),
             const SizedBox(width: 8),
-            Text(_valueLabel, style: valueStyle),
+            _valueWidget(),
           ],
         );
     }

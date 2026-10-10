@@ -124,7 +124,9 @@ mixin FfmpegFontPreparation {
   String? getSafeFontsDir() {
     try {
       return AssetPathService.instance.fontsDir;
-    } catch (_) {
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'FfmpegFontPreparer',
+          'Failed to resolve fonts directory: $e');
       return null;
     }
   }
@@ -132,7 +134,9 @@ mixin FfmpegFontPreparation {
   String? getSafeAppDirsFonts() {
     try {
       return AppDirs.fonts;
-    } catch (_) {
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'FfmpegFontPreparer',
+          'Failed to resolve AppDirs fonts directory: $e');
       return null;
     }
   }
@@ -214,7 +218,11 @@ mixin FfmpegFontPreparation {
             final licenseSource = File(p.join(dir.path, 'LICENSE.txt'));
             if (licenseSource.existsSync()) {
               final licenseDest = File(p.join(destFontsDir.path, 'LICENSE.txt'));
-              await licenseSource.copy(licenseDest.path);
+              try {
+                await licenseSource.copy(licenseDest.path);
+              } catch (e) {
+                LoggerService.instance.log(LogLevel.warning, 'FfmpegExporter', 'Failed to copy LICENSE.txt: $e');
+              }
             }
 
             final subdirs = ['design', 'languages', 'emoji'];
@@ -232,8 +240,12 @@ mixin FfmpegFontPreparation {
                     if (ext == '.ttf' || ext == '.otf') {
                       final destFile = File(p.join(targetSubfolder.path, p.basename(entity.path)));
                       if (!destFile.existsSync()) {
-                        await entity.copy(destFile.path);
-                        LoggerService.instance.log(LogLevel.info, 'FfmpegExporter', 'Copied bundled font ${p.basename(entity.path)} to assets/fonts/$subdir.');
+                        try {
+                          await entity.copy(destFile.path);
+                          LoggerService.instance.log(LogLevel.info, 'FfmpegExporter', 'Copied bundled font ${p.basename(entity.path)} to assets/fonts/$subdir.');
+                        } catch (e) {
+                          LoggerService.instance.log(LogLevel.warning, 'FfmpegExporter', 'Failed to copy bundled font ${p.basename(entity.path)}: $e');
+                        }
                       }
                     }
                   }
@@ -253,63 +265,116 @@ mixin FfmpegFontPreparation {
   // Dynamic flat font creation and aliasing for FFmpeg
   Future<String> prepareTempFontsDir(String tempDir) async {
     final tempFontsDir = Directory(p.join(tempDir, 'ffmpeg_fonts'));
-    if (tempFontsDir.existsSync()) {
+    try {
+      if (tempFontsDir.existsSync()) {
+        try {
+          tempFontsDir.deleteSync(recursive: true);
+        } catch (e) {
+          LoggerService.instance.debug('Failed to delete existing tempFontsDir: $e');
+        }
+      }
+      await tempFontsDir.create(recursive: true);
+
+      final destPath = getSafeFontsDir();
+      final customPath = getSafeAppDirsFonts();
+
+      Future<void> createAlias(File file, String baseName) async {
+        final meta = await FontMetadataReader.readMetadata(file);
+        final familyName = meta?.familyName ?? _fontFileToFamily[baseName];
+        if (familyName != null) {
+          final ext = p.extension(baseName);
+          final aliasFile = File(p.join(tempFontsDir.path, '$familyName$ext'));
+          if (!aliasFile.existsSync()) {
+            // FIX (audit, stale fonts + abort): a failed copy left a partial
+            // file the existsSync guard then skipped forever, and a family
+            // name with characters illegal in Windows filenames aborted the
+            // whole export. Log, clean up, and keep going.
+            try {
+              await file.copy(aliasFile.path);
+            } catch (e) {
+              LoggerService.instance.log(LogLevel.warning, 'FfmpegExporter',
+                  'Failed to copy font alias $familyName: $e');
+              try {
+                if (aliasFile.existsSync()) await aliasFile.delete();
+              } catch (e) {
+                LoggerService.instance.debug('Failed to delete aliasFile: $e');
+              }
+            }
+          }
+          final postScript = meta?.postScriptName;
+          if (postScript != null && postScript != familyName) {
+            final psFile = File(p.join(tempFontsDir.path, '$postScript$ext'));
+            if (!psFile.existsSync()) {
+              try {
+                await file.copy(psFile.path);
+              } catch (e) {
+                LoggerService.instance.log(LogLevel.warning, 'FfmpegExporter',
+                    'Failed to copy postscript font alias $postScript: $e');
+                try {
+                  if (psFile.existsSync()) await psFile.delete();
+                } catch (e) {
+                  LoggerService.instance.debug('Failed to delete psFile: $e');
+                }
+              }
+            }
+          }
+        }
+      }
+
+      Future<void> copyFontsFromDir(Directory dir) async {
+        if (!dir.existsSync()) return;
+        await for (final entity in dir.list(recursive: true)) {
+          if (entity is File) {
+            final ext = p.extension(entity.path).toLowerCase();
+            if (ext == '.ttf' || ext == '.otf') {
+              final filename = p.basename(entity.path);
+              if (filename == 'NotoColorEmoji.ttf') {
+                continue; // Skip large color emoji font to prevent metadata warnings and save memory
+              }
+              final destFile = File(p.join(tempFontsDir.path, filename));
+              if (destFile.existsSync()) {
+                await createAlias(destFile, filename);
+                continue;
+              }
+              try {
+                await entity.copy(destFile.path);
+              } catch (e) {
+                LoggerService.instance.log(LogLevel.warning, 'FfmpegExporter',
+                    'Failed to copy font $filename: $e');
+                try {
+                  if (destFile.existsSync()) await destFile.delete();
+                } catch (e) {
+                  LoggerService.instance.debug('Failed to delete destFile: $e');
+                }
+                continue; // skip aliasing a font that failed to copy
+              }
+              await createAlias(destFile, filename);
+            }
+          }
+        }
+      }
+
+      if (destPath != null) {
+        await copyFontsFromDir(Directory(destPath));
+      }
+      if (customPath != null) {
+        final customSubdir = Directory(p.join(customPath, 'Custom'));
+        await copyFontsFromDir(customSubdir);
+      }
+
+      return tempFontsDir.path;
+    } catch (e) {
+      // FIX (audit, temp leak): if font preparation fails partway, remove the
+      // partial ffmpeg_fonts/ dir so it isn't left behind until the next
+      // export's delete.
       try {
-        tempFontsDir.deleteSync(recursive: true);
-      } catch (_) {}
-    }
-    await tempFontsDir.create(recursive: true);
-
-    final destPath = getSafeFontsDir();
-    final customPath = getSafeAppDirsFonts();
-
-    Future<void> createAlias(File file, String baseName) async {
-      final meta = await FontMetadataReader.readMetadata(file);
-      final familyName = meta?.familyName ?? _fontFileToFamily[baseName];
-      if (familyName != null) {
-        final ext = p.extension(baseName);
-        final aliasFile = File(p.join(tempFontsDir.path, '$familyName$ext'));
-        if (!aliasFile.existsSync()) {
-          await file.copy(aliasFile.path);
+        if (tempFontsDir.existsSync()) {
+          tempFontsDir.deleteSync(recursive: true);
         }
-        final postScript = meta?.postScriptName;
-        if (postScript != null && postScript != familyName) {
-          final psFile = File(p.join(tempFontsDir.path, '$postScript$ext'));
-          if (!psFile.existsSync()) {
-            await file.copy(psFile.path);
-          }
-        }
+      } catch (e) {
+        LoggerService.instance.debug('Failed to clean up partial tempFontsDir: $e');
       }
+      rethrow;
     }
-
-    Future<void> copyFontsFromDir(Directory dir) async {
-      if (!dir.existsSync()) return;
-      await for (final entity in dir.list(recursive: true)) {
-        if (entity is File) {
-          final ext = p.extension(entity.path).toLowerCase();
-          if (ext == '.ttf' || ext == '.otf') {
-            final filename = p.basename(entity.path);
-            if (filename == 'NotoColorEmoji.ttf') {
-              continue; // Skip large color emoji font to prevent metadata warnings and save memory
-            }
-            final destFile = File(p.join(tempFontsDir.path, filename));
-            if (!destFile.existsSync()) {
-              await entity.copy(destFile.path);
-            }
-            await createAlias(destFile, filename);
-          }
-        }
-      }
-    }
-
-    if (destPath != null) {
-      await copyFontsFromDir(Directory(destPath));
-    }
-    if (customPath != null) {
-      final customSubdir = Directory(p.join(customPath, 'Custom'));
-      await copyFontsFromDir(customSubdir);
-    }
-
-    return tempFontsDir.path;
   }
 }

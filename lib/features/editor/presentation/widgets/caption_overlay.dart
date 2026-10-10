@@ -1,14 +1,16 @@
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
+import 'dart:io';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/text_layout_utils.dart';
+import '../../../../core/utils/color_utils.dart';
 import '../../../../app/theme.dart';
 import '../../../../app/theme_provider.dart';
 import '../../../../core/database/schemas/project.dart';
 import '../../../../core/database/schemas/word.dart';
 import '../../../../core/assets/emoji_image.dart';
 import '../../../../core/assets/asset_manifest.dart';
-import '../../../../core/emoji/emoji_model.dart';
+import '../../../../core/emoji/emoji_service.dart';
 import '../../domain/caption_engine.dart';
 import '../controllers/editor_controller.dart';
 
@@ -51,11 +53,14 @@ class AnimatedCaptionWord extends StatefulWidget {
 }
 
 class _AnimatedCaptionWordState extends State<AnimatedCaptionWord>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _ctrl;
   late Animation<double> _scaleAnim;
   late Animation<double> _opacityAnim;
   late Animation<Offset> _slideAnim;
+
+  late AnimationController _activeCtrl;
+  late Animation<double> _activeSpringAnim;
 
   @override
   void initState() {
@@ -66,12 +71,27 @@ class _AnimatedCaptionWordState extends State<AnimatedCaptionWord>
     );
     _buildAnimations();
 
+    _activeCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 140),
+    );
+    _activeSpringAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _activeCtrl, curve: Curves.easeOutBack),
+    );
+    if (widget.isActive) {
+      _activeCtrl.value = 1.0;
+    }
+
     // Staggered entry: each word in the chunk enters 30ms after the previous
     if (widget.hasEntered && !widget.isExporting) {
-      Future.delayed(
-        Duration(milliseconds: widget.wordIndexInChunk * 30),
-        () { if (mounted) _ctrl.forward(); },
-      );
+      if (widget.animationMode == 'none') {
+        _ctrl.value = 1.0;
+      } else {
+        Future.delayed(
+          Duration(milliseconds: widget.wordIndexInChunk * 30),
+          () { if (mounted) _ctrl.forward(); },
+        );
+      }
     }
   }
 
@@ -127,6 +147,7 @@ class _AnimatedCaptionWordState extends State<AnimatedCaptionWord>
   @override
   void didUpdateWidget(AnimatedCaptionWord old) {
     super.didUpdateWidget(old);
+    final modeChanged = old.animationMode != widget.animationMode;
     // New chunk appeared — restart entry animation
     if (!old.hasEntered && widget.hasEntered && !widget.isExporting) {
       _ctrl.reset();
@@ -135,12 +156,25 @@ class _AnimatedCaptionWordState extends State<AnimatedCaptionWord>
         Duration(milliseconds: widget.wordIndexInChunk * 30),
         () { if (mounted) _ctrl.forward(); },
       );
+    } else if (modeChanged && !widget.isExporting) {
+      // Rebuild and restart with the new mode
+      _ctrl.reset();
+      _buildAnimations();
+      _ctrl.forward();
+    }
+
+    // Active word kinetic spring transition: pop/bounce when spoken
+    if (!old.isActive && widget.isActive && !widget.isExporting) {
+      _activeCtrl.forward(from: 0.0);
+    } else if (old.isActive && !widget.isActive && !widget.isExporting) {
+      _activeCtrl.reverse();
     }
   }
 
   @override
   void dispose() {
     _ctrl.dispose();
+    _activeCtrl.dispose();
     super.dispose();
   }
 
@@ -172,6 +206,10 @@ class _AnimatedCaptionWordState extends State<AnimatedCaptionWord>
       final animStart = widget.exportChunkStart + delay;
       final elapsed = widget.exportCurrentTime - animStart;
       _ctrl.value = elapsed < 0.0 ? 0.0 : (elapsed / 0.180).clamp(0.0, 1.0);
+
+      final wordStart = widget.word.start ?? 0.0;
+      final activeElapsed = (widget.exportCurrentTime - wordStart).clamp(0.0, 0.14);
+      _activeCtrl.value = widget.isActive ? (activeElapsed / 0.14).clamp(0.0, 1.0) : 0.0;
     }
 
     if (widget.word.hidden == true) return const SizedBox.shrink();
@@ -182,20 +220,27 @@ class _AnimatedCaptionWordState extends State<AnimatedCaptionWord>
     final fw = _parseFontWeight(style.fontWeight);
     final text = _transformText(widget.word.text ?? '', style.textTransform);
 
-    final strokeWidth = widget.strokeMode == 'thick' ? 6.0 * widget.scale : 0.0;
+    final strokeWidth = widget.strokeMode == 'thick'
+        ? 6.0 * widget.scale
+        : (widget.strokeMode == 'thin' ? 2.5 * widget.scale : 0.0);
     final strokeColor = Colors.black;
 
-    // Active word scale boost (on top of entry animation)
-    final activeBoost = widget.isActive && widget.animationMode != 'none' ? 1.12 : 1.0;
+    // Active spring value with elastic overshoot (0.0 to 1.0+)
+    final springVal = widget.animationMode != 'none'
+        ? _activeSpringAnim.value
+        : (widget.isActive ? 1.0 : 0.0);
 
-    // Tilt for kineticTilt active word
-    final tiltAngle = (widget.isActive && widget.animationMode == 'kineticTilt')
-        ? (widget.wordIndexInChunk % 2 == 0 ? -0.078 : 0.078)
+    // Active word scale boost with dynamic kinetic spring (up to 1.18x)
+    final activeBoost = 1.0 + (springVal * 0.18);
+
+    // Tilt for kineticTilt active word (dynamic spring tilt)
+    final tiltAngle = (widget.animationMode == 'kineticTilt')
+        ? ((widget.wordIndexInChunk % 2 == 0 ? -0.078 : 0.078) * springVal)
         : 0.0;
 
-    // Bounce jump translation
-    final bounceOffset = (widget.isActive && widget.animationMode == 'bounce')
-        ? Offset(0, -6.0 * widget.scale)
+    // Bounce jump translation (dynamic spring vertical bounce)
+    final bounceOffset = (widget.animationMode == 'bounce')
+        ? Offset(0, -springVal * 7.0 * widget.scale)
         : Offset.zero;
 
     // Background highlight box (the CapCut-style pill)
@@ -203,24 +248,42 @@ class _AnimatedCaptionWordState extends State<AnimatedCaptionWord>
 
     // Dynamic glowing shadow system
     final List<Shadow> shadowStack = [];
-    if (widget.isActive && widget.animationMode == 'glowPulse') {
+    if (widget.animationMode == 'glowPulse' && springVal > 0.01) {
       shadowStack.addAll([
         Shadow(
-          color: fillColor.withValues(alpha: 0.85),
-          blurRadius: 16.0 * widget.scale,
+          color: fillColor.withValues(alpha: (0.85 * springVal).clamp(0.0, 1.0)),
+          blurRadius: (16.0 * widget.scale * springVal).clamp(0.0, 32.0),
           offset: Offset.zero,
         ),
         Shadow(
-          color: fillColor.withValues(alpha: 0.5),
-          blurRadius: 8.0 * widget.scale,
+          color: fillColor.withValues(alpha: (0.5 * springVal).clamp(0.0, 1.0)),
+          blurRadius: (8.0 * widget.scale * springVal).clamp(0.0, 16.0),
           offset: Offset.zero,
         ),
       ]);
+    } else if (widget.shadowMode == '3d' || widget.shadowMode == 'extruded') {
+      for (double step = 1.0; step <= 5.0; step += 1.0) {
+        shadowStack.add(
+          Shadow(
+            color: Colors.black.withValues(alpha: (0.95 - (step * 0.12)).clamp(0.2, 1.0)),
+            blurRadius: 0,
+            offset: Offset(step * 1.5 * widget.scale, step * 1.5 * widget.scale),
+          ),
+        );
+      }
+    } else if (widget.shadowMode == 'hard') {
+      shadowStack.add(
+        Shadow(
+          color: Colors.black.withValues(alpha: 0.8),
+          blurRadius: 0,
+          offset: Offset(3.5 * widget.scale, 3.5 * widget.scale),
+        ),
+      );
     } else if (widget.shadowMode == 'soft') {
       shadowStack.add(
         Shadow(
           color: Colors.black.withValues(alpha: 0.5),
-          blurRadius: 0,
+          blurRadius: 2.0 * widget.scale,
           offset: Offset(2.0 * widget.scale, 2.0 * widget.scale),
         ),
       );
@@ -262,11 +325,13 @@ class _AnimatedCaptionWordState extends State<AnimatedCaptionWord>
     );
 
     if (showBgBox) {
+      final bgBoxColor = fillColor.withValues(alpha: 0.9);
+      final textOnBg = ColorUtils.contrastColor(bgBoxColor);
       wordWidget = Container(
         padding: EdgeInsets.symmetric(
             horizontal: 8 * widget.scale, vertical: 4 * widget.scale),
         decoration: BoxDecoration(
-          color: fillColor.withValues(alpha: 0.85),
+          color: bgBoxColor,
           borderRadius: BorderRadius.circular(6 * widget.scale),
         ),
         child: Text(text,
@@ -277,14 +342,14 @@ class _AnimatedCaptionWordState extends State<AnimatedCaptionWord>
             fontSize: fs,
             fontWeight: fw,
             letterSpacing: (style.letterSpacing ?? 0) * widget.scale,
-            color: Colors.white,
+            color: textOnBg,
           ),
         ),
       );
     }
 
-    return AnimatedBuilder(
-      animation: _ctrl,
+    return ListenableBuilder(
+      listenable: Listenable.merge([_ctrl, _activeCtrl]),
       builder: (context, child) => FractionalTranslation(
         translation: _slideAnim.value,
         child: Opacity(
@@ -331,6 +396,7 @@ class CaptionOverlay extends ConsumerStatefulWidget {
   final double scale;
   final bool allowDrag;   // true in editor preview, false in export preview
   final void Function(double top)? onPositionChanged;
+  final void Function(double left)? onHorizontalPositionChanged;
   final void Function()? onDragEnd;  // Called on drag-end to commit history
   final double videoWidth;  // dynamic sizing helpers
   final double videoHeight;
@@ -345,6 +411,7 @@ class CaptionOverlay extends ConsumerStatefulWidget {
     required this.scale,
     this.allowDrag = false,
     this.onPositionChanged,
+    this.onHorizontalPositionChanged,
     this.onDragEnd,
     this.videoWidth = 360,
     this.videoHeight = 640,
@@ -357,6 +424,41 @@ class CaptionOverlay extends ConsumerStatefulWidget {
 }
 
 class _CaptionOverlayState extends ConsumerState<CaptionOverlay> {
+  bool _isDragging = false;
+  bool _snappedX = false;
+  bool _snappedY = false;
+  double _snappedTargetY = 50.0;
+
+  // FIX (perf): memoize the wrapped-line layout. During playback the overlay
+  // rebuilds on every currentTime tick, and splitWordsIntoLines allocates
+  // fresh TextPainters per word per trial — heavy per-frame GC pressure.
+  // The cache keyed on identity + dimensions recomputes only when the active
+  // chunk, style, or viewport size actually changes.
+  List<List<WordSchema>>? _cachedLines;
+  List<WordSchema>? _cacheWords;
+  StyleConfigSchema? _cacheStyle;
+  double _cacheScale = -1;
+  double _cacheWidth = -1;
+
+  List<List<WordSchema>> _computeLines(
+    List<WordSchema> words,
+    StyleConfigSchema style,
+    double effectiveScale,
+    double maxPixelWidth,
+  ) {
+    if (_cachedLines == null ||
+        !identical(_cacheWords, words) ||
+        !identical(_cacheStyle, style) ||
+        _cacheScale != effectiveScale ||
+        _cacheWidth != maxPixelWidth) {
+      _cacheWords = words;
+      _cacheStyle = style;
+      _cacheScale = effectiveScale;
+      _cacheWidth = maxPixelWidth;
+      _cachedLines = splitWordsIntoLines(words, style, effectiveScale, maxPixelWidth);
+    }
+    return _cachedLines!;
+  }
 
   List<List<WordSchema>> splitWordsIntoLines(
     List<WordSchema> words,
@@ -395,40 +497,45 @@ class _CaptionOverlayState extends ConsumerState<CaptionOverlay> {
   Widget build(BuildContext context) {
     ref.watch(themeProvider);
     final isPlaying = ref.watch(editorProvider.select((s) => s.isPlaying));
-    final activeChunk = CaptionEngine.getActiveChunk(
+    final Chunk? activeChunk = CaptionEngine.getActiveChunk(
         widget.chunks, widget.currentTime);
 
     if (activeChunk == null) return const SizedBox.shrink();
+    final Chunk currentChunk = activeChunk;
 
     final style = widget.config.style;
     final manifest = ref.read(assetManifestProvider);
 
-    // Emoji
-    WordSchema? emojiWord;
-    EmojiMeta? emojiMeta;
-    for (final w in activeChunk.words) {
+    // Collect all emojis in the active chunk to lay them out inline side-by-side
+    final chunkEmojiWords = <(WordSchema, EmojiMeta?)>[];
+    for (final w in currentChunk.words) {
       if (w.emoji != null && w.emoji!.isNotEmpty && w.emoji != 'none') {
-        emojiWord = w;
         final parsed = EmojiPackParser.parse(w.emoji!, '');
-        emojiMeta = manifest.byGlyph[parsed.glyph];
-        break;
+        final emojiMeta = manifest.byGlyph[parsed.glyph];
+        chunkEmojiWords.add((w, emojiMeta));
       }
     }
 
     // Auto-detect RTL languages
-    final isChunkRtl = activeChunk.words.any((w) => w.text != null && _isRtlText(w.text!));
+    final isChunkRtl = currentChunk.words.any((w) => w.text != null && _isRtlText(w.text!));
 
     return Positioned.fill(
       child: LayoutBuilder(
         builder: (context, constraints) {
+          final containerAspect = constraints.maxWidth / constraints.maxHeight;
           // Calculate actual video render rect inside the container
+          final defaultFallback = containerAspect < 1.0 ? (9 / 16) : (16 / 9);
           final videoAspect = (widget.videoWidth > 0 && widget.videoHeight > 0)
               ? widget.videoWidth / widget.videoHeight
-              : 16 / 9;
-          final containerAspect = constraints.maxWidth / constraints.maxHeight;
+              : defaultFallback;
 
           double videoW, videoH, videoLeft, videoTop;
-          if (videoAspect < containerAspect) {
+          if ((videoAspect - containerAspect).abs() / containerAspect < 0.02) {
+            videoW = constraints.maxWidth;
+            videoH = constraints.maxHeight;
+            videoLeft = 0;
+            videoTop = 0;
+          } else if (videoAspect < containerAspect) {
             videoH = constraints.maxHeight;
             videoW = videoH * videoAspect;
             videoLeft = (constraints.maxWidth - videoW) / 2;
@@ -450,9 +557,9 @@ class _CaptionOverlayState extends ConsumerState<CaptionOverlay> {
           final hPad = videoW * 0.10;
           final captionMaxW = videoW - (hPad * 2);
 
-          // Dynamic multi-line wrapping algorithm
-          final lines = splitWordsIntoLines(
-            activeChunk.words,
+          // Dynamic multi-line wrapping algorithm (memoized — see _computeLines)
+          final lines = _computeLines(
+            currentChunk.words,
             style,
             effectiveScale,
             captionMaxW,
@@ -461,6 +568,9 @@ class _CaptionOverlayState extends ConsumerState<CaptionOverlay> {
           // The style.top is a percentage (0-100) of where the caption's
           // CENTER should be vertically within the video frame.
           final topFraction = (style.top / 100).clamp(0.05, 0.95);
+          // The style.left is a percentage (0-100) for horizontal positioning.
+          // 50 = centered, 0 = far left, 100 = far right.
+          final leftFraction = (style.left / 100).clamp(0.05, 0.95);
 
           // Build only the text lines content
           final textLinesContent = Column(
@@ -475,8 +585,8 @@ class _CaptionOverlayState extends ConsumerState<CaptionOverlay> {
                   alignment: WrapAlignment.center,
                   children: (() {
                     final wordToIndex = {
-                      for (int i = 0; i < activeChunk.words.length; i++)
-                        activeChunk.words[i].wordId: i
+                      for (int i = 0; i < currentChunk.words.length; i++)
+                        currentChunk.words[i].wordId: i
                     };
                     return lineWords.map((word) {
                       final idx = wordToIndex[word.wordId] ?? -1;
@@ -484,12 +594,12 @@ class _CaptionOverlayState extends ConsumerState<CaptionOverlay> {
                       final wordEnd = word.end ?? 0.0;
                       final isActive = widget.currentTime >= wordStart &&
                           widget.currentTime <= wordEnd;
-                      final double chunkStart = activeChunk.words.isNotEmpty
-                          ? (activeChunk.words.first.start ?? 0.0)
+                      final double chunkStart = currentChunk.words.isNotEmpty
+                          ? (currentChunk.words.first.start ?? 0.0)
                           : 0.0;
 
                       return AnimatedCaptionWord(
-                        key: ValueKey('${activeChunk.index}_${word.wordId}'),
+                        key: ValueKey('${currentChunk.index}_${word.wordId}'),
                         word: word,
                         isActive: isActive,
                         hasEntered: true,
@@ -514,7 +624,7 @@ class _CaptionOverlayState extends ConsumerState<CaptionOverlay> {
           // Wrap only the text lines content in the background box if configured
           Widget textWidget = textLinesContent;
           if (widget.config.background != null && widget.config.background!.isNotEmpty) {
-            final bgColor = _parseHex(widget.config.background, Colors.black);
+            final bgColor = ColorUtils.fromHex(widget.config.background, fallback: Colors.black);
             textWidget = Container(
               padding: EdgeInsets.symmetric(
                 horizontal: 16 * effectiveScale,
@@ -529,12 +639,20 @@ class _CaptionOverlayState extends ConsumerState<CaptionOverlay> {
             );
           }
 
-          // Build final content stacking emoji outside (above) the text container
+          // Build final content stacking emojis outside (above) the text container
           final contentWidget = Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (emojiWord != null) ...[
-                _buildEmojiWithScale(emojiWord, emojiMeta, effectiveScale, isPlaying),
+              if (chunkEmojiWords.isNotEmpty) ...[
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 12.0 * effectiveScale,
+                  runSpacing: 6.0 * effectiveScale,
+                  children: [
+                    for (final item in chunkEmojiWords)
+                      _buildEmojiWithScale(item.$1, item.$2, effectiveScale, isPlaying),
+                  ],
+                ),
                 SizedBox(height: 12 * effectiveScale),
               ],
               textWidget,
@@ -577,10 +695,32 @@ class _CaptionOverlayState extends ConsumerState<CaptionOverlay> {
                           top: 0,
                           bottom: 0,
                           child: Align(
-                            alignment: Alignment(0, (topFraction - 0.5) * 2),
+                            alignment: Alignment((leftFraction - 0.5) * 2, (topFraction - 0.5) * 2),
                             child: wrappedCaption,
                           ),
                         ),
+                        // Magnetic Horizontal Guideline (appears when snapped to key vertical positions)
+                        if (_isDragging && _snappedY)
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            top: (videoH * (_snappedTargetY / 100)).clamp(0.0, videoH - 1.5),
+                            child: Container(
+                              height: 1.5,
+                              color: AppTheme.accentCyan.withValues(alpha: 0.85),
+                            ),
+                          ),
+                        // Magnetic Vertical Center Guideline (appears when snapped to X=50%)
+                        if (_isDragging && _snappedX)
+                          Positioned(
+                            top: 0,
+                            bottom: 0,
+                            left: (videoW * 0.5) - 0.75,
+                            child: Container(
+                              width: 1.5,
+                              color: AppTheme.accentCyan.withValues(alpha: 0.85),
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -590,20 +730,70 @@ class _CaptionOverlayState extends ConsumerState<CaptionOverlay> {
           }
 
           if (widget.allowDrag) {
-            return GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onVerticalDragUpdate: (d) {
-                final newTopPct =
-                    (style.top + (d.delta.dy / videoH * 100))
-                        .clamp(10.0, 90.0);
-                widget.onPositionChanged?.call(newTopPct);
-              },
-              onVerticalDragEnd: (_) => widget.onDragEnd?.call(),
-              child: buildCaptionStack(),
+            return RepaintBoundary(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onPanStart: (_) {
+                  setState(() {
+                    _isDragging = true;
+                  });
+                },
+                onPanUpdate: (d) {
+                  double newTopPct =
+                      (style.top + (d.delta.dy / videoH * 100))
+                          .clamp(10.0, 90.0);
+                  double newLeftPct =
+                      (style.left + (d.delta.dx / videoW * 100))
+                          .clamp(10.0, 90.0);
+
+                  // Magnetic horizontal center snap (50%)
+                  bool snapX = false;
+                  if ((newLeftPct - 50.0).abs() < 2.0) {
+                    newLeftPct = 50.0;
+                    snapX = true;
+                  }
+
+                  // Magnetic vertical snaps (25% top third, 50% center, 75% lower third, 80% baseline)
+                  bool snapY = false;
+                  double targetY = 50.0;
+                  const snapTargetsY = [25.0, 50.0, 75.0, 80.0];
+                  for (final t in snapTargetsY) {
+                    if ((newTopPct - t).abs() < 1.8) {
+                      newTopPct = t;
+                      snapY = true;
+                      targetY = t;
+                      break;
+                    }
+                  }
+
+                  if (_snappedX != snapX || _snappedY != snapY || _snappedTargetY != targetY) {
+                    setState(() {
+                      _snappedX = snapX;
+                      _snappedY = snapY;
+                      _snappedTargetY = targetY;
+                    });
+                  }
+
+                  widget.onPositionChanged?.call(newTopPct);
+                  widget.onHorizontalPositionChanged?.call(newLeftPct);
+                },
+                onPanEnd: (_) {
+                  setState(() {
+                    _isDragging = false;
+                    _snappedX = false;
+                    _snappedY = false;
+                  });
+                  widget.onDragEnd?.call();
+                },
+                child: buildCaptionStack(),
+              ),
             );
           }
 
-          return buildCaptionStack();
+          // FIX (perf): isolate the animated caption stack behind a
+          // RepaintBoundary so per-frame animation repaints re-rasterize only
+          // this layer instead of the surrounding editor tree.
+          return RepaintBoundary(child: buildCaptionStack());
         },
       ),
     );
@@ -616,42 +806,83 @@ class _CaptionOverlayState extends ConsumerState<CaptionOverlay> {
         ? (widget.config.emojiPack ?? 'notoColorEmoji')
         : parsed.pack;
 
+    final isFilePath = parsed.glyph.startsWith('/') ||
+        RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(parsed.glyph) ||
+        parsed.pack == 'custom' ||
+        parsed.glyph.endsWith('.png') ||
+        parsed.glyph.endsWith('.webp') ||
+        parsed.glyph.endsWith('.jpg') ||
+        parsed.glyph.endsWith('.jpeg') ||
+        parsed.glyph.endsWith('.gif') ||
+        parsed.glyph.contains('/') ||
+        parsed.glyph.contains('\\') ||
+        (emojiWord.emoji != null &&
+            (emojiWord.emoji!.startsWith('/') ||
+                RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(emojiWord.emoji!) ||
+                emojiWord.emoji!.startsWith('custom:')));
+
+    final resolvedSticker = (!kIsWeb)
+        ? (EmojiService.resolveStickerPath(parsed.glyph) ??
+            (emojiWord.emoji != null ? EmojiService.resolveStickerPath(emojiWord.emoji) : null))
+        : null;
+
+    final isCustomSticker = !kIsWeb && (resolvedSticker != null || isFilePath);
+
+    Widget emojiContent;
+    if (resolvedSticker != null && !kIsWeb) {
+      emojiContent = SizedBox(
+        width: 80 * scale,
+        height: 80 * scale,
+        child: Image.file(
+          File(resolvedSticker),
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+        ),
+      );
+    } else if (isCustomSticker) {
+      // Custom sticker whose file is not on disk — never render raw path string as text!
+      emojiContent = const SizedBox.shrink();
+    } else if (emojiMeta != null &&
+        activePack != 'systemDefault' &&
+        activePack != 'notoColorEmoji') {
+      emojiContent = EmojiImage(
+        emoji: emojiMeta,
+        activePack: activePack,
+        size: 80 * scale,
+        currentTime: widget.currentTime,
+        wordStart: emojiWord.start,
+        speed: cfg?.speed ?? 1.0,
+        isPlaying: isPlaying,
+      );
+    } else {
+      if (isFilePath) {
+        emojiContent = const SizedBox.shrink();
+      } else {
+        emojiContent = Text(
+          parsed.glyph,
+          style: TextStyle(
+            fontSize: 64 * scale,
+            fontFamily: activePack == 'notoColorEmoji'
+                ? 'Noto Color Emoji'
+                : switch (defaultTargetPlatform) {
+                    TargetPlatform.android => null, // Let mobile devices use their native default system emoji font
+                    TargetPlatform.macOS   => 'Apple Color Emoji',
+                    TargetPlatform.windows => 'Segoe UI Emoji',
+                    TargetPlatform.linux   => null,
+                    _                      => null, // web / fuchsia: rely on browser native
+                  },
+          ),
+        );
+      }
+    }
+
     return Transform.translate(
       offset: Offset((cfg?.x ?? 0) * scale, (cfg?.y ?? 0) * scale),
       child: Transform.scale(
         scale: cfg?.scale ?? 1.0,
-        child: (emojiMeta != null && activePack != 'systemDefault' && activePack != 'notoColorEmoji')
-            ? EmojiImage(
-                emoji: emojiMeta,
-                activePack: activePack,
-                size: 80 * scale,
-                currentTime: widget.currentTime,
-                wordStart: emojiWord.start,
-                speed: cfg?.speed ?? 1.0,
-                isPlaying: isPlaying,
-              )
-            : Text(parsed.glyph,
-                style: TextStyle(
-                  fontSize: 64 * scale,
-                  fontFamily: activePack == 'notoColorEmoji'
-                      ? 'Noto Color Emoji'
-                      : switch (defaultTargetPlatform) {
-                          TargetPlatform.android => null, // Let mobile devices use their native default system emoji font
-                          TargetPlatform.macOS   => 'Apple Color Emoji',
-                          TargetPlatform.windows => 'Segoe UI Emoji',
-                          TargetPlatform.linux   => null,
-                          _                      => null, // web / fuchsia: rely on browser native
-                        },
-                ),
-              ),
+        child: emojiContent,
       ),
     );
   }
 
-  Color _parseHex(String? hex, Color fallback) {
-    if (hex == null || hex.isEmpty) return fallback;
-    try {
-      return Color(int.parse('FF${hex.replaceAll('#', '')}', radix: 16));
-    } catch (_) { return fallback; }
-  }
 }

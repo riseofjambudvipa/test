@@ -266,5 +266,134 @@ void main() {
         tempDir.deleteSync(recursive: true);
       }
     });
+
+    test('sanitizeLanguage normalizes valid, invalid, and auto language codes', () {
+      expect(WhisperService.sanitizeLanguage(null), 'auto');
+      expect(WhisperService.sanitizeLanguage(''), 'auto');
+      expect(WhisperService.sanitizeLanguage('   '), 'auto');
+      expect(WhisperService.sanitizeLanguage('auto'), 'auto');
+      expect(WhisperService.sanitizeLanguage('AUTO'), 'auto');
+      expect(WhisperService.sanitizeLanguage('en'), 'en');
+      expect(WhisperService.sanitizeLanguage('es'), 'es');
+      expect(WhisperService.sanitizeLanguage('zh-CN'), 'zh-CN');
+      expect(WhisperService.sanitizeLanguage('en_US'), 'en_US');
+      expect(WhisperService.sanitizeLanguage('fr;rm -rf /'), 'frrm-rf');
+      expect(WhisperService.sanitizeLanguage('!@#\$%^&*()'), 'auto');
+    });
+
+    test('isGpuFailure detects GPU and driver errors in stderr', () {
+      expect(WhisperService.isGpuFailure('ggml_cuda_init: failed to initialize CUDA'), isTrue);
+      expect(WhisperService.isGpuFailure('ggml_vulkan: memory allocation failed'), isTrue);
+      expect(WhisperService.isGpuFailure('OpenCL error: clCreateContext failed'), isTrue);
+      expect(WhisperService.isGpuFailure('ggml_backend: failed to allocate buffer'), isTrue);
+      expect(WhisperService.isGpuFailure('CUDA out of memory'), isTrue);
+      expect(WhisperService.isGpuFailure('File not found: /path/to/wav'), isFalse);
+    });
+
+    test('should pass -ng when useGpu is false', () async {
+      final tempDir = Directory.systemTemp.createTempSync('whisper_test_gpu_off_');
+      final mockWav = File(p.join(tempDir.path, 'audio_16k.wav'))..createSync();
+      final mockJsonFile = File('${mockWav.path}.json');
+      await mockJsonFile.writeAsString(jsonEncode({'segments': []}));
+
+      try {
+        List<String>? capturedArgs;
+        service.processRunner = (executable, arguments, {stderrEncoding, stdoutEncoding}) async {
+          capturedArgs = arguments;
+          return ProcessResult(128, 0, 'success', 'success');
+        };
+
+        await service.transcribe(wavPath: mockWav.path, useGpu: false);
+
+        expect(capturedArgs, isNotNull);
+        expect(capturedArgs, contains('-ng'));
+      } finally {
+        tempDir.deleteSync(recursive: true);
+      }
+    });
+
+    test('should omit -ng when useGpu is true', () async {
+      final tempDir = Directory.systemTemp.createTempSync('whisper_test_gpu_on_');
+      final mockWav = File(p.join(tempDir.path, 'audio_16k.wav'))..createSync();
+      final mockJsonFile = File('${mockWav.path}.json');
+      await mockJsonFile.writeAsString(jsonEncode({'segments': []}));
+
+      try {
+        List<String>? capturedArgs;
+        service.processRunner = (executable, arguments, {stderrEncoding, stdoutEncoding}) async {
+          capturedArgs = arguments;
+          return ProcessResult(129, 0, 'success', 'success');
+        };
+
+        await service.transcribe(wavPath: mockWav.path, useGpu: true);
+
+        expect(capturedArgs, isNotNull);
+        expect(capturedArgs, isNot(contains('-ng')));
+      } finally {
+        tempDir.deleteSync(recursive: true);
+      }
+    });
+
+    test('should automatically retry with -ng when GPU fails with isGpuFailure error', () async {
+      final tempDir = Directory.systemTemp.createTempSync('whisper_test_gpu_retry_');
+      final mockWav = File(p.join(tempDir.path, 'audio_16k.wav'))..createSync();
+      final mockJsonFile = File('${mockWav.path}.json');
+
+      try {
+        int callCount = 0;
+        final List<List<String>> recordedInvocations = [];
+        service.processRunner = (executable, arguments, {stderrEncoding, stdoutEncoding}) async {
+          callCount++;
+          recordedInvocations.add(arguments);
+          if (callCount == 1) {
+            // First call with GPU fails with CUDA out of memory
+            return ProcessResult(130, 1, '', 'CUDA error: out of memory in ggml_cuda_init');
+          } else {
+            // Second call succeeds with fallback
+            await mockJsonFile.writeAsString(jsonEncode({'segments': []}));
+            return ProcessResult(130, 0, 'success', 'success');
+          }
+        };
+
+        final result = await service.transcribe(wavPath: mockWav.path, useGpu: true);
+
+        expect(callCount, 2);
+        expect(recordedInvocations[0], isNot(contains('-ng')));
+        expect(recordedInvocations[1], contains('-ng'));
+        expect(result.words, isEmpty);
+      } finally {
+        tempDir.deleteSync(recursive: true);
+      }
+    });
+
+    test('should retry without -ng when binary does not support -ng (unknown argument: -ng)', () async {
+      final tempDir = Directory.systemTemp.createTempSync('whisper_test_legacy_bin_');
+      final mockWav = File(p.join(tempDir.path, 'audio_16k.wav'))..createSync();
+      final mockJsonFile = File('${mockWav.path}.json');
+
+      try {
+        int callCount = 0;
+        final List<List<String>> recordedInvocations = [];
+        service.processRunner = (executable, arguments, {stderrEncoding, stdoutEncoding}) async {
+          callCount++;
+          recordedInvocations.add(arguments);
+          if (callCount == 1) {
+            return ProcessResult(131, 1, '', 'unknown argument: -ng\nusage: whisper-cli [options]');
+          } else {
+            await mockJsonFile.writeAsString(jsonEncode({'segments': []}));
+            return ProcessResult(131, 0, 'success', 'success');
+          }
+        };
+
+        final result = await service.transcribe(wavPath: mockWav.path, useGpu: false);
+
+        expect(callCount, 2);
+        expect(recordedInvocations[0], contains('-ng'));
+        expect(recordedInvocations[1], isNot(contains('-ng')));
+        expect(result.words, isEmpty);
+      } finally {
+        tempDir.deleteSync(recursive: true);
+      }
+    });
   });
 }

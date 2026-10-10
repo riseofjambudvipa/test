@@ -3,14 +3,125 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
 import 'package:ffi/ffi.dart';
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import '../logger/logger_service.dart';
 import 'native_helper.dart';
 
+bool? _isAppleSiliconCache;
+
+@visibleForTesting
+void setAppleSiliconForTesting(bool? value) {
+  _isAppleSiliconCache = value;
+}
+
+/// Returns the current CPU architecture string (e.g. 'macos_arm64', 'windows_x64').
+String getCpuArchitecture() {
+  try {
+    return Abi.current().toString();
+  } catch (e) {
+    LoggerService.instance.debug('Failed to get CPU architecture via Abi.current(): $e');
+    return 'unknown';
+  }
+}
+
+/// Detects whether the current macOS system is running on Apple Silicon (M-series),
+/// checking both native ARM64 execution and x86_64 translation under Rosetta 2
+/// via architecture inspection and macOS sysctl (`sysctl.proc_translated`, `hw.optional.arm64`).
+bool isAppleSilicon() {
+  if (_isAppleSiliconCache != null) return _isAppleSiliconCache!;
+  if (!Platform.isMacOS) return false;
+
+  // 1. Direct ARM64 ABI / architecture string check
+  try {
+    if (Abi.current() == Abi.macosArm64) {
+      _isAppleSiliconCache = true;
+      return true;
+    }
+  } catch (e) {
+    LoggerService.instance.debug('Abi.current check failed: $e');
+  }
+
+  // 2. Sysctl FFI check: detect if running under Rosetta 2 translation or on ARM64 hardware
+  try {
+    final libc = DynamicLibrary.process();
+    final sysctlbyname = libc.lookupFunction<
+      Int32 Function(
+        Pointer<Utf8> name,
+        Pointer<Int32> oldp,
+        Pointer<IntPtr> oldlenp,
+        Pointer<Void> newp,
+        IntPtr newlen,
+      ),
+      int Function(
+        Pointer<Utf8> name,
+        Pointer<Int32> oldp,
+        Pointer<IntPtr> oldlenp,
+        Pointer<Void> newp,
+        int newlen,
+      )
+    >('sysctlbyname');
+
+    // sysctl.proc_translated returns 1 if running under Rosetta 2 on Apple Silicon
+    final nameTranslated = 'sysctl.proc_translated'.toNativeUtf8();
+    final valPtr = calloc<Int32>();
+    final lenPtr = calloc<IntPtr>()..value = sizeOf<Int32>();
+    try {
+      if (sysctlbyname(nameTranslated, valPtr, lenPtr, nullptr, 0) == 0 && valPtr.value == 1) {
+        _isAppleSiliconCache = true;
+        return true;
+      }
+    } finally {
+      calloc.free(nameTranslated);
+    }
+
+    // hw.optional.arm64 returns 1 on Apple Silicon hardware
+    final nameArm64 = 'hw.optional.arm64'.toNativeUtf8();
+    lenPtr.value = sizeOf<Int32>();
+    try {
+      if (sysctlbyname(nameArm64, valPtr, lenPtr, nullptr, 0) == 0 && valPtr.value == 1) {
+        _isAppleSiliconCache = true;
+        return true;
+      }
+    } finally {
+      calloc.free(nameArm64);
+      calloc.free(valPtr);
+      calloc.free(lenPtr);
+    }
+  } catch (e) {
+    LoggerService.instance.debug('sysctlbyname FFI call failed: $e');
+  }
+
+  // 3. Sysctl process fallback: inspect machdep.cpu.brand_string and sysctl.proc_translated
+  try {
+    final result = Process.runSync('sysctl', ['-n', 'machdep.cpu.brand_string']);
+    if (result.exitCode == 0 && result.stdout.toString().toLowerCase().contains('apple')) {
+      _isAppleSiliconCache = true;
+      return true;
+    }
+  } catch (e) {
+    LoggerService.instance.debug('sysctl machdep.cpu.brand_string failed: $e');
+  }
+
+  try {
+    final result = Process.runSync('sysctl', ['-n', 'sysctl.proc_translated']);
+    if (result.exitCode == 0 && result.stdout.toString().trim() == '1') {
+      _isAppleSiliconCache = true;
+      return true;
+    }
+  } catch (e) {
+    LoggerService.instance.debug('sysctl sysctl.proc_translated failed: $e');
+  }
+
+  _isAppleSiliconCache = false;
+  return false;
+}
+
 bool isWindowsVcRuntimeInstalled() {
   if (!Platform.isWindows) return true;
   try {
-    final systemRoot = Platform.environment['SystemRoot'] ?? 'C:\\Windows';
+    final systemDrive = Platform.environment['SystemDrive'] ?? 'C:';
+    final systemRoot = Platform.environment['SystemRoot'] ?? p.join(systemDrive, 'Windows');
     final path1 = p.join(systemRoot, 'System32', 'vcruntime140.dll');
     final path2 = p.join(systemRoot, 'SysWOW64', 'vcruntime140.dll');
     final path1Ext = p.join(systemRoot, 'System32', 'vcruntime140_1.dll');
@@ -49,6 +160,10 @@ Future<bool> cpuSupportsAvx() async {
         _hasAvx = false;
       }
     } else if (Platform.isMacOS) {
+      if (isAppleSilicon()) {
+        _hasAvx = false;
+        return false;
+      }
       try {
         final libc = DynamicLibrary.process();
         final sysctlbyname = libc.lookupFunction<
@@ -202,106 +317,178 @@ Future<double> _getAvailableDiskSpaceMBProcessFallback(String path) async {
         }
       }
     }
-  } catch (_) {}
+  } catch (e) {
+    LoggerService.instance.debug('Failed to read memory usage: $e');
+  }
   return -1.0; // Sentinel value on failure
 }
 
-Future<SystemHardwareInfo> detectSystemHardware() async {
+SystemHardwareInfo? _cachedHardwareInfo;
+Future<SystemHardwareInfo>? _inFlightHardwareDetection;
+
+/// Clears cached hardware detection (primarily for testing).
+void clearCachedHardwareInfo() {
+  _cachedHardwareInfo = null;
+  _inFlightHardwareDetection = null;
+}
+
+Future<SystemHardwareInfo> detectSystemHardware() {
+  if (_cachedHardwareInfo != null) {
+    return Future.value(_cachedHardwareInfo);
+  }
+  if (_inFlightHardwareDetection != null) {
+    return _inFlightHardwareDetection!;
+  }
+  return _inFlightHardwareDetection = _performDetectSystemHardware().then((info) {
+    _cachedHardwareInfo = info;
+    _inFlightHardwareDetection = null;
+    return info;
+  }).catchError((Object err) {
+    _inFlightHardwareDetection = null;
+    throw err;
+  });
+}
+
+Future<SystemHardwareInfo> _performDetectSystemHardware() async {
+  if (Platform.environment.containsKey('FLUTTER_TEST')) {
+    return SystemHardwareInfo(
+      ramGB: 16.0,
+      cpuCores: Platform.numberOfProcessors > 0 ? Platform.numberOfProcessors : 8,
+      gpuInfo: 'Test GPU',
+      hasGpu: true,
+      isAppleSilicon: isAppleSilicon(),
+      cpuArchitecture: getCpuArchitecture(),
+    );
+  }
+
   double ramGB = 4.0;
   final int cpuCores = Platform.numberOfProcessors;
   String gpuInfo = 'None';
   bool hasGpu = false;
 
-  try {
-    if (Platform.isWindows) {
-      final result = await Process.run('wmic', ['computersystem', 'get', 'TotalPhysicalMemory', '/value']);
-      final match = RegExp(r'TotalPhysicalMemory=(\d+)').firstMatch(result.stdout.toString());
-      if (match != null) {
-        ramGB = double.parse(match.group(1)!) / (1024 * 1024 * 1024);
-      }
-    } else if (Platform.isMacOS) {
-      final result = await Process.run('sysctl', ['hw.memsize']);
-      final match = RegExp(r'hw.memsize:\s*(\d+)').firstMatch(result.stdout.toString());
-      if (match != null) {
-        ramGB = double.parse(match.group(1)!) / (1024 * 1024 * 1024);
-      }
-    } else if (Platform.isLinux) {
-      final result = await Process.run('free', ['-b']);
-      final lines = result.stdout.toString().split('\n');
-      if (lines.length > 1) {
-        final parts = lines[1].split(RegExp(r'\s+'));
-        if (parts.length > 1) {
-          ramGB = double.parse(parts[1]) / (1024 * 1024 * 1024);
+  Future<void> detectRam() async {
+    try {
+      if (Platform.isWindows) {
+        final result = await Process.run(
+          'wmic',
+          ['computersystem', 'get', 'TotalPhysicalMemory', '/value'],
+        ).timeout(const Duration(seconds: 2));
+        final match = RegExp(r'TotalPhysicalMemory=(\d+)').firstMatch(result.stdout.toString());
+        if (match != null) {
+          ramGB = double.parse(match.group(1)!) / (1024 * 1024 * 1024);
         }
-      }
-    } else if (Platform.isAndroid) {
-      try {
-        final file = File('/proc/meminfo');
-        if (await file.exists()) {
-          final lines = await file.readAsLines();
-          for (final line in lines) {
-            if (line.startsWith('MemTotal:')) {
-              final match = RegExp(r'MemTotal:\s*(\d+)\s*kB').firstMatch(line);
-              if (match != null) {
-                ramGB = double.parse(match.group(1)!) / (1024 * 1024);
-                break;
+      } else if (Platform.isMacOS) {
+        final result = await Process.run('sysctl', ['hw.memsize'])
+            .timeout(const Duration(seconds: 2));
+        final match = RegExp(r'hw.memsize:\s*(\d+)').firstMatch(result.stdout.toString());
+        if (match != null) {
+          ramGB = double.parse(match.group(1)!) / (1024 * 1024 * 1024);
+        }
+      } else if (Platform.isLinux) {
+        final result = await Process.run('free', ['-b'])
+            .timeout(const Duration(seconds: 2));
+        final lines = result.stdout.toString().split('\n');
+        if (lines.length > 1) {
+          final parts = lines[1].split(RegExp(r'\s+'));
+          if (parts.length > 1) {
+            ramGB = double.parse(parts[1]) / (1024 * 1024 * 1024);
+          }
+        }
+      } else if (Platform.isAndroid) {
+        try {
+          final file = File('/proc/meminfo');
+          if (await file.exists()) {
+            final lines = await file.readAsLines();
+            for (final line in lines) {
+              if (line.startsWith('MemTotal:')) {
+                final match = RegExp(r'MemTotal:\s*(\d+)\s*kB').firstMatch(line);
+                if (match != null) {
+                  ramGB = double.parse(match.group(1)!) / (1024 * 1024);
+                  break;
+                }
               }
             }
           }
+        } catch (e) {
+          LoggerService.instance.log(LogLevel.warning, 'NativeHelper', 'Android RAM detection failed: $e');
         }
-      } catch (e) {
-        LoggerService.instance.log(LogLevel.warning, 'NativeHelper', 'Android RAM detection failed: $e');
       }
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'NativeHelper', 'RAM detection failed: $e');
     }
-  } catch (e) {
-    LoggerService.instance.log(LogLevel.warning, 'NativeHelper', 'RAM detection failed: $e');
   }
 
-  try {
-    if (Platform.isWindows) {
-      final result = await Process.run('wmic', ['path', 'win32_VideoController', 'get', 'name', '/value']);
-      final lines = result.stdout.toString().split('\r\n');
-      final names = <String>[];
-      for (final line in lines) {
-        if (line.trim().startsWith('Name=')) {
-          final val = line.substring(5).trim();
-          if (val.isNotEmpty) names.add(val);
+  Future<void> detectGpu() async {
+    try {
+      if (Platform.isWindows) {
+        final result = await Process.run(
+          'wmic',
+          ['path', 'win32_VideoController', 'get', 'name', '/value'],
+        ).timeout(const Duration(seconds: 2));
+        final lines = result.stdout.toString().split('\r\n');
+        final names = <String>[];
+        for (final line in lines) {
+          if (line.trim().startsWith('Name=')) {
+            final val = line.substring(5).trim();
+            if (val.isNotEmpty) names.add(val);
+          }
+        }
+        if (names.isNotEmpty) {
+          gpuInfo = names.join(', ');
+          hasGpu = gpuInfo.toLowerCase().contains('nvidia') ||
+                   gpuInfo.toLowerCase().contains('amd') ||
+                   gpuInfo.toLowerCase().contains('intel');
+        }
+      } else if (Platform.isMacOS) {
+        if (isAppleSilicon()) {
+          gpuInfo = 'Apple Silicon (Metal)';
+          hasGpu = true;
+        } else {
+          gpuInfo = 'Intel (Metal)';
+          hasGpu = true;
+          try {
+            final result = await Process.run('system_profiler', ['SPDisplaysDataType'])
+                .timeout(const Duration(seconds: 2));
+            final output = result.stdout.toString();
+            final chipMatch = RegExp(r'Chipset Model:\s*(.+)').firstMatch(output);
+            if (chipMatch != null) {
+              gpuInfo = '${chipMatch.group(1)!.trim()} (Metal)';
+            }
+          } catch (e) {
+            LoggerService.instance.debug('system_profiler display query failed: $e');
+          }
+        }
+      } else if (Platform.isLinux) {
+        final result = await Process.run('lspci', [])
+            .timeout(const Duration(seconds: 2));
+        final lines = result.stdout.toString().split('\n');
+        final gpuLines = lines.where((l) =>
+            l.toLowerCase().contains('vga') ||
+            l.toLowerCase().contains('3d') ||
+            l.toLowerCase().contains('display'));
+        if (gpuLines.isNotEmpty) {
+          gpuInfo = gpuLines.map((l) {
+            final parts = l.split(':');
+            return parts.length > 2 ? parts[2].trim() : l.trim();
+          }).join(', ');
+          hasGpu = gpuInfo.toLowerCase().contains('nvidia') ||
+                   gpuInfo.toLowerCase().contains('amd') ||
+                   gpuInfo.toLowerCase().contains('intel');
         }
       }
-      if (names.isNotEmpty) {
-        gpuInfo = names.join(', ');
-        hasGpu = gpuInfo.toLowerCase().contains('nvidia') ||
-                 gpuInfo.toLowerCase().contains('amd') ||
-                 gpuInfo.toLowerCase().contains('intel');
-      }
-    } else if (Platform.isMacOS) {
-      gpuInfo = 'Apple Silicon (Metal)';
-      hasGpu = true;
-    } else if (Platform.isLinux) {
-      final result = await Process.run('lspci', []);
-      final lines = result.stdout.toString().split('\n');
-      final gpuLines = lines.where((l) =>
-          l.toLowerCase().contains('vga') ||
-          l.toLowerCase().contains('3d') ||
-          l.toLowerCase().contains('display'));
-      if (gpuLines.isNotEmpty) {
-        gpuInfo = gpuLines.map((l) {
-          final parts = l.split(':');
-          return parts.length > 2 ? parts[2].trim() : l.trim();
-        }).join(', ');
-        hasGpu = gpuInfo.toLowerCase().contains('nvidia') ||
-                 gpuInfo.toLowerCase().contains('amd') ||
-                 gpuInfo.toLowerCase().contains('intel');
-      }
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'NativeHelper', 'GPU detection failed: $e');
     }
-  } catch (e) {
-    LoggerService.instance.log(LogLevel.warning, 'NativeHelper', 'GPU detection failed: $e');
   }
+
+  await Future.wait([detectRam(), detectGpu()]);
 
   return SystemHardwareInfo(
     ramGB: ramGB,
     cpuCores: cpuCores,
     gpuInfo: gpuInfo,
     hasGpu: hasGpu,
+    isAppleSilicon: Platform.isMacOS && isAppleSilicon(),
+    cpuArchitecture: getCpuArchitecture(),
   );
 }

@@ -10,6 +10,8 @@ import '../features/onboarding/presentation/views/assets_folder_recovery_screen.
 import '../features/settings/presentation/views/settings_screen.dart';
 import '../features/settings/presentation/views/pack_manager_screen.dart';
 import '../features/settings/presentation/views/settings/about_app_screen.dart';
+import '../l10n/app_localizations.dart';
+import 'theme.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -18,30 +20,33 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     navigatorKey: navigatorKey,
     initialLocation: '/',
     errorBuilder: (context, state) => Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: AppTheme.background,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: Colors.orangeAccent, size: 64),
+            Icon(Icons.error_outline, color: AppTheme.accentOrange, size: 64),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               '404 - Page Not Found',
-              style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(color: AppTheme.primaryText, fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               'The path "${state.uri.path}" could not be resolved.',
-              style: const TextStyle(color: Colors.white70, fontSize: 16),
+              style: TextStyle(color: AppTheme.secondaryText, fontSize: 16),
             ),
             const SizedBox(height: 24),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFF97316),
-                foregroundColor: Colors.white,
+                backgroundColor: AppTheme.accentOrange,
+                foregroundColor: AppTheme.onAccentText,
               ),
               onPressed: () => GoRouter.of(context).go('/'),
-              child: const Text('Return to Dashboard'),
+              child: Text(
+                AppLocalizations.of(context)?.returnToDashboard ??
+                    'Return to Dashboard',
+              ),
             ),
           ],
         ),
@@ -106,11 +111,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final projectId = state.pathParameters['projectId'];
           if (projectId == null || projectId.isEmpty) {
-            return const Scaffold(
+            return Scaffold(
+              backgroundColor: AppTheme.background,
               body: Center(
                 child: Text(
                   'Error: Project ID is missing or invalid.',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  style: TextStyle(color: AppTheme.primaryText, fontSize: 16),
                 ),
               ),
             );

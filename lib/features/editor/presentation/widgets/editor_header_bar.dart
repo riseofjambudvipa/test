@@ -8,7 +8,9 @@ import '../../../../app/theme_provider.dart';
 import '../../../../core/database/schemas/project.dart';
 import '../../../../core/logger/logger_service.dart';
 import '../../../../core/utils/premium_blur_dialog.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../controllers/editor_controller.dart';
+import 'panels/word_panel/review_comments_dialog.dart';
 
 class EditorHeaderBar extends ConsumerWidget {
   final Project project;
@@ -32,6 +34,7 @@ class EditorHeaderBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final hasUnsavedChanges = ref.watch(editorProvider.select((s) => s.hasUnsavedChanges));
     final canUndo = ref.watch(editorProvider.select((s) => s.canUndo));
     final canRedo = ref.watch(editorProvider.select((s) => s.canRedo));
@@ -54,7 +57,7 @@ class EditorHeaderBar extends ConsumerWidget {
       ).copyWith(
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withValues(alpha: 0.08),
+            color: AppTheme.borderGlass,
             width: 1,
           ),
         ),
@@ -63,7 +66,7 @@ class EditorHeaderBar extends ConsumerWidget {
         children: [
           IconButton(
             icon: const Icon(Icons.arrow_back, size: 20),
-            tooltip: 'Back to Dashboard',
+            tooltip: l10n?.returnToDashboard ?? 'Back to Dashboard',
             onPressed: () async {
               if (hasUnsavedChanges) {
                 final confirm = await showDialog<bool>(
@@ -95,17 +98,17 @@ class EditorHeaderBar extends ConsumerWidget {
                           children: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
-                              child: Text('CANCEL', style: TextStyle(color: AppTheme.secondaryText, fontWeight: FontWeight.bold)),
+                              child: Text(l10n?.btnCancel ?? 'CANCEL', style: TextStyle(color: AppTheme.secondaryText, fontWeight: FontWeight.bold)),
                             ),
                             const SizedBox(width: 8),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.redAccent,
-                                foregroundColor: Colors.white,
+                                backgroundColor: AppTheme.accentRed,
+                                foregroundColor: AppTheme.onAccentText,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                               ),
                               onPressed: () => Navigator.pop(context, true),
-                              child: const Text('LEAVE', style: TextStyle(fontWeight: FontWeight.bold)),
+                               child: Text(l10n?.btnConfirm ?? 'LEAVE', style: const TextStyle(fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),
@@ -154,55 +157,140 @@ class EditorHeaderBar extends ConsumerWidget {
                     IconButton(
                       icon: Icon(
                         desktopSidebarOpen ? Icons.view_sidebar : Icons.view_sidebar_outlined,
-                        size: 18,
-                        color: desktopSidebarOpen ? AppTheme.accentOrange : Colors.white54,
+                        size: 20,
+                        color: desktopSidebarOpen ? AppTheme.accentOrange : AppTheme.secondaryText,
                       ),
-                      tooltip: desktopSidebarOpen ? 'Hide Sidebar Panel' : 'Show Sidebar Panel',
+                      tooltip: desktopSidebarOpen ? 'Hide Sidebar' : 'Show Sidebar',
                       onPressed: onToggleSidebar,
                     ),
                     const SizedBox(width: 12),
                   ],
                   IconButton(
-                    icon: const Icon(Icons.undo, size: 18),
-                    tooltip: 'Undo (Ctrl+Z)',
-                    color: canUndo ? Colors.white : Colors.white24,
+                    icon: const Icon(Icons.undo, size: 20),
+                    tooltip: isPhonePlatform ? (l10n?.btnUndo ?? "Undo") : '${l10n?.btnUndo ?? "Undo"} (Ctrl+Z)',
+                    color: canUndo ? AppTheme.primaryText : AppTheme.mutedText.withValues(alpha: 0.35),
                     onPressed: canUndo ? () => ref.read(editorProvider.notifier).undo() : null,
                   ),
                   IconButton(
-                    icon: const Icon(Icons.redo, size: 18),
-                    tooltip: 'Redo (Ctrl+Y)',
-                    color: canRedo ? Colors.white : Colors.white24,
+                    icon: const Icon(Icons.redo, size: 20),
+                    tooltip: isPhonePlatform ? (l10n?.btnRedo ?? "Redo") : '${l10n?.btnRedo ?? "Redo"} (Ctrl+Y)',
+                    color: canRedo ? AppTheme.primaryText : AppTheme.mutedText.withValues(alpha: 0.35),
                     onPressed: canRedo ? () => ref.read(editorProvider.notifier).redo() : null,
                   ),
                   SizedBox(width: isPhonePlatform ? 4 : 8),
                   if (!isPhonePlatform && !isCompactWidth) ...[
-                    PopupMenuButton<ThemeType>(
-                      icon: Icon(Icons.palette_outlined, size: 18, color: AppTheme.accentOrange),
-                      tooltip: 'Change Theme',
+                    IconButton(
+                      icon: Icon(
+                        AppTheme.isDark ? Icons.wb_sunny_rounded : Icons.nightlight_round,
+                        size: 20,
+                        color: AppTheme.accentOrange,
+                      ),
+                      tooltip: AppTheme.isDark ? (l10n?.themeLight ?? 'Light Mode') : (l10n?.themeDark ?? 'Dark Mode'),
+                      onPressed: () {
+                        ref.read(themeProvider.notifier).toggleBrightness();
+                      },
+                    ),
+                    const SizedBox(width: 4),
+                    PopupMenuButton<ThemePalette>(
+                      icon: Icon(Icons.palette_outlined, size: 20, color: AppTheme.accentOrange),
+                      tooltip: l10n?.tooltipTheme ?? 'Change Theme Palette',
                       color: AppTheme.cardBg,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
+                        side: BorderSide(color: AppTheme.borderGlass),
                       ),
                       onSelected: (val) {
-                        ref.read(themeProvider.notifier).setTheme(val);
-                        LoggerService.instance.log(LogLevel.action, 'Editor', 'Global dynamic theme changed to: ${val.name}');
+                        ref.read(themeProvider.notifier).setPalette(val);
+                        LoggerService.instance.log(LogLevel.action, 'Editor', 'Global dynamic theme palette changed to: ${val.name}');
                       },
-                      itemBuilder: (context) => const [
-                        PopupMenuItem(value: ThemeType.obsidianAmber, child: Text('Deep Obsidian', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold))),
-                        PopupMenuItem(value: ThemeType.neonCyberpunk, child: Text('Neon Cyberpunk', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold))),
-                        PopupMenuItem(value: ThemeType.obsidianEmerald, child: Text('Obsidian Emerald', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold))),
-                        PopupMenuItem(value: ThemeType.royalAmethyst, child: Text('Royal Amethyst', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold))),
-                        PopupMenuItem(value: ThemeType.sunsetSunrise, child: Text('Sunset Sunrise', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold))),
-                      ],
+                      itemBuilder: (context) => ThemePalette.values
+                          .map(
+                            (p) {
+                              final pData = AppThemeData.getThemeFor(palette: p, isDark: AppTheme.isDark);
+                              final isSelected = AppTheme.activePalette == p;
+                              return PopupMenuItem(
+                                value: p,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 12,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [pData.accentPrimary, pData.accentSecondary],
+                                        ),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        p.displayName,
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                          color: isSelected ? AppTheme.accentOrange : AppTheme.primaryText,
+                                        ),
+                                      ),
+                                    ),
+                                    if (isSelected)
+                                      Icon(Icons.check, size: 14, color: AppTheme.accentOrange),
+                                  ],
+                                ),
+                              );
+                            },
+                          )
+                          .toList(),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                   ],
                   IconButton(
-                    icon: const Icon(Icons.settings_outlined, size: 18),
-                    tooltip: 'Settings',
+                    icon: const Icon(Icons.settings_outlined, size: 20),
+                    tooltip: l10n?.tooltipSettings ?? 'Settings',
+                    color: AppTheme.secondaryText,
                     onPressed: () {
                       context.push('/settings');
+                    },
+                  ),
+                  const SizedBox(width: 4),
+                  // Team Review & Revisions
+                  Builder(
+                    builder: (btnContext) {
+                      final comments = ref.watch(editorProvider.select((s) => s.comments));
+                      final pendingCount = comments.where((c) => !c.isResolved).length;
+                      return Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.rate_review_outlined, size: 20),
+                            tooltip: 'Team Review Notes (${comments.length})',
+                            color: pendingCount > 0 ? AppTheme.accentCyan : AppTheme.secondaryText,
+                            onPressed: () => ReviewCommentsDialog.show(btnContext),
+                          ),
+                          if (pendingCount > 0)
+                            Positioned(
+                              top: 6,
+                              right: 6,
+                              child: Container(
+                                padding: const EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.accentCyan,
+                                  shape: BoxShape.circle,
+                                ),
+                                constraints: const BoxConstraints(minWidth: 14, minHeight: 14),
+                                child: Text(
+                                  pendingCount > 9 ? '9+' : '$pendingCount',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.onAccentText,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
                     },
                   ),
                   SizedBox(width: isPhonePlatform ? 4 : 8),
@@ -211,16 +299,16 @@ class EditorHeaderBar extends ConsumerWidget {
                       hasUnsavedChanges ? Icons.save_rounded : Icons.check, 
                       size: isPhonePlatform || isCompactWidth ? 12 : 14
                     ),
-                    label: Text(isPhonePlatform || isCompactWidth ? '' : 'SAVE', style: const TextStyle(fontSize: 14)),
+                    label: Text(isPhonePlatform || isCompactWidth ? '' : (l10n?.btnSave ?? 'SAVE'), style: const TextStyle(fontSize: 14)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: hasUnsavedChanges 
                           ? AppTheme.accentOrange 
-                          : Colors.white.withValues(alpha: 0.06),
+                          : AppTheme.cardBgElevated,
                       foregroundColor: hasUnsavedChanges 
-                          ? Colors.white 
-                          : Colors.white70,
-                      disabledBackgroundColor: Colors.white.withValues(alpha: 0.06),
-                      disabledForegroundColor: Colors.white38,
+                          ? AppTheme.onAccentText 
+                          : AppTheme.secondaryText,
+                      disabledBackgroundColor: AppTheme.cardBgElevated,
+                      disabledForegroundColor: AppTheme.mutedText,
                       padding: EdgeInsets.symmetric(horizontal: isPhonePlatform || isCompactWidth ? 8 : 16, vertical: 8),
                       minimumSize: isPhonePlatform || isCompactWidth ? const Size(32, 32) : null,
                     ),
@@ -229,10 +317,10 @@ class EditorHeaderBar extends ConsumerWidget {
                   const SizedBox(width: 4),
                   ElevatedButton.icon(
                     icon: Icon(Icons.rocket_launch, size: isPhonePlatform || isCompactWidth ? 12 : 14),
-                    label: Text(isPhonePlatform || isCompactWidth ? '' : 'EXPORT', style: const TextStyle(fontSize: 14)),
+                    label: Text(isPhonePlatform || isCompactWidth ? '' : (l10n?.btnExportCaps ?? 'EXPORT'), style: const TextStyle(fontSize: 14)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.accentOrange,
-                      foregroundColor: Colors.white,
+                      foregroundColor: AppTheme.onAccentText,
                       padding: EdgeInsets.symmetric(horizontal: isPhonePlatform || isCompactWidth ? 8 : 16, vertical: 8),
                       minimumSize: isPhonePlatform || isCompactWidth ? const Size(32, 32) : null,
                     ),

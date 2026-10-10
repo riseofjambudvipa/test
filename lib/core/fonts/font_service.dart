@@ -49,22 +49,25 @@ class FontService {
     final customDir = Directory(p.join(_fontsDirectory!, 'Custom'));
     if (!customDir.existsSync()) {
       await customDir.create(recursive: true);
-      return;
     }
 
-    await for (final entity in customDir.list()) {
-      if (entity is File) {
-        final ext = p.extension(entity.path).toLowerCase();
-        if (ext == '.ttf' || ext == '.otf') {
-          try {
-            await _registerFont(entity.path);
-          } catch (e, stackTrace) {
-            LoggerService.instance.log(
-              LogLevel.warning,
-              'FontService',
-              'Failed to load custom font file: ${entity.path}. Error: $e',
-              stackTrace: stackTrace,
-            );
+    final dirsToScan = [customDir, Directory(_fontsDirectory!)];
+    for (final dir in dirsToScan) {
+      if (!dir.existsSync()) continue;
+      await for (final entity in dir.list()) {
+        if (entity is File) {
+          final ext = p.extension(entity.path).toLowerCase();
+          if (ext == '.ttf' || ext == '.otf') {
+            try {
+              await _registerFont(entity.path);
+            } catch (e, stackTrace) {
+              LoggerService.instance.log(
+                LogLevel.warning,
+                'FontService',
+                'Failed to load custom font file: ${entity.path}. Error: $e',
+                stackTrace: stackTrace,
+              );
+            }
           }
         }
       }
@@ -112,7 +115,7 @@ class FontService {
       final normalizedName = normalizeFontName(fontName);
       
       final fontLoader = FontLoader(normalizedName);
-      fontLoader.addFont(Future.value(ByteData.view(bytes.buffer)));
+      fontLoader.addFont(Future.value(ByteData.view(bytes.buffer, bytes.offsetInBytes, bytes.lengthInBytes)));
       await fontLoader.load();
       
       String fontPath = 'memory';
@@ -207,7 +210,7 @@ class FontService {
     
     final fontLoader = FontLoader(fontName);
     final data = await file.readAsBytes();
-    fontLoader.addFont(Future.value(ByteData.view(data.buffer)));
+    fontLoader.addFont(Future.value(ByteData.view(data.buffer, data.offsetInBytes, data.lengthInBytes)));
     await fontLoader.load();
     _loadedFonts[fontName] = fontPath;
     _cachedAvailableFonts = null;

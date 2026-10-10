@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 import 'package:archive/archive.dart';
+import 'package:crypto/crypto.dart';
 import 'package:capstudio/core/assets/pack_download_service.dart';
 import 'package:capstudio/core/assets/asset_path_service.dart';
 import 'package:capstudio/core/assets/asset_manifest.dart';
@@ -86,7 +87,13 @@ void main() {
     test('should download and extract standard zip file successfully', () async {
       AppDirs.setMockAvailableDiskSpaceMB(1000.0); // 1GB free
 
-      const pack = AssetPack(
+      // Create a valid zip archive in memory
+      final archive = Archive();
+      archive.addFile(ArchiveFile('emoji_1.png', 5, [10, 20, 30, 40, 50]));
+      final zipBytes = ZipEncoder().encode(archive);
+      final expectedChecksum = sha256.convert(zipBytes).toString();
+
+      final pack = AssetPack(
         id: 'googleAnimated',
         name: 'Google Animated',
         description: 'Google Noto Emojis',
@@ -94,18 +101,13 @@ void main() {
         sizeBytes: 1 * 1024 * 1024,
         compressedSizeBytes: 100,
         downloadUrl: 'http://example.com/emojis.zip',
-        checksum: '',
+        checksum: expectedChecksum,
         version: '1.0',
         fileCount: 1,
         format: 'zip',
         animated: true,
         localFolder: 'google_noto_emojis_animated_pack',
       );
-
-      // Create a valid zip archive in memory
-      final archive = Archive();
-      archive.addFile(ArchiveFile('emoji_1.png', 5, [10, 20, 30, 40, 50]));
-      final zipBytes = ZipEncoder().encode(archive);
 
       // Mock HTTP response with the zip bytes
       when(() => mockResponse.statusCode).thenReturn(200);
@@ -127,7 +129,7 @@ void main() {
       expect(progressList.last.status, DownloadStatus.complete);
 
       // Verify file exists in output directory
-      final extractedFile = File(p.join(AssetPathService.instance.emojisDir, 'emoji_1.png'));
+      final extractedFile = File(p.join(AssetPathService.instance.emojiPackDir(pack.localFolder), 'emoji_1.png'));
       expect(extractedFile.existsSync(), isTrue);
       expect(extractedFile.readAsBytesSync(), [10, 20, 30, 40, 50]);
 
@@ -137,7 +139,13 @@ void main() {
     test('should prevent extraction and throw exception when Zip Slip malicious path is detected', () async {
       AppDirs.setMockAvailableDiskSpaceMB(1000.0);
 
-      const pack = AssetPack(
+      // Construct a malicious zip payload with path traversal attempts
+      final archive = Archive();
+      archive.addFile(ArchiveFile('../../malicious_exploit.png', 5, [9, 9, 9, 9, 9]));
+      final zipBytes = ZipEncoder().encode(archive);
+      final expectedChecksum = sha256.convert(zipBytes).toString();
+
+      final pack = AssetPack(
         id: 'googleAnimated',
         name: 'Google Animated',
         description: 'Google Noto Emojis',
@@ -145,18 +153,13 @@ void main() {
         sizeBytes: 1 * 1024 * 1024,
         compressedSizeBytes: 100,
         downloadUrl: 'http://example.com/emojis.zip',
-        checksum: '',
+        checksum: expectedChecksum,
         version: '1.0',
         fileCount: 1,
         format: 'zip',
         animated: true,
         localFolder: 'google_noto_emojis_animated_pack',
       );
-
-      // Construct a malicious zip payload with path traversal attempts
-      final archive = Archive();
-      archive.addFile(ArchiveFile('../../malicious_exploit.png', 5, [9, 9, 9, 9, 9]));
-      final zipBytes = ZipEncoder().encode(archive);
 
       // Mock HTTP response
       when(() => mockResponse.statusCode).thenReturn(200);
@@ -186,7 +189,12 @@ void main() {
     test('should fallback to mirror URL and retry download successfully when primary URL fails', () async {
       AppDirs.setMockAvailableDiskSpaceMB(1000.0);
 
-      const pack = AssetPack(
+      final archive = Archive();
+      archive.addFile(ArchiveFile('emoji_retry.png', 5, [1, 2, 3, 4, 5]));
+      final zipBytes = ZipEncoder().encode(archive);
+      final expectedChecksum = sha256.convert(zipBytes).toString();
+
+      final pack = AssetPack(
         id: 'googleAnimated',
         name: 'Google Animated',
         description: 'Google Noto Emojis',
@@ -194,17 +202,13 @@ void main() {
         sizeBytes: 1024,
         compressedSizeBytes: 100,
         downloadUrl: 'http://example.com/emojis.zip',
-        checksum: '',
+        checksum: expectedChecksum,
         version: '1.0',
         fileCount: 1,
         format: 'zip',
         animated: true,
         localFolder: 'google_noto_emojis_animated_pack',
       );
-
-      final archive = Archive();
-      archive.addFile(ArchiveFile('emoji_retry.png', 5, [1, 2, 3, 4, 5]));
-      final zipBytes = ZipEncoder().encode(archive);
 
       int callCount = 0;
       when(() => mockClient.send(any())).thenAnswer((invocation) async {
@@ -233,7 +237,7 @@ void main() {
       expect(callCount, equals(2)); // Primary + Mirror
       expect(progressList.last.status, DownloadStatus.complete);
       
-      final extracted = File(p.join(AssetPathService.instance.emojisDir, 'emoji_retry.png'));
+      final extracted = File(p.join(AssetPathService.instance.emojiPackDir(pack.localFolder), 'emoji_retry.png'));
       expect(extracted.existsSync(), isTrue);
 
       await subscription.cancel();
@@ -368,7 +372,10 @@ void main() {
     test('should download ttf file format and copy to fonts directory', () async {
       AppDirs.setMockAvailableDiskSpaceMB(1000.0);
 
-      const pack = AssetPack(
+      final ttfBytes = List.generate(50, (i) => i);
+      final expectedChecksum = sha256.convert(ttfBytes).toString();
+
+      final pack = AssetPack(
         id: 'fontCjkSc_test',
         name: 'Chinese Font',
         description: 'Chinese Font Package',
@@ -376,7 +383,7 @@ void main() {
         sizeBytes: 50,
         compressedSizeBytes: 50,
         downloadUrl: 'http://example.com/TestFont.ttf',
-        checksum: '',
+        checksum: expectedChecksum,
         version: '1.0',
         fileCount: 1,
         format: 'ttf',
@@ -384,7 +391,6 @@ void main() {
         localFolder: 'fonts',
       );
 
-      final ttfBytes = List.generate(50, (i) => i);
       when(() => mockResponse.statusCode).thenReturn(200);
       when(() => mockResponse.stream).thenAnswer((_) => http.ByteStream.fromBytes(ttfBytes));
       when(() => mockClient.send(any())).thenAnswer((_) async => mockResponse);
@@ -406,7 +412,11 @@ void main() {
     test('should throw error when extracting corrupt zip file archive', () async {
       AppDirs.setMockAvailableDiskSpaceMB(1000.0);
 
-      const pack = AssetPack(
+      // Corrupt/invalid zip bytes
+      final corruptBytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+      final expectedChecksum = sha256.convert(corruptBytes).toString();
+
+      final pack = AssetPack(
         id: 'googleAnimated_corrupt',
         name: 'Google Animated',
         description: 'Google Noto Emojis',
@@ -414,16 +424,13 @@ void main() {
         sizeBytes: 1024,
         compressedSizeBytes: 100,
         downloadUrl: 'http://example.com/emojis_corrupt.zip',
-        checksum: '',
+        checksum: expectedChecksum,
         version: '1.0',
         fileCount: 1,
         format: 'zip',
         animated: true,
         localFolder: 'google_noto_emojis_animated_pack_corrupt',
       );
-
-      // Corrupt/invalid zip bytes
-      final corruptBytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
       when(() => mockResponse.statusCode).thenReturn(200);
       when(() => mockResponse.stream).thenAnswer((_) => http.ByteStream.fromBytes(corruptBytes));
@@ -448,6 +455,93 @@ void main() {
 
       expect(progressList.last.status, DownloadStatus.failed);
       expect(progressList.last.error, isNotNull);
+
+      await subscription.cancel();
+    });
+
+    test('should fail closed when checksum is empty or whitespace', () async {
+      AppDirs.setMockAvailableDiskSpaceMB(1000.0);
+
+      const pack = AssetPack(
+        id: 'googleAnimated_empty_chk',
+        name: 'Google Animated',
+        description: 'Google Noto Emojis',
+        required: false,
+        sizeBytes: 100,
+        compressedSizeBytes: 50,
+        downloadUrl: 'http://example.com/emojis_empty.zip',
+        checksum: '   ',
+        version: '1.0',
+        fileCount: 1,
+        format: 'zip',
+        animated: true,
+        localFolder: 'google_noto_emojis_animated_pack',
+      );
+
+      final zipBytes = List.generate(50, (i) => i);
+      when(() => mockResponse.statusCode).thenReturn(200);
+      when(() => mockResponse.stream).thenAnswer((_) => http.ByteStream.fromBytes(zipBytes));
+      when(() => mockClient.send(any())).thenAnswer((_) async => mockResponse);
+
+      final progressList = <DownloadProgress>[];
+      final subscription = service.stream(pack.id).listen((event) {
+        progressList.add(event);
+      });
+
+      await service.download(pack);
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      expect(progressList.last.status, DownloadStatus.failed);
+      expect(progressList.last.error, contains('Download integrity check failed'));
+
+      await subscription.cancel();
+    });
+
+    test('should strip outer wrapper matching pack.localFolder to prevent double nesting', () async {
+      AppDirs.setMockAvailableDiskSpaceMB(1000.0);
+
+      // Create a zip with wrapper folder: google_noto_emojis_animated_pack/emoji_test.png
+      final archive = Archive();
+      archive.addFile(ArchiveFile('google_noto_emojis_animated_pack/emoji_test.png', 5, [1, 2, 3, 4, 5]));
+      final zipBytes = ZipEncoder().encode(archive);
+      final expectedChecksum = sha256.convert(zipBytes).toString();
+
+      final pack = AssetPack(
+        id: 'googleAnimated_wrapper',
+        name: 'Google Animated',
+        description: 'Google Noto Emojis',
+        required: false,
+        sizeBytes: 1024,
+        compressedSizeBytes: 100,
+        downloadUrl: 'http://example.com/emojis_wrapper.zip',
+        checksum: expectedChecksum,
+        version: '1.0',
+        fileCount: 1,
+        format: 'zip',
+        animated: true,
+        localFolder: 'google_noto_emojis_animated_pack',
+      );
+
+      when(() => mockResponse.statusCode).thenReturn(200);
+      when(() => mockResponse.stream).thenAnswer((_) => http.ByteStream.fromBytes(zipBytes));
+      when(() => mockClient.send(any())).thenAnswer((_) async => mockResponse);
+
+      final progressList = <DownloadProgress>[];
+      final subscription = service.stream(pack.id).listen((event) {
+        progressList.add(event);
+      });
+
+      await service.download(pack);
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      expect(progressList.last.status, DownloadStatus.complete);
+
+      // Verify file is extracted directly into emojiPackDir without double nesting
+      final correctPath = p.join(AssetPathService.instance.emojiPackDir(pack.localFolder), 'emoji_test.png');
+      expect(File(correctPath).existsSync(), isTrue);
+
+      final doubleNested = p.join(AssetPathService.instance.emojiPackDir(pack.localFolder), pack.localFolder, 'emoji_test.png');
+      expect(File(doubleNested).existsSync(), isFalse);
 
       await subscription.cancel();
     });

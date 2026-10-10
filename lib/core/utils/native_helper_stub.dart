@@ -6,6 +6,10 @@ bool isWindowsVcRuntimeInstalled() => true;
 
 Future<bool> cpuSupportsAvx() async => false;
 
+bool isAppleSilicon() => false;
+
+String getCpuArchitecture() => 'web';
+
 Future<double> getAvailableDiskSpaceMB(String path) async => -1.0;
 
 Future<SystemHardwareInfo> detectSystemHardware() async {
@@ -14,5 +18,7 @@ Future<SystemHardwareInfo> detectSystemHardware() async {
     cpuCores: 2,
     gpuInfo: 'Not available (Web/Stub)',
     hasGpu: false,
+    isAppleSilicon: false,
+    cpuArchitecture: 'web',
   );
 }

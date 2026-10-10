@@ -110,5 +110,71 @@ void main() {
       // yTextCenter = yTop + E + G + T / 2 = 288.0 + 90.0 + 13.5 + 20.25 = 411.75
       expect(position.y, closeTo(411.75, 0.01));
     });
+
+    test('calculatePosition calculates custom X coordinate when styleLeft is provided', () {
+      final words = [
+        WordSchema()..text = 'LeftAlign'..start = 0.0..end = 1.0,
+      ];
+
+      // 20% from left edge of 1280 wide video
+      final positionLeft = AssPositionUtils.calculatePosition(
+        projectWidth: 1280,
+        projectHeight: 720,
+        styleTop: 50.0,
+        styleLeft: 20.0,
+        fontFamily: 'Montserrat',
+        fontSize: 32.0,
+        fontWeight: '700',
+        letterSpacing: 0.0,
+        words: words,
+      );
+      expect(positionLeft.x, equals(256.0)); // 1280 * 0.20
+
+      // 80% from left edge of 1280 wide video
+      final positionRight = AssPositionUtils.calculatePosition(
+        projectWidth: 1280,
+        projectHeight: 720,
+        styleTop: 50.0,
+        styleLeft: 80.0,
+        fontFamily: 'Montserrat',
+        fontSize: 32.0,
+        fontWeight: '700',
+        letterSpacing: 0.0,
+        words: words,
+      );
+      expect(positionRight.x, equals(1024.0)); // 1280 * 0.80
+    });
+
+    test('calculatePosition clamps styleLeft to 5% and 95%', () {
+      final words = [
+        WordSchema()..text = 'ClampX'..start = 0.0..end = 1.0,
+      ];
+
+      final positionMin = AssPositionUtils.calculatePosition(
+        projectWidth: 1000,
+        projectHeight: 640,
+        styleTop: 50.0,
+        styleLeft: -25.0, // should clamp to 5%
+        fontFamily: 'Montserrat',
+        fontSize: 24.0,
+        fontWeight: '500',
+        letterSpacing: 0.0,
+        words: words,
+      );
+      expect(positionMin.x, equals(50.0)); // 1000 * 0.05
+
+      final positionMax = AssPositionUtils.calculatePosition(
+        projectWidth: 1000,
+        projectHeight: 640,
+        styleTop: 50.0,
+        styleLeft: 150.0, // should clamp to 95%
+        fontFamily: 'Montserrat',
+        fontSize: 24.0,
+        fontWeight: '500',
+        letterSpacing: 0.0,
+        words: words,
+      );
+      expect(positionMax.x, equals(950.0)); // 1000 * 0.95
+    });
   });
 }

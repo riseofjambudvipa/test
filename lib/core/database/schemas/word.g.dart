@@ -54,28 +54,33 @@ final WordSchemaSchema = Schema(
       name: r'soundVolume',
       type: IsarType.long,
     ),
-    r'splitBefore': PropertySchema(
+    r'speaker': PropertySchema(
       id: 8,
+      name: r'speaker',
+      type: IsarType.string,
+    ),
+    r'splitBefore': PropertySchema(
+      id: 9,
       name: r'splitBefore',
       type: IsarType.bool,
     ),
     r'start': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'start',
       type: IsarType.double,
     ),
     r'text': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'text',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'type',
       type: IsarType.string,
     ),
     r'wordId': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'wordId',
       type: IsarType.string,
     )
@@ -114,6 +119,12 @@ int _wordSchemaEstimateSize(
   }
   {
     final value = object.soundEffect;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.speaker;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -158,11 +169,12 @@ void _wordSchemaSerialize(
   writer.writeBool(offsets[5], object.hidden);
   writer.writeString(offsets[6], object.soundEffect);
   writer.writeLong(offsets[7], object.soundVolume);
-  writer.writeBool(offsets[8], object.splitBefore);
-  writer.writeDouble(offsets[9], object.start);
-  writer.writeString(offsets[10], object.text);
-  writer.writeString(offsets[11], object.type);
-  writer.writeString(offsets[12], object.wordId);
+  writer.writeString(offsets[8], object.speaker);
+  writer.writeBool(offsets[9], object.splitBefore);
+  writer.writeDouble(offsets[10], object.start);
+  writer.writeString(offsets[11], object.text);
+  writer.writeString(offsets[12], object.type);
+  writer.writeString(offsets[13], object.wordId);
 }
 
 WordSchema _wordSchemaDeserialize(
@@ -184,11 +196,12 @@ WordSchema _wordSchemaDeserialize(
   object.hidden = reader.readBoolOrNull(offsets[5]);
   object.soundEffect = reader.readStringOrNull(offsets[6]);
   object.soundVolume = reader.readLongOrNull(offsets[7]);
-  object.splitBefore = reader.readBoolOrNull(offsets[8]);
-  object.start = reader.readDoubleOrNull(offsets[9]);
-  object.text = reader.readStringOrNull(offsets[10]);
-  object.type = reader.readStringOrNull(offsets[11]);
-  object.wordId = reader.readStringOrNull(offsets[12]);
+  object.speaker = reader.readStringOrNull(offsets[8]);
+  object.splitBefore = reader.readBoolOrNull(offsets[9]);
+  object.start = reader.readDoubleOrNull(offsets[10]);
+  object.text = reader.readStringOrNull(offsets[11]);
+  object.type = reader.readStringOrNull(offsets[12]);
+  object.wordId = reader.readStringOrNull(offsets[13]);
   return object;
 }
 
@@ -220,14 +233,16 @@ P _wordSchemaDeserializeProp<P>(
     case 7:
       return (reader.readLongOrNull(offset)) as P;
     case 8:
-      return (reader.readBoolOrNull(offset)) as P;
-    case 9:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 10:
       return (reader.readStringOrNull(offset)) as P;
+    case 9:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 10:
+      return (reader.readDoubleOrNull(offset)) as P;
     case 11:
       return (reader.readStringOrNull(offset)) as P;
     case 12:
+      return (reader.readStringOrNull(offset)) as P;
+    case 13:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -964,6 +979,155 @@ extension WordSchemaQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition> speakerIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'speaker',
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition>
+      speakerIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'speaker',
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition> speakerEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'speaker',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition>
+      speakerGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'speaker',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition> speakerLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'speaker',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition> speakerBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'speaker',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition> speakerStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'speaker',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition> speakerEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'speaker',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition> speakerContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'speaker',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition> speakerMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'speaker',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition> speakerIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'speaker',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<WordSchema, WordSchema, QAfterFilterCondition>
+      speakerIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'speaker',
+        value: '',
       ));
     });
   }

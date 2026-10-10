@@ -3346,23 +3346,28 @@ final StyleConfigSchemaSchema = Schema(
       name: r'highlightBackground',
       type: IsarType.bool,
     ),
-    r'letterSpacing': PropertySchema(
+    r'left': PropertySchema(
       id: 5,
+      name: r'left',
+      type: IsarType.double,
+    ),
+    r'letterSpacing': PropertySchema(
+      id: 6,
       name: r'letterSpacing',
       type: IsarType.double,
     ),
     r'lineHeight': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'lineHeight',
       type: IsarType.double,
     ),
     r'textTransform': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'textTransform',
       type: IsarType.string,
     ),
     r'top': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'top',
       type: IsarType.double,
     )
@@ -3397,10 +3402,11 @@ void _styleConfigSchemaSerialize(
   writer.writeDouble(offsets[2], object.fontSize);
   writer.writeString(offsets[3], object.fontWeight);
   writer.writeBool(offsets[4], object.highlightBackground);
-  writer.writeDouble(offsets[5], object.letterSpacing);
-  writer.writeDouble(offsets[6], object.lineHeight);
-  writer.writeString(offsets[7], object.textTransform);
-  writer.writeDouble(offsets[8], object.top);
+  writer.writeDouble(offsets[5], object.left);
+  writer.writeDouble(offsets[6], object.letterSpacing);
+  writer.writeDouble(offsets[7], object.lineHeight);
+  writer.writeString(offsets[8], object.textTransform);
+  writer.writeDouble(offsets[9], object.top);
 }
 
 StyleConfigSchema _styleConfigSchemaDeserialize(
@@ -3415,10 +3421,11 @@ StyleConfigSchema _styleConfigSchemaDeserialize(
   object.fontSize = reader.readDouble(offsets[2]);
   object.fontWeight = reader.readString(offsets[3]);
   object.highlightBackground = reader.readBoolOrNull(offsets[4]);
-  object.letterSpacing = reader.readDoubleOrNull(offsets[5]);
-  object.lineHeight = reader.readDoubleOrNull(offsets[6]);
-  object.textTransform = reader.readString(offsets[7]);
-  object.top = reader.readDouble(offsets[8]);
+  object.left = reader.readDouble(offsets[5]);
+  object.letterSpacing = reader.readDoubleOrNull(offsets[6]);
+  object.lineHeight = reader.readDoubleOrNull(offsets[7]);
+  object.textTransform = reader.readString(offsets[8]);
+  object.top = reader.readDouble(offsets[9]);
   return object;
 }
 
@@ -3440,12 +3447,14 @@ P _styleConfigSchemaDeserializeProp<P>(
     case 4:
       return (reader.readBoolOrNull(offset)) as P;
     case 5:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 6:
       return (reader.readDoubleOrNull(offset)) as P;
     case 7:
-      return (reader.readString(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 8:
+      return (reader.readString(offset)) as P;
+    case 9:
       return (reader.readDouble(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -3952,6 +3961,72 @@ extension StyleConfigSchemaQueryFilter
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'highlightBackground',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StyleConfigSchema, StyleConfigSchema, QAfterFilterCondition>
+      leftEqualTo(
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'left',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StyleConfigSchema, StyleConfigSchema, QAfterFilterCondition>
+      leftGreaterThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'left',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StyleConfigSchema, StyleConfigSchema, QAfterFilterCondition>
+      leftLessThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'left',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StyleConfigSchema, StyleConfigSchema, QAfterFilterCondition>
+      leftBetween(
+    double lower,
+    double upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'left',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
       ));
     });
   }

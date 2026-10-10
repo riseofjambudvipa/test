@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:capstudio/core/database/schemas/project.dart';
 import 'package:capstudio/features/editor/domain/caption_engine.dart';
@@ -205,6 +207,197 @@ void main() {
 
     // Inactive text should have the standard text color (#ffffff matches Color(0xffffffff))
     expect(inactiveText.style!.color, const Color(0xffffffff));
+  });
+
+  testWidgets('CaptionOverlay should render Image.file for custom sticker and not raw path Text', (WidgetTester tester) async {
+    Directory? tempDir;
+    File? stickerFile;
+
+    await tester.runAsync(() async {
+      tempDir = await Directory.systemTemp.createTemp('capstudio_sticker_test');
+      stickerFile = File(p.join(tempDir!.path, 'custom_logo.png'));
+      // 1x1 transparent PNG bytes
+      await stickerFile!.writeAsBytes([
+        0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D,
+        0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+        0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4, 0x89, 0x00, 0x00, 0x00,
+        0x0A, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00,
+        0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00, 0x00, 0x00, 0x00, 0x49,
+        0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82,
+      ]);
+    });
+
+    try {
+      final List<Chunk> chunks = [
+        Chunk(
+          index: 0,
+          words: [
+            makeWord(
+              wordId: 'w_sticker',
+              text: 'Hello',
+              start: 0.0,
+              end: 1.0,
+              type: 'word',
+              emoji: stickerFile!.path,
+            ),
+          ],
+          startTime: 0.0,
+          endTime: 1.0,
+        ),
+      ];
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            assetManifestProvider.overrideWithValue(mockManifest),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: Stack(
+                children: [
+                  CaptionOverlay(
+                    chunks: chunks,
+                    currentTime: 0.5,
+                    config: defaultConfig,
+                    scale: 1.0,
+                    videoWidth: 1080,
+                    videoHeight: 1920,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // Custom sticker should render as Image widget, NOT as raw Text widget
+      expect(find.byType(Image), findsOneWidget);
+      expect(find.text(stickerFile!.path), findsNothing);
+    } finally {
+      await tester.runAsync(() async {
+        if (tempDir != null && tempDir!.existsSync()) {
+          try {
+            await tempDir!.delete(recursive: true);
+          } catch (_) {}
+        }
+      });
+    }
+  });
+
+  testWidgets('CaptionOverlay renders 3d extruded shadow with multi-tier shadow stack', (WidgetTester tester) async {
+    final List<Chunk> chunks = [
+      Chunk(
+        index: 0,
+        words: [
+          makeWord(
+            wordId: 'w1',
+            text: 'EXTRUDED',
+            start: 0.0,
+            end: 1.0,
+            type: 'word',
+          ),
+        ],
+        startTime: 0.0,
+        endTime: 1.0,
+      ),
+    ];
+
+    final config3d = makeConfig(
+      shadow: '3d',
+      stroke: 'none',
+      animation: 'none',
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          assetManifestProvider.overrideWithValue(mockManifest),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            body: Stack(
+              children: [
+                CaptionOverlay(
+                  chunks: chunks,
+                  currentTime: 0.5,
+                  config: config3d,
+                  scale: 1.0,
+                  videoWidth: 1080,
+                  videoHeight: 1920,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    final textWidget = tester.widget<Text>(find.text('EXTRUDED').first);
+    expect(textWidget.style?.shadows, isNotNull);
+    // 3D mode generates 5 stepped isometric shadows
+    expect(textWidget.style!.shadows!.length, equals(5));
+  });
+
+  testWidgets('CaptionOverlay renders highlightBackground with high-contrast text color', (WidgetTester tester) async {
+    final List<Chunk> chunks = [
+      Chunk(
+        index: 0,
+        words: [
+          makeWord(
+            wordId: 'w1',
+            text: 'CONTRAST',
+            start: 0.0,
+            end: 1.0,
+            type: 'word',
+          ),
+        ],
+        startTime: 0.0,
+        endTime: 1.0,
+      ),
+    ];
+
+    // White/light highlight color will trigger black text
+    final configBg = makeConfig(
+      highlightBackground: true,
+      mainColor: '#FFFFFF',
+      animation: 'none',
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          assetManifestProvider.overrideWithValue(mockManifest),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            body: Stack(
+              children: [
+                CaptionOverlay(
+                  chunks: chunks,
+                  currentTime: 0.5,
+                  config: configBg,
+                  scale: 1.0,
+                  videoWidth: 1080,
+                  videoHeight: 1920,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    final textWidget = tester.widget<Text>(find.text('CONTRAST').first);
+    expect(textWidget.style?.color, equals(Colors.black));
   });
 }
 

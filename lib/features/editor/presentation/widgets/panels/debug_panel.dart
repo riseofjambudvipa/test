@@ -11,6 +11,7 @@ import '../../../../../core/logger/logger_service.dart';
 import '../../../../../core/settings/settings_service.dart';
 import '../../../../../core/utils/share_service.dart';
 import '../../../../../core/assets/asset_path_service.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../controllers/editor_controller.dart';
 
 class DebugPanel extends ConsumerStatefulWidget {
@@ -28,6 +29,7 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
   // Storage stats & periodic refresh state
   Timer? _statsTimer;
   Map<String, dynamic> _logStats = {};
+  String _lastStatsSignature = '';
   bool _verboseMode = false;
   bool _showMetrics = true;
   bool _initializedMetricsCollapse = false;
@@ -51,15 +53,22 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
 
   Future<void> _loadStats() async {
     final stats = await LoggerService.instance.getLogStats();
-    if (mounted) {
-      setState(() {
-        _logStats = stats;
-        final minLevelName = stats['minimumLevel'] as String?;
-        if (minLevelName != null) {
-          _verboseMode = minLevelName == 'trace';
-        }
-      });
-    }
+    if (!mounted) return;
+    // FIX (perf): the 2.5s refresh timer used to setState unconditionally,
+    // rebuilding the entire ~500-entry log ListView every tick even when
+    // nothing changed. Skip the rebuild when the stats are identical.
+    final buffer = StringBuffer();
+    stats.forEach((k, v) => buffer.write('$k=$v;'));
+    final signature = buffer.toString();
+    if (signature == _lastStatsSignature) return;
+    _lastStatsSignature = signature;
+    setState(() {
+      _logStats = stats;
+      final minLevelName = stats['minimumLevel'] as String?;
+      if (minLevelName != null) {
+        _verboseMode = minLevelName == 'trace';
+      }
+    });
   }
 
   void _toggleVerboseMode(bool enabled) {
@@ -82,7 +91,7 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: AppTheme.glassDecoration(
-        color: Colors.white.withValues(alpha: 0.02),
+        color: AppTheme.cardBgElevated,
         borderRadius: 10,
         borderOpacity: 0.06,
       ),
@@ -138,8 +147,8 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
   Widget _buildDialogLogFilterChip(String label, LogLevel? level) {
     final isSelected = _selectedLogLevelFilter == level;
     Color chipColor = AppTheme.secondaryText;
-    if (level == LogLevel.trace || level == LogLevel.debug) chipColor = Colors.purpleAccent;
-    if (level == LogLevel.error) chipColor = Colors.redAccent;
+    if (level == LogLevel.trace || level == LogLevel.debug) chipColor = AppTheme.accentPink;
+    if (level == LogLevel.error) chipColor = AppTheme.accentRed;
     if (level == LogLevel.warning) chipColor = AppTheme.accentOrange;
     if (level == LogLevel.action) chipColor = AppTheme.accentCyan;
     if (level == LogLevel.info) chipColor = AppTheme.accentGreen;
@@ -151,7 +160,7 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
         selected: isSelected,
         selectedColor: chipColor.withValues(alpha: 0.15),
         checkmarkColor: chipColor,
-        backgroundColor: Colors.white.withValues(alpha: 0.03),
+        backgroundColor: AppTheme.cardBgElevated,
         labelStyle: TextStyle(
           color: isSelected ? chipColor : AppTheme.secondaryText,
         ),
@@ -173,7 +182,7 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
     switch (entry.level) {
       case LogLevel.trace:
       case LogLevel.debug:
-        indicatorColor = Colors.purpleAccent;
+        indicatorColor = AppTheme.accentPink;
         levelIcon = Icons.bug_report_outlined;
         break;
       case LogLevel.info:
@@ -189,7 +198,7 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
         levelIcon = Icons.warning_amber_rounded;
         break;
       case LogLevel.error:
-        indicatorColor = Colors.redAccent;
+        indicatorColor = AppTheme.accentRed;
         levelIcon = Icons.error_outline_rounded;
         break;
     }
@@ -265,7 +274,7 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
                         fontFamily: 'monospace',
                         fontSize: 10,
                         height: 1.35,
-                        color: Colors.white.withValues(alpha: 0.87),
+                        color: AppTheme.primaryText,
                       ),
                     ),
                     if (entry.stackTrace != null) ...[
@@ -274,16 +283,16 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(6),
                         decoration: AppTheme.glassDecoration(
-                          color: Colors.black.withValues(alpha: 0.25),
+                          color: AppTheme.cardBgElevated,
                           borderRadius: 4,
                           borderOpacity: 0.05,
                         ),
                         child: SelectableText(
                           entry.stackTrace!,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'monospace',
                             fontSize: 8.5,
-                            color: Colors.white38,
+                            color: AppTheme.mutedText,
                           ),
                         ),
                       ),
@@ -294,15 +303,19 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
             ),
             // Copy Log Line Action Button
             IconButton(
-              icon: const Icon(Icons.copy_rounded, size: 12, color: Colors.white30),
+              icon: Icon(Icons.copy_rounded, size: 12, color: AppTheme.mutedText),
               tooltip: 'Copy entry line',
               splashRadius: 16,
               onPressed: () async {
+                final l10n = AppLocalizations.of(context);
                 await Clipboard.setData(ClipboardData(text: entry.toString()));
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Copied log line to clipboard: "${entry.message}"'),
+                      content: Text(
+                        l10n?.logLineCopied(entry.message) ??
+                            'Copied log line to clipboard: "${entry.message}"',
+                      ),
                       duration: const Duration(seconds: 1),
                       backgroundColor: AppTheme.accentGreen,
                     ),
@@ -400,6 +413,7 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
                                    label: Text('EXPORT', style: TextStyle(fontSize: 10, color: AppTheme.accentCyan, fontWeight: FontWeight.bold)),
                                    onPressed: () async {
                                      try {
+                                       final l10n = AppLocalizations.of(context);
                                        final rawEntries = LoggerService.instance.logsNotifier.value;
                                        var filteredEntries = rawEntries;
                                        
@@ -449,7 +463,10 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
                                            if (shared && context.mounted) {
                                              ScaffoldMessenger.of(context).showSnackBar(
                                                SnackBar(
-                                                 content: const Text('Filtered diagnostic report opened in share sheet.'),
+                                                 content: Text(
+                                                   l10n?.diagnosticsExported ??
+                                                       'Filtered diagnostic report opened in share sheet.',
+                                                 ),
                                                  backgroundColor: AppTheme.accentGreen,
                                                ),
                                              );
@@ -478,26 +495,30 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
                                          }
                                        }
                                      } catch (e) {
-                                       if (context.mounted) {
-                                         ScaffoldMessenger.of(context).showSnackBar(
-                                           SnackBar(
-                                             content: Text('Failed to export diagnostics report: $e'),
-                                             backgroundColor: Colors.redAccent,
-                                           ),
-                                         );
-                                       }
+                                        if (context.mounted) {
+                                          final l10n = AppLocalizations.of(context);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                l10n?.errorDiagnosticsFailed(e.toString()) ??
+                                                    'Failed to export diagnostics report: $e',
+                                              ),
+                                              backgroundColor: AppTheme.accentRed,
+                                            ),
+                                          );
+                                        }
                                      }
                                    },
                                  ),
                                 const SizedBox(width: 4),
                                 TextButton.icon(
-                                  icon: const Icon(Icons.delete_outline, size: 12, color: Colors.redAccent),
-                                  label: const Text('CLEAR', style: TextStyle(fontSize: 10, color: Colors.redAccent, fontWeight: FontWeight.bold)),
+                                  icon: Icon(Icons.delete_outline, size: 12, color: AppTheme.accentRed),
+                                  label: Text(AppLocalizations.of(context)?.btnReset ?? 'CLEAR', style: TextStyle(fontSize: 10, color: AppTheme.accentRed, fontWeight: FontWeight.bold)),
                                   onPressed: () async {
+                                    // FIX (audit): the list is driven by the
+                                    // logsNotifier stream, so the extra
+                                    // setState was a redundant full rebuild.
                                     await LoggerService.instance.clear();
-                                    if (mounted) {
-                                      setState(() {});
-                                    }
                                   },
                                 ),
                               ],
@@ -594,13 +615,13 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
                                         children: [
                                           Icon(Icons.developer_mode_rounded, size: 14, color: AppTheme.accentOrange),
                                           const SizedBox(width: 8),
-                                          const Expanded(
+                                          Expanded(
                                             child: Text(
                                               'VERBOSE DIAGNOSTIC MODE',
                                               style: TextStyle(
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.bold,
-                                                color: Colors.white,
+                                                color: AppTheme.primaryText,
                                                 letterSpacing: 0.5,
                                               ),
                                               maxLines: 1,
@@ -626,8 +647,8 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
                                   value: _verboseMode,
                                   activeThumbColor: AppTheme.accentOrange,
                                   activeTrackColor: AppTheme.accentOrange.withValues(alpha: 0.3),
-                                  inactiveThumbColor: Colors.white30,
-                                  inactiveTrackColor: Colors.white10,
+                                  inactiveThumbColor: AppTheme.mutedText,
+                                  inactiveTrackColor: AppTheme.dividerColor,
                                   onChanged: _toggleVerboseMode,
                                 ),
                               ],
@@ -652,13 +673,13 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
                           controller: _logSearchController,
                           decoration: InputDecoration(
                             hintText: 'Search console logs by source, keyword, or message...',
-                            hintStyle: const TextStyle(fontSize: 11, color: Colors.white30),
-                            prefixIcon: const Icon(Icons.search, size: 14, color: Colors.white30),
+                            hintStyle: TextStyle(fontSize: 11, color: AppTheme.mutedText),
+                            prefixIcon: Icon(Icons.search, size: 14, color: AppTheme.mutedText),
                             isDense: true,
                             contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: const BorderSide(color: Colors.white10),
+                              borderSide: BorderSide(color: AppTheme.borderGlass),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -666,7 +687,7 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
                             ),
                             suffixIcon: _logSearchQuery.isNotEmpty
                                 ? IconButton(
-                                    icon: const Icon(Icons.clear, size: 14, color: Colors.white30),
+                                    icon: Icon(Icons.clear, size: 14, color: AppTheme.mutedText),
                                     onPressed: () {
                                       setState(() {
                                         _logSearchQuery = '';
@@ -676,7 +697,7 @@ class _DebugPanelState extends ConsumerState<DebugPanel> {
                                   )
                                 : null,
                           ),
-                          style: const TextStyle(fontSize: 12, color: Colors.white),
+                          style: TextStyle(fontSize: 12, color: AppTheme.primaryText),
                           onChanged: (val) {
                             setState(() {
                               _logSearchQuery = val.trim().toLowerCase();

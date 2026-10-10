@@ -7,6 +7,7 @@ import '../../../../core/assets/asset_path_service.dart';
 import '../../../../core/assets/asset_verification_service.dart';
 import '../../../../core/logger/logger_service.dart';
 import '../../../../core/utils/app_dirs.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class AssetsFolderRecoveryScreen extends ConsumerStatefulWidget {
   const AssetsFolderRecoveryScreen({super.key});
@@ -20,9 +21,10 @@ class _AssetsFolderRecoveryScreenState extends ConsumerState<AssetsFolderRecover
   String? _errorMessage;
 
   Future<void> _browseNewLocation() async {
+    final l10n = AppLocalizations.of(context);
     try {
       final result = await FilePicker.getDirectoryPath(
-        dialogTitle: 'Select CapStudio Assets Folder',
+        dialogTitle: l10n?.filePickerAssetsDialogTitle ?? 'Select CapStudio Assets Folder',
       );
       if (!mounted) return;
       if (result != null) {
@@ -34,13 +36,14 @@ class _AssetsFolderRecoveryScreenState extends ConsumerState<AssetsFolderRecover
       LoggerService.instance.log(LogLevel.error, 'Recovery', 'Failed to pick directory: $e');
       if (mounted) {
         setState(() {
-          _errorMessage = 'Failed to select folder: $e';
+          _errorMessage = l10n?.errorSelectFolderFailed(e.toString()) ?? 'Failed to select folder: $e';
         });
       }
     }
   }
 
   Future<void> _resetToDefault() async {
+    final l10n = AppLocalizations.of(context);
     try {
       // Clear preferences to fallback to default
       final defaultRoot = AppDirs.support; // Set default support root
@@ -50,20 +53,32 @@ class _AssetsFolderRecoveryScreenState extends ConsumerState<AssetsFolderRecover
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'Failed to reset: $e';
+          _errorMessage = l10n?.errorResetFailed(e.toString()) ?? 'Failed to reset: $e';
         });
       }
     }
   }
 
   Future<void> _retryVerification() async {
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _retrying = true;
       _errorMessage = null;
     });
 
     // Re-verify assets
-    await ref.read(assetVerificationProvider.notifier).reVerify();
+    // FIX (audit): a reVerify() throw previously left _retrying true, which
+    // permanently disabled the Retry button.
+    try {
+      await ref.read(assetVerificationProvider.notifier).reVerify();
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _retrying = false;
+        _errorMessage = l10n?.errorVerificationFailed(e.toString()) ?? 'Verification failed: $e';
+      });
+      return;
+    }
     if (!mounted) return;
 
     final verification = ref.read(assetVerificationProvider);
@@ -77,7 +92,8 @@ class _AssetsFolderRecoveryScreenState extends ConsumerState<AssetsFolderRecover
       context.go('/');
     } else {
       setState(() {
-        _errorMessage = 'Assets folder still not found at: ${AssetPathService.instance.assetsRoot}';
+        _errorMessage = l10n?.errorAssetsFolderStillMissing(AssetPathService.instance.assetsRoot)
+            ?? 'Assets folder still not found at: ${AssetPathService.instance.assetsRoot}';
       });
     }
   }
@@ -85,6 +101,7 @@ class _AssetsFolderRecoveryScreenState extends ConsumerState<AssetsFolderRecover
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final expectedPath = AssetPathService.instance.assetsRoot;
 
     return Scaffold(
@@ -105,16 +122,17 @@ class _AssetsFolderRecoveryScreenState extends ConsumerState<AssetsFolderRecover
               Icon(Icons.warning_amber_rounded, size: 56, color: AppTheme.accentOrange),
               const SizedBox(height: 16),
               Text(
-                'Assets Folder Not Found',
+                l10n?.assetsFolderNotFound ?? 'Assets Folder Not Found',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: AppTheme.primaryText,
                   fontSize: 18,
                 ),
               ),
               const SizedBox(height: 12),
               Text(
-                'CapStudio could not locate the assets folder at the configured location. If the folder is on an external drive, please connect it.',
+                l10n?.assetsFolderNotFoundDesc ??
+                    'CapStudio could not locate the assets folder at the configured location. If the folder is on an external drive, please connect it.',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodySmall?.copyWith(color: AppTheme.secondaryText),
               ),
@@ -130,14 +148,14 @@ class _AssetsFolderRecoveryScreenState extends ConsumerState<AssetsFolderRecover
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'EXPECTED PATH:',
-                      style: TextStyle(fontSize: 9, color: Colors.white30, fontWeight: FontWeight.bold),
+                    Text(
+                      l10n?.expectedPathLabel ?? 'EXPECTED PATH:',
+                      style: TextStyle(fontSize: 9, color: AppTheme.mutedText, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       expectedPath,
-                      style: const TextStyle(fontFamily: 'monospace', fontSize: 11, color: Colors.white70),
+                      style: TextStyle(fontFamily: 'monospace', fontSize: 11, color: AppTheme.secondaryText),
                     ),
                   ],
                 ),
@@ -146,7 +164,7 @@ class _AssetsFolderRecoveryScreenState extends ConsumerState<AssetsFolderRecover
                 const SizedBox(height: 16),
                 Text(
                   _errorMessage!,
-                  style: const TextStyle(color: Colors.redAccent, fontSize: 11),
+                  style: TextStyle(color: AppTheme.accentRed, fontSize: 11),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -156,10 +174,10 @@ class _AssetsFolderRecoveryScreenState extends ConsumerState<AssetsFolderRecover
                   ElevatedButton.icon(
                     onPressed: _browseNewLocation,
                     icon: const Icon(Icons.folder_open),
-                    label: const Text('Browse New Location'),
+                    label: Text(l10n?.browseNewLocation ?? 'Browse New Location'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.accentOrange,
-                      foregroundColor: Colors.white,
+                      foregroundColor: AppTheme.onAccentText,
                       minimumSize: const Size(double.infinity, 44),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
@@ -168,23 +186,23 @@ class _AssetsFolderRecoveryScreenState extends ConsumerState<AssetsFolderRecover
                   OutlinedButton.icon(
                     onPressed: _resetToDefault,
                     icon: const Icon(Icons.restart_alt),
-                    label: const Text('Reset to Default Path'),
+                    label: Text(l10n?.resetToDefaultPath ?? 'Reset to Default Path'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white70,
-                      side: const BorderSide(color: Colors.white24),
+                      foregroundColor: AppTheme.secondaryText,
+                      side: BorderSide(color: AppTheme.borderGlass),
                       minimumSize: const Size(double.infinity, 44),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Divider(color: Colors.white10),
+                  Divider(color: AppTheme.dividerColor),
                   const SizedBox(height: 8),
                   TextButton.icon(
                     onPressed: _retrying ? null : _retryVerification,
                     icon: _retrying
                         ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                         : const Icon(Icons.refresh),
-                    label: const Text('Retry Verification'),
+                    label: Text(l10n?.retryVerification ?? 'Retry Verification'),
                     style: TextButton.styleFrom(foregroundColor: AppTheme.accentCyan),
                   ),
                 ],

@@ -1,12 +1,20 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
 import '../../../../../../app/theme.dart';
+import '../../../../../../core/utils/color_utils.dart';
 import '../../../../../../core/database/schemas/project.dart';
 import '../../../../../../core/database/schemas/word.dart';
+import '../../../../../../core/emoji/emoji_service.dart';
 import '../../../../../../core/audio/audio_service.dart';
 import '../../../../../../core/logger/logger_service.dart';
 import '../../../../../../core/utils/premium_blur_dialog.dart';
+import '../../../../domain/caption_engine.dart';
 import '../../../controllers/editor_controller.dart';
+import 'emoji_picker_dialog.dart';
+import '../../../../../../l10n/app_localizations.dart';
 
 class TimeEditDialog extends StatefulWidget {
   final double initialStart;
@@ -50,6 +58,7 @@ class _TimeEditDialogState extends State<TimeEditDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return PremiumBlurDialog(
       maxWidth: 340,
       useScrollView: false,
@@ -61,7 +70,7 @@ class _TimeEditDialogState extends State<TimeEditDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'EDIT TIMING',
+                (l10n?.editTiming ?? 'Edit Timing').toUpperCase(),
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w900,
@@ -70,12 +79,12 @@ class _TimeEditDialogState extends State<TimeEditDialog> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.close, size: 20, color: Colors.white60),
+                icon: Icon(Icons.close, size: 20, color: AppTheme.secondaryText),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
           ),
-          const Divider(color: Colors.white10, height: 16),
+          Divider(color: AppTheme.dividerColor, height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -202,13 +211,13 @@ class _TimeEditDialogState extends State<TimeEditDialog> {
             children: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('CANCEL'),
+                child: Text(l10n?.btnCancel ?? 'CANCEL'),
               ),
               const SizedBox(width: 8),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.accentOrange,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppTheme.onAccentText,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 onPressed: () {
@@ -219,14 +228,17 @@ class _TimeEditDialogState extends State<TimeEditDialog> {
                     Navigator.pop(context);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Invalid start/end timings. Start must be >= 0, and end must be >= start and <= video duration.'),
-                        backgroundColor: Colors.redAccent,
+                      SnackBar(
+                        content: Text(
+                          l10n?.invalidTimingError ??
+                              'Invalid start/end timings. Start must be >= 0, and end must be >= start and <= video duration.',
+                        ),
+                        backgroundColor: AppTheme.accentRed,
                       ),
                     );
                   }
                 },
-                child: const Text('SAVE'),
+                child: Text(l10n?.btnSave ?? 'SAVE'),
               ),
             ],
           ),
@@ -268,6 +280,11 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
   late String? selectedSfx;
   late double sfxVolume;
   String? playingSfxId;
+  String? selectedEmoji;
+  double emojiX = 0.0;
+  double emojiY = 0.0;
+  double emojiScale = 1.0;
+  double emojiSpeed = 1.0;
 
   @override
   void initState() {
@@ -280,6 +297,12 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
     final sfxData = SfxData.parse(widget.word.soundEffect, fallbackVolume: widget.word.soundVolume ?? 100);
     selectedSfx = sfxData.word?.name ?? '';
     sfxVolume = (sfxData.word?.volume ?? 100).toDouble();
+
+    selectedEmoji = widget.word.emoji;
+    emojiX = widget.word.emojiConfig?.x ?? 0.0;
+    emojiY = widget.word.emojiConfig?.y ?? 0.0;
+    emojiScale = widget.word.emojiConfig?.scale ?? 1.0;
+    emojiSpeed = widget.word.emojiConfig?.speed ?? 1.0;
   }
 
   @override
@@ -290,24 +313,16 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
     super.dispose();
   }
 
-  Color _parseHex(String? hex, Color fallback) {
-    if (hex == null || hex.isEmpty) return fallback;
-    try {
-      return Color(int.parse('FF${hex.replaceAll('#', '')}', radix: 16));
-    } catch (_) {
-      return fallback;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final hs = widget.project.config.highlightStyle;
     final style = widget.project.config.style;
 
-    final baseColor = _parseHex(style.color, Colors.white);
-    final highlight1Color = _parseHex(hs.mainColor, AppTheme.accentOrange);
-    final highlight2Color = _parseHex(hs.secondColor, AppTheme.accentCyan);
-    final highlight3Color = _parseHex(hs.thirdColor, AppTheme.accentGreen);
+    final baseColor = ColorUtils.fromHex(style.color, fallback: AppTheme.primaryText);
+    final highlight1Color = ColorUtils.fromHex(hs.mainColor, fallback: AppTheme.accentOrange);
+    final highlight2Color = ColorUtils.fromHex(hs.secondColor, fallback: AppTheme.accentCyan);
+    final highlight3Color = ColorUtils.fromHex(hs.thirdColor, fallback: AppTheme.accentGreen);
 
     final sfxData = SfxData.parse(widget.word.soundEffect, fallbackVolume: widget.word.soundVolume ?? 100);
     final sfx = selectedSfx ?? '';
@@ -340,7 +355,7 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
               border: Border.all(
                 color: isSelected 
                     ? color 
-                    : Colors.white.withValues(alpha: 0.1),
+                    : AppTheme.borderGlass,
                 width: isSelected ? 2.0 : 1.0,
               ),
             ),
@@ -354,7 +369,7 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
                     color: color,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: AppTheme.borderGlass,
                       width: 0.5,
                     ),
                   ),
@@ -366,7 +381,7 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      color: isSelected ? Colors.white : AppTheme.secondaryText,
+                      color: isSelected ? AppTheme.primaryText : AppTheme.secondaryText,
                     ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
@@ -391,7 +406,7 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
             children: [
               Expanded(
                 child: Text(
-                  'WORD SETTINGS',
+                  (l10n?.wordSettingsTitle ?? 'Word Settings').toUpperCase(),
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w900,
@@ -426,14 +441,14 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
                     },
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, size: 20, color: Colors.white60),
+                    icon: Icon(Icons.close, size: 20, color: AppTheme.secondaryText),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
             ],
           ),
-          const Divider(color: Colors.white10, height: 16),
+          Divider(color: AppTheme.dividerColor, height: 16),
           Flexible(
             child: SingleChildScrollView(
               child: Column(
@@ -476,9 +491,9 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
                                     final val = (double.tryParse(startController.text) ?? 0.0) - 0.05;
                                     startController.text = val.toStringAsFixed(3);
                                   },
-                                  child: const Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                                    child: Icon(Icons.remove, size: 14, color: Colors.white70),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                                    child: Icon(Icons.remove, size: 14, color: AppTheme.secondaryText),
                                   ),
                                 ),
                                 const SizedBox(width: 2),
@@ -488,9 +503,9 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
                                     final val = (double.tryParse(startController.text) ?? 0.0) + 0.05;
                                     startController.text = val.toStringAsFixed(3);
                                   },
-                                  child: const Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                                    child: Icon(Icons.add, size: 14, color: Colors.white70),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                                    child: Icon(Icons.add, size: 14, color: AppTheme.secondaryText),
                                   ),
                                 ),
                                 const SizedBox(width: 4),
@@ -523,9 +538,9 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
                                     final val = (double.tryParse(endController.text) ?? 0.0) - 0.05;
                                     endController.text = val.toStringAsFixed(3);
                                   },
-                                  child: const Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                                    child: Icon(Icons.remove, size: 14, color: Colors.white70),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                                    child: Icon(Icons.remove, size: 14, color: AppTheme.secondaryText),
                                   ),
                                 ),
                                 const SizedBox(width: 2),
@@ -535,9 +550,9 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
                                     final val = (double.tryParse(endController.text) ?? 0.0) + 0.05;
                                     endController.text = val.toStringAsFixed(3);
                                   },
-                                  child: const Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                                    child: Icon(Icons.add, size: 14, color: Colors.white70),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                                    child: Icon(Icons.add, size: 14, color: AppTheme.secondaryText),
                                   ),
                                 ),
                                 const SizedBox(width: 4),
@@ -582,6 +597,137 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
                         value: 'thirdColor',
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'EMOJI',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.secondaryText,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: AppTheme.glassDecoration(
+                      color: AppTheme.cardBg.withValues(alpha: 0.25),
+                      borderRadius: 8,
+                      borderOpacity: 0.08,
+                    ),
+                    child: Row(
+                      children: [
+                        if (selectedEmoji != null && selectedEmoji!.isNotEmpty && selectedEmoji != 'none') ...[
+                          Builder(
+                            builder: (context) {
+                              final parsed = EmojiPackParser.parse(selectedEmoji!, '');
+                              final isSticker = !kIsWeb &&
+                                  (File(parsed.glyph).existsSync() ||
+                                      parsed.glyph.startsWith('/') ||
+                                      RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(parsed.glyph));
+                              if (isSticker) {
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: Image.file(
+                                    File(parsed.glyph),
+                                    width: 22,
+                                    height: 22,
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (_, __, ___) => const Icon(
+                                      Icons.image_outlined,
+                                      size: 20,
+                                    ),
+                                  ),
+                                );
+                              }
+                              return Text(
+                                parsed.glyph,
+                                style: const TextStyle(fontSize: 22, fontFamily: 'Noto Color Emoji'),
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Builder(
+                              builder: (context) {
+                                final parsed = EmojiPackParser.parse(selectedEmoji!, '');
+                                final isSticker = !kIsWeb &&
+                                    (File(parsed.glyph).existsSync() ||
+                                        parsed.glyph.startsWith('/') ||
+                                        RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(parsed.glyph));
+                                final label = isSticker
+                                    ? p.basenameWithoutExtension(parsed.glyph)
+                                    : selectedEmoji!;
+                                return Text(
+                                  label,
+                                  style: TextStyle(fontSize: 11, color: AppTheme.primaryText),
+                                  overflow: TextOverflow.ellipsis,
+                                );
+                              },
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.clear, size: 16, color: AppTheme.accentRed),
+                            tooltip: 'Remove Emoji',
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: () {
+                              setState(() {
+                                selectedEmoji = 'none';
+                              });
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                        ] else ...[
+                          Expanded(
+                            child: Text(
+                              'No emoji attached',
+                              style: TextStyle(fontSize: 12, color: AppTheme.secondaryText, fontStyle: FontStyle.italic),
+                            ),
+                          ),
+                        ],
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppTheme.accentOrange,
+                            side: BorderSide(color: AppTheme.accentOrange.withValues(alpha: 0.4)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          ),
+                          icon: const Icon(Icons.add_reaction_outlined, size: 14),
+                          label: Text(
+                            (selectedEmoji != null && selectedEmoji!.isNotEmpty && selectedEmoji != 'none')
+                                ? 'Change'
+                                : 'Choose',
+                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                          ),
+                          onPressed: () {
+                            showDialog<void>(
+                              context: context,
+                              builder: (ctx) => EmojiPickerDialog(
+                                project: widget.project,
+                                chunk: Chunk(index: 0, startTime: 0, endTime: 0, words: [widget.word]),
+                                targetWord: widget.word,
+                                onEmojiSelected: (pack, glyph) {
+                                  final isSticker = !kIsWeb &&
+                                      (glyph.endsWith('.png') ||
+                                          glyph.endsWith('.webp') ||
+                                          glyph.endsWith('.jpg') ||
+                                          glyph.endsWith('.jpeg') ||
+                                          glyph.endsWith('.gif') ||
+                                          glyph.startsWith('/') ||
+                                          RegExp(r'^[a-zA-Z]:[/\\]').hasMatch(glyph) ||
+                                          EmojiService.resolveStickerPath(glyph) != null);
+                                  setState(() {
+                                    selectedEmoji = isSticker ? 'custom:$glyph' : '$pack:$glyph';
+                                  });
+                                  Navigator.pop(ctx);
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Column(
@@ -686,10 +832,20 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
                                   setState(() {
                                     playingSfxId = sfx;
                                   });
-                                  await AudioService.instance.playSfx(sfx, sfxVolume / 100.0);
-                                  setState(() {
-                                    playingSfxId = null;
-                                  });
+                                  // FIX (audit): an unhandled play failure left
+                                  // playingSfxId stuck so the button stayed in
+                                  // "pause" state forever. Always reset it.
+                                  try {
+                                    await AudioService.instance.playSfx(sfx, sfxVolume / 100.0);
+                                  } catch (e) {
+                                    LoggerService.instance.log(LogLevel.error, 'AddWordDialog', 'Failed to play sound effect: $e');
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() {
+                                        playingSfxId = null;
+                                      });
+                                    }
+                                  }
                                 }
                               },
                             ),
@@ -711,7 +867,7 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
             children: [
               TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.redAccent,
+                  foregroundColor: AppTheme.accentRed,
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                 ),
                 onPressed: () {
@@ -722,19 +878,40 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
                   }
                   Navigator.pop(context);
                 },
-                child: const Text('DELETE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                child: Text(l10n?.btnDelete ?? 'DELETE', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+              ),
+              TextButton.icon(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppTheme.accentOrange,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+                icon: const Icon(Icons.content_cut_rounded, size: 14),
+                label: const Text('CUT FOOTAGE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                onPressed: () {
+                  final wordId = widget.word.wordId;
+                  final start = widget.word.start;
+                  final end = widget.word.end;
+                  if (start != null && end != null && start < end) {
+                    ref.read(editorProvider.notifier).cutVideoSegmentForTimeRange(start, end, hideWords: true);
+                    if (wordId != null) {
+                      ref.read(editorProvider.notifier).deleteWords([wordId]);
+                    }
+                    LoggerService.instance.log(LogLevel.action, 'WordPanel', 'Cut word & video footage between ${start.toStringAsFixed(2)}s and ${end.toStringAsFixed(2)}s');
+                  }
+                  Navigator.pop(context);
+                },
               ),
               TextButton(
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                 ),
                 onPressed: () => Navigator.pop(context),
-                child: const Text('CANCEL', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                child: Text(l10n?.btnCancel ?? 'CANCEL', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.accentOrange, 
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppTheme.onAccentText,
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
@@ -764,12 +941,17 @@ class _WordSettingsDialogState extends ConsumerState<WordSettingsDialog> {
                       soundEffect: finalSfx,
                       soundVolume: finalVolume,
                       className: highlightClass,
+                      emoji: selectedEmoji,
+                      emojiX: emojiX,
+                      emojiY: emojiY,
+                      emojiScale: emojiScale,
+                      emojiSpeed: emojiSpeed,
                     );
                     LoggerService.instance.log(LogLevel.action, 'WordPanel', 'Updated word settings: "${newText.isNotEmpty ? newText : widget.word.text}"');
                   }
                   Navigator.pop(context);
                 },
-                child: const Text('SAVE'),
+                child: Text(l10n?.btnSave ?? 'SAVE'),
               ),
             ],
           ),

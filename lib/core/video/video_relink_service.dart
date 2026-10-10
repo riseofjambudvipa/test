@@ -176,6 +176,20 @@ class VideoRelinkService {
       await onSave();
     } catch (e) {
       project.videoPath = oldPath;
+      if (finalPath != oldPath) {
+        try {
+          final fileToDelete = File(finalPath);
+          if (fileToDelete.existsSync()) {
+            fileToDelete.deleteSync();
+          }
+        } catch (cleanupError) {
+          LoggerService.instance.log(
+            LogLevel.warning,
+            'VideoRelinkService',
+            'Failed to clean up orphaned relinked video file at $finalPath: $cleanupError',
+          );
+        }
+      }
       LoggerService.instance.log(LogLevel.error, 'VideoRelinkService', 'Failed to save project after relink: $e');
       return RelinkResult.failure('Failed to save project after relink: $e');
     }

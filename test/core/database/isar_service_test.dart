@@ -74,12 +74,12 @@ void main() {
   }
 
   group('IsarService Complete Database Integration Tests', () {
-    test('throws StateError when accessing db getter before initialization', () {
+    test('throws StateError when accessing db getter before initialization', () async {
       final isarService = IsarService.instance;
       // Ensure we are in closed uninitialized state
       try {
         if (isarService.isInitialized) {
-          isarService.close();
+          await isarService.close();
         }
       } catch (_) {}
 

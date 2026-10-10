@@ -68,13 +68,15 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>CapStudio needs access to your photo library to import video files for captioning.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>CapStudio needs permission to save exported videos directly to your photo library.</string>
 	<key>NSDocumentsFolderUsageDescription</key>
 	<string>CapStudio needs access to your documents folder to read and save video and caption files.</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
-		<key>ITSAppUsesNonExemptEncryption</key>
+	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>
 </plist>

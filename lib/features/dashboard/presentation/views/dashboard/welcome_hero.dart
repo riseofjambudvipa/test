@@ -22,13 +22,13 @@ class WelcomeHero extends StatelessWidget {
               Icon(
                 Icons.video_library_outlined,
                 size: 48,
-                color: Colors.white.withValues(alpha: 0.25),
+                color: AppTheme.mutedText,
               ),
               const SizedBox(height: 16),
               Text(
-                AppLocalizations.of(context)!.noProjects,
+                AppLocalizations.of(context)?.noProjects ?? 'No projects created yet',
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.5),
+                  color: AppTheme.secondaryText,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 0.5,
                 ),

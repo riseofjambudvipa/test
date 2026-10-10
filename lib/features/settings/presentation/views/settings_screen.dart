@@ -24,7 +24,9 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  String _appVersion = '0.1.0';
+  // FIX (audit, consistency): this default now matches the About screen and
+  // pubspec (1.0.0) instead of claiming an unrelated 0.1.0.
+  String _appVersion = '1.0.0';
   int _resetKey = 0;
 
   // Locales loaded from assets/emojis/locales_manifest.json.
@@ -40,16 +42,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _loadLocales() async {
-    final manifest = await EmojiService.loadLocalesManifest();
-    if (!mounted) return;
-    setState(() {
-      // Prepend the special 'auto' entry
-      _locales = [
-        {'code': 'auto', 'name': 'Auto (System Language)'},
-        ...manifest,
-      ];
-      _localesLoaded = true;
-    });
+    // FIX (audit): an unhandled throw here left _localesLoaded false and the
+    // dropdown showing an infinite spinner. Fall back to just the 'auto' entry.
+    try {
+      final manifest = await EmojiService.loadLocalesManifest();
+      if (!mounted) return;
+      setState(() {
+        // Prepend the special 'auto' entry
+        _locales = [
+          {'code': 'auto', 'name': 'Auto (System Language)'},
+          ...manifest,
+        ];
+        _localesLoaded = true;
+      });
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.error, 'SettingsScreen',
+          'Failed to load emoji locales manifest: $e');
+      if (!mounted) return;
+      setState(() {
+        _locales = [
+          {'code': 'auto', 'name': 'Auto (System Language)'},
+        ];
+        _localesLoaded = true;
+      });
+    }
   }
 
   Future<void> _loadAppVersion() async {
@@ -68,7 +84,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
 
   Future<void> _resetToDefaults() async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => PremiumBlurDialog(
@@ -80,17 +96,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              l10n.systemReset,
-              style: const TextStyle(
+              l10n?.systemReset ?? 'Reset Defaults',
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppTheme.primaryText,
               ),
             ),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'Are you sure you want to clear all configurations and restore defaults?',
-              style: TextStyle(color: Colors.white70, fontSize: 13),
+              style: TextStyle(color: AppTheme.secondaryText, fontSize: 13),
             ),
             const SizedBox(height: 20),
             Row(
@@ -98,12 +114,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
-                  child: Text(l10n.btnCancel, style: const TextStyle(color: Colors.white70)),
+                  child: Text(l10n?.btnCancel ?? 'CANCEL', style: TextStyle(color: AppTheme.secondaryText)),
                 ),
                 const SizedBox(width: 8),
                 TextButton(
                   onPressed: () => Navigator.pop(context, true),
-                  child: Text(l10n.systemReset, style: const TextStyle(color: Colors.redAccent)),
+                  child: Text(l10n?.systemReset ?? 'Reset Defaults', style: TextStyle(color: AppTheme.accentRed)),
                 ),
               ],
             ),
@@ -126,6 +142,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       await SettingsService.instance.setGpuEncoder('none');
       await SettingsService.instance.setWhisperThreads(0); // 0 = auto (CPU cores − 1)
       await SettingsService.instance.setAlwaysAskExportPath(false);
+      // FIX (audit): "restore defaults" previously omitted these settings, so
+      // model selection, emoji/UI language and auto-save survived the reset.
+      await SettingsService.instance.setEmojiSearchLanguage('auto');
+      await SettingsService.instance.setUiLanguage('system');
+      await SettingsService.instance.setWhisperModelPath('');
+      await SettingsService.instance.setWhisperModelName('');
+      await SettingsService.instance.setForceNoAvx(false);
+      await SettingsService.instance.setExportThreads(0);
+      await SettingsService.instance.setAutoSave(true);
+      await SettingsService.instance.setLogMinimumLevel('info');
+      await SettingsService.instance.setDbSchemaVersion(1);
       
       if (!mounted) return;
       ref.read(themeProvider.notifier).setTheme(ThemeType.obsidianAmber);
@@ -135,45 +162,69 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       });
       
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Settings restored to defaults.')),
+        SnackBar(content: Text(l10n?.settingsRestored ?? 'Settings restored to defaults.')),
       );
     }
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w900,
-        color: Colors.white,
-        letterSpacing: 1.0,
-      ),
+  Widget _buildSectionHeader(String title, IconData icon, [AppThemeData? themeData]) {
+    final primaryColor = themeData?.primaryText ?? AppTheme.primaryText;
+    final accentColor = themeData?.accentOrange ?? AppTheme.accentOrange;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 18, color: accentColor),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w900,
+                color: primaryColor,
+                letterSpacing: 0.8,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Container(
+          height: 2,
+          width: 48,
+          decoration: BoxDecoration(
+            color: accentColor,
+            borderRadius: BorderRadius.circular(1),
+          ),
+        ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final themeData = ref.watch(themeProvider);
     final theme = Theme.of(context);
     final isCompactWidth = MediaQuery.of(context).size.width < 600;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
         backgroundColor: AppTheme.cardBg.withValues(alpha: 0.8),
         title: Text(
-          l10n.settingsTitle.toUpperCase(),
+          (l10n?.settingsTitle ?? 'Settings').toUpperCase(),
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w900,
             letterSpacing: 1.5,
-            color: Colors.white,
+            color: AppTheme.primaryText,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 18),
+          icon: Icon(Icons.arrow_back_ios_new, size: 18, color: AppTheme.primaryText),
           onPressed: () => Navigator.of(context).pop(),
         ),
         elevation: 0,
@@ -193,13 +244,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           SingleChildScrollView(
-            padding: EdgeInsets.all(isCompactWidth ? 12.0 : 24.0),
+            padding: EdgeInsets.symmetric(
+              horizontal: isCompactWidth ? 12.0 : 24.0,
+              vertical: 20.0,
+            ),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 800),
-                padding: EdgeInsets.all(isCompactWidth ? 12.0 : 24.0),
+                padding: EdgeInsets.all(isCompactWidth ? 14.0 : 24.0),
                 decoration: AppTheme.glassDecoration(
-                  color: AppTheme.cardBg.withValues(alpha: 0.5),
+                  color: AppTheme.cardBg,
                   borderRadius: 12,
                   borderOpacity: 0.08,
                 ),
@@ -207,8 +261,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   key: ValueKey(_resetKey),
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 🌐 SECTION: APP UI LANGUAGE
-                    _buildSectionHeader('🌐 ${l10n.settingsLanguage}'),
+                    // SECTION: APP UI LANGUAGE
+                    _buildSectionHeader(l10n?.settingsLanguage ?? 'App UI Language', Icons.language_rounded, themeData),
                     const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -223,36 +277,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           DropdownButtonFormField<String>(
                             dropdownColor: AppTheme.cardBg,
                             initialValue: SettingsService.instance.uiLanguage,
-                            style: const TextStyle(color: Colors.white, fontSize: 13),
+                            style: TextStyle(color: AppTheme.primaryText, fontSize: 13),
                             isExpanded: true,
                             menuMaxHeight: 320,
                             decoration: InputDecoration(
                               filled: true,
-                              fillColor: Colors.white.withValues(alpha: 0.03),
+                              fillColor: AppTheme.cardBgElevated,
                               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
-                                borderSide: const BorderSide(color: Colors.white10),
+                                borderSide: BorderSide(color: AppTheme.borderGlass),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
-                                borderSide: const BorderSide(color: Colors.white10),
+                                borderSide: BorderSide(color: AppTheme.borderGlass),
                               ),
                             ),
-                            items: const [
-                              DropdownMenuItem(value: 'system', child: Text('System Default (System)')),
-                              DropdownMenuItem(value: 'en', child: Text('English (English)')),
-                              DropdownMenuItem(value: 'es', child: Text('Español (Spanish)')),
-                              DropdownMenuItem(value: 'zh', child: Text('简体中文 (Chinese)')),
-                              DropdownMenuItem(value: 'ja', child: Text('日本語 (Japanese)')),
-                              DropdownMenuItem(value: 'ko', child: Text('한국어 (Korean)')),
-                              DropdownMenuItem(value: 'hi', child: Text('हिन्दी (Hindi)')),
-                              DropdownMenuItem(value: 'ar', child: Text('العربية (Arabic) - RTL')),
-                              DropdownMenuItem(value: 'pt', child: Text('Português (Portuguese)')),
-                              DropdownMenuItem(value: 'fr', child: Text('Français (French)')),
-                              DropdownMenuItem(value: 'de', child: Text('Deutsch (German)')),
-                              DropdownMenuItem(value: 'ru', child: Text('Русский (Russian)')),
-                              DropdownMenuItem(value: 'tr', child: Text('Türkçe (Turkish)')),
+                            items: [
+                              DropdownMenuItem(value: 'system', child: Text('System Default (System)', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'en', child: Text('English (English)', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'es', child: Text('Español (Spanish)', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'zh', child: Text('简体中文 (Chinese)', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'ja', child: Text('日本語 (Japanese)', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'ko', child: Text('한국어 (Korean)', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'hi', child: Text('हिन्दी (Hindi)', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'ar', child: Text('العربية (Arabic) - RTL', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'pt', child: Text('Português (Portuguese)', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'fr', child: Text('Français (French)', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'de', child: Text('Deutsch (German)', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'ru', child: Text('Русский (Russian)', style: TextStyle(color: AppTheme.primaryText))),
+                              DropdownMenuItem(value: 'tr', child: Text('Türkçe (Turkish)', style: TextStyle(color: AppTheme.primaryText))),
                             ],
                             onChanged: (val) {
                               if (val != null) {
@@ -265,14 +319,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     ),
 
-                    const Divider(color: Colors.white10, height: 40),
+                    Divider(color: AppTheme.borderGlass, height: 40),
 
                     const GeneralSettingsSection(),
                     const TranscriptionSettingsSection(),
                     const ExportSettingsSection(),
 
-                    // 📦 SECTION: STORAGE & EMOJI PACKS
-                    _buildSectionHeader('📦 ${l10n.settingsEmojiPacks}'),
+                    // SECTION: STORAGE & EMOJI PACKS
+                    _buildSectionHeader(l10n?.settingsEmojiPacks ?? 'Emoji & Style Packs', Icons.emoji_emotions_outlined, themeData),
                     const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -285,25 +339,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            l10n.settingsEmojiPacksDesc,
-                            style: const TextStyle(fontSize: 12, color: Colors.white54, height: 1.4),
+                            l10n?.settingsEmojiPacksDesc ?? 'Customize emoji rendering styles and active subtitle assets.',
+                            style: TextStyle(fontSize: 12, color: AppTheme.mutedText, height: 1.4),
                           ),
-                          const Divider(color: Colors.white10, height: 24),
+                          Divider(color: AppTheme.borderGlass, height: 24),
                           Text(
-                            l10n.settingsEmojiSearchLang.toUpperCase(),
-                            style: const TextStyle(
+                            (l10n?.settingsEmojiSearchLang ?? 'Emoji Search Language').toUpperCase(),
+                            style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w900,
-                              color: Colors.white70,
+                              color: AppTheme.primaryText,
                               letterSpacing: 1.0,
                             ),
                           ),
                           const SizedBox(height: 8),
-                          // Locale dropdown is fully data-driven — populated from
-                          // assets/emojis/locales_manifest.json, which is generated
-                          // by tools/generate_emoji_data.py.  No codes are hardcoded here.
                           if (!_localesLoaded)
-                            const SizedBox(
+                            SizedBox(
                               height: 40,
                               child: Center(
                                 child: SizedBox(
@@ -311,7 +362,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                   height: 18,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    color: Colors.white38,
+                                    color: AppTheme.accentOrange,
                                   ),
                                 ),
                               ),
@@ -320,27 +371,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             DropdownButtonFormField<String>(
                               dropdownColor: AppTheme.cardBg,
                               initialValue:
-                                  SettingsService.instance.emojiSearchLanguage,
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 13),
+                                  _locales.any((l) =>
+                                          l['code'] ==
+                                          SettingsService.instance
+                                              .emojiSearchLanguage)
+                                      ? SettingsService.instance
+                                          .emojiSearchLanguage
+                                      : 'auto',
+                              style: TextStyle(
+                                  color: AppTheme.primaryText, fontSize: 13),
                               isExpanded: true,
                               menuMaxHeight: 320,
                               decoration: InputDecoration(
                                 filled: true,
-                                fillColor:
-                                    Colors.white.withValues(alpha: 0.03),
+                                fillColor: AppTheme.cardBgElevated,
                                 contentPadding:
                                     const EdgeInsets.symmetric(
                                         horizontal: 12, vertical: 8),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
                                   borderSide:
-                                      const BorderSide(color: Colors.white10),
+                                      BorderSide(color: AppTheme.borderGlass),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
                                   borderSide:
-                                      const BorderSide(color: Colors.white10),
+                                      BorderSide(color: AppTheme.borderGlass),
                                 ),
                               ),
                               items: _locales
@@ -350,6 +406,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                       child: Text(
                                         locale['name']!,
                                         overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(color: AppTheme.primaryText),
                                       ),
                                     ),
                                   )
@@ -371,7 +428,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             child: ElevatedButton.icon(
                               icon: const Icon(Icons.download_for_offline_outlined, size: 18),
                               label: Text(
-                                l10n.settingsBtnManagePacks,
+                                l10n?.settingsBtnManagePacks ?? 'MANAGE EMOJI PACKS',
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -380,7 +437,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.accentOrange,
-                                foregroundColor: Colors.white,
+                                foregroundColor: AppTheme.onAccentText,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 elevation: 0,
                               ),
@@ -393,12 +450,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
 
 
-                    const Divider(color: Colors.white10, height: 40),
+                    Divider(color: AppTheme.dividerColor, height: 40),
 
                     const ThemeSettingsSection(),
 
-                    // ℹ️ SECTION: SYSTEM & ABOUT
-                    _buildSectionHeader('ℹ️ ${l10n.systemTitle}'),
+                    // SECTION: SYSTEM & ABOUT
+                    _buildSectionHeader(l10n?.systemTitle ?? 'System Info', Icons.info_outline_rounded, themeData),
                     const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -425,7 +482,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      '${l10n.systemVersion} $_appVersion',
+                                      '${l10n?.systemVersion ?? 'Version'} $_appVersion',
                                       style: TextStyle(
                                         fontSize: 11,
                                         color: AppTheme.mutedText,
@@ -438,22 +495,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               const SizedBox(width: 8),
                               TextButton.icon(
                                 onPressed: _resetToDefaults,
-                                icon: const Icon(Icons.refresh, size: 14, color: Colors.redAccent),
+                                icon: Icon(Icons.refresh, size: 14, color: AppTheme.accentRed),
                                 label: Text(
-                                  l10n.systemReset,
-                                  style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                                  l10n?.systemReset ?? 'Reset Defaults',
+                                  style: TextStyle(color: AppTheme.accentRed, fontSize: 12),
                                 ),
                               ),
                             ],
                           ),
-                          const Divider(color: Colors.white10, height: 24),
+                          Divider(color: AppTheme.borderGlass, height: 24),
                           SizedBox(
                             width: double.infinity,
                             height: 44,
                             child: ElevatedButton.icon(
                               icon: const Icon(Icons.info_outline, size: 18),
                               label: Text(
-                                l10n.aboutApp.toUpperCase(),
+                                (l10n?.aboutApp ?? 'About CapStudio').toUpperCase(),
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -461,11 +518,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.redAccent.withValues(alpha: 0.12),
-                                foregroundColor: Colors.redAccent,
+                                backgroundColor: AppTheme.accentOrange.withValues(alpha: 0.12),
+                                foregroundColor: AppTheme.accentOrange,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
-                                  side: BorderSide(color: Colors.redAccent.withValues(alpha: 0.25)),
+                                  side: BorderSide(color: AppTheme.accentOrange.withValues(alpha: 0.3)),
                                 ),
                                 elevation: 0,
                               ),

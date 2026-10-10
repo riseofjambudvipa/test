@@ -24,6 +24,9 @@ class WordSchema {
 
   /// Sound effect playback volume (clamped between 0 and 100).
   int? soundVolume;
+
+  /// Speaker identification label (e.g. 'Speaker 1', 'Host', 'Guest').
+  String? speaker;
 }
 
 @embedded

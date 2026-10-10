@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:capstudio/core/settings/settings_service.dart';
 import 'package:capstudio/core/whisper/whisper_service.dart';
 import 'package:capstudio/core/utils/app_dirs.dart';
+import 'package:capstudio/core/logger/logger_service.dart';
 import '../../test_environment.dart';
 
 void main() {
@@ -92,6 +94,49 @@ void main() {
       expect(WhisperService.instance.ffmpegCliPath, 'new/ffmpeg');
       expect(WhisperService.instance.modelPath, anyOf('new/ggml-medium.bin', 'new\\ggml-medium.bin'));
       expect(await AppDirs.cpuSupportsAvx(), isFalse);
+    });
+
+    test('should scrub PII from error logs and paths', () {
+      final home = Platform.environment['USERPROFILE'] ?? Platform.environment['HOME'];
+      if (home != null && home.isNotEmpty) {
+        final scrubbed = LoggerService.instance.scrubPii('Error in path: $home/model.bin');
+        expect(scrubbed.contains(home), isFalse);
+        expect(scrubbed.contains('<USER_HOME>'), isTrue);
+      }
+      expect(LoggerService.instance.scrubPii('Generic clean error'), 'Generic clean error');
+    });
+
+    test('should sanitize paths by stripping illegal chars, refusing UNC paths, and preserving colons/spaces/r/n', () async {
+      SharedPreferences.setMockInitialValues({});
+      await service.init();
+
+      // 1. Preserves Windows drive-letter colons, backslashes, and words containing r and n
+      const validWinPath = r'C:\runner\new_bin\ffmpeg.exe';
+      await service.setFfmpegCliPath(validWinPath);
+      expect(service.ffmpegCliPath, validWinPath);
+
+      // 2. Preserves spaces, ampersands, dashes, and parentheses
+      const pathWithSymbols = r'D:\Program Files (x86)\Cap & Studio\whisper-cli.exe';
+      await service.setWhisperCliPath(pathWithSymbols);
+      expect(service.whisperCliPath, pathWithSymbols);
+
+      // 3. Rejects network UNC paths
+      await service.setWhisperCliPath(r'\\remote_server\share\whisper.exe');
+      expect(service.whisperCliPath, isEmpty);
+
+      await service.setFfmpegCliPath('//nas/share/ffmpeg');
+      expect(service.ffmpegCliPath, isEmpty);
+
+      // 4. Strips illegal filename characters (<, >, ", |, ?, *) and control characters
+      if (Platform.isWindows) {
+        await service.setWhisperCliPath('C:\\tools<test>?*|">.exe');
+        expect(service.whisperCliPath, 'C:\\toolstest.exe');
+      }
+
+      // 5. Cleans whitespace and clears in-memory config on empty
+      await service.setFfmpegCliPath('   ');
+      expect(service.ffmpegCliPath, isEmpty);
+      expect(WhisperService.instance.ffmpegCliPath, 'ffmpeg');
     });
   });
 }

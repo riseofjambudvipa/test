@@ -50,6 +50,7 @@ class StyleConfigSchema {
   String color = '#ffffff'; // Hex string e.g. '#ffffff'
   double fontSize = 24.0;
   double top = 50.0; // position percentage (Y offset)
+  double left = 50.0; // position percentage (X offset, 0=left, 50=center, 100=right)
   
   bool? highlightBackground;
   double? letterSpacing;

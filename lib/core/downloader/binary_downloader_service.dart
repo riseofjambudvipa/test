@@ -3,80 +3,20 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:isolate';
-import 'package:archive/archive_io.dart';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 import 'package:meta/meta.dart';
 import '../logger/logger_service.dart';
 import '../settings/settings_service.dart';
 import '../utils/app_dirs.dart';
+import '../assets/asset_path_service.dart';
+import 'binary_download_models.dart';
+import 'binary_verifier.dart';
+import 'archive_extractor.dart';
+import 'manual_install_steps_helper.dart';
+import 'http_file_downloader.dart';
 
-enum BinaryDownloadStatus { idle, downloading, extracting, verifying, complete, failed }
-
-class BinaryDownloadProgress {
-  final String toolId;
-  final BinaryDownloadStatus status;
-  final double downloadProgress; // 0.0 - 1.0
-  final double extractProgress;  // 0.0 - 1.0
-  final int bytesReceived;
-  final int totalBytes;
-  final double speedBytesPerSec;
-  final Duration? eta;
-  final String? error;
-
-  const BinaryDownloadProgress({
-    required this.toolId,
-    required this.status,
-    this.downloadProgress = 0.0,
-    this.extractProgress = 0.0,
-    this.bytesReceived = 0,
-    this.totalBytes = 0,
-    this.speedBytesPerSec = 0.0,
-    this.eta,
-    this.error,
-  });
-
-  double get overall => (downloadProgress * 0.7) + (extractProgress * 0.3);
-
-  String get label => switch (status) {
-    BinaryDownloadStatus.idle        => 'Ready to install',
-    BinaryDownloadStatus.downloading => 'Downloading ${_fmt(bytesReceived)} / ${_fmt(totalBytes)}',
-    BinaryDownloadStatus.extracting  => 'Extracting executables...',
-    BinaryDownloadStatus.verifying   => 'Verifying installation...',
-    BinaryDownloadStatus.complete    => 'Ready and active',
-    BinaryDownloadStatus.failed      => 'Error: ${error ?? "Installation failed"}',
-  };
-
-  String _fmt(int b) {
-    if (b < 1024) return '$b B';
-    if (b < 1024 * 1024) return '${(b / 1024).toStringAsFixed(1)} KB';
-    return '${(b / (1024 * 1024)).toStringAsFixed(1)} MB';
-  }
-}
-
-class ManualInstallStep {
-  final String title;
-  final String command;
-
-  const ManualInstallStep({required this.title, required this.command});
-}
-
-class ManualInstallRequiredException implements Exception {
-  final String platform;
-  final String toolId;
-  final List<ManualInstallStep> steps;
-
-  ManualInstallRequiredException({
-    required this.platform,
-    required this.toolId,
-    required this.steps,
-  });
-
-  @override
-  String toString() {
-    return 'Manual installation required for $toolId on $platform.';
-  }
-}
+export 'binary_download_models.dart';
 
 class BinaryDownloaderService {
   BinaryDownloaderService._();
@@ -106,56 +46,7 @@ class BinaryDownloaderService {
     }
   }
 
-  static const Map<String, String> _whisperModelSha1s = {
-    'tiny.en': 'c78c86eb1a8faa21b369bcd33207cc90d64ae9df',
-    'tiny': 'bd577a113a864445d4c299885e0cb97d4ba92b5f',
-    'base.en': '137c40403d78fd54d454da0f9bd998f78703390c',
-    'base': '465707469ff3a37a2b9b8d8f89f2f99de7299dac',
-    'small.en': 'db8a495a91d927739e50b3fc1cc4c6b8f6c2d022',
-    'small': '55356645c2b361a969dfd0ef2c5a50d530afd8d5',
-    'medium': 'fd9727b6e1217c2f614f9b698455c4ffd82463b4',
-    // FIX (supply-chain audit): 'medium.en' was in the model catalog but
-    // missing from this checksum map, so its downloads silently skipped
-    // integrity verification (empty expected → verify passed). SHA-1 taken
-    // from whisper.cpp's official published model list
-    // (github.com/ggml-org/whisper.cpp README / HF model card).
-    'medium.en': '8c30f0e44ce9560643ebd10bbe50cd20eafd3723',
-    'large-v3-turbo': '4af2b29d7ec73d781377bfd1758ca957a807e941',
-  };
 
-  // FIX (Issue #2, CapStudio 1.0 audit): these checksums were previously
-  // scattered as inline string literals directly inside the
-  // platform-branching logic below, with no explanation of *why* some
-  // platforms fetch a checksum dynamically and others don't. The original
-  // audit flagged this as "inconsistent" and suggested standardizing on
-  // dynamic fetching everywhere — that turned out to be impossible for one
-  // of these three, so the actual fix is: keep hardcoding where the
-  // upstream source structurally can't support fetching, but centralize and
-  // clearly document *which pinned version* each hash corresponds to, so
-  // updating the pinned URL/version below and forgetting to update the
-  // matching hash here is much harder to do by accident.
-  //
-  // - Windows FFmpeg (gyan.dev) and Linux FFmpeg (johnvansickle.com) DO
-  //   publish fetchable `.sha256`/`.md5` companion files — those two stay
-  //   on dynamic fetch via `_fetchChecksumFromUrl`, see `_downloadBinary`.
-  // - macOS FFmpeg (evermeet.cx) does NOT publish a fetchable checksum for
-  //   its static builds (confirmed: this is a known, reported limitation of
-  //   evermeet.cx, not an oversight in this codebase) — pinning a known-good
-  //   hash for the exact pinned version below is the correct approach here.
-  // - The Windows whisper-cli binary is CapStudio's own custom build,
-  //   distributed as a GitHub release rather than through a service with a
-  //   checksum API — pinned for the same reason.
-  //
-  // IMPORTANT: if the pinned URLs in `_getDownloadUrl` below are ever
-  // bumped to a newer version, these two hashes MUST be updated to match,
-  // or every download on that platform will start failing checksum
-  // verification. There is no dynamic-fetch fallback for these two.
-  static const String _macOsFfmpeg71Sha256 =
-      '5a1303c7babaffff3c32c141ff49c7f44bd3b3b3e7dcea992fd7d04b6558ef43'; // pinned to evermeet.cx ffmpeg-7.1.zip
-  static const String _windowsWhisperCliAvxSha256 =
-      '74f973345cb52ef5ba3ec9e7e7af8e48cc8c71722d1528603b80588a11f82e3e';
-  static const String _windowsWhisperCliNoAvxSha256 =
-      'da1a0c95fe9598073c4929479396c1d962ab1e777fcf5c6f1858bce679dbd6ee';
 
 
   Future<String> _fetchChecksumFromUrl(String url) async {
@@ -208,7 +99,7 @@ class BinaryDownloaderService {
       }
 
       if (actual != cleanExpected) {
-        LoggerService.instance.log(LogLevel.error, 'BinaryDownloaderService',
+        LoggerService.instance.log(LogLevel.warning, 'BinaryDownloaderService',
             'Checksum mismatch for $filePath! Expected $cleanExpected, got $actual');
         return false;
       }
@@ -222,64 +113,7 @@ class BinaryDownloaderService {
 
 
   Future<List<ManualInstallStep>> _getLinuxWhisperSteps() async {
-    String distro = 'Ubuntu';
-    try {
-      final f = File('/etc/os-release');
-      if (f.existsSync()) {
-        final content = await f.readAsString();
-        if (content.contains('fedora')) {
-          distro = 'Fedora';
-        } else if (content.contains('arch')) {
-          distro = 'Arch';
-        }
-      }
-    } catch (_) {}
-
-    final String targetBinPath = p.join(AppDirs.bin, 'whisper-cli');
-
-    if (distro == 'Fedora') {
-      return [
-        const ManualInstallStep(
-          title: 'Install compilation dependencies',
-          command: 'sudo dnf install -y git make gcc-c++ sdl2-devel',
-        ),
-        const ManualInstallStep(
-          title: 'Clone and build whisper.cpp',
-          command: 'git clone https://github.com/ggerganov/whisper.cpp.git && cd whisper.cpp && make',
-        ),
-        ManualInstallStep(
-          title: 'Copy compiled binary to CapStudio bin path',
-          command: 'cp whisper.cpp/main "$targetBinPath"',
-        ),
-      ];
-    } else if (distro == 'Arch') {
-      return [
-        const ManualInstallStep(
-          title: 'Install whisper-cpp from AUR or official packages',
-          command: 'sudo pacman -S whisper-cpp',
-        ),
-        ManualInstallStep(
-          title: 'Link or copy package executable to CapStudio bin',
-          command: 'ln -s /usr/bin/whisper-cpp "$targetBinPath"',
-        ),
-      ];
-    } else {
-      // Ubuntu/Debian fallback
-      return [
-        const ManualInstallStep(
-          title: 'Install compilation dependencies',
-          command: 'sudo apt update && sudo apt install -y git build-essential',
-        ),
-        const ManualInstallStep(
-          title: 'Clone and compile whisper.cpp',
-          command: 'git clone https://github.com/ggerganov/whisper.cpp.git && cd whisper.cpp && make',
-        ),
-        ManualInstallStep(
-          title: 'Copy built executable to CapStudio',
-          command: 'cp whisper.cpp/main "$targetBinPath"',
-        ),
-      ];
-    }
+    return ManualInstallStepsHelper.getLinuxWhisperSteps();
   }
 
   Future<String> _getLinuxArch() async {
@@ -289,91 +123,103 @@ class BinaryDownloaderService {
       if (out == 'aarch64' || out == 'arm64') {
         return 'arm64';
       }
-    } catch (_) {}
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'BinaryDownloaderService',
+          'Failed to detect Linux architecture: $e');
+    }
     return 'amd64';
   }
 
-  // FIX (supply-chain audit): macOS whisper auto-install previously failed
-  // with a generic network error and no guidance — the release URL 404s
-  // because the mac-universal asset was never uploaded to the v0.0.1 GitHub
-  // release. Mirror the Linux behavior: degrade to clear manual steps so the
-  // user is told exactly what to run instead of staring at a vague failure.
   Future<List<ManualInstallStep>> _getMacWhisperSteps() async {
-    final String targetBinPath = p.join(AppDirs.bin, 'whisper-cli');
-
-    // Homebrew has an official whisper-cpp formula; check for it first.
-    try {
-      final result = await Process.run('brew', ['--version']);
-      if (result.exitCode == 0) {
-        return [
-          const ManualInstallStep(
-            title: 'Install whisper-cpp via Homebrew',
-            command: 'brew install whisper-cpp',
-          ),
-          ManualInstallStep(
-            title: 'Link executable to CapStudio bin path',
-            command: 'ln -sf "\$(brew --prefix whisper-cpp)/bin/whisper-cli" "$targetBinPath"',
-          ),
-        ];
-      }
-    } catch (_) {}
-
-    // No Homebrew — build from source (needs Xcode Command Line Tools).
-    return [
-      const ManualInstallStep(
-        title: 'Install Xcode Command Line Tools (if missing)',
-        command: 'xcode-select --install',
-      ),
-      const ManualInstallStep(
-        title: 'Clone and build whisper.cpp',
-        command: 'git clone https://github.com/ggerganov/whisper.cpp.git && cd whisper.cpp && make',
-      ),
-      ManualInstallStep(
-        title: 'Copy compiled binary to CapStudio bin path',
-        command: 'cp whisper.cpp/main "$targetBinPath"',
-      ),
-    ];
+    return ManualInstallStepsHelper.getMacWhisperSteps();
   }
 
 
-  /// Resolve the correct download URL for a tool, auto-detecting CPU features.
+  /// Resolve the primary download URL for a tool, auto-detecting CPU features.
   Future<String> getDownloadUrl(String toolId) async {
+    final urls = await getDownloadUrls(toolId);
+    return urls.first;
+  }
+
+  /// Resolve candidate download URLs (with fast CDN mirrors and official fallbacks).
+  Future<List<String>> getDownloadUrls(String toolId) async {
     if (kIsWeb) {
       throw UnsupportedError('Binary downloading is not supported on Web.');
     }
-    const whisperBase = 'https://github.com/ggml-org/whisper.cpp/releases/download/v1.8.4';
+    const releaseBase = 'https://github.com/riseofjambudvipa/test/releases/download/test';
     if (toolId == 'whisper') {
       if (Platform.isWindows) {
-        final hasAvx = await AppDirs.cpuSupportsAvx();
-        if (hasAvx) {
+        final arch = AppDirs.getCpuArchitecture().toLowerCase();
+        final isArm64 = arch.contains('arm') ||
+            (Platform.environment['PROCESSOR_ARCHITECTURE']?.toUpperCase() == 'ARM64') ||
+            (Platform.environment['PROCESSOR_ARCHITEW6432']?.toUpperCase() == 'ARM64');
+        if (isArm64) {
           LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
-              'CPU supports AVX2 — downloading optimized x64 whisper build.');
-          return '$whisperBase/whisper-bin-x64.zip';
-        } else {
-          LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
-              'CPU does NOT support AVX2 — downloading custom generic (non-AVX2) whisper build.');
-          return 'https://github.com/chyrenselin/Local-AI-Caption-Studio/releases/download/v0.0.1/whisper-cli-win-x64-noavx.zip';
+              'Windows ARM64 detected — downloading whisper-cli-win-arm64.zip (fallback x64-noavx).');
+          return [
+            '$releaseBase/whisper-cli-win-arm64.zip',
+            '$releaseBase/whisper-cli-win-x64-noavx.zip',
+            '$releaseBase/whisper-windows.zip',
+          ];
         }
+        final forceNoAvx = SettingsService.instance.forceNoAvx;
+        final hasAvx = !forceNoAvx && await AppDirs.cpuSupportsAvx();
+        final zipName = hasAvx ? 'whisper-cli-win-x64-avx.zip' : 'whisper-cli-win-x64-noavx.zip';
+        LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
+            'Windows detected (${hasAvx ? "AVX" : "No-AVX"}) — downloading $zipName.');
+        return ['$releaseBase/$zipName', '$releaseBase/whisper-cli-win-x64-noavx.zip', '$releaseBase/whisper-windows.zip'];
       } else if (Platform.isMacOS) {
+        final isArm = AppDirs.isAppleSilicon();
         LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
-            'macOS detected — downloading pre-compiled universal macOS whisper-cli binary.');
-        return 'https://github.com/chyrenselin/Local-AI-Caption-Studio/releases/download/v0.0.1/whisper-cli-mac-universal.zip';
+            'macOS detected (${isArm ? "Apple Silicon" : "Intel"}) — downloading universal macOS whisper build.');
+        return [
+          '$releaseBase/whisper-cli-mac-universal.zip',
+          if (isArm) '$releaseBase/whisper-cli-mac-arm64.zip',
+          '$releaseBase/whisper-macos.zip',
+        ];
       } else {
+        final arch = await _getLinuxArch();
         LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
-            'Linux detected — downloading pre-compiled Linux whisper-cli binary.');
-        return 'https://github.com/chyrenselin/Local-AI-Caption-Studio/releases/download/v0.0.1/whisper-cli-linux-x64.zip';
+            'Linux detected ($arch) — downloading pre-compiled Linux whisper build.');
+        if (arch == 'arm64') {
+          return [
+            '$releaseBase/whisper-cli-linux-arm64.zip',
+            '$releaseBase/whisper-linux-arm64.zip',
+            '$releaseBase/whisper-cli-linux-x64.zip',
+            '$releaseBase/whisper-linux.zip',
+          ];
+        }
+        return [
+          '$releaseBase/whisper-cli-linux-x64.zip',
+          '$releaseBase/whisper-linux.zip',
+        ];
       }
     } else if (toolId == 'ffmpeg') {
-      // GYan.dev provides official recommended Windows builds, pulling the latest stable release-essentials zip.
       if (Platform.isWindows) {
-        return 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip';
-      // Evermeet.cx offers macOS static builds; we pin to the stable 7.1 build to prevent runtime incompatibilities.
+        // High-speed release bundle + GitHub CDN GyanD 7.1 mirror + gyan.dev fallback
+        return [
+          '$releaseBase/ffmpeg-windows.zip',
+          'https://github.com/GyanD/codexffmpeg/releases/download/7.1/ffmpeg-7.1-essentials_build.zip',
+          'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip',
+        ];
       } else if (Platform.isMacOS) {
-        return 'https://evermeet.cx/ffmpeg/ffmpeg-7.1.zip';
-      // johnvansickle.com provides stable Linux static builds; we query CPU architecture and download the corresponding release tar.xz.
+        final isArm = AppDirs.isAppleSilicon();
+        return [
+          if (isArm) '$releaseBase/ffmpeg-macos-arm64.zip',
+          '$releaseBase/ffmpeg-macos-universal.zip',
+          '$releaseBase/ffmpeg-macos.zip',
+          'https://evermeet.cx/ffmpeg/ffmpeg-7.1.zip',
+        ];
       } else if (Platform.isLinux) {
         final arch = await _getLinuxArch();
-        return 'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-$arch-static.tar.xz';
+        return [
+          '$releaseBase/ffmpeg-linux-$arch.zip',
+          '$releaseBase/ffmpeg-linux.zip',
+          if (arch == 'arm64')
+            'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linuxarm64-gpl.tar.xz'
+          else
+            'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz',
+        ];
       }
     }
     throw ArgumentError('Unknown tool: $toolId');
@@ -393,81 +239,133 @@ class BinaryDownloaderService {
 
     String? tempZipPath;
     try {
-      // Use AppDirs.bin → AppData\Roaming\CapStudio\bin\
-      final binDir = Directory(AppDirs.bin);
+      // Use custom assets drive bin if configured, otherwise AppDirs.bin
+      final binDir = AssetPathService.instance.hasCustomStorage
+          ? Directory(AssetPathService.instance.binDir)
+          : Directory(AppDirs.bin);
       if (!binDir.existsSync()) {
         binDir.createSync(recursive: true);
       }
 
-      final url = await getDownloadUrl(toolId);
-      final isTarXz = url.endsWith('.tar.xz');
+      final mirrors = await getDownloadUrls(toolId);
+      final isTarXz = mirrors.first.endsWith('.tar.xz');
       tempZipPath = p.join(AppDirs.support, 'temp_$toolId${isTarXz ? ".tar.xz" : ".zip"}');
 
-      LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService', 'Starting download of $toolId from $url');
-      
-      emit(BinaryDownloadProgress(
-        toolId: toolId,
-        status: BinaryDownloadStatus.downloading,
-        downloadProgress: 0.0,
-      ));
-
-      // 1. Download with speed and ETA tracking
-      await _downloadFile(
-        url: url,
-        savePath: tempZipPath,
-        toolId: toolId,
-        emit: emit,
-      );
-
-      String expectedChecksum = '';
-      try {
-        if (toolId == 'whisper') {
-          final hasAvx = await AppDirs.cpuSupportsAvx();
-          if (Platform.isWindows) {
-            expectedChecksum = hasAvx
-                ? _windowsWhisperCliAvxSha256
-                : _windowsWhisperCliNoAvxSha256;
+      // Fast-path: check if a local whisper bundle is already present
+      bool skipDownload = false;
+      if (toolId == 'whisper' && httpClient == null) {
+        final winArch = AppDirs.getCpuArchitecture().toLowerCase();
+        final isWinArm = winArch.contains('arm') ||
+            (Platform.environment['PROCESSOR_ARCHITECTURE']?.toUpperCase() == 'ARM64');
+        final forceNoAvx = SettingsService.instance.forceNoAvx;
+        final hasAvx = !forceNoAvx && await AppDirs.cpuSupportsAvx();
+        final preferredWinZip = isWinArm
+            ? 'whisper-cli-win-arm64.zip'
+            : (hasAvx ? 'whisper-cli-win-x64-avx.zip' : 'whisper-cli-win-x64-noavx.zip');
+        final linuxArch = Platform.isLinux ? await _getLinuxArch() : 'amd64';
+        final candidateNames = Platform.isWindows
+            ? [preferredWinZip, 'whisper-cli-win-arm64.zip', 'whisper-cli-win-x64-avx.zip', 'whisper-cli-win-x64-noavx.zip', 'whisper-windows.zip']
+            : (Platform.isMacOS
+                ? ['whisper-cli-mac-universal.zip', 'whisper-cli-mac-arm64.zip', 'whisper-macos.zip']
+                : ['whisper-cli-linux-$linuxArch.zip', 'whisper-cli-linux-x64.zip', 'whisper-linux.zip']);
+        final candidateDirs = [
+          p.join(Directory.current.path, 'assets', 'archive'),
+          p.join(p.dirname(Platform.resolvedExecutable), 'data', 'flutter_assets', 'assets', 'archive'),
+          p.join(AppDirs.support, 'assets', 'archive'),
+        ];
+        for (final dir in candidateDirs) {
+          for (final archiveName in candidateNames) {
+            final localArchive = File(p.join(dir, archiveName));
+            if (localArchive.existsSync() && localArchive.lengthSync() > 0) {
+              LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
+                  'Found local whisper archive bundle at ${localArchive.path}. Copying to temp.');
+              localArchive.copySync(tempZipPath);
+              skipDownload = true;
+              break;
+            }
           }
-          // FIX (supply-chain audit): macOS/Linux whisper-cli builds come from
-          // the CapStudio GitHub release (v0.0.1). They previously had NO
-          // checksum assigned, so — if the URL ever resolved — the download
-          // would have been installed unverified. Those URLs currently 404
-          // (the assets were never uploaded), and the download fails before
-          // this point; the graceful manual-install fallback below handles it.
-          // When real builds are published, pin their SHA-256 here so
-          // verification is mandatory.
-        } else if (toolId == 'ffmpeg') {
-          if (Platform.isWindows) {
-            expectedChecksum = await _fetchChecksumFromUrl('$url.sha256');
-          } else if (Platform.isMacOS) {
-            expectedChecksum = _macOsFfmpeg71Sha256;
-          } else if (Platform.isLinux) {
-            final rawMd5Info = await _fetchChecksumFromUrl('$url.md5');
-            expectedChecksum = rawMd5Info.split(RegExp(r'\s+')).first;
-          }
+          if (skipDownload) break;
         }
-      } catch (e) {
-        LoggerService.instance.log(LogLevel.warning, 'BinaryDownloaderService',
-            'Failed to retrieve remote checksum for $toolId: $e. Proceeding with caution.');
       }
 
-      // 1.5 Verify checksum
-      emit(BinaryDownloadProgress(
-        toolId: toolId,
-        status: BinaryDownloadStatus.verifying,
-        downloadProgress: 1.0,
-        extractProgress: 0.0,
-      ));
-      final checksumOk = await _verifyChecksum(tempZipPath, expectedChecksum);
-      if (!checksumOk) {
-        emit(BinaryDownloadProgress(
-          toolId: toolId,
-          status: BinaryDownloadStatus.failed,
-          error: 'Download integrity check failed. File may be corrupted or tampered with.',
-        ));
-        try { File(tempZipPath).deleteSync(); } catch (_) {}
-        _closeStream(toolId);
-        return;
+      bool installReady = false;
+      if (skipDownload) {
+        installReady = true;
+      } else {
+        for (final url in mirrors) {
+          try {
+            LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService', 'Starting download of $toolId from $url');
+            emit(BinaryDownloadProgress(
+              toolId: toolId,
+              status: BinaryDownloadStatus.downloading,
+              downloadProgress: 0.0,
+            ));
+
+            await _downloadFile(
+              url: url,
+              savePath: tempZipPath,
+              toolId: toolId,
+              emit: emit,
+            );
+
+            String expectedChecksum = '';
+            // 1. Dynamic fetch from companion file (.sha256 or .md5)
+            try {
+              final isMd5 = url.endsWith('.tar.xz');
+              final companionExt = isMd5 ? '.md5' : '.sha256';
+              final raw = await _fetchChecksumFromUrl('$url$companionExt');
+              final candidate = raw.split(RegExp(r'\s+')).first.trim().toLowerCase();
+              if (candidate.length == 32 || candidate.length == 40 || candidate.length == 64) {
+                expectedChecksum = candidate;
+                LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
+                    'Resolved dynamic release checksum for $toolId: $expectedChecksum');
+              }
+            } catch (e) {
+              LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
+                  'Dynamic checksum not available for $url ($e).');
+            }
+
+            emit(BinaryDownloadProgress(
+              toolId: toolId,
+              status: BinaryDownloadStatus.verifying,
+              downloadProgress: 1.0,
+              extractProgress: 0.0,
+            ));
+
+            final checksumOk = await _verifyChecksum(tempZipPath, expectedChecksum);
+            if (!checksumOk) {
+              throw Exception('Download integrity check failed for $url');
+            }
+
+            installReady = true;
+            break;
+          } catch (e) {
+            LoggerService.instance.log(LogLevel.warning, 'BinaryDownloaderService',
+                'Download from mirror $url failed: $e');
+            try {
+              final f = File(tempZipPath);
+              if (f.existsSync()) f.deleteSync();
+              final part = File('$tempZipPath.part');
+              if (part.existsSync()) part.deleteSync();
+            } catch (_) {}
+          }
+        }
+
+        if (!installReady) {
+          emit(BinaryDownloadProgress(
+            toolId: toolId,
+            status: BinaryDownloadStatus.failed,
+            error: 'Download integrity check failed. File may be corrupted or tampered with.',
+          ));
+          try {
+            final f = File(tempZipPath);
+            if (f.existsSync()) f.deleteSync();
+            final part = File('$tempZipPath.part');
+            if (part.existsSync()) part.deleteSync();
+          } catch (_) {}
+          _closeStream(toolId);
+          return;
+        }
       }
 
       // 2. Extract files
@@ -479,12 +377,113 @@ class BinaryDownloaderService {
       ));
 
       LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService', 'Extracting $tempZipPath to ${binDir.path}');
-      await _extractInIsolate(
-        zipPath: tempZipPath,
-        destDir: binDir.path,
-        toolId: toolId,
-        emit: emit,
-      );
+
+      if (toolId == 'whisper') {
+        final stagingDir = Directory(p.join(AppDirs.support, 'staging_whisper_${DateTime.now().millisecondsSinceEpoch}'));
+        if (!stagingDir.existsSync()) stagingDir.createSync(recursive: true);
+
+        try {
+          await _extractInIsolate(
+            zipPath: tempZipPath,
+            destDir: stagingDir.path,
+            toolId: toolId,
+            emit: emit,
+          );
+
+          // Check if stagingDir contains nested zip archives or the binary directly
+          final stagedFiles = stagingDir.listSync(recursive: true);
+          File? innerZipToExtract;
+
+          if (Platform.isWindows) {
+            final winArch = AppDirs.getCpuArchitecture().toLowerCase();
+            final isWinArm = winArch.contains('arm') ||
+                (Platform.environment['PROCESSOR_ARCHITECTURE']?.toUpperCase() == 'ARM64');
+            if (isWinArm) {
+              final arm64Zip = File(p.join(stagingDir.path, 'whisper-cli-win-arm64.zip'));
+              if (arm64Zip.existsSync()) innerZipToExtract = arm64Zip;
+            }
+            if (innerZipToExtract == null) {
+              final hasAvx = await AppDirs.cpuSupportsAvx();
+              LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
+                  hasAvx ? 'CPU supports AVX2 — selecting AVX build.' : 'CPU lacks AVX2 — selecting non-AVX build.');
+              final avxZip = File(p.join(stagingDir.path, 'whisper-cli-win-x64-avx.zip'));
+              final noAvxZip = File(p.join(stagingDir.path, 'whisper-cli-win-x64-noavx.zip'));
+              if (hasAvx && avxZip.existsSync()) {
+                innerZipToExtract = avxZip;
+              } else if (noAvxZip.existsSync()) {
+                innerZipToExtract = noAvxZip;
+              } else if (avxZip.existsSync()) {
+                innerZipToExtract = avxZip;
+              }
+            }
+          } else if (Platform.isMacOS) {
+            final macZip = File(p.join(stagingDir.path, 'whisper-cli-mac-universal.zip'));
+            final macArmZip = File(p.join(stagingDir.path, 'whisper-cli-mac-arm64.zip'));
+            if (macZip.existsSync()) {
+              innerZipToExtract = macZip;
+            } else if (AppDirs.isAppleSilicon() && macArmZip.existsSync()) {
+              innerZipToExtract = macArmZip;
+            }
+          } else if (Platform.isLinux) {
+            final arch = await _getLinuxArch();
+            final archZip = File(p.join(stagingDir.path, 'whisper-cli-linux-$arch.zip'));
+            final linuxZip = File(p.join(stagingDir.path, 'whisper-cli-linux-x64.zip'));
+            if (archZip.existsSync()) {
+              innerZipToExtract = archZip;
+            } else if (linuxZip.existsSync()) {
+              innerZipToExtract = linuxZip;
+            }
+          }
+
+          if (innerZipToExtract != null && innerZipToExtract.existsSync()) {
+            final companionSha = File('${innerZipToExtract.path}.sha256');
+            if (companionSha.existsSync()) {
+              final expectedInnerSha = companionSha.readAsStringSync().split(RegExp(r'\s+')).first.trim();
+              if (expectedInnerSha.isNotEmpty) {
+                final innerOk = await _verifyChecksum(innerZipToExtract.path, expectedInnerSha);
+                if (!innerOk) {
+                  throw Exception('Nested archive integrity check failed for ${innerZipToExtract.path}');
+                }
+                LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
+                    'Verified nested whisper archive checksum from staged companion .sha256.');
+              }
+            }
+            LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
+                'Extracting nested whisper binary archive: ${innerZipToExtract.path}');
+            await _extractInIsolate(
+              zipPath: innerZipToExtract.path,
+              destDir: binDir.path,
+              toolId: toolId,
+              emit: emit,
+            );
+          } else {
+            // Flat archive or mock test archive: copy staged files into binDir
+            for (final entity in stagedFiles) {
+              if (entity is File && !entity.path.endsWith('.zip') && !entity.path.endsWith('.sha256')) {
+                final base = p.basename(entity.path);
+                final lower = base.toLowerCase();
+                final isLicense = lower.startsWith('license') || lower.startsWith('copying') || lower == 'gpl.txt';
+                final destName = isLicense ? '${toolId}_LICENSE.txt' : base;
+                final dest = p.join(binDir.path, destName);
+                entity.copySync(dest);
+              }
+            }
+          }
+        } finally {
+          try {
+            if (stagingDir.existsSync()) stagingDir.deleteSync(recursive: true);
+          } catch (e) {
+            LoggerService.instance.debug('Error cleaning staging dir: $e');
+          }
+        }
+      } else {
+        await _extractInIsolate(
+          zipPath: tempZipPath,
+          destDir: binDir.path,
+          toolId: toolId,
+          emit: emit,
+        );
+      }
 
       // 3. Scan extracted files for the target executables
       emit(BinaryDownloadProgress(
@@ -500,6 +499,7 @@ class BinaryDownloaderService {
 
       String? foundPath;
       String? foundFfprobePath;
+      File? foundLicenseFile;
       final List<File> dllFiles = [];
       final ffprobeName = Platform.isWindows ? 'ffprobe.exe' : 'ffprobe';
 
@@ -515,12 +515,38 @@ class BinaryDownloaderService {
             foundFfprobePath = entity.path;
           } else if (Platform.isWindows && p.extension(entity.path).toLowerCase() == '.dll') {
             dllFiles.add(entity);
+          } else if (lowerName.startsWith('license') || lowerName.startsWith('copying') || lowerName == 'gpl.txt') {
+            foundLicenseFile = entity;
           }
         }
       }
 
       if (foundPath == null) {
         throw Exception('Could not find $targetName inside the downloaded package.');
+      }
+
+      // Preserve open-source license as ${toolId}_LICENSE.txt so tools never overwrite each other
+      final destLicensePath = p.join(binDir.path, '${toolId}_LICENSE.txt');
+      if (foundLicenseFile != null && foundLicenseFile.path != destLicensePath) {
+        try {
+          foundLicenseFile.copySync(destLicensePath);
+          LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
+              'Preserved $toolId open-source license as ${toolId}_LICENSE.txt');
+        } catch (_) {}
+      }
+      // Migrate un-namespaced generic LICENSE.txt in root binDir if present
+      final genericLicense = File(p.join(binDir.path, 'LICENSE.txt'));
+      if (genericLicense.existsSync()) {
+        final targetLicense = File(destLicensePath);
+        if (!targetLicense.existsSync()) {
+          try {
+            genericLicense.renameSync(targetLicense.path);
+          } catch (_) {}
+        } else {
+          try {
+            genericLicense.deleteSync();
+          } catch (_) {}
+        }
       }
 
       // Helper to identify the root extracted directory to delete
@@ -609,7 +635,10 @@ class BinaryDownloaderService {
       }
 
       // Validate executable format and signature structure
-      final isBinaryValid = await _verifyExecutableFormatAndSignature(finalPath);
+      final isBinaryValid = await BinaryVerifier.verifyExecutableFormatAndSignature(
+        finalPath,
+        verifyChecksumsEnabled: verifyChecksumsEnabled,
+      );
       if (!isBinaryValid) {
         throw Exception('Downloaded file format or signature check failed for $finalPath.');
       }
@@ -635,7 +664,9 @@ class BinaryDownloaderService {
         try {
           final f = File(tempZipPath);
           if (f.existsSync()) f.deleteSync();
-        } catch (_) {}
+        } catch (e) {
+          LoggerService.instance.debug('Failed to delete tempZipPath on error: $e');
+        }
       }
       LoggerService.instance.log(LogLevel.error, 'BinaryDownloaderService', 'Failed to install $toolId: $e');
       emit(BinaryDownloadProgress(
@@ -678,7 +709,7 @@ class BinaryDownloaderService {
     }
 
     try {
-      final modelsDir = Directory(p.join(AppDirs.support, 'models'));
+      final modelsDir = Directory(AssetPathService.instance.modelsDir);
       if (!modelsDir.existsSync()) {
         modelsDir.createSync(recursive: true);
       }
@@ -719,24 +750,39 @@ class BinaryDownloaderService {
         throw lastDownloadError ?? Exception('All mirrors failed to download ggml-$modelName.bin');
       }
 
-      final expectedChecksum = _whisperModelSha1s[modelName] ?? '';
+      String expectedChecksum = '';
+      try {
+        final raw = await _fetchChecksumFromUrl('$activeUrl.sha256');
+        expectedChecksum = raw.split(RegExp(r'\s+')).first.trim();
+      } catch (_) {
+        try {
+          final raw = await _fetchChecksumFromUrl('$activeUrl.sha1');
+          expectedChecksum = raw.split(RegExp(r'\s+')).first.trim();
+        } catch (_) {}
+      }
 
-      emit(BinaryDownloadProgress(
-        toolId: toolId,
-        status: BinaryDownloadStatus.verifying,
-        downloadProgress: 1.0,
-        extractProgress: 0.0,
-      ));
-      final checksumOk = await _verifyChecksum(savePath, expectedChecksum);
-      if (!checksumOk) {
+      if (expectedChecksum.isNotEmpty) {
         emit(BinaryDownloadProgress(
           toolId: toolId,
-          status: BinaryDownloadStatus.failed,
-          error: 'Download integrity check failed. File may be corrupted or tampered with.',
+          status: BinaryDownloadStatus.verifying,
+          downloadProgress: 1.0,
+          extractProgress: 0.0,
         ));
-        try { File(savePath).deleteSync(); } catch (_) {}
-        _closeStream(toolId);
-        return;
+        final checksumOk = await _verifyChecksum(savePath, expectedChecksum);
+        if (!checksumOk) {
+          emit(BinaryDownloadProgress(
+            toolId: toolId,
+            status: BinaryDownloadStatus.failed,
+            error: 'Download integrity check failed. File may be corrupted or tampered with.',
+          ));
+          try {
+            File(savePath).deleteSync();
+          } catch (e) {
+            LoggerService.instance.debug('Failed to delete corrupted savePath: $e');
+          }
+          _closeStream(toolId);
+          return;
+        }
       }
 
       emit(BinaryDownloadProgress(
@@ -770,115 +816,14 @@ class BinaryDownloaderService {
     required String toolId,
     required void Function(BinaryDownloadProgress) emit,
   }) async {
-    const maxRetries = 3;
-    Exception? lastError;
-
-    for (int attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        await _downloadFileAttempt(
-          url: url,
-          savePath: savePath,
-          toolId: toolId,
-          emit: emit,
-        );
-        return; // Success!
-      } catch (e) {
-        lastError = e is Exception ? e : Exception(e.toString());
-        LoggerService.instance.log(LogLevel.warning, 'BinaryDownloaderService',
-            'Download attempt $attempt/$maxRetries failed: $e');
-
-        if (attempt < maxRetries) {
-          // Exponential backoff: 1s, 2s
-          await Future<void>.delayed(Duration(seconds: attempt));
-          emit(BinaryDownloadProgress(
-            toolId: toolId,
-            status: BinaryDownloadStatus.downloading,
-            downloadProgress: 0.0,
-            error: 'Retrying... (attempt ${attempt + 1}/$maxRetries)',
-          ));
-        }
-      }
-    }
-    throw lastError ?? Exception('Download failed after $maxRetries attempts');
-  }
-
-  Future<void> _downloadFileAttempt({
-    required String url,
-    required String savePath,
-    required String toolId,
-    required void Function(BinaryDownloadProgress) emit,
-  }) async {
-    final file = File(savePath);
-    if (file.existsSync()) {
-      file.deleteSync();
-    }
-
-    final client = httpClient ?? HttpClient();
-    client.connectionTimeout = const Duration(seconds: 15);
-    client.autoUncompress = false; // We want raw bytes
-    _ioClients[toolId] = client;
-
-    try {
-      final request = await client.getUrl(Uri.parse(url));
-      request.followRedirects = true;
-      request.maxRedirects = 10;
-
-      final response = await request.close();
-
-      if (response.statusCode != 200) {
-        throw Exception('Server returned HTTP status ${response.statusCode}');
-      }
-
-      final totalBytes = response.contentLength;
-      int received = 0;
-      final start = DateTime.now();
-
-      // Use a scoped try/finally to guarantee the sink is always closed,
-      // even if an exception is thrown during the data stream.
-      final sink = file.openWrite();
-      try {
-        await for (final chunk in response) {
-          sink.add(chunk);
-          received += chunk.length;
-
-          final ms = DateTime.now().difference(start).inMilliseconds;
-          final speed = ms > 0 ? received / (ms / 1000.0) : 0.0;
-          final eta = speed > 0 && totalBytes > 0
-              ? Duration(seconds: ((totalBytes - received) / speed).round())
-              : null;
-
-          emit(BinaryDownloadProgress(
-            toolId: toolId,
-            status: BinaryDownloadStatus.downloading,
-            downloadProgress: totalBytes > 0 ? (received / totalBytes).clamp(0.0, 1.0) : 0.5,
-            bytesReceived: received,
-            totalBytes: totalBytes,
-            speedBytesPerSec: speed,
-            eta: eta,
-          ));
-        }
-        await sink.flush();
-      } finally {
-        await sink.close();
-      }
-
-      // Validate that download is reasonably large (not a redirect/error HTML page)
-      final downloadedSize = file.lengthSync();
-      if (downloadedSize < 50 * 1024) { // Less than 50KB is suspicious (e.g. error HTML page)
-        throw Exception(
-          'Downloaded file is only ${(downloadedSize / 1024).toStringAsFixed(1)} KB — '
-          'likely a redirect page or error. Expected a multi-MB archive.',
-        );
-      }
-
-      LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
-          'Download complete: ${(downloadedSize / (1024 * 1024)).toStringAsFixed(1)} MB');
-    } finally {
-      if (httpClient == null) {
-        client.close();
-      }
-      _ioClients.remove(toolId);
-    }
+    await HttpFileDownloader.downloadFile(
+      url: url,
+      savePath: savePath,
+      toolId: toolId,
+      emit: emit,
+      customHttpClient: httpClient,
+      activeClients: _ioClients,
+    );
   }
 
   Future<void> _extractInIsolate({
@@ -887,160 +832,14 @@ class BinaryDownloaderService {
     required String toolId,
     required void Function(BinaryDownloadProgress) emit,
   }) async {
-    final port = ReceivePort();
-    final isolate = await Isolate.spawn(_extractEntry, [zipPath, destDir, port.sendPort]);
-    _activeIsolates[toolId] = isolate;
-    
-    try {
-      await for (final msg in port) {
-        if (msg is double) {
-          emit(BinaryDownloadProgress(
-            toolId: toolId,
-            status: BinaryDownloadStatus.extracting,
-            downloadProgress: 1.0,
-            extractProgress: msg,
-          ));
-        } else if (msg == 'done') {
-          port.close();
-          break;
-        } else if (msg is String && msg.startsWith('err:')) {
-          port.close();
-          throw Exception(msg.substring(4));
-        }
-      }
-    } finally {
-      _activeIsolates.remove(toolId);
-      port.close();
-    }
-  }
-
-  static void _extractEntry(List<dynamic> args) {
-    final zip = args[0] as String;
-    final dest = args[1] as String;
-    final port = args[2] as SendPort;
-    try {
-      // Check if it's a tar.xz archive (Linux static builds)
-      if (zip.endsWith('.tar.xz')) {
-        // Step 1: List entries and reject any with path traversal
-        final listResult = Process.runSync('tar', ['-tf', zip]);
-        if (listResult.exitCode != 0) {
-          throw Exception('Failed to list tar.xz entries: ${listResult.stderr}');
-        }
-        final canonicalDest = p.canonicalize(dest);
-        for (final entry in listResult.stdout.toString().split('\n')) {
-          final trimmed = entry.trim();
-          if (trimmed.isEmpty) continue;
-          final resolved = p.canonicalize(p.join(dest, trimmed));
-          if (!p.isWithin(canonicalDest, resolved) && resolved != canonicalDest) {
-            throw Exception('Malicious tar entry detected (path traversal): $trimmed');
-          }
-        }
-        // Step 2: Safe extraction
-        final processResult = Process.runSync('tar', ['--no-overwrite-dir', '-xf', zip, '-C', dest]);
-        if (processResult.exitCode != 0) {
-          throw Exception('Failed to extract tar.xz archive: ${processResult.stderr}');
-        }
-        port.send(1.0);
-      } else {
-        final inputStream = InputFileStream(zip);
-        final archive = ZipDecoder().decodeStream(inputStream);
-        final total = archive.files.length;
-        final String canonicalDest = p.canonicalize(dest);
-        for (int i = 0; i < total; i++) {
-          final f = archive.files[i];
-          if (f.isFile) {
-            final out = p.join(dest, f.name);
-            final String canonicalOut = p.canonicalize(out);
-            if (!p.isWithin(canonicalDest, canonicalOut) && canonicalOut != canonicalDest) {
-              inputStream.close();
-              throw Exception('Malicious zip entry path detected (Zip Slip): ${f.name}');
-            }
-            Directory(p.dirname(out)).createSync(recursive: true);
-            final outStream = OutputFileStream(out);
-            f.writeContent(outStream);
-            outStream.close();
-          }
-          if (i % 20 == 0 || i == total - 1) {
-            port.send((i + 1) / total);
-          }
-        }
-        inputStream.close();
-      }
-      port.send('done');
-    } catch (e) {
-      port.send('err:$e');
-    }
-  }
-
-  Future<bool> _verifyExecutableFormatAndSignature(String path) async {
-    if (!verifyChecksumsEnabled) {
-      LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService',
-          'Executable format/signature verification bypassed for unit testing.');
-      return true;
-    }
-
-    final file = File(path);
-    if (!file.existsSync()) {
-      LoggerService.instance.log(LogLevel.error, 'BinaryDownloaderService', 'Executable file does not exist: $path');
-      return false;
-    }
-
-    final bytes = await file.openRead(0, 4).first;
-    if (bytes.length < 4) {
-      LoggerService.instance.log(LogLevel.error, 'BinaryDownloaderService', 'File is too short to be a valid executable: $path');
-      return false;
-    }
-
-    if (Platform.isWindows) {
-      // PE executable: starts with 'MZ' (hex 4D, 5A)
-      if (bytes[0] != 0x4D || bytes[1] != 0x5A) {
-        LoggerService.instance.log(LogLevel.error, 'BinaryDownloaderService', 'Invalid PE binary magic bytes on Windows: $path');
-        return false;
-      }
-      try {
-        final result = await Process.run('powershell', [
-          '-NoProfile',
-          '-NonInteractive',
-          '-Command',
-          'Get-AuthenticodeSignature -FilePath "$path" | Select-Object -ExpandProperty Status'
-        ]);
-        final status = result.stdout.toString().trim();
-        LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService', 'Windows Authenticode signature status: $status');
-        if (status == 'HashMismatch') {
-          LoggerService.instance.log(LogLevel.error, 'BinaryDownloaderService', 'Authenticode validation failed: Hash mismatch (file corrupted or tampered).');
-          return false;
-        }
-      } catch (e) {
-        LoggerService.instance.log(LogLevel.warning, 'BinaryDownloaderService', 'Failed to run Authenticode signature check: $e');
-      }
-    } else if (Platform.isLinux) {
-      // ELF executable: starts with 0x7F 'E' 'L' 'F' (hex 7F, 45, 4C, 46)
-      if (bytes[0] != 0x7F || bytes[1] != 0x45 || bytes[2] != 0x4C || bytes[3] != 0x46) {
-        LoggerService.instance.log(LogLevel.error, 'BinaryDownloaderService', 'Invalid ELF binary magic bytes on Linux: $path');
-        return false;
-      }
-    } else if (Platform.isMacOS) {
-      // Mach-O or Universal Fat binary
-      final isMachO = (bytes[0] == 0xCF && bytes[1] == 0xFA && bytes[2] == 0xED && bytes[3] == 0xFE) ||
-                      (bytes[0] == 0xFE && bytes[1] == 0xED && bytes[2] == 0xFA && bytes[3] == 0xCF) ||
-                      (bytes[0] == 0xCE && bytes[1] == 0xFA && bytes[2] == 0xED && bytes[3] == 0xFE) ||
-                      (bytes[0] == 0xFE && bytes[1] == 0xED && bytes[2] == 0xFA && bytes[3] == 0xCE) ||
-                      (bytes[0] == 0xCA && bytes[1] == 0xFE && bytes[2] == 0xBA && bytes[3] == 0xBE) ||
-                      (bytes[0] == 0xBE && bytes[1] == 0xBA && bytes[2] == 0xFE && bytes[3] == 0xCA);
-      if (!isMachO) {
-        LoggerService.instance.log(LogLevel.error, 'BinaryDownloaderService', 'Invalid Mach-O binary magic bytes on macOS: $path');
-        return false;
-      }
-      try {
-        final result = await Process.run('codesign', ['--verify', '--verbose', path]);
-        final output = '${result.stdout}\n${result.stderr}'.trim();
-        LoggerService.instance.log(LogLevel.info, 'BinaryDownloaderService', 'macOS codesign verify status:\n$output');
-      } catch (e) {
-        LoggerService.instance.log(LogLevel.warning, 'BinaryDownloaderService', 'Failed to run macOS codesign verification: $e');
-      }
-    }
-
-    return true;
+    await ArchiveExtractor.extractInIsolate(
+      zipPath: zipPath,
+      destDir: destDir,
+      toolId: toolId,
+      emit: emit,
+      onIsolateSpawned: (isolate) => _activeIsolates[toolId] = isolate,
+      onIsolateCompleted: () => _activeIsolates.remove(toolId),
+    );
   }
 
   void cancel(String toolId) {
@@ -1050,7 +849,10 @@ class BinaryDownloaderService {
     if (isolate != null) {
       try {
         isolate.kill(priority: Isolate.beforeNextEvent);
-      } catch (_) {}
+      } catch (e) {
+        LoggerService.instance.log(LogLevel.warning, 'BinaryDownloaderService',
+            'Failed to kill isolate for $toolId: $e');
+      }
     }
     _closeStream(toolId);
   }

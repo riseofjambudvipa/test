@@ -173,12 +173,15 @@ class _EmojiTileState extends ConsumerState<EmojiTile> {
   Widget build(BuildContext context) {
     final verification = ref.watch(assetVerificationProvider);
     
+    final isCustomSticker = widget.emoji.group == 'Custom Stickers' ||
+        (!kIsWeb && File(widget.emoji.glyph).existsSync());
+
     final isSystemDefault = widget.packId == 'systemDefault' || widget.packId == 'notoColorEmoji';
     final resolvedPackId = widget.packId == 'default' ? 'notoColorEmoji' : widget.packId;
-    final isInstalled = isSystemDefault || verification.installedPackIds.contains(resolvedPackId);
+    final isInstalled = isCustomSticker || isSystemDefault || verification.installedPackIds.contains(resolvedPackId);
     
     bool isMissing = false;
-    if (!isSystemDefault && isInstalled && _emojiModel != null) {
+    if (!isCustomSticker && !isSystemDefault && isInstalled && _emojiModel != null) {
       if (!EmojiService.instance.hasAssetOnDisk(_emojiModel!, resolvedPackId)) {
         isMissing = true;
       }
@@ -187,7 +190,18 @@ class _EmojiTileState extends ConsumerState<EmojiTile> {
     final isLocked = !isInstalled || isMissing;
     
     Widget content;
-    if (!isLocked && !isSystemDefault) {
+    if (isCustomSticker && !kIsWeb) {
+      content = Image.file(
+        File(widget.emoji.glyph),
+        width: 32,
+        height: 32,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image_rounded,
+          size: 20,
+        ),
+      );
+    } else if (!isLocked && !isSystemDefault) {
       final isAnimated = resolvedPackId == 'googleAnimated' || resolvedPackId == 'microsoftAnimated';
       
       String targetPackId = resolvedPackId;
@@ -207,7 +221,11 @@ class _EmojiTileState extends ConsumerState<EmojiTile> {
       if (!kIsWeb && resolvedAsset != null && verification.installedPackIds.contains(targetPackId)) {
         content = Image.file(
           File(resolvedAsset.absolutePath),
-          key: ValueKey('${widget.emoji.unicode}_${targetPackId}_$_isHovered'),
+          // FIX (audit, perf): _isHovered in the key changed the element on
+          // every hover enter/exit, forcing a full 512x512 PNG re-decode per
+          // hover even when the file is unchanged. targetPackId already swaps
+          // between animated/non-animated packs on hover when applicable.
+          key: ValueKey('${widget.emoji.unicode}_$targetPackId'),
           width: 32,
           height: 32,
           fit: BoxFit.contain,
@@ -241,7 +259,7 @@ class _EmojiTileState extends ConsumerState<EmojiTile> {
               child: Icon(
                 Icons.lock,
                 size: 10,
-                color: Colors.white.withValues(alpha: 0.6),
+                color: AppTheme.mutedText,
               ),
             ),
             if (isMissing)
@@ -250,16 +268,16 @@ class _EmojiTileState extends ConsumerState<EmojiTile> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                   decoration: AppTheme.glassDecoration(
-                    color: Colors.redAccent.withValues(alpha: 0.8),
+                    color: AppTheme.accentRed.withValues(alpha: 0.8),
                     borderRadius: 3,
                     borderOpacity: 0.2,
                   ),
-                  child: const Text(
+                  child: Text(
                     'MISSING',
                     style: TextStyle(
                       fontSize: 7,
                       fontWeight: FontWeight.w900,
-                      color: Colors.white,
+                      color: AppTheme.onAccentText,
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -302,10 +320,10 @@ class _EmojiTileState extends ConsumerState<EmojiTile> {
           child: Container(
             decoration: AppTheme.glassDecoration(
               color: isLocked
-                  ? Colors.black.withValues(alpha: 0.2)
+                  ? AppTheme.surfaceDim
                   : (_isHovered 
                       ? AppTheme.accentOrange.withValues(alpha: 0.1) 
-                      : Colors.white.withValues(alpha: 0.02)),
+                      : AppTheme.cardBgElevated),
               borderRadius: 8,
               borderOpacity: isLocked
                   ? 0.04
@@ -325,7 +343,7 @@ class _EmojiTileState extends ConsumerState<EmojiTile> {
                     right: 3,
                     child: CustomPaint(
                       size: const Size(4, 4),
-                      painter: _TrianglePainter(color: Colors.white30),
+                      painter: _TrianglePainter(color: AppTheme.mutedText),
                     ),
                   ),
               ],

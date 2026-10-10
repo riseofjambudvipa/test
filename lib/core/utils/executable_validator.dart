@@ -2,7 +2,19 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../downloader/binary_downloader_service.dart';
+import '../logger/logger_service.dart';
 import '../settings/settings_service.dart';
+
+/// Validator for external binary executables (whisper-cli, ffmpeg, etc.).
+abstract final class ExecutableValidator {
+  /// Validates that an executable at [path] runs successfully with [args].
+  static Future<bool> validate(
+    String path,
+    List<String> args, {
+    required Future<void> Function() onAvxDetected,
+  }) =>
+      validateExecutable(path, args, onAvxDetected: onAvxDetected);
+}
 
 /// FIX (Issue #6, CapStudio 1.0 audit): `_validateExecutable` — including
 /// the AVX-crash-detection-and-auto-recovery flow — was duplicated
@@ -32,8 +44,14 @@ Future<bool> validateExecutable(
     final stderr = (res.stderr is List<int>) ? String.fromCharCodes(res.stderr as List<int>) : res.stderr.toString();
     final combined = '$stdout\n$stderr'.toLowerCase();
 
-    // Detect STATUS_ILLEGAL_INSTRUCTION — binary requires AVX not present on this CPU
-    if (res.exitCode == -1073741795 || res.exitCode == 0xC000001D) {
+    // Detect STATUS_ILLEGAL_INSTRUCTION — binary requires AVX not present on
+    // this CPU. Windows reports the NTSTATUS as 0xC000001D / -1073741795; on
+    // macOS/Linux a SIGILL surfaces as a negative exit code (-4), which the
+    // previous check never matched, so the no-AVX recovery silently never
+    // fired on those platforms.
+    if (res.exitCode == -1073741795 ||
+        res.exitCode == 0xC000001D ||
+        res.exitCode == -4) {
       await SettingsService.instance.setForceNoAvx(true);
       await onAvxDetected();
       return false;
@@ -69,8 +87,20 @@ Future<void> downloadNoAvxWhisperAndRevalidate({
   required void Function(String path) onPathResolved,
   required Future<void> Function() revalidate,
 }) async {
-  await BinaryDownloaderService.instance.download('whisper').then((_) async {
-    onPathResolved(SettingsService.instance.whisperCliPath ?? '');
+  // FIX (audit): a failed download previously propagated as an unhandled
+  // async exception. Log it and always re-validate so the caller clears its
+  // in-flight state instead of leaving a stuck spinner.
+  try {
+    try {
+      await BinaryDownloaderService.instance.download('whisper');
+      onPathResolved(SettingsService.instance.whisperCliPath ?? '');
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.error, 'ExecutableValidator',
+          'No-AVX whisper download failed: $e');
+    }
     await revalidate();
-  });
+  } catch (e) {
+    LoggerService.instance.log(LogLevel.error, 'ExecutableValidator',
+        'Revalidation after no-AVX download failed: $e');
+  }
 }

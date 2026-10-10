@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart' as p;
 import 'package:file_picker/file_picker.dart';
 import '../../../../../app/theme.dart';
 import '../../../../../core/settings/settings_service.dart';
@@ -11,10 +10,13 @@ import '../../../../../core/widgets/whisper_threads_slider.dart';
 import '../../../../../core/whisper/whisper_model.dart';
 import '../../../../../core/whisper/whisper_languages.dart';
 import '../../../../../core/downloader/binary_downloader_service.dart';
-import '../../../../../core/utils/app_dirs.dart';
+import '../../../../../core/assets/asset_path_service.dart';
+import '../../../../../core/logger/logger_service.dart';
 import '../../../../../core/subtitle/srt_importer.dart';
 import '../../../../../core/utils/whisper_quality_selection.dart';
 import '../../controllers/editor_controller.dart';
+import '../../../../../l10n/app_localizations.dart';
+import 'transcription_panel/transcription_post_enhancement_card.dart';
 
 class TranscriptionPanel extends ConsumerStatefulWidget {
   final Future<void> Function({
@@ -34,12 +36,16 @@ class TranscriptionPanel extends ConsumerStatefulWidget {
   ConsumerState<TranscriptionPanel> createState() => _TranscriptionPanelState();
 }
 
-class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with WhisperQualitySelectionMixin {
+class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with WhisperQualitySelectionMixin, AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   bool _useMock = false;
   bool _useVad = false;
   double _vadThreshold = 0.5;
   String _selectedLanguage = 'auto';
   bool _translateToEnglish = false;
+  bool _autoApplyEmojis = false;
+  bool _autoApplySfx = false;
 
   bool _showAdvancedSettings = false;
 
@@ -54,6 +60,8 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
     _useVad = SettingsService.instance.useVad;
     _vadThreshold = SettingsService.instance.vadThreshold;
     _selectedLanguage = SettingsService.instance.defaultLanguage;
+    _autoApplyEmojis = SettingsService.instance.autoApplyEmojis;
+    _autoApplySfx = SettingsService.instance.autoApplySfx;
 
     initWhisperQualitySelection();
   }
@@ -64,54 +72,79 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
     super.dispose();
   }
 
-  void _triggerRetranscribe() {
+  Future<void> _triggerRetranscribe() async {
     if (widget.onRetranscribe == null) return;
-    
+
     // Verify video file exists before starting
+    // FIX (audit): existsSync() is a blocking filesystem call on the UI
+    // thread; use the async exists() instead.
     final project = ref.read(editorProvider).project;
-    if (project != null && !kIsWeb && !File(project.videoPath).existsSync()) {
+    final l10n = AppLocalizations.of(context);
+    if (project != null && !kIsWeb && !await File(project.videoPath).exists()) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Video file not found:\n${project.videoPath}\n'
-            'Please re-link the video file.',
+            l10n?.errorVideoFileNotFound(project.videoPath)
+                ?? 'Video file not found:\n${project.videoPath}\nPlease re-link the video file.',
           ),
-          backgroundColor: Colors.redAccent,
+          backgroundColor: AppTheme.accentRed,
           duration: const Duration(seconds: 5),
         ),
       );
       return;
     }
-    
+
     // Save to settings immediately
-    SettingsService.instance.setUseVad(_useVad);
-    SettingsService.instance.setVadThreshold(_vadThreshold);
-    SettingsService.instance.setDefaultLanguage(_selectedLanguage);
+    await SettingsService.instance.setUseVad(_useVad);
+    await SettingsService.instance.setVadThreshold(_vadThreshold);
+    await SettingsService.instance.setDefaultLanguage(_selectedLanguage);
 
     final model = selectedModel;
-    final modelPath = _useMock || model == null 
-        ? '' 
-        : p.join(AppDirs.support, 'models', 'ggml-${model.name}.bin');
+    final modelPath = _useMock || model == null
+        ? ''
+        : AssetPathService.instance.resolveModelPath(model.name);
 
-    widget.onRetranscribe!(
-      useMock: _useMock,
-      language: _selectedLanguage,
-      whisperCliPath: SettingsService.instance.whisperCliPath,
-      whisperModelPath: modelPath,
-      ffmpegCliPath: SettingsService.instance.ffmpegCliPath,
-      useVad: _useVad,
-      vadThreshold: _vadThreshold,
-      translate: _translateToEnglish,
-    );
+    try {
+      // FIX (audit): the retranscribe future was fired unawaited with no
+      // error handling — any pipeline failure became an unhandled async
+      // exception. Surface it to the user instead.
+      await widget.onRetranscribe!(
+        useMock: _useMock,
+        language: _selectedLanguage,
+        whisperCliPath: SettingsService.instance.whisperCliPath,
+        whisperModelPath: modelPath,
+        ffmpegCliPath: SettingsService.instance.ffmpegCliPath,
+        useVad: _useVad,
+        vadThreshold: _vadThreshold,
+        translate: _translateToEnglish,
+      );
+
+      if (_autoApplyEmojis) {
+        ref.read(editorProvider.notifier).autoApplyMagicEmojis();
+      }
+      if (_autoApplySfx) {
+        ref.read(editorProvider.notifier).autoApplyMagicSfx();
+      }
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.error, 'TranscriptionPanel', 'Retranscription failed: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n?.errorTranscriptionFailed ?? 'Transcription failed. Please try again.'),
+          backgroundColor: AppTheme.accentRed,
+        ),
+      );
+    }
   }
 
   Widget _buildQualityCards() {
+    final l10n = AppLocalizations.of(context);
     final isCompactWidth = MediaQuery.of(context).size.width < 600;
     
     final cards = QualityMode.values.map((mode) {
       final isSelected = selectedQuality == mode;
-      final isEn = _selectedLanguage == 'en';
-      final modelName = isEn ? mode.modelNameEn : mode.modelName;
+      final modelName = mode.modelName;
       final isDownloaded = modelExists[modelName] ?? false;
       final downloadProgress = downloadProgressMap[modelName];
       final isDownloading = downloadProgress != null && downloadProgress.status == BinaryDownloadStatus.downloading;
@@ -168,7 +201,7 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                         ),
                         const SizedBox(width: 4),
                         if (!isSupported)
-                          const Icon(Icons.lock_outline, color: Colors.white38, size: 12)
+                          Icon(Icons.lock_outline, color: AppTheme.mutedText, size: 12)
                         else if (isRecommended)
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
@@ -178,7 +211,7 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                               borderOpacity: 0.15,
                             ),
                             child: Text(
-                              'REC',
+                              l10n?.badgeRecommended ?? 'REC',
                               style: TextStyle(
                                 fontSize: 7,
                                 fontWeight: FontWeight.bold,
@@ -226,12 +259,12 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                             ),
                             const SizedBox(width: 4),
                             if (isDownloaded)
-                              const Icon(Icons.check_circle, color: Colors.green, size: 12)
+                              Icon(Icons.check_circle, color: AppTheme.accentGreen, size: 12)
                             else if (isDownloading)
-                              const SizedBox(
+                              SizedBox(
                                 width: 10,
                                 height: 10,
-                                child: CircularProgressIndicator(strokeWidth: 1.2, color: Colors.amber),
+                                child: CircularProgressIndicator(strokeWidth: 1.2, color: AppTheme.accentOrange),
                               )
                             else
                               Icon(Icons.download_for_offline_outlined, color: AppTheme.mutedText.withValues(alpha: 0.25), size: 12),
@@ -242,7 +275,7 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                           LinearProgressIndicator(
                             value: downloadProgress.downloadProgress,
                             color: AppTheme.accentOrange,
-                            backgroundColor: Colors.white10,
+                            backgroundColor: AppTheme.dividerColor,
                           ),
                           const SizedBox(height: 2),
                           Row(
@@ -250,12 +283,12 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                             children: [
                               Text(
                                 '${(downloadProgress.downloadProgress * 100).toInt()}%',
-                                style: const TextStyle(fontSize: 8, color: Colors.white38),
+                                style: TextStyle(fontSize: 8, color: AppTheme.mutedText),
                               ),
                               if (downloadProgress.eta != null)
                                 Text(
                                   '${downloadProgress.eta!.inSeconds}s',
-                                  style: const TextStyle(fontSize: 8, color: Colors.white38),
+                                  style: TextStyle(fontSize: 8, color: AppTheme.mutedText),
                                 ),
                             ],
                           ),
@@ -267,9 +300,9 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: !isSupported
-                                    ? Colors.white.withValues(alpha: 0.05)
+                                    ? AppTheme.cardBgElevated
                                     : AppTheme.accentOrange.withValues(alpha: 0.15),
-                                foregroundColor: !isSupported ? Colors.white24 : Colors.white,
+                                foregroundColor: !isSupported ? AppTheme.mutedText : AppTheme.accentOrange,
                                 padding: EdgeInsets.zero,
                                 minimumSize: Size.zero,
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -283,7 +316,7 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                                         logTag: 'TranscriptionPanel',
                                       ),
                               child: Text(
-                                !isSupported ? 'Hardware Locked' : 'Download',
+                                !isSupported ? (l10n?.hardwareLocked ?? 'Hardware Locked') : (l10n?.btnDownload ?? 'Download'),
                                 style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -317,8 +350,9 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
 
   @override
   Widget build(BuildContext context) {
-    final isEn = _selectedLanguage == 'en';
-    final selectedModelName = isEn ? selectedQuality.modelNameEn : selectedQuality.modelName;
+    super.build(context);
+    final l10n = AppLocalizations.of(context);
+    final selectedModelName = selectedQuality.modelName;
     final hasSelectedModelDownloaded = modelExists[selectedModelName] ?? false;
     final bool isReadyToTranscribe = kIsWeb || _useMock || hasSelectedModelDownloaded;
 
@@ -328,7 +362,7 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'SPEECH-TO-TEXT TRANSCRIPTION',
+            l10n?.speechToTextTitle ?? 'SPEECH-TO-TEXT TRANSCRIPTION',
             style: TextStyle(
               fontSize: 9,
               fontWeight: FontWeight.bold,
@@ -342,69 +376,71 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
             padding: const EdgeInsets.all(16),
             borderRadius: 12,
             borderOpacity: 0.08,
-            color: Colors.white.withValues(alpha: 0.02),
+            color: AppTheme.cardBg,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Re-run local Speech-to-Text transcription. Any manual edits or timing offsets will be replaced.',
+                  l10n?.speechToTextDesc ?? 'Re-run local Speech-to-Text transcription. Any manual edits or timing offsets will be replaced.',
                   style: TextStyle(fontSize: 11, color: AppTheme.secondaryText, height: 1.4),
                 ),
                 const SizedBox(height: 20),
 
-                if (!kIsWeb) ...[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Use Local AI Transcription',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.primaryText),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              'Run speech-to-text directly on this device',
-                              style: TextStyle(fontSize: 10, color: AppTheme.secondaryText),
-                            ),
-                          ],
-                        ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            kIsWeb
+                                ? 'Use In-Browser AI Transcription'
+                                : (l10n?.useLocalAi ?? 'Use Local AI Transcription'),
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.primaryText),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            kIsWeb
+                                ? 'Run speech-to-text directly in your browser with Transformers.js'
+                                : (l10n?.runOnDeviceDesc ?? 'Run speech-to-text directly on this device'),
+                            style: TextStyle(fontSize: 10, color: AppTheme.secondaryText),
+                          ),
+                        ],
                       ),
-                      Switch(
-                        value: !_useMock,
-                        activeThumbColor: AppTheme.accentOrange,
-                        onChanged: (val) {
-                          setState(() {
-                            _useMock = !val;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  const Divider(color: Colors.white10),
-                  const SizedBox(height: 16),
-                ],
+                    ),
+                    Switch(
+                      value: !_useMock,
+                      activeThumbColor: AppTheme.accentOrange,
+                      onChanged: (val) {
+                        setState(() {
+                          _useMock = !val;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Divider(color: AppTheme.dividerColor),
+                const SizedBox(height: 16),
 
                 if (_useMock) ...[
                   if (kIsWeb) ...[
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: AppTheme.glassDecoration(
-                        color: Colors.amber.withValues(alpha: 0.08),
+                        color: AppTheme.accentOrange.withValues(alpha: 0.08),
                         borderRadius: 8,
                         borderOpacity: 0.12,
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.info_outline, color: Colors.amber, size: 16),
+                          Icon(Icons.info_outline, color: AppTheme.accentOrange, size: 16),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              'Offline Demo mode is active. Local Whisper AI transcription is not supported on Web.',
-                              style: TextStyle(fontSize: 11, color: Colors.amber.shade200, height: 1.4),
+                              'Offline Demo mode is active. Instant preview captions will be generated without running the speech model.',
+                              style: TextStyle(fontSize: 11, color: AppTheme.accentOrange, height: 1.4),
                             ),
                           ),
                         ],
@@ -419,13 +455,45 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                       borderRadius: 8,
                       borderOpacity: 0.06,
                     ),
-                    child: const Text(
-                      'Demo mode instantly generates highly realistic transcript tokens. Perfect for testing styles, templates, and timeline operations without setup.',
-                      style: TextStyle(fontSize: 11, color: Colors.white60, height: 1.4),
+                    child: Text(
+                      l10n?.demoModeNote ?? 'Demo mode instantly generates highly realistic transcript tokens. Perfect for testing styles, templates, and timeline operations without setup.',
+                      style: TextStyle(fontSize: 11, color: AppTheme.secondaryText, height: 1.4),
                     ),
                   ),
                 ] else ...[
-                  InkWell(
+                  if (kIsWeb) ...[
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: AppTheme.glassDecoration(
+                        color: AppTheme.accentOrange.withValues(alpha: 0.08),
+                        borderRadius: 8,
+                        borderOpacity: 0.15,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.psychology_rounded, color: AppTheme.accentOrange, size: 20),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'In-Browser AI Speech Recognition',
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.primaryText),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Powered by Transformers.js (ONNX Runtime Web). Audio is transcribed 100% locally in your browser sandbox without sending any data to servers.',
+                                  style: TextStyle(fontSize: 10, color: AppTheme.secondaryText, height: 1.3),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ] else ...[
+                    InkWell(
                     onTap: () {
                       setState(() {
                         isQualitySelectorExpanded = !isQualitySelectorExpanded;
@@ -441,7 +509,7 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'SELECT TRANSCRIPTION QUALITY',
+                                l10n?.selectTranscriptionQuality ?? 'SELECT TRANSCRIPTION QUALITY',
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
@@ -451,7 +519,11 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Active: ${selectedQuality.displayName} (${selectedModel?.displayName ?? "none"})',
+                                l10n?.transcriptionActiveModel(
+                                      selectedQuality.displayName,
+                                      selectedModel?.displayName ?? "none",
+                                    ) ??
+                                    'Active: ${selectedQuality.displayName} (${selectedModel?.displayName ?? "none"})',
                                 style: TextStyle(
                                   fontSize: 9,
                                   color: AppTheme.accentOrange.withValues(alpha: 0.8),
@@ -483,19 +555,23 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                         : CrossFadeState.showSecond,
                     duration: const Duration(milliseconds: 200),
                   ),
+                  ],
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     dropdownColor: AppTheme.cardBg,
                     initialValue: _selectedLanguage,
                     isExpanded: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Language',
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: InputDecoration(
+                      labelText: l10n?.languageLabel ?? 'Language',
+                      border: const OutlineInputBorder(),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     ),
-                    style: const TextStyle(fontSize: 12, color: Colors.white),
+                    style: TextStyle(fontSize: 12, color: AppTheme.primaryText),
                     items: [
-                      const DropdownMenuItem(value: 'auto', child: Text('Auto Detect', style: TextStyle(fontSize: 12))),
+                      DropdownMenuItem(
+                        value: 'auto',
+                        child: Text(l10n?.autoDetect ?? 'Auto Detect', style: const TextStyle(fontSize: 12)),
+                      ),
                       ...kWhisperLanguages.map((lang) => DropdownMenuItem(
                             value: lang.code,
                             child: Text(lang.name, style: const TextStyle(fontSize: 12)),
@@ -519,20 +595,24 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: AppTheme.glassDecoration(
-                        color: Colors.redAccent.withValues(alpha: 0.08),
+                        color: AppTheme.accentRed.withValues(alpha: 0.08),
                         borderRadius: 8,
                         borderOpacity: 0.12,
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 16),
+                          Icon(Icons.warning_amber_rounded, color: AppTheme.accentRed, size: 16),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              'Warning: The selected model (${selectedModel!.displayName}) is English-only. '
-                              'Transcribing in "${kWhisperLanguages.firstWhere((l) => l.code == _selectedLanguage, orElse: () => WhisperLanguage('', _selectedLanguage)).name}" will fail or produce English captions. '
-                              'Please select a Multilingual model (e.g. Tiny or Base).',
-                              style: const TextStyle(color: Colors.redAccent, fontSize: 11, height: 1.3),
+                              l10n?.warningEnglishOnlyModel(
+                                    selectedModel!.displayName,
+                                    kWhisperLanguages.firstWhere((l) => l.code == _selectedLanguage, orElse: () => WhisperLanguage('', _selectedLanguage)).name,
+                                  ) ??
+                                  'Warning: The selected model (${selectedModel!.displayName}) is English-only. '
+                                  'Transcribing in "${kWhisperLanguages.firstWhere((l) => l.code == _selectedLanguage, orElse: () => WhisperLanguage('', _selectedLanguage)).name}" will fail or produce English captions. '
+                                  'Please select a Multilingual model (e.g. Tiny or Base).',
+                              style: TextStyle(color: AppTheme.accentRed, fontSize: 11, height: 1.3),
                             ),
                           ),
                         ],
@@ -552,11 +632,12 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                         children: [
                           Icon(Icons.info_outline_rounded, color: AppTheme.accentOrange, size: 16),
                           const SizedBox(width: 10),
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Tip: Auto-detect is not recommended for mixed languages (like Hinglish). '
-                              'Explicitly selecting your spoken language (e.g. Hindi or English) will provide much more accurate captions.',
-                              style: TextStyle(color: Colors.white70, fontSize: 11, height: 1.3),
+                              l10n?.tipAutoDetectMixedLanguage ??
+                                  'Tip: Auto-detect is not recommended for mixed languages (like Hinglish). '
+                                  'Explicitly selecting your spoken language (e.g. Hindi or English) will provide much more accurate captions.',
+                              style: TextStyle(color: AppTheme.secondaryText, fontSize: 11, height: 1.3),
                             ),
                           ),
                         ],
@@ -567,13 +648,19 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Translate captions to English', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                            SizedBox(height: 2),
-                            Text('Convert foreign speech directly into English subtitles', style: TextStyle(fontSize: 9, color: Colors.white30)),
+                            Text(
+                              l10n?.translateToEnglish ?? 'Translate captions to English',
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              l10n?.translateToEnglishDesc ?? 'Convert foreign speech directly into English subtitles',
+                              style: TextStyle(fontSize: 9, color: AppTheme.mutedText),
+                            ),
                           ],
                         ),
                       ),
@@ -606,7 +693,9 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'HARDWARE & PERFORMANCE SETTINGS',
+                            (kIsWeb || (!kIsWeb && (Platform.isAndroid || Platform.isIOS)))
+                                ? (l10n?.advancedSettings.toUpperCase() ?? 'ADVANCED SETTINGS')
+                                : (l10n?.hardwareSettings ?? 'HARDWARE & PERFORMANCE SETTINGS'),
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -630,45 +719,58 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Detected System Hardware:',
+                          if (!kIsWeb && !Platform.isAndroid && !Platform.isIOS) ...[
+                            Text(
+                              l10n?.detectedHardwareLabel ?? 'Detected System Hardware:',
                             style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.accentCyan),
                           ),
                           const SizedBox(height: 6),
                           if (hardwareInfo != null) ...[
                             Row(
                               children: [
-                                const Icon(Icons.memory, size: 12, color: Colors.white38),
+                                Icon(Icons.memory, size: 12, color: AppTheme.mutedText),
                                 const SizedBox(width: 6),
-                                Text('RAM Size: ${hardwareInfo!.ramGB.toStringAsFixed(1)} GB', style: const TextStyle(fontSize: 10, color: Colors.white70)),
+                                Text(
+                                  l10n?.hardwareRamSize(hardwareInfo!.ramGB.toStringAsFixed(1)) ??
+                                      'RAM Size: ${hardwareInfo!.ramGB.toStringAsFixed(1)} GB',
+                                  style: TextStyle(fontSize: 10, color: AppTheme.secondaryText),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                                const Icon(Icons.speed, size: 12, color: Colors.white38),
+                                Icon(Icons.speed, size: 12, color: AppTheme.mutedText),
                                 const SizedBox(width: 6),
-                                Text('CPU Logical Cores: ${hardwareInfo!.cpuCores}', style: const TextStyle(fontSize: 10, color: Colors.white70)),
+                                Text(
+                                  l10n?.hardwareCpuCores(hardwareInfo!.cpuCores) ??
+                                      'CPU Logical Cores: ${hardwareInfo!.cpuCores}',
+                                  style: TextStyle(fontSize: 10, color: AppTheme.secondaryText),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                                const Icon(Icons.developer_board, size: 12, color: Colors.white38),
+                                Icon(Icons.developer_board, size: 12, color: AppTheme.mutedText),
                                 const SizedBox(width: 6),
                                 Expanded(
                                   child: Text(
-                                    'GPU Device: ${hardwareInfo!.gpuInfo}',
-                                    style: const TextStyle(fontSize: 10, color: Colors.white70),
+                                    l10n?.hardwareGpuDevice(hardwareInfo!.gpuInfo) ??
+                                        'GPU Device: ${hardwareInfo!.gpuInfo}',
+                                    style: TextStyle(fontSize: 10, color: AppTheme.secondaryText),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
                             ),
                           ] else ...[
-                            const Text('Detecting hardware stats...', style: TextStyle(fontSize: 10, color: Colors.white38)),
+                            Text(
+                              l10n?.hardwareDetecting ?? 'Detecting hardware stats...',
+                              style: TextStyle(fontSize: 10, color: AppTheme.mutedText),
+                            ),
                           ],
-                          const Divider(color: Colors.white10, height: 20),
+                          Divider(color: AppTheme.dividerColor, height: 20),
                           WhisperThreadsSlider(
                             value: SettingsService.instance.whisperThreads,
                             onChanged: (v) => setState(() {
@@ -677,16 +779,23 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                             valueStyle: const TextStyle(fontSize: 11, fontFamily: 'monospace', fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
+                        ],
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Voice Activity Detection (VAD)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
-                                    SizedBox(height: 2),
-                                    Text('Skips silent regions during processing', style: TextStyle(fontSize: 9, color: Colors.white30)),
+                                    Text(
+                                      l10n?.vadTitle ?? 'Voice Activity Detection (VAD)',
+                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      l10n?.vadDesc ?? 'Skips silent regions during processing',
+                                      style: TextStyle(fontSize: 9, color: AppTheme.mutedText),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -706,15 +815,15 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                             Row(
                               children: [
                                 Text(
-                                  'VAD Threshold: ${_vadThreshold.toStringAsFixed(2)}',
-                                  style: const TextStyle(fontSize: 10, color: Colors.white54),
+                                  '${l10n?.vadThreshold ?? "VAD Threshold"}: ${_vadThreshold.toStringAsFixed(2)}',
+                                  style: TextStyle(fontSize: 10, color: AppTheme.secondaryText),
                                 ),
                                 Expanded(
                                   child: Slider(
-                                    value: _vadThreshold,
-                                    min: 0.0,
-                                    max: 1.0,
-                                    divisions: 20,
+                                    value: _vadThreshold.clamp(0.1, 0.9),
+                                    min: 0.1,
+                                    max: 0.9,
+                                    divisions: 16,
                                     activeColor: AppTheme.accentOrange,
                                     onChanged: (val) {
                                       setState(() {
@@ -731,19 +840,32 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                     ),
                   ],
                 ],
+                const SizedBox(height: 16),
+                TranscriptionPostEnhancementCard(
+                  autoApplyEmojis: _autoApplyEmojis,
+                  autoApplySfx: _autoApplySfx,
+                  onAutoApplyEmojisChanged: (val) {
+                    setState(() => _autoApplyEmojis = val);
+                    SettingsService.instance.setAutoApplyEmojis(val);
+                  },
+                  onAutoApplySfxChanged: (val) {
+                    setState(() => _autoApplySfx = val);
+                    SettingsService.instance.setAutoApplySfx(val);
+                  },
+                ),
                 const SizedBox(height: 24),
                 
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.refresh_rounded, size: 16),
-                    label: const Text(
-                      'START RE-TRANSCRIBE',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Text(
+                      l10n?.btnStartReTranscribe ?? 'START RE-TRANSCRIBE',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isReadyToTranscribe ? AppTheme.accentOrange : Colors.grey.shade800,
-                      foregroundColor: isReadyToTranscribe ? Colors.white : Colors.white24,
+                      backgroundColor: isReadyToTranscribe ? AppTheme.accentOrange : AppTheme.cardBgElevated,
+                      foregroundColor: isReadyToTranscribe ? AppTheme.onAccentText : AppTheme.mutedText,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
@@ -755,39 +877,59 @@ class _TranscriptionPanelState extends ConsumerState<TranscriptionPanel> with Wh
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.upload_file, size: 16),
-                    label: const Text(
-                      'IMPORT SRT/VTT FILE',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Text(
+                      l10n?.btnImportSrtVtt ?? 'IMPORT SRT/VTT FILE',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.accentCyan,
-                      foregroundColor: Colors.black,
+                      foregroundColor: AppTheme.onAccentText,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () async {
                       final scaffoldMessenger = ScaffoldMessenger.of(context);
-                      final result = await FilePicker.pickFiles(
-                        type: FileType.custom,
-                        allowedExtensions: ['srt', 'vtt'],
-                      );
-                      if (result != null) {
-                        try {
+                      try {
+                        // FIX (audit): the try block started AFTER the picker
+                        // call, so a picker exception escaped the catch.
+                        final result = await FilePicker.pickFiles(
+                          type: FileType.custom,
+                          allowedExtensions: ['srt', 'vtt'],
+                        );
+                        if (result != null) {
                           final bytes = await result.files.single.readAsBytes();
                           final words = SrtImporter.parseSrtBytes(bytes);
                           if (!mounted) return;
                           final project = ref.read(editorProvider).project;
                           if (project != null) {
                             ref.read(editorProvider.notifier).importSubtitles(words);
+                            if (_autoApplyEmojis) {
+                              ref.read(editorProvider.notifier).autoApplyMagicEmojis();
+                            }
+                            if (_autoApplySfx) {
+                              ref.read(editorProvider.notifier).autoApplyMagicSfx();
+                            }
                             scaffoldMessenger.showSnackBar(
-                              SnackBar(content: Text('Imported ${words.length} words from subtitle file.')),
+                              SnackBar(
+                                content: Text(
+                                  l10n?.importedSubtitleWords(words.length) ??
+                                      'Imported ${words.length} words from subtitle file.',
+                                ),
+                              ),
                             );
                           }
-                        } catch (e) {
-                          scaffoldMessenger.showSnackBar(
-                            SnackBar(content: Text('Failed to import subtitle file: $e')),
-                          );
                         }
+                      } catch (e) {
+                        // FIX (audit): keep the message generic instead of
+                        // interpolating raw picker/path internals.
+                        scaffoldMessenger.showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              l10n?.errorImportSubtitleFailed ??
+                                  'Failed to import subtitle file. Please check the file format.',
+                            ),
+                          ),
+                        );
                       }
                     },
                   ),

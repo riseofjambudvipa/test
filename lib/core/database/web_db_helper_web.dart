@@ -1,5 +1,6 @@
 // lib/core/database/web_db_helper_web.dart
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:web/web.dart' as web;
 import 'dart:js_interop';
 
@@ -40,96 +41,153 @@ class WebDbHelper {
 
   static Future<void> saveProjectWeb(String projectId, String jsonStr) async {
     final db = await _openDb();
-    final txn = db.transaction(_storeName.toJS, 'readwrite');
-    final store = txn.objectStore(_storeName);
-    
-    final request = store.put(jsonStr.toJS, projectId.toJS);
-    final completer = Completer<void>();
-    
-    request.onsuccess = ((web.Event event) {
-      completer.complete();
-    }).toJS;
-    
-    request.onerror = ((web.Event event) {
-      completer.completeError('Failed to save project');
-    }).toJS;
-    
-    await completer.future;
-    db.close();
+    try {
+      final txn = db.transaction(_storeName.toJS, 'readwrite');
+      final store = txn.objectStore(_storeName);
+
+      final request = store.put(jsonStr.toJS, projectId.toJS);
+      final completer = Completer<void>();
+
+      request.onsuccess = ((web.Event event) {
+        if (!completer.isCompleted) completer.complete();
+      }).toJS;
+
+      request.onerror = ((web.Event event) {
+        if (!completer.isCompleted) completer.completeError('Failed to save project');
+      }).toJS;
+
+      // FIX (audit): a commit-phase abort after request.onsuccess was silently
+      // treated as success. Surface it as an error instead.
+      txn.onabort = ((web.Event event) {
+        if (!completer.isCompleted) {
+          completer.completeError('IndexedDB transaction aborted');
+        }
+      }).toJS;
+
+      await completer.future;
+    } finally {
+      // FIX (audit): close the connection on every path, including errors.
+      db.close();
+    }
   }
 
   static Future<String?> getProjectWeb(String projectId) async {
     final db = await _openDb();
-    final txn = db.transaction(_storeName.toJS, 'readonly');
-    final store = txn.objectStore(_storeName);
-    
-    final request = store.get(projectId.toJS);
-    final completer = Completer<String?>();
-    
-    request.onsuccess = ((web.Event event) {
-      final result = request.result;
-      if (result.isUndefinedOrNull) {
-        completer.complete(null);
-      } else {
-        completer.complete((result as JSString).toDart);
-      }
-    }).toJS;
-    
-    request.onerror = ((web.Event event) {
-      completer.completeError('Failed to get project');
-    }).toJS;
-    
-    final result = await completer.future;
-    db.close();
-    return result;
+    try {
+      final txn = db.transaction(_storeName.toJS, 'readonly');
+      final store = txn.objectStore(_storeName);
+
+      final request = store.get(projectId.toJS);
+      final completer = Completer<String?>();
+
+      request.onsuccess = ((web.Event event) {
+        try {
+          final result = request.result;
+          if (result.isUndefinedOrNull) {
+            completer.complete(null);
+          } else {
+            completer.complete((result as JSString).toDart);
+          }
+        } catch (e) {
+          // FIX (audit): a value that isn't a string threw inside onsuccess,
+          // leaving the completer pending forever. Complete with the error.
+          if (!completer.isCompleted) completer.completeError(e);
+        }
+      }).toJS;
+
+      request.onerror = ((web.Event event) {
+        if (!completer.isCompleted) completer.completeError('Failed to get project');
+      }).toJS;
+
+      txn.onabort = ((web.Event event) {
+        if (!completer.isCompleted) {
+          completer.completeError('IndexedDB transaction aborted');
+        }
+      }).toJS;
+
+      final result = await completer.future;
+      return result;
+    } finally {
+      // FIX (audit): close the connection on every path, including errors.
+      db.close();
+    }
   }
 
   static Future<List<String>> getAllProjectsWeb() async {
     final db = await _openDb();
-    final txn = db.transaction(_storeName.toJS, 'readonly');
-    final store = txn.objectStore(_storeName);
-    
-    final request = store.openCursor();
-    final completer = Completer<List<String>>();
-    final list = <String>[];
-    
-    request.onsuccess = ((web.Event event) {
-      final cursor = request.result as web.IDBCursorWithValue?;
-      if (cursor == null || cursor.isUndefinedOrNull) {
-        completer.complete(list);
-      } else {
-        final val = cursor.value as JSString;
-        list.add(val.toDart);
-        cursor.continue_();
-      }
-    }).toJS;
-    
-    request.onerror = ((web.Event event) {
-      completer.completeError('Failed to cursor projects');
-    }).toJS;
-    
-    final results = await completer.future;
-    db.close();
-    return results;
+    try {
+      final txn = db.transaction(_storeName.toJS, 'readonly');
+      final store = txn.objectStore(_storeName);
+
+      final request = store.openCursor();
+      final completer = Completer<List<String>>();
+      final list = <String>[];
+
+      request.onsuccess = ((web.Event event) {
+        try {
+          final cursor = request.result as web.IDBCursorWithValue?;
+          if (cursor == null || cursor.isUndefinedOrNull) {
+            completer.complete(list);
+          } else {
+            try {
+              final val = cursor.value as JSString;
+              list.add(val.toDart);
+            } catch (recordError) {
+              // Gracefully skip corrupted individual record so valid projects still load
+              debugPrint('WebDb: Skipped corrupted project record: $recordError');
+            }
+            cursor.continue_();
+          }
+        } catch (e) {
+          if (!completer.isCompleted) completer.completeError(e);
+        }
+      }).toJS;
+
+      request.onerror = ((web.Event event) {
+        if (!completer.isCompleted) completer.completeError('Failed to cursor projects');
+      }).toJS;
+
+      txn.onabort = ((web.Event event) {
+        if (!completer.isCompleted) {
+          completer.completeError('IndexedDB transaction aborted');
+        }
+      }).toJS;
+
+      final results = await completer.future;
+      return results;
+    } finally {
+      // FIX (audit): close the connection on every path, including errors.
+      db.close();
+    }
   }
 
   static Future<void> deleteProjectWeb(String projectId) async {
     final db = await _openDb();
-    final txn = db.transaction(_storeName.toJS, 'readwrite');
-    final store = txn.objectStore(_storeName);
-    
-    final request = store.delete(projectId.toJS);
-    final completer = Completer<void>();
-    
-    request.onsuccess = ((web.Event event) {
-      completer.complete();
-    }).toJS;
-    
-    request.onerror = ((web.Event event) {
-      completer.completeError('Failed to delete project');
-    }).toJS;
-    
-    await completer.future;
-    db.close();
+    try {
+      final txn = db.transaction(_storeName.toJS, 'readwrite');
+      final store = txn.objectStore(_storeName);
+
+      final request = store.delete(projectId.toJS);
+      final completer = Completer<void>();
+
+      request.onsuccess = ((web.Event event) {
+        if (!completer.isCompleted) completer.complete();
+      }).toJS;
+
+      request.onerror = ((web.Event event) {
+        if (!completer.isCompleted) completer.completeError('Failed to delete project');
+      }).toJS;
+
+      txn.onabort = ((web.Event event) {
+        if (!completer.isCompleted) {
+          completer.completeError('IndexedDB transaction aborted');
+        }
+      }).toJS;
+
+      await completer.future;
+    } finally {
+      // FIX (audit): close the connection on every path, including errors.
+      db.close();
+    }
   }
 }

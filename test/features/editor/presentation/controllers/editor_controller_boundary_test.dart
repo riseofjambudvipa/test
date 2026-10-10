@@ -43,6 +43,7 @@ void main() {
       controller.splitSegmentAtTime(1.0);
       controller.toggleSegmentDeleted(1.0);
       controller.resetSegments();
+      controller.applySegments([]);
       
       expect(controller.state.project, isNull);
     });
@@ -352,6 +353,50 @@ void main() {
       controller.addChunkAfter('non_existent_id');
       expect(controller.state.project!.words.length, equals(1));
       expect(controller.state.project!.words[0].wordId, equals('w1'));
+    });
+
+    test('applySegments updates project segments, increments revision, and records history', () {
+      final project = makeProject(duration: 20.0);
+      project.segments = [
+        VideoSegmentSchema()
+          ..start = 0.0
+          ..end = 20.0
+          ..isDeleted = false,
+      ];
+      controller.setProject(project);
+      expect(controller.state.project!.segments!.length, 1);
+
+      final newSegments = [
+        VideoSegmentSchema()
+          ..start = 0.0
+          ..end = 5.0
+          ..isDeleted = false,
+        VideoSegmentSchema()
+          ..start = 8.0
+          ..end = 15.0
+          ..isDeleted = false,
+      ];
+
+      final revBefore = controller.state.revision;
+      controller.applySegments(newSegments);
+
+      expect(controller.state.project!.segments!.length, 2);
+      expect(controller.state.project!.segments![0].start, 0.0);
+      expect(controller.state.project!.segments![0].end, 5.0);
+      expect(controller.state.project!.segments![1].start, 8.0);
+      expect(controller.state.project!.segments![1].end, 15.0);
+      expect(controller.state.hasUnsavedChanges, isTrue);
+      expect(controller.state.revision, equals(revBefore + 1));
+
+      // Test undo restores previous segments
+      controller.undo();
+      expect(controller.state.project!.segments!.length, 1);
+      expect(controller.state.project!.segments![0].end, 20.0);
+
+      // Test redo applies new segments again
+      controller.redo();
+      expect(controller.state.project!.segments!.length, 2);
+      expect(controller.state.project!.segments![1].end, 15.0);
     });
   });
 }

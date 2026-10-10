@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../../../app/theme.dart';
+import '../../../../../../core/utils/color_utils.dart';
+import '../../../../../../core/logger/logger_service.dart';
 
 class ColorPickerRow extends StatefulWidget {
   final String label;
@@ -44,15 +46,6 @@ class _ColorPickerRowState extends State<ColorPickerRow> {
     super.dispose();
   }
 
-  Color _parseHex(String hex) {
-    try {
-      final cleanHex = hex.replaceAll('#', '');
-      return Color(int.parse('FF$cleanHex', radix: 16));
-    } catch (_) {
-      return Colors.white;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final List<String> colorPresets = [
@@ -80,7 +73,7 @@ class _ColorPickerRowState extends State<ColorPickerRow> {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: _parseHex(widget.currentHex),
+                  color: ColorUtils.fromHex(widget.currentHex),
                   borderRadius: BorderRadius.circular(4),
                   border: Border.all(color: AppTheme.borderGlass),
                 ),
@@ -110,7 +103,9 @@ class _ColorPickerRowState extends State<ColorPickerRow> {
                       try {
                         Color(int.parse('FF$cleanVal', radix: 16));
                         widget.onColorSelected('#$cleanVal');
-                      } catch (_) {}
+                      } catch (e) {
+                        LoggerService.instance.debug('Invalid color hex: $cleanVal ($e)');
+                      }
                     }
                   },
                 ),
@@ -129,10 +124,10 @@ class _ColorPickerRowState extends State<ColorPickerRow> {
                           height: 20,
                           margin: const EdgeInsets.only(right: 6),
                           decoration: BoxDecoration(
-                            color: _parseHex(hex),
+                            color: ColorUtils.fromHex(hex),
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: isSelected ? Colors.white : Colors.white24,
+                              color: isSelected ? AppTheme.primaryText : AppTheme.borderGlass,
                               width: isSelected ? 2 : 1,
                             ),
                           ),

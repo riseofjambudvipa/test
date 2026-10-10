@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'asset_path_service.dart';
 import 'asset_manifest.dart';
+import 'asset_legacy_healer.dart';
+import '../emoji/emoji_service.dart';
 import '../fonts/font_service.dart';
 import '../logger/logger_service.dart';
 
@@ -65,7 +67,7 @@ class AssetVerificationService {
           'googleAnimated',
           'microsoftAnimated',
           'microsoftNonAnimated',
-          'openmoji'
+          'openmoji',
         ],
         hasAnyEmojis: true,
       );
@@ -86,37 +88,48 @@ class AssetVerificationService {
       );
     }
 
+    // Automatically heal any loose or legacy mislocated extractions
+    final healedPacks = await AssetLegacyHealer.heal(paths.emojisDir);
+    if (healedPacks.isNotEmpty) {
+      for (final packId in healedPacks) {
+        await EmojiService.instance.invalidatePackCache(packId);
+      }
+    }
+
     final packs = manifest?.packs ?? AssetManifest.getLocalFallbackPacks();
 
     final emojiPacksToCheck = <AssetPack>[];
 
     // Check each pack
     for (final pack in packs) {
-      final isFont = pack.id.startsWith('font');
+      final isFont = pack.id.startsWith('font') || pack.format == 'ttf';
       if (isFont) {
+        // CJK language fonts are pre-bundled in assets/fonts/languages and pubspec.yaml
+        final fontFileName = pack.format == 'ttf' ? p.basename(pack.downloadUrl) : pack.localFolder;
         final fontsDir = FontService.instance.fontsDirectory;
-        if (fontsDir.isEmpty) {
-          missing.add(MissingAsset(
-            packId: pack.id,
-            packName: pack.name,
-            isRequired: pack.required,
-            userMessage: '${pack.name} not installed (service offline)',
-            actionLabel: 'Download',
-          ));
+        final candidatePaths = [
+          if (fontsDir.isNotEmpty) ...[
+            p.join(fontsDir, fontFileName),
+            p.join(fontsDir, pack.localFolder),
+            p.join(fontsDir, 'languages', fontFileName),
+          ],
+          p.join(paths.assetsRoot, 'fonts', 'languages', fontFileName),
+          p.join(paths.assetsRoot, 'fonts', fontFileName),
+        ];
+
+        final exists = candidatePaths.any((path) => File(path).existsSync());
+        if (exists) {
+          installed.add(pack.id);
           continue;
         }
-        final fontFile = File(p.join(fontsDir, pack.localFolder));
-        if (!fontFile.existsSync()) {
-          missing.add(MissingAsset(
-            packId: pack.id,
-            packName: pack.name,
-            isRequired: pack.required,
-            userMessage: '${pack.name} not installed',
-            actionLabel: 'Download',
-          ));
-          continue;
-        }
-        installed.add(pack.id);
+
+        missing.add(MissingAsset(
+          packId: pack.id,
+          packName: pack.name,
+          isRequired: pack.required,
+          userMessage: '${pack.name} not installed',
+          actionLabel: 'Download',
+        ));
         continue;
       }
 
@@ -223,11 +236,21 @@ class AssetVerificationService {
       ),
     );
     if (pack.id.isEmpty) return false;
-    final isFont = pack.id.startsWith('font');
+    final isFont = pack.id.startsWith('font') || pack.format == 'ttf';
     if (isFont) {
+      if (kIsWeb) return true;
+      final fontFileName = pack.format == 'ttf' ? p.basename(pack.downloadUrl) : pack.localFolder;
       final fontsDir = FontService.instance.fontsDirectory;
-      if (fontsDir.isEmpty) return false;
-      return File(p.join(fontsDir, pack.localFolder)).existsSync();
+      final candidatePaths = [
+        if (fontsDir.isNotEmpty) ...[
+          p.join(fontsDir, fontFileName),
+          p.join(fontsDir, pack.localFolder),
+          p.join(fontsDir, 'languages', fontFileName),
+        ],
+        p.join(AssetPathService.instance.assetsRoot, 'fonts', 'languages', fontFileName),
+        p.join(AssetPathService.instance.assetsRoot, 'fonts', fontFileName),
+      ];
+      return candidatePaths.any((path) => File(path).existsSync());
     }
     final dir = Directory(AssetPathService.instance.emojiPackDir(pack.localFolder));
     if (!await dir.exists()) return false;

@@ -52,6 +52,11 @@ class EmojiService {
   // Multilingual inverted index: locale -> keyword -> list of emoji indices in _emojis
   final Map<String, Map<String, List<int>>> _multilingualSearchIndex = {};
 
+  // FIX (perf): sorted copy of each locale's keyword keys, so prefix search
+  // binary-searches the matching range instead of scanning every key of the
+  // index (tens of thousands of entries) per keystroke.
+  final Map<String, List<String>> _sortedKeywordKeys = {};
+
   // Cache of existing files for each pack.
   // Key: lowercase basename (e.g. '1f600.png')
   // Value: relative subpath from the pack dir root (e.g. 'Smileys & Emotion/1f600.png')
@@ -91,6 +96,7 @@ class EmojiService {
 
   /// Checks if an emoji's asset for the specified pack actually exists on local disk
   bool hasAssetOnDisk(EmojiModel emoji, String packId) {
+    if (emoji.group == 'Custom Stickers') return true;
     final filename = emoji.styles[packId];
     if (filename == null || filename.isEmpty) {
       final isAnimated = packId.contains('Animated');
@@ -159,7 +165,10 @@ class EmojiService {
             }
           }
           existingPackFiles[packId] = fileMap;
-        } catch (_) {}
+        } catch (e) {
+          LoggerService.instance.log(LogLevel.warning, 'EmojiService',
+              'Failed to scan pack files for $packId: $e');
+        }
       }
     }
     return existingPackFiles;
@@ -257,7 +266,9 @@ class EmojiService {
       String langJsonStr;
       try {
         langJsonStr = await rootBundle.loadString('assets/emojis/langs/$activeLocale.json');
-      } catch (_) {
+      } catch (e) {
+        LoggerService.instance.log(LogLevel.warning, 'EmojiService',
+            'Failed to load active locale $activeLocale: $e');
         try {
           langJsonStr = await rootBundle.loadString('assets/emojis/langs/en.json');
         } catch (e) {
@@ -286,7 +297,8 @@ class EmojiService {
       } else {
         customDir = p.join(p.dirname(assetsBaseDir), 'custom_stickers');
       }
-      await scanCustomStickers(customDir);
+      final bundledCustomDir = p.join(Directory.current.path, 'assets', 'custom_stickers');
+      await scanCustomStickers(customDir, secondaryDirectory: bundledCustomDir);
     } else {
       _buildIndexes();
     }
@@ -318,7 +330,9 @@ class EmojiService {
         LoggerService.instance.log(LogLevel.info, 'EmojiService',
             'Loaded emoji lang file: $candidate.json');
         break;
-      } catch (_) {
+      } catch (e) {
+        LoggerService.instance.log(LogLevel.warning, 'EmojiService',
+            'Failed to load locale candidate $candidate: $e');
         // continue to next candidate
       }
     }
@@ -414,6 +428,7 @@ class EmojiService {
     _baseEmojis = [];
     _variationsIndex.clear();
     _multilingualSearchIndex.clear();
+    _sortedKeywordKeys.clear();
 
     final activeLocale = activeSearchLocale;
     final localeMap = _multilingualSearchIndex.putIfAbsent(
@@ -473,6 +488,10 @@ class EmojiService {
         }
       }
     }
+
+    // FIX (perf): keep a sorted copy of the keyword keys per locale so prefix
+    // search can binary-search the matching range instead of scanning every key.
+    _sortedKeywordKeys[activeLocale] = localeMap.keys.toList()..sort();
   }
 
   /// Get the active search language locale.
@@ -483,12 +502,17 @@ class EmojiService {
       if (override != 'auto' && override.isNotEmpty) {
         return override.toLowerCase();
       }
-    } catch (_) {}
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'EmojiService',
+          'Failed to read emojiSearchLanguage setting: $e');
+    }
     
     if (kIsWeb) return 'en';
     try {
       return Platform.localeName.split('_')[0].split('-')[0].toLowerCase();
-    } catch (_) {
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'EmojiService',
+          'Failed to read system locale: $e');
       return 'en';
     }
   }
@@ -511,9 +535,12 @@ class EmojiService {
     // Determine target locale, falling back to English if not found
     final targetLocale = (locale ?? activeSearchLocale).toLowerCase().split('_')[0].split('-')[0];
     var localeIndex = _multilingualSearchIndex[targetLocale];
+    var effectiveLocale = targetLocale;
     if (localeIndex == null && _multilingualSearchIndex.isNotEmpty) {
       // Fallback to whatever active language is loaded
-      localeIndex = _multilingualSearchIndex.values.first;
+      final firstEntry = _multilingualSearchIndex.entries.first;
+      effectiveLocale = firstEntry.key;
+      localeIndex = firstEntry.value;
     }
     
     if (localeIndex != null) {
@@ -525,18 +552,38 @@ class EmojiService {
         }
       }
       
-      // 2b. Prefix matches on keyword index keys
+      // 2b. Prefix matches on keyword index keys. Binary-search the sorted
+      // key list for the prefix range — the old loop scanned EVERY key of
+      // the locale index (tens of thousands) per keystroke.
       if (results.length < limit) {
-        for (final keyword in localeIndex.keys) {
-          if (keyword.startsWith(cleanQuery) && keyword != cleanQuery) {
-            final matches = localeIndex[keyword];
-            if (matches != null) {
-              for (final idx in matches) {
-                results.add(_emojis[idx]);
-              }
+        final sortedKeys = _sortedKeywordKeys[effectiveLocale] ?? const <String>[];
+        if (sortedKeys.isNotEmpty) {
+          int low = 0;
+          int high = sortedKeys.length - 1;
+          int first = -1;
+          while (low <= high) {
+            final mid = low + ((high - low) >> 1);
+            if (sortedKeys[mid].compareTo(cleanQuery) >= 0) {
+              first = mid;
+              high = mid - 1;
+            } else {
+              low = mid + 1;
             }
           }
-          if (results.length >= limit) break;
+          if (first >= 0) {
+            for (int k = first; k < sortedKeys.length; k++) {
+              final keyword = sortedKeys[k];
+              if (!keyword.startsWith(cleanQuery)) break;
+              if (keyword == cleanQuery) continue;
+              final matches = localeIndex[keyword];
+              if (matches != null) {
+                for (final idx in matches) {
+                  results.add(_emojis[idx]);
+                }
+              }
+              if (results.length >= limit) break;
+            }
+          }
         }
       }
     }
@@ -659,7 +706,12 @@ class EmojiService {
     final List<EmojiModel> customEmojis = [];
     final dir = Directory(directoryPath);
     if (!dir.existsSync()) {
-      try { dir.createSync(recursive: true); } catch (_) {}
+      try {
+        dir.createSync(recursive: true);
+      } catch (e) {
+        LoggerService.instance.log(LogLevel.warning, 'EmojiService',
+            'Failed to create stickers directory: $e');
+      }
       return customEmojis;
     }
     
@@ -692,20 +744,53 @@ class EmojiService {
           }
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      LoggerService.instance.log(LogLevel.warning, 'EmojiService',
+          'Failed to scan custom stickers: $e');
+    }
     return customEmojis;
   }
 
-  /// Scans the local user stickers folder and registers png/jpg/gif assets as searchable EmojiModels
-  Future<void> scanCustomStickers(String directoryPath) async {
+  /// Scans the local user stickers folder and registers png/jpg/gif assets as searchable EmojiModels.
+  /// Also checks optional secondary directories (e.g. bundled assets/custom_stickers) and copies
+  /// missing starter stickers over if primary directory is accessible.
+  Future<void> scanCustomStickers(String directoryPath, {String? secondaryDirectory}) async {
     LoggerService.instance.log(LogLevel.info, 'EmojiService', 'Scanning custom stickers in background: $directoryPath');
     try {
-      final result = await compute(_scanCustomStickersIsolate, directoryPath);
+      final dirsToScan = <String>[directoryPath];
+      if (secondaryDirectory != null && secondaryDirectory.isNotEmpty && secondaryDirectory != directoryPath) {
+        final secDir = Directory(secondaryDirectory);
+        if (secDir.existsSync()) {
+          dirsToScan.add(secondaryDirectory);
+          // If primary exists, copy over any bundled starter stickers not yet in primary
+          final primDir = Directory(directoryPath);
+          if (primDir.existsSync()) {
+            try {
+              for (final entity in secDir.listSync()) {
+                if (entity is File && !p.basename(entity.path).startsWith('.')) {
+                  final dest = File(p.join(directoryPath, p.basename(entity.path)));
+                  if (!dest.existsSync()) {
+                    entity.copySync(dest.path);
+                  }
+                }
+              }
+            } catch (e) {
+              LoggerService.instance.log(LogLevel.warning, 'EmojiService', 'Could not copy starter stickers: $e');
+            }
+          }
+        }
+      }
+
+      final combined = <EmojiModel>[];
+      for (final dir in dirsToScan) {
+        final result = await compute(_scanCustomStickersIsolate, dir);
+        combined.addAll(result);
+      }
       
       _emojis.removeWhere((e) => e.group == 'Custom Stickers');
       final existingGlyphs = _emojis.map((e) => e.glyph).toSet();
       
-      for (final model in result) {
+      for (final model in combined) {
         if (!existingGlyphs.contains(model.glyph)) {
           _emojis.add(model);
           existingGlyphs.add(model.glyph);
@@ -717,5 +802,41 @@ class EmojiService {
     } catch (e, stackTrace) {
       LoggerService.instance.log(LogLevel.error, 'EmojiService', 'Failed to scan custom stickers: $e', stackTrace: stackTrace);
     }
+  }
+
+  /// Resolves a sticker glyph or path string to a valid, existing absolute file path.
+  /// Checks direct path, normalized path, and lookup in customStickersDir / bundled assets.
+  /// Returns null if the file cannot be located on disk or on web.
+  static String? resolveStickerPath(String? glyph) {
+    if (kIsWeb || glyph == null || glyph.isEmpty) return null;
+
+    // Check direct path
+    try {
+      final direct = File(glyph);
+      if (direct.existsSync()) return direct.path;
+    } catch (_) {}
+
+    // Check normalized path
+    try {
+      final norm = File(p.normalize(glyph));
+      if (norm.existsSync()) return norm.path;
+    } catch (_) {}
+
+    // Check by basename in customStickersDir
+    final baseName = p.basename(glyph);
+    if (AssetPathService.instance.isInitialized) {
+      final customDir = AssetPathService.instance.customStickersDir;
+      final inCustom = File(p.join(customDir, baseName));
+      if (inCustom.existsSync()) return inCustom.path;
+
+      final inAssetsRoot = File(p.join(AssetPathService.instance.assetsRoot, 'custom_stickers', baseName));
+      if (inAssetsRoot.existsSync()) return inAssetsRoot.path;
+    }
+
+    // Check in bundled assets/custom_stickers
+    final bundled = File(p.join(Directory.current.path, 'assets', 'custom_stickers', baseName));
+    if (bundled.existsSync()) return bundled.path;
+
+    return null;
   }
 }

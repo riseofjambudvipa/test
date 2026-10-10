@@ -14,7 +14,7 @@ class RetranscribeOverlayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black87,
+      color: AppTheme.isLight ? Colors.black54 : Colors.black87,
       child: Center(
         child: Container(
           width: 380,
@@ -42,7 +42,7 @@ class RetranscribeOverlayWidget extends StatelessWidget {
               LinearProgressIndicator(
                 value: progressValue,
                 color: AppTheme.accentOrange,
-                backgroundColor: Colors.white.withValues(alpha: 0.08),
+                backgroundColor: AppTheme.dividerColor,
               ),
               const SizedBox(height: 8),
               Text(

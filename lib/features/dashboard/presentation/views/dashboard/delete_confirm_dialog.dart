@@ -16,10 +16,10 @@ class DeleteConfirmDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return PremiumBlurDialog(
       maxWidth: 400,
-      glassColor: Colors.redAccent.withValues(alpha: 0.03),
+      glassColor: AppTheme.accentRed.withValues(alpha: 0.03),
       borderOpacity: 0.15,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -27,10 +27,10 @@ class DeleteConfirmDialog extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 24),
+              Icon(Icons.warning_amber_rounded, color: AppTheme.accentRed, size: 24),
               const SizedBox(width: 8),
               Text(
-                l10n.deleteProjectTitle,
+                l10n?.deleteProjectTitle ?? 'Delete Project',
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 16,
@@ -42,7 +42,8 @@ class DeleteConfirmDialog extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            l10n.deleteProjectConfirm(project.name),
+            l10n?.deleteProjectConfirm(project.name) ??
+                'Are you sure you want to permanently delete "${project.name}"? This action cannot be undone.',
             style: TextStyle(color: AppTheme.secondaryText, height: 1.4, fontSize: 13),
           ),
           const SizedBox(height: 24),
@@ -51,13 +52,16 @@ class DeleteConfirmDialog extends StatelessWidget {
             children: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text(l10n.btnCancel, style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                child: Text(
+                  l10n?.btnCancel ?? 'CANCEL',
+                  style: TextStyle(color: AppTheme.secondaryText, fontSize: 12, fontWeight: FontWeight.bold),
+                ),
               ),
               const SizedBox(width: 12),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppTheme.accentRed,
+                  foregroundColor: AppTheme.onAccentText,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   elevation: 0,
@@ -66,7 +70,10 @@ class DeleteConfirmDialog extends StatelessWidget {
                   Navigator.pop(context);
                   onDelete();
                 },
-                child: Text(l10n.btnDelete, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                child: Text(
+                  l10n?.btnDelete ?? 'DELETE',
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
               ),
             ],
           ),

@@ -1,4 +1,10 @@
 import '../../../../core/database/schemas/project.dart';
+import '../../../../core/video/retention_progress_bar_models.dart';
+import '../../../../core/video/background_music_models.dart';
+import '../../../../core/video/b_roll_models.dart';
+import '../../../../core/video/chapter_models.dart';
+import '../../../../core/collaboration/project_comment.dart';
+import '../widgets/safe_zone_overlay.dart';
 
 enum EditorTab {
   caption,
@@ -7,7 +13,8 @@ enum EditorTab {
   export,
   trim,
   debug,
-  shortcuts;
+  shortcuts,
+  clipping;
 
   String get value => name;
 }
@@ -25,6 +32,15 @@ class EditorState {
   final int findReplaceCounter;
   final bool canUndo;
   final bool canRedo;
+  final RetentionProgressBarConfig retentionBarConfig;
+  final BackgroundMusicConfig backgroundMusicConfig;
+  final List<BRollClip> bRollClips;
+  final List<ProjectComment> comments;
+  final SafeZonePlatform safeZoneGuide;
+  final bool isProxyActive;
+  final bool isGeneratingProxy;
+  final double proxyProgress;
+  final List<VideoChapter> chapters;
 
   const EditorState({
     this.project,
@@ -38,6 +54,15 @@ class EditorState {
     this.findReplaceCounter = 0,
     this.canUndo = false,
     this.canRedo = false,
+    this.retentionBarConfig = const RetentionProgressBarConfig(),
+    this.backgroundMusicConfig = const BackgroundMusicConfig(),
+    this.bRollClips = const [],
+    this.comments = const [],
+    this.safeZoneGuide = SafeZonePlatform.none,
+    this.isProxyActive = false,
+    this.isGeneratingProxy = false,
+    this.proxyProgress = 0.0,
+    this.chapters = const [],
   });
 
   EditorState copyWith({
@@ -52,6 +77,15 @@ class EditorState {
     int? findReplaceCounter,
     bool? canUndo,
     bool? canRedo,
+    RetentionProgressBarConfig? retentionBarConfig,
+    BackgroundMusicConfig? backgroundMusicConfig,
+    List<BRollClip>? bRollClips,
+    List<ProjectComment>? comments,
+    SafeZonePlatform? safeZoneGuide,
+    bool? isProxyActive,
+    bool? isGeneratingProxy,
+    double? proxyProgress,
+    List<VideoChapter>? chapters,
   }) {
     return EditorState(
       project: project == const Object() ? this.project : (project as Project?),
@@ -65,6 +99,16 @@ class EditorState {
       findReplaceCounter: findReplaceCounter ?? this.findReplaceCounter,
       canUndo: canUndo ?? this.canUndo,
       canRedo: canRedo ?? this.canRedo,
+      retentionBarConfig: retentionBarConfig ?? this.retentionBarConfig,
+      backgroundMusicConfig: backgroundMusicConfig ?? this.backgroundMusicConfig,
+      bRollClips: bRollClips ?? this.bRollClips,
+      comments: comments ?? this.comments,
+      safeZoneGuide: safeZoneGuide ?? this.safeZoneGuide,
+      isProxyActive: isProxyActive ?? this.isProxyActive,
+      isGeneratingProxy: isGeneratingProxy ?? this.isGeneratingProxy,
+      proxyProgress: proxyProgress ?? this.proxyProgress,
+      chapters: chapters ?? this.chapters,
     );
   }
 }
+

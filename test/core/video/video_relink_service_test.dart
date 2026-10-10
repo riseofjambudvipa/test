@@ -159,5 +159,38 @@ void main() {
         tempDir.deleteSync(recursive: true);
       }
     });
+
+    test('validateAndRelink should delete finalPath if onSave throws and finalPath != oldPath', () async {
+      final tempDir = Directory.systemTemp.createTempSync('relink_cleanup_test_');
+      final tempFile = File(p.join(tempDir.path, 'relinked_to_delete.mp4'))..createSync();
+
+      try {
+        service.processRunner = (executable, arguments) async {
+          return ProcessResult(203, 0, '10.0\n', '');
+        };
+
+        expect(tempFile.existsSync(), isTrue);
+
+        final result = await service.validateAndRelink(
+          project: project,
+          newPath: tempFile.path,
+          onSave: () async {
+            throw Exception('Database write failure');
+          },
+          onReload: (p) => mockEditorController.setProject(p),
+        );
+
+        expect(result.success, isFalse);
+        expect(result.errorMessage, contains('Failed to save project after relink'));
+        // project.videoPath must be restored to oldPath
+        expect(project.videoPath, 'C:/movies/old_name.mp4');
+        // tempFile (finalPath != oldPath) must be deleted to prevent orphaned files
+        expect(tempFile.existsSync(), isFalse);
+      } finally {
+        try {
+          tempDir.deleteSync(recursive: true);
+        } catch (_) {}
+      }
+    });
   });
 }

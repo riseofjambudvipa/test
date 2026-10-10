@@ -40,37 +40,12 @@ const List<WhisperModel> kWhisperModels = [
     relativeSpeed: 9,
     relativeAccuracy: 3,
   ),
-  // FIX (Issue #7, CapStudio 1.0 audit): .en variant entries were entirely
-  // missing from this list. modelNameEn correctly returned 'tiny.en' etc.
-  // elsewhere, but nothing here could match that name, so the lookup
-  // silently fell back to the multilingual model regardless. Sizes verified
-  // against whisper.cpp's published ggml model list
-  // (huggingface.co/ggerganov/whisper.cpp) — .en variants are the same
-  // size as their multilingual counterpart at each tier.
-  WhisperModel(
-    name: 'tiny.en',
-    displayName: 'Tiny (English)',
-    description: 'Fastest English-only model. Same size as multilingual tiny, tuned for English content.',
-    sizeMb: 75.0,
-    englishOnly: true,
-    relativeSpeed: 9,
-    relativeAccuracy: 3,
-  ),
   WhisperModel(
     name: 'base',
     displayName: 'Base (Multilingual)',
     description: 'Fast multilingual model with better accuracy than tiny. Perfect for lightweight devices.',
     sizeMb: 142.0,
     englishOnly: false,
-    relativeSpeed: 7,
-    relativeAccuracy: 5,
-  ),
-  WhisperModel(
-    name: 'base.en',
-    displayName: 'Base (English)',
-    description: 'Fast English-only model with better accuracy than tiny.en. Perfect for lightweight devices.',
-    sizeMb: 142.0,
-    englishOnly: true,
     relativeSpeed: 7,
     relativeAccuracy: 5,
   ),
@@ -84,29 +59,11 @@ const List<WhisperModel> kWhisperModels = [
     relativeAccuracy: 7,
   ),
   WhisperModel(
-    name: 'small.en',
-    displayName: 'Small (English)',
-    description: 'High quality English-only transcription. Balanced daily-driver choice for English creators.',
-    sizeMb: 466.0,
-    englishOnly: true,
-    relativeSpeed: 4,
-    relativeAccuracy: 7,
-  ),
-  WhisperModel(
     name: 'medium',
     displayName: 'Medium (Multilingual)',
     description: 'Superb accuracy, but demanding on RAM and CPU. Slow extraction unless on high-end hardware.',
     sizeMb: 1530.0,
     englishOnly: false,
-    relativeSpeed: 2,
-    relativeAccuracy: 9,
-  ),
-  WhisperModel(
-    name: 'medium.en',
-    displayName: 'Medium (English)',
-    description: 'Superb English-only accuracy, demanding on RAM and CPU. Slow extraction unless on high-end hardware.',
-    sizeMb: 1530.0,
-    englishOnly: true,
     relativeSpeed: 2,
     relativeAccuracy: 9,
   ),
@@ -173,21 +130,10 @@ extension QualityModeExtension on QualityMode {
     QualityMode.professional => 'large-v3-turbo',
   };
 
-  // FIX (Issue #7, CapStudio 1.0 audit): previously returned the exact same
-  // value as `modelName` for every case, silently defeating the English-only
-  // model optimization that import_sheet.dart / transcription_panel.dart
-  // both explicitly select on (`isEn ? modelNameEn : modelName`). Verified
-  // against whisper.cpp's published model list: tiny/base/small/medium each
-  // have a real, smaller/faster .en-suffixed English-only variant; large
-  // tiers (including large-v3-turbo) do not — the multilingual large models
-  // already perform comparably, so there's no .en build to fall back to.
-  String get modelNameEn => switch (this) {
-    QualityMode.fast => 'tiny.en',
-    QualityMode.standard => 'base.en',
-    QualityMode.balanced => 'small.en',
-    QualityMode.high => 'medium.en',
-    QualityMode.professional => 'large-v3-turbo', // no .en variant exists upstream
-  };
+  /// CapStudio is a 100% universal offline studio. Standard quality presets
+  /// use universal multilingual models (tiny, base, small, medium, large-v3-turbo)
+  /// so users never face language lockouts or duplicate model downloads.
+  String get modelNameEn => modelName;
 
   double get sizeMb => switch (this) {
     QualityMode.fast => 75.0,

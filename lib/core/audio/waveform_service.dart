@@ -1,11 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, visibleForTesting;
 import 'package:path/path.dart' as p;
-import '../logger/logger_service.dart';
-import '../ffmpeg/ffmpeg_service.dart';
 import '../assets/asset_path_service.dart';
+import '../ffmpeg/ffmpeg_service.dart';
+import '../logger/logger_service.dart';
+import '../utils/app_dirs.dart';
 import 'waveform_web_helper.dart';
 
 class WaveformService {
@@ -21,11 +25,97 @@ class WaveformService {
   static const int _maxCacheSize = 20;
   final Map<String, List<double>> _cache = {};
 
+  String? _getDiskCacheDir() {
+    if (kIsWeb) return null;
+    try {
+      return p.join(AppDirs.support, 'waveform_cache');
+    } catch (_) {
+      try {
+        return p.join(AssetPathService.instance.tempDir, 'waveform_cache');
+      } catch (_) {
+        return p.join(Directory.systemTemp.path, 'capstudio_waveform_cache');
+      }
+    }
+  }
+
+  String? _cacheFilePath(String key) {
+    final dir = _getDiskCacheDir();
+    if (dir == null) return null;
+    final hash = sha256.convert(utf8.encode(key)).toString();
+    return p.join(dir, '$hash.wf');
+  }
+
+  List<double>? _readFromDiskSync(String key) {
+    if (kIsWeb) return null;
+    try {
+      final filePath = _cacheFilePath(key);
+      if (filePath == null) return null;
+      final file = File(filePath);
+      if (!file.existsSync()) return null;
+
+      final bytes = file.readAsBytesSync();
+      if (bytes.isEmpty || bytes.lengthInBytes % 4 != 0) return null;
+
+      final byteData = ByteData.sublistView(bytes);
+      final count = bytes.lengthInBytes ~/ 4;
+      return List<double>.generate(
+        count,
+        (i) => byteData.getFloat32(i * 4, Endian.little),
+      );
+    } catch (e) {
+      LoggerService.instance.log(
+        LogLevel.debug,
+        'WaveformService',
+        'Disk cache read failed for key $key: $e',
+      );
+      return null;
+    }
+  }
+
+  Future<void> _writeToDiskAsync(String key, List<double> value) async {
+    if (kIsWeb || value.isEmpty) return;
+    try {
+      final filePath = _cacheFilePath(key);
+      if (filePath == null) return;
+      final file = File(filePath);
+      if (!file.parent.existsSync()) {
+        file.parent.createSync(recursive: true);
+      }
+
+      final byteData = ByteData(value.length * 4);
+      for (int i = 0; i < value.length; i++) {
+        byteData.setFloat32(i * 4, value[i], Endian.little);
+      }
+      final bytes = byteData.buffer.asUint8List();
+      await file.writeAsBytes(bytes, flush: false);
+    } catch (e) {
+      LoggerService.instance.log(
+        LogLevel.debug,
+        'WaveformService',
+        'Disk cache write failed for key $key: $e',
+      );
+    }
+  }
+
   List<double>? _readFromCache(String key) {
-    if (!_cache.containsKey(key)) return null;
-    final value = _cache.remove(key); // Remove and re-insert to mark as recently used
-    _cache[key] = value!;
-    return value;
+    // 1. In-memory LRU cache
+    if (_cache.containsKey(key)) {
+      final value = _cache.remove(key); // Remove and re-insert to mark as recently used
+      _cache[key] = value!;
+      return value;
+    }
+
+    // 2. Disk cache fallback
+    final diskCached = _readFromDiskSync(key);
+    if (diskCached != null) {
+      _cache[key] = diskCached;
+      if (_cache.length > _maxCacheSize) {
+        _cache.remove(_cache.keys.first);
+      }
+      return diskCached;
+    }
+
+    return null;
   }
 
   void _writeToCache(String key, List<double> value) {
@@ -37,6 +127,9 @@ class WaveformService {
       final oldestKey = _cache.keys.first;
       _cache.remove(oldestKey);
     }
+
+    // Persist to disk in background
+    unawaited(_writeToDiskAsync(key, value));
   }
 
   /// Extract real waveform amplitudes from video file using FFmpeg.
@@ -78,9 +171,20 @@ class WaveformService {
 
 
     if (Platform.isAndroid || Platform.isIOS) {
-      final amplitudes = await FfmpegService.instance.extractWaveform(videoPath, sampleCount);
-      _writeToCache(cacheKey, amplitudes);
-      return amplitudes;
+      // FIX (audit): the mobile branch previously had no error handling — any
+      // exception escaped uncaught and the caller got no waveform at all.
+      // Fall back to a flat waveform instead.
+      try {
+        final amplitudes = await FfmpegService.instance.extractWaveform(videoPath, sampleCount);
+        _writeToCache(cacheKey, amplitudes);
+        return amplitudes;
+      } catch (e, stackTrace) {
+        LoggerService.instance.log(LogLevel.error, 'WaveformService',
+            'Mobile waveform extraction failed: $e', stackTrace: stackTrace);
+        final fb = _fallbackWaveform(sampleCount);
+        _writeToCache(cacheKey, fb);
+        return fb;
+      }
     }
 
     String? wavPath;
@@ -118,8 +222,18 @@ class WaveformService {
       }
 
       final bytes = await wavFile.readAsBytes();
-      // PCM s16le WAV: skip 44-byte standard header, then pairs of bytes = int16 samples
-      const headerSize = 44;
+      // FIX (audit): locate the PCM data chunk instead of assuming a fixed
+      // 44-byte header — some encoders emit extended fmt chunks (74/78-byte
+      // headers), which previously misaligned sample decoding.
+      int headerSize = 44;
+      final searchLimit = math.min(bytes.length - 8, 4096);
+      for (int i = 12; i < searchLimit; i++) {
+        if (bytes[i] == 0x64 && bytes[i + 1] == 0x61 && // 'da'
+            bytes[i + 2] == 0x74 && bytes[i + 3] == 0x61) { // 'ta'
+          headerSize = i + 8;
+          break;
+        }
+      }
       if (bytes.length <= headerSize) {
         final fb = _fallbackWaveform(sampleCount);
         _writeToCache(cacheKey, fb);
@@ -193,5 +307,31 @@ class WaveformService {
     return List.generate(count, (index) => 0.2 + random.nextDouble() * 0.15);
   }
 
-  void clearCache() => _cache.clear();
+  void clearCache() {
+    _cache.clear();
+    if (kIsWeb) return;
+    try {
+      final dirPath = _getDiskCacheDir();
+      if (dirPath != null) {
+        final dir = Directory(dirPath);
+        if (dir.existsSync()) {
+          for (final entity in dir.listSync()) {
+            try {
+              if (entity is File) {
+                entity.deleteSync();
+              }
+            } catch (e) {
+              LoggerService.instance.log(LogLevel.error, 'WaveformService', 'Failed to delete file: $e');
+            }
+          }
+        }
+      }
+    } catch (e) {
+      LoggerService.instance.log(
+        LogLevel.debug,
+        'WaveformService',
+        'Failed to clear disk waveform cache: $e',
+      );
+    }
+  }
 }

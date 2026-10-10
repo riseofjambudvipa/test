@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import '../../../../app/theme.dart';
+import '../../../../core/utils/time_format_utils.dart';
 import '../../../../core/database/schemas/project.dart';
 import '../../../../core/utils/platform_utils.dart';
+import 'safe_zone_overlay.dart';
 
 class EditorVideoControls extends StatelessWidget {
   final Project project;
@@ -14,6 +15,7 @@ class EditorVideoControls extends StatelessWidget {
   final bool isMuted;
   final double playbackRate;
   final bool isFullscreen;
+  final SafeZonePlatform safeZoneGuide;
   final VoidCallback onTogglePlayback;
   final ValueChanged<double> onSeek;
   final ValueChanged<double> onSeekEnd;
@@ -21,6 +23,11 @@ class EditorVideoControls extends StatelessWidget {
   final ValueChanged<double> onSetVolume;
   final ValueChanged<double> onPlaybackRateChanged;
   final VoidCallback onToggleFullscreen;
+  final ValueChanged<SafeZonePlatform>? onSafeZoneChanged;
+  final bool isProxyActive;
+  final bool isGeneratingProxy;
+  final double proxyProgress;
+  final VoidCallback? onToggleProxy;
 
   const EditorVideoControls({
     super.key,
@@ -31,6 +38,11 @@ class EditorVideoControls extends StatelessWidget {
     required this.isMuted,
     required this.playbackRate,
     required this.isFullscreen,
+    this.safeZoneGuide = SafeZonePlatform.none,
+    this.isProxyActive = false,
+    this.isGeneratingProxy = false,
+    this.proxyProgress = 0.0,
+    this.onToggleProxy,
     required this.onTogglePlayback,
     required this.onSeek,
     required this.onSeekEnd,
@@ -38,6 +50,7 @@ class EditorVideoControls extends StatelessWidget {
     required this.onSetVolume,
     required this.onPlaybackRateChanged,
     required this.onToggleFullscreen,
+    this.onSafeZoneChanged,
   });
 
   @override
@@ -54,30 +67,34 @@ class EditorVideoControls extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Seek bar
-          SliderTheme(
-            data: AppTheme.premiumSliderTheme(context),
-            child: Slider(
-              value: currentTime.clamp(0.0, project.duration),
-              min: 0,
-              max: project.duration > 0 ? project.duration : 1,
-              onChanged: onSeek,
-              onChangeEnd: onSeekEnd,
+          // Seek bar only in fullscreen mode (in editor mode, the main timeline below is the scrubber)
+          if (isFullscreen)
+            SliderTheme(
+              data: AppTheme.premiumSliderTheme(context),
+              child: Slider(
+                value: currentTime.clamp(0.0, project.duration),
+                min: 0,
+                max: project.duration > 0 ? project.duration : 1,
+                onChanged: onSeek,
+                onChangeEnd: onSeekEnd,
+              ),
             ),
-          ),
           // Controls row
           LayoutBuilder(
             builder: (context, constraints) {
-              final showVolumeSlider = !isMobile && constraints.maxWidth >= 400;
-              final showTimeIndicator = constraints.maxWidth >= 310;
-              final showRateButton = constraints.maxWidth >= 400;
+              final showVolumeSlider = !isMobile && constraints.maxWidth >= 520;
+              final showRateButton = constraints.maxWidth >= 450;
+              final showTimeIndicator = constraints.maxWidth >= 360;
 
               return Row(
                 children: [
                   IconButton(
+                    visualDensity: VisualDensity.compact,
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                    padding: const EdgeInsets.all(4),
                     icon: Icon(
                       isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                      size: 28,
+                      size: 26,
                       color: AppTheme.primaryText,
                     ),
                     onPressed: onTogglePlayback,
@@ -85,7 +102,7 @@ class EditorVideoControls extends StatelessWidget {
                   const SizedBox(width: 4),
                   if (showTimeIndicator)
                     Text(
-                      '${_formatTime(currentTime)} / ${_formatTime(project.duration)}',
+                      '${TimeFormatUtils.formatSmartTime(currentTime)} / ${TimeFormatUtils.formatSmartTime(project.duration)}',
                       style: TextStyle(
                         fontFamily: 'monospace',
                         fontSize: 11,
@@ -96,6 +113,9 @@ class EditorVideoControls extends StatelessWidget {
                   const Spacer(),
                   // Volume control
                   IconButton(
+                    visualDensity: VisualDensity.compact,
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                    padding: const EdgeInsets.all(4),
                     icon: Icon(
                       isMuted ? Icons.volume_off : (volume > 0.5 ? Icons.volume_up : Icons.volume_down),
                       size: 20,
@@ -135,7 +155,75 @@ class EditorVideoControls extends StatelessWidget {
                       onSelected: onPlaybackRateChanged,
                     ),
                   ],
+                  if (onSafeZoneChanged != null)
+                    PopupMenuButton<SafeZonePlatform>(
+                      tooltip: 'Safe Zone Guides (TikTok, Reels, Shorts)',
+                      icon: Icon(
+                        Icons.crop_free_rounded,
+                        size: 20,
+                        color: safeZoneGuide != SafeZonePlatform.none
+                            ? AppTheme.accentCyan
+                            : AppTheme.secondaryText,
+                      ),
+                      color: AppTheme.cardBgElevated,
+                      onSelected: onSafeZoneChanged,
+                      itemBuilder: (context) => SafeZonePlatform.values.map((p) => PopupMenuItem(
+                        value: p,
+                        child: Row(
+                          children: [
+                            Icon(
+                              safeZoneGuide == p ? Icons.radio_button_checked : Icons.radio_button_off,
+                              size: 14,
+                              color: safeZoneGuide == p ? AppTheme.accentCyan : AppTheme.secondaryText,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                p.label,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: safeZoneGuide == p ? AppTheme.accentCyan : AppTheme.primaryText,
+                                  fontWeight: safeZoneGuide == p ? FontWeight.bold : FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )).toList(),
+                    ),
+                  if (onToggleProxy != null && !kIsWeb)
+                    isGeneratingProxy
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                value: proxyProgress > 0 ? proxyProgress : null,
+                                strokeWidth: 2,
+                                color: AppTheme.accentLime,
+                              ),
+                            ),
+                          )
+                        : IconButton(
+                            visualDensity: VisualDensity.compact,
+                            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                            padding: const EdgeInsets.all(4),
+                            icon: Icon(
+                              isProxyActive ? Icons.flash_on_rounded : Icons.flash_off_rounded,
+                              size: 20,
+                              color: isProxyActive ? AppTheme.accentLime : AppTheme.secondaryText,
+                            ),
+                            tooltip: isProxyActive
+                                ? 'Proxy Active (Fluid 60fps) — Tap for Original Media'
+                                : 'Original Media — Tap to Generate/Switch to 720p Proxy',
+                            onPressed: onToggleProxy,
+                          ),
                   IconButton(
+                    visualDensity: VisualDensity.compact,
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                    padding: const EdgeInsets.all(4),
                     icon: Icon(
                       isFullscreen ? Icons.fullscreen_exit_rounded : Icons.fullscreen_rounded,
                       size: 22,
@@ -158,17 +246,7 @@ class EditorVideoControls extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: mainContent,
-      ),
+      child: mainContent,
     );
-  }
-
-  String _formatTime(double seconds) {
-    final mins = (seconds / 60).floor();
-    final secs = (seconds % 60).floor();
-    final ms = ((seconds % 1) * 1000).floor();
-    return '${mins.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}.${ms.toString().padLeft(3, '0')}';
   }
 }
