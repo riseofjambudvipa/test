@@ -54,6 +54,20 @@ endfunction()
 set(FLUTTER_MANAGED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/flutter")
 add_subdirectory(${FLUTTER_MANAGED_DIR})
 
+# Exclude mobile-only ffmpeg_kit_flutter_new from Windows desktop builds
+# (CapStudio Desktop uses standalone FFmpeg CLI via Process.start)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugins.cmake")
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugins.cmake" _GEN_PLUGINS)
+  string(REGEX REPLACE "[ \t]*ffmpeg_kit_flutter_new[\r\n]+" "" _GEN_PLUGINS "${_GEN_PLUGINS}")
+  file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugins.cmake" "${_GEN_PLUGINS}")
+endif()
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugin_registrant.cc")
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugin_registrant.cc" _GEN_REG)
+  string(REGEX REPLACE "#include <ffmpeg_kit_flutter_new/[^>]+>[\r\n]+" "" _GEN_REG "${_GEN_REG}")
+  string(REGEX REPLACE "[ \t]*FFmpegKitFlutterPluginRegisterWithRegistrar\\([\r\n \t]*registry->GetRegistrarForPlugin\\(\"FFmpegKitFlutterPlugin\"\\)\\);[\r\n]+" "" _GEN_REG "${_GEN_REG}")
+  file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugin_registrant.cc" "${_GEN_REG}")
+endif()
+
 # Application build; see runner/CMakeLists.txt.
 add_subdirectory("runner")
 

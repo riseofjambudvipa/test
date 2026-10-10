@@ -210,49 +210,24 @@ jobs:
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: pub-${{ runner.os }}-
 
-      - name: Pre-download FFmpegKit prebuilt bundle
-        shell: pwsh
-        run: |
-          $url = "https://github.com/sk3llo/ffmpeg_kit_flutter/releases/download/8.0.0-full-gpl-windows/ffmpeg-kit-windows-x86_64-full-gpl-8.0.0.zip"
-          $zipPath = "$env:TEMP\ffmpeg-kit-windows-x86_64-full-gpl-8.0.0.zip"
-          $extractPath = "D:\ffmpeg-kit"
-          Write-Host "Downloading FFmpegKit from $url..."
-          Invoke-WebRequest -Uri $url -OutFile $zipPath
-          Write-Host "Extracting FFmpegKit to $extractPath..."
-          New-Item -ItemType Directory -Force -Path $extractPath
-          Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
-          Write-Host "FFmpegKit prebuilt bundle ready at $extractPath."
-
       - run: flutter pub get
 
-      - name: Patch ffmpeg_kit_flutter_new include bug
+      - name: Exclude mobile-only FFmpegKit from Windows Desktop
         shell: pwsh
         run: |
-          # 1. Search and patch in Pub cache
-          $searchRoots = @(
-            $env:PUB_CACHE,
-            "$env:LOCALAPPDATA\Pub\Cache",
-            "$env:USERPROFILE\.pub-cache"
-          ) | Where-Object { $_ -and (Test-Path $_) }
-
-          foreach ($root in $searchRoots) {
-            $matched = Get-ChildItem -Path $root -Filter "ffmpeg_kit_flutter_plugin_c_api.cpp" -Recurse -ErrorAction SilentlyContinue
-            foreach ($m in $matched) {
-              (Get-Content $m.FullName) -replace 'ffmpeg_kit_flutter_new_full', 'ffmpeg_kit_flutter_new' | Set-Content $m.FullName
-              Write-Host "Patched Pub-cache copy: $($m.FullName)"
+          $roots = @($env:PUB_CACHE, "$env:LOCALAPPDATA\Pub\Cache", "$env:USERPROFILE\.pub-cache") | Where-Object { $_ -and (Test-Path $_) }
+          foreach ($r in $roots) {
+            Get-ChildItem -Path $r -Filter "pubspec.yaml" -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -like "*ffmpeg_kit_flutter_new-*" } | ForEach-Object {
+              $c = Get-Content $_.FullName -Raw
+              $c = $c -replace "(?ms)^      macos:.*?(?=^dependencies:)", "`r`n"
+              Set-Content $_.FullName -Value $c -NoNewline
+              Write-Host "Excluded desktop platforms from: $($_.FullName)"
             }
           }
-
-          # 2. Patch ephemeral if already generated
-          $file = "windows\flutter\ephemeral\.plugin_symlinks\ffmpeg_kit_flutter_new\windows\ffmpeg_kit_flutter_plugin_c_api.cpp"
-          if (Test-Path $file) {
-            (Get-Content $file) -replace 'ffmpeg_kit_flutter_new_full', 'ffmpeg_kit_flutter_new' | Set-Content $file
-            Write-Host "Patched ephemeral copy: $file"
-          }
+          Remove-Item -Force ".flutter-plugins-dependencies" -ErrorAction SilentlyContinue
+          flutter pub get
 
       - name: Build Windows
-        env:
-          FFMPEGKIT_LOCAL_DIR: "D:/ffmpeg-kit"
         run: flutter build windows --release
 
       - name: Bundle FFmpeg into Windows release
@@ -268,16 +243,31 @@ jobs:
           Copy-Item $binFiles.FullName -Destination $dist -Force
           Write-Host "Successfully bundled FFmpeg and ffprobe into Windows release bundle"
 
-      - name: Package Windows Release
+      - name: Package Windows Portable ZIP, MSIX (UWP), and Setup Installer (.exe)
         shell: pwsh
         run: |
-          Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath build/windows/x64/runner/CapStudio-Windows-x64.zip
+          # 1. Portable ZIP
+          Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath build/windows/x64/runner/CapStudio-Windows-x64.zip -Force
+          Write-Host "Built CapStudio-Windows-x64.zip"
 
-      - name: Upload Windows Artifact
+          # 2. Windows UWP / MSIX App Package
+          $env:CAPSTUDIO_CERT_PASSWORD = "capstudio-release-cert"
+          .\third_party\scripts\certificate\windows\create_cert.ps1
+          dart run msix:create --build-windows false --certificate-password $env:CAPSTUDIO_CERT_PASSWORD --install-certificate false --output-path build/windows/x64/runner --output-name CapStudio-Windows-x64
+          Write-Host "Built CapStudio-Windows-x64.msix"
+
+          # 3. Windows Inno Setup Installer (.exe)
+          iscc "/Obuild\windows\x64\runner" "/FCapStudio-Setup-Windows-x64" "scripts\capstudio_setup.iss"
+          Write-Host "Built CapStudio-Setup-Windows-x64.exe"
+
+      - name: Upload Windows Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: windows-release
-          path: build/windows/x64/runner/CapStudio-Windows-x64.zip
+          path: |
+            build/windows/x64/runner/CapStudio-Windows-x64.zip
+            build/windows/x64/runner/CapStudio-Windows-x64.msix
+            build/windows/x64/runner/CapStudio-Setup-Windows-x64.exe
 
   # =========================================================================
   # 3. WEB APPLICATION
@@ -347,24 +337,26 @@ jobs:
       - run: flutter config --no-enable-swift-package-manager
       - run: flutter pub get
 
-      - name: Patch FFmpegKit macOS Frameworks & Strip AppleDouble Resource Forks
+      - name: Exclude mobile-only FFmpegKit from macOS Desktop
         run: |
           echo "COPYFILE_DISABLE=1" >> $GITHUB_ENV
           echo "COPY_EXTENDED_ATTRIBUTES_DISABLE=1" >> $GITHUB_ENV
           export COPYFILE_DISABLE=1
           export COPY_EXTENDED_ATTRIBUTES_DISABLE=1
 
-          # 1. Patch setup_macos.sh in pub-cache to strip ._* AppleDouble files upon extraction
-          for script in $(find ~/.pub-cache -name "setup_macos.sh" 2>/dev/null); do
-            echo "Patching $script..."
-            sed -i '' 's|rm -rf "\$WORK/extract/__MACOSX"|rm -rf "\$WORK/extract/__MACOSX"; find "\$WORK/extract" -name "._*" -delete 2>/dev/null || true; xattr -crs "\$WORK/extract" 2>/dev/null || true|g' "$script"
-            PLUGIN_MACOS_DIR="$(cd "$(dirname "$script")/../macos" && pwd)"
-            (cd "$PLUGIN_MACOS_DIR" && rm -rf Frameworks && chmod +x ../scripts/setup_macos.sh && ../scripts/setup_macos.sh)
+          for p in $(find ~/.pub-cache -path "*/ffmpeg_kit_flutter_new-*/pubspec.yaml" 2>/dev/null); do
+            python3 -c '
+          import sys, re
+          p = sys.argv[1]
+          s = open(p).read()
+          s = re.sub(r"(?ms)^      macos:.*?(?=^dependencies:)", "\n", s)
+          open(p, "w").write(s)
+          print("Excluded desktop platforms from", p)
+          ' "$p"
           done
-
-          # 2. Clean any ._* files or extended attributes across pub-cache and macos directory (following symlinks)
+          rm -f .flutter-plugins-dependencies
+          flutter pub get
           find -L ~/.pub-cache macos -name '._*' -delete 2>/dev/null || true
-          find -L ~/.pub-cache macos -name '_CodeSignature' -type d -exec rm -rf {} + 2>/dev/null || true
           xattr -crs ~/.pub-cache macos 2>/dev/null || true
 
       - name: Build macOS
@@ -440,6 +432,21 @@ jobs:
             libjson-glib-dev file desktop-file-utils
 
       - run: flutter pub get
+
+      - name: Exclude mobile-only FFmpegKit from Linux Desktop
+        run: |
+          for p in $(find ~/.pub-cache -path "*/ffmpeg_kit_flutter_new-*/pubspec.yaml" 2>/dev/null); do
+            python3 -c '
+          import sys, re
+          p = sys.argv[1]
+          s = open(p).read()
+          s = re.sub(r"(?ms)^      macos:.*?(?=^dependencies:)", "\n", s)
+          open(p, "w").write(s)
+          print("Excluded desktop platforms from", p)
+          ' "$p"
+          done
+          rm -f .flutter-plugins-dependencies
+          flutter pub get
 
       - name: Build Linux
         run: flutter build linux --release
@@ -941,7 +948,7 @@ jobs:
       - name: Organize Release Assets
         run: |
           mkdir -p release_assets
-          find all_artifacts/ -type f \( -name "*.zip" -o -name "*.sha256" -o -name "*.apk" -o -name "*.aab" -o -name "*.dmg" -o -name "*.deb" -o -name "*.tar.gz" -o -name "*.AppImage" \) -exec cp {} release_assets/ \;
+          find all_artifacts/ -type f \( -name "*.zip" -o -name "*.sha256" -o -name "*.apk" -o -name "*.aab" -o -name "*.dmg" -o -name "*.deb" -o -name "*.tar.gz" -o -name "*.AppImage" -o -name "*.msix" -o -name "*.exe" \) -exec cp {} release_assets/ \;
           echo "=== Release assets to be published ==="
           ls -lh release_assets/
 

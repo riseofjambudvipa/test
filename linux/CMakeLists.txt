@@ -54,6 +54,20 @@ add_subdirectory(${FLUTTER_MANAGED_DIR})
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK REQUIRED IMPORTED_TARGET gtk+-3.0)
 
+# Exclude mobile-only ffmpeg_kit_flutter_new from Linux desktop builds
+# (CapStudio Desktop uses standalone FFmpeg CLI via Process.start)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugins.cmake")
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugins.cmake" _GEN_PLUGINS)
+  string(REGEX REPLACE "[ \t]*ffmpeg_kit_flutter_new[\r\n]+" "" _GEN_PLUGINS "${_GEN_PLUGINS}")
+  file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugins.cmake" "${_GEN_PLUGINS}")
+endif()
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugin_registrant.cc")
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugin_registrant.cc" _GEN_REG)
+  string(REGEX REPLACE "#include <ffmpeg_kit_flutter_new/[^>]+>[\r\n]+" "" _GEN_REG "${_GEN_REG}")
+  string(REGEX REPLACE "[ \t]*g_autoptr\\(FlPluginRegistrar\\) ffmpeg_kit_flutter_new_registrar =[\r\n \t]*fl_plugin_registry_get_registrar_for_plugin\\(registry, \"FFmpegKitFlutterPlugin\"\\);[\r\n \t]*f_fmpeg_kit_flutter_plugin_register_with_registrar\\(ffmpeg_kit_flutter_new_registrar\\);[\r\n]+" "" _GEN_REG "${_GEN_REG}")
+  file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/flutter/generated_plugin_registrant.cc" "${_GEN_REG}")
+endif()
+
 # Application build; see runner/CMakeLists.txt.
 add_subdirectory("runner")
 

@@ -317,7 +317,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "find -L \"$BUILT_PRODUCTS_DIR\" \"$PROJECT_DIR\" \"$HOME/.pub-cache\" -name \"._*\" -delete 2>/dev/null || true; xattr -crs \"$BUILT_PRODUCTS_DIR\" \"$PROJECT_DIR/Pods\" 2>/dev/null || true; echo \"$PRODUCT_NAME.app\" > \"$PROJECT_DIR\"/Flutter/ephemeral/.app_filename && \"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh embed && find -L \"$BUILT_PRODUCTS_DIR\" -name \"._*\" -delete 2>/dev/null || true\n";
+			shellScript = "find -L \"$BUILT_PRODUCTS_DIR\" \"$PROJECT_DIR\" \"$HOME/.pub-cache\" -name \"._*\" -delete 2>/dev/null || true; xattr -crs \"$BUILT_PRODUCTS_DIR\" \"$PROJECT_DIR/Pods\" 2>/dev/null || true; echo \"$PRODUCT_NAME.app\" > \"$PROJECT_DIR\"/Flutter/ephemeral/.app_filename && \"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh embed && rm -rf \"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/Contents/Frameworks/ffmpeg_kit_flutter_new.framework\" \"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/Contents/Frameworks/ffmpegkit.framework\" \"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/Contents/Frameworks/libav\"*.framework \"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/Contents/Frameworks/libsw\"*.framework 2>/dev/null || true && find -L \"$BUILT_PRODUCTS_DIR\" -name \"._*\" -delete 2>/dev/null || true\n";
 		};
 		33CC111E2044C6BF0003C045 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -337,7 +337,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "find -L \"$PROJECT_DIR\" \"$HOME/.pub-cache\" -name \"._*\" -delete 2>/dev/null || true; xattr -crs \"$PROJECT_DIR/Pods\" 2>/dev/null || true; \"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh && touch Flutter/ephemeral/tripwire";
+			shellScript = "find -L \"$PROJECT_DIR\" \"$HOME/.pub-cache\" -name \"._*\" -delete 2>/dev/null || true; xattr -crs \"$PROJECT_DIR/Pods\" 2>/dev/null || true; sed -i '' '/ffmpeg_kit_flutter_new/d; /FFmpegKitFlutterPlugin/d' \"$PROJECT_DIR/Flutter/GeneratedPluginRegistrant.swift\" 2>/dev/null || true; \"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh && touch Flutter/ephemeral/tripwire";
 		};
 /* End PBXShellScriptBuildPhase section */
 
