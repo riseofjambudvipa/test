@@ -333,8 +333,19 @@ jobs:
 
       - run: flutter pub get
 
-      - name: Build macOS
-        run: flutter build macos --release
+      - name: Build macOS (no-codesign)
+        run: flutter build macos --release --no-codesign
+
+      - name: Ad-hoc CodeSign app bundle
+        run: |
+          APP="build/macos/Build/Products/Release/CapStudio.app"
+          if [ -d "$APP" ]; then
+            echo "Cleaning extended attributes and stale framework signatures..."
+            find "$APP/Contents/Frameworks" -name "_CodeSignature" -type d -exec rm -rf {} + 2>/dev/null || true
+            xattr -cr "$APP" 2>/dev/null || true
+            echo "Applying ad-hoc code signature..."
+            codesign --force --deep --sign - "$APP" 2>/dev/null || true
+          fi
 
       - name: Bundle FFmpeg into macOS app
         run: |
@@ -389,7 +400,8 @@ jobs:
           sudo apt-get install -y clang cmake ninja-build pkg-config \
             libgtk-3-dev liblzma-dev libstdc++-12-dev \
             libgl1-mesa-dev libgles2-mesa-dev libmpv-dev \
-            libvlc-dev vlc-bin libasound2-dev libpulse-dev
+            libvlc-dev vlc-bin libasound2-dev libpulse-dev \
+            libjson-glib-dev
 
       - run: flutter pub get
 

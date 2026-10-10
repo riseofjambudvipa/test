@@ -78,7 +78,9 @@ DerivedData/
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
-build/
+/build/
+!scripts/build/
+!third_party/scripts/build/
 coverage/
 doc/api/
 
