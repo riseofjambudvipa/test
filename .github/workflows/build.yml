@@ -538,8 +538,11 @@ jobs:
           Categories=AudioVideo;Video;
           EOF
 
+          mkdir -p "$APPDIR/usr/share/applications"
+          cp "$APPDIR/capstudio.desktop" "$APPDIR/usr/share/applications/capstudio.desktop"
+
           mkdir -p "$APPDIR/usr/share/metainfo"
-          cat > "$APPDIR/usr/share/metainfo/capstudio.appdata.xml" << 'EOF'
+          cat > "$APPDIR/usr/share/metainfo/com.capstudio.app.metainfo.xml" << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
           <component type="desktop-application">
             <id>com.capstudio.app</id>
@@ -552,15 +555,20 @@ jobs:
             </description>
             <launchable type="desktop-id">capstudio.desktop</launchable>
             <url type="homepage">https://github.com/riseofjambudvipa/test</url>
+            <developer id="com.capstudio.ai">
+              <name>CapStudio Team</name>
+            </developer>
+            <content_rating type="oars-1.1" />
             <provides>
               <binary>capstudio</binary>
             </provides>
           </component>
           EOF
+          cp "$APPDIR/usr/share/metainfo/com.capstudio.app.metainfo.xml" "$APPDIR/usr/share/metainfo/capstudio.appdata.xml"
 
           curl -fsSL --retry 5 -o /tmp/appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
           chmod +x /tmp/appimagetool
-          ARCH=x86_64 /tmp/appimagetool --appimage-extract-and-run "$APPDIR" "$GITHUB_WORKSPACE/CapStudio-Linux-x86_64.AppImage"
+          ARCH=x86_64 NO_APPSTREAM=1 /tmp/appimagetool --appimage-extract-and-run "$APPDIR" "$GITHUB_WORKSPACE/CapStudio-Linux-x86_64.AppImage"
           chmod +x "$GITHUB_WORKSPACE/CapStudio-Linux-x86_64.AppImage"
           echo "Built CapStudio-Linux-x86_64.AppImage"
 

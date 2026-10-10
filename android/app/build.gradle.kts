@@ -23,9 +23,9 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        ndk {
-            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86_64"))
-        }
+        // Note: Do not set ndk.abiFilters in defaultConfig because Android Gradle Plugin
+        // forbids it when splits.abi is enabled (e.g. flutter build apk --split-per-abi).
+        // CMake abiFilters below restricts native compilation to supported ABIs.
 
         externalNativeBuild {
             cmake {
