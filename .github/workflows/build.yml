@@ -255,6 +255,19 @@ jobs:
           FFMPEGKIT_LOCAL_DIR: "D:/ffmpeg-kit"
         run: flutter build windows --release
 
+      - name: Bundle FFmpeg into Windows release
+        shell: pwsh
+        run: |
+          $dist = "build/windows/x64/runner/Release"
+          $tempDir = [System.IO.Path]::GetTempPath()
+          $zip = Join-Path $tempDir "ffmpeg-essentials.zip"
+          Write-Host "Downloading official GyanD Windows FFmpeg essentials 7.1..."
+          Invoke-WebRequest -Uri "https://github.com/GyanD/codexffmpeg/releases/download/7.1/ffmpeg-7.1-essentials_build.zip" -OutFile $zip
+          Expand-Archive -Path $zip -DestinationPath (Join-Path $tempDir "ffmpeg_extracted") -Force
+          $binFiles = Get-ChildItem -Path (Join-Path $tempDir "ffmpeg_extracted") -Recurse -Include "ffmpeg.exe", "ffprobe.exe"
+          Copy-Item $binFiles.FullName -Destination $dist -Force
+          Write-Host "Successfully bundled FFmpeg and ffprobe into Windows release bundle"
+
       - name: Package Windows Release
         shell: pwsh
         run: |
