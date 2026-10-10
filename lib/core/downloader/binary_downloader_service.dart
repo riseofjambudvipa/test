@@ -196,6 +196,17 @@ class BinaryDownloaderService {
       }
     } else if (toolId == 'ffmpeg') {
       if (Platform.isWindows) {
+        final arch = AppDirs.getCpuArchitecture().toLowerCase();
+        final isArm64 = arch.contains('arm') ||
+            (Platform.environment['PROCESSOR_ARCHITECTURE']?.toUpperCase() == 'ARM64') ||
+            (Platform.environment['PROCESSOR_ARCHITEW6432']?.toUpperCase() == 'ARM64');
+        if (isArm64) {
+          return [
+            '$releaseBase/ffmpeg-windows-arm64.zip',
+            'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-winarm64-gpl.zip',
+            '$releaseBase/ffmpeg-windows.zip',
+          ];
+        }
         // High-speed release bundle + GitHub CDN GyanD 7.1 mirror + gyan.dev fallback
         return [
           '$releaseBase/ffmpeg-windows.zip',
